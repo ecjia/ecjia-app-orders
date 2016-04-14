@@ -16,14 +16,15 @@ class list_module implements ecjia_interface {
 		RC_Loader::load_app_func('main', 'api');
 		$page_parm = EM_Api::$pagination;
 		$page = $page_parm['page'];
-		$type = _POST('type', 'await_pay');
+		$type = _POST('type', 'all');
 		/**
-		 * await_pay 待付款
-		 * await_ship 待发货
-		 * shipped 待收货
-		 * finished 历史订单
+		 * all			所有订单
+		 * await_pay	待付款
+		 * await_ship	待发货
+		 * shipped		待收货
+		 * finished		历史订单
 		 */
-		if (!in_array($type, array('await_pay', 'await_ship', 'shipped', 'finished', 'unconfirmed'))) {
+		if (!in_array($type, array('all', 'await_pay', 'await_ship', 'shipped', 'finished', 'unconfirmed'))) {
 			EM_Api::outPut(101);
 		}
 		
@@ -39,8 +40,11 @@ class list_module implements ecjia_interface {
 		);
 		
 		$where = array('oi.user_id' => $user_id, 'oii.order_id is null');
-		$order_where[] = EM_order_query_sql($type, 'oi.');
-		$where = array_merge($where, $order_where);
+		if ($type != 'all') {
+			$order_where[] = EM_order_query_sql($type, 'oi.');
+			$where = array_merge($where, $order_where);
+		}
+		
 		$record_count = $db_orderinfo_view->join(array('order_info'))->where($where)->count('*');
 		
 // 		$record_count = $db_order_info->where(array('user_id' => $user_id, EM_order_query_sql($type)))->count();
@@ -51,7 +55,7 @@ class list_module implements ecjia_interface {
 		$page_row = new ecjia_page($record_count, $page_parm['count'], 6, '', $page_parm['page']);
 		
 		$orders = EM_get_user_orders($user_id, $page_parm['count'], $page_parm['page'], $type);
-
+		
 		foreach ($orders as $key => $value) {
 			unset($orders[$key]['order_status']);
 			$orders[$key]['order_time'] = formatTime($value['order_time']);
@@ -160,8 +164,11 @@ function EM_get_user_orders($user_id, $num = 10, $start = 0, $type = 'await_pay'
 //     $res = $db_order_info->field($field)->where("user_id = '$user_id' " . GZ_order_query_sql($type))->order(array('add_time' => 'desc'))->limit($start,$num)->select();
     $start = ($start-1)*$num ;
     $where = array('oi.user_id' => $user_id, 'oii.order_id is null');
-    $order_where[] = EM_order_query_sql($type, 'oi.');
-    $where = array_merge($where, $order_where);
+    if ($type != 'all') {
+    	$order_where[] = EM_order_query_sql($type, 'oi.');
+    	$where = array_merge($where, $order_where);
+    }
+    
     $res = $db_orderinfo_view->join(array('order_info', 'order_goods'))->field($field)->where($where)->group('order_id')->order(array('oi.add_time' => 'desc'))->limit($start,$num)->select();
     
     if (!empty($res)) {

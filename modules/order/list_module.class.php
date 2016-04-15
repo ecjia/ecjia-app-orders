@@ -57,7 +57,6 @@ class list_module implements ecjia_interface {
 		$orders = EM_get_user_orders($user_id, $page_parm['count'], $page_parm['page'], $type);
 		
 		foreach ($orders as $key => $value) {
-			unset($orders[$key]['order_status']);
 			$orders[$key]['order_time'] = formatTime($value['order_time']);
 			$goods_list = EM_order_goods($value['order_id'],1,10);//只获取一个商品
 			
@@ -170,19 +169,28 @@ function EM_get_user_orders($user_id, $num = 10, $start = 0, $type = 'await_pay'
     }
     
     $res = $db_orderinfo_view->join(array('order_info', 'order_goods'))->field($field)->where($where)->group('order_id')->order(array('oi.add_time' => 'desc'))->limit($start,$num)->select();
-    
+    RC_Lang::load('orders/order');
     if (!empty($res)) {
         foreach ($res as $row) {
-            $row['shipping_status'] = ($row['shipping_status'] == SS_SHIPPED_ING) ? SS_PREPARING : $row['shipping_status'];
-            $row['order_status'] = RC_Lang::lang("os/$row[order_status]") . ',' . RC_Lang::lang("ps/$row[pay_status]") . ',' . RC_Lang::lang("ss/$row[shipping_status]");
+            //$row['shipping_status'] = ($row['shipping_status'] == SS_SHIPPED_ING) ? SS_PREPARING : $row['shipping_status'];
+            //$row['order_status'] = RC_Lang::lang("os/$row[order_status]") . ',' . RC_Lang::lang("ps/$row[pay_status]") . ',' . RC_Lang::lang("ss/$row[shipping_status]");
+            $row['label_order_status'] 		= RC_Lang::lang("os/$row[order_status]");
+            $row['label_shipping_status']	= RC_Lang::lang("ss/$row[shipping_status]");
+            $row['label_pay_status']		= RC_Lang::lang("ps/$row[pay_status]");
+            
             $arr[] = array(
-                'order_id'       => $row['order_id'],
-                'order_sn'       => $row['order_sn'],
-                'order_time'     => RC_Time::local_date(ecjia::config('time_format'), $row['add_time']),
-                'order_status'   => $row['order_status'],
-                'total_fee'      => $row['total_fee'],
-                'discount'		 => $row['discount'],
-            	'goods_number'	 => $row['goods_number']
+                'order_id'       		=> $row['order_id'],
+                'order_sn'       		=> $row['order_sn'],
+                'order_time'     		=> RC_Time::local_date(ecjia::config('time_format'), $row['add_time']),
+                'order_status'   		=> $row['order_status'],
+            	'shipping_status'		=> ($row['shipping_status'] == SS_SHIPPED_ING) ? SS_PREPARING : $row['shipping_status'],
+            	'pay_status'     		=> $row['pay_status'],
+            	'label_order_status'	=> $row['label_order_status'],
+            	'label_shipping_status' => $row['label_shipping_status'],
+            	'label_pay_status'		=> $row['label_pay_status'],
+                'total_fee'      		=> $row['total_fee'],
+                'discount'		 		=> $row['discount'],
+            	'goods_number'	 		=> $row['goods_number']
             );
         }
     }

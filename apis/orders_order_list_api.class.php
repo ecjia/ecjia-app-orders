@@ -17,7 +17,7 @@ class orders_order_list_api extends Component_Event_Api {
 		}
 		
 		$user_id	= $_SESSION['user_id'];
-		$type		= empty($options['type']) ? $options['type'] : 'all';
+		$type		= !empty($options['type']) ? $options['type'] : 'all';
 		
 		$size = $options['size'];
 		$page = $options['page'];
@@ -69,12 +69,12 @@ class orders_order_list_api extends Component_Event_Api {
 				),
 		);
 		
-		$order_list = RC_Loader::load_app_class('order_list', 'orders', false);
+		RC_Loader::load_app_class('order_list', 'orders', false);
 		$where = array('oi.user_id' => $user_id, 'oi.extension_code' => '', 'oii.order_id is null');
 		
 		if (!empty($type)) {
 			$order_type = 'order_'.$type;
-			$where[] = $order_list::$order_type('oi.');
+			$where = order_list::$order_type('oi.');
 		}
 		
 		$record_count = $dbview_order_info->join(array('order_info'))->where($where)->count('*');

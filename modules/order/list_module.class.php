@@ -9,8 +9,8 @@ class list_module implements ecjia_interface {
 	
 	public function run(ecjia_api & $api) {
 		
-// 		EM_Api::authSession();
-		$_SESSION['user_id'] = 33;
+		EM_Api::authSession();
+		
 		$type = _POST('type');
 		if (!empty($type) && !in_array($type, array('await_pay', 'await_ship', 'shipped', 'finished', 'unconfirmed'))) {
 			EM_Api::outPut(101);

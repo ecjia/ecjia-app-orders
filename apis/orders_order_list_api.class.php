@@ -17,7 +17,7 @@ class orders_order_list_api extends Component_Event_Api {
 		}
 		
 		$user_id	= $_SESSION['user_id'];
-		$type		= !empty($options['type']) ? $options['type'] : 'all';
+		$type		= !empty($options['type']) ? $options['type'] : '';
 		
 		$size = $options['size'];
 		$page = $options['page'];
@@ -163,6 +163,7 @@ class orders_order_list_api extends Component_Event_Api {
 							'total_fee'					=> $row['total_fee'],
 							'discount'					=> $row['discount'],
 							'goods_number'				=> $goods_number,
+							'is_cod'					=> $payment['is_cod'],
 							'formated_total_fee'		=> price_format($row['total_fee'], false), // 订单总价
 							'formated_integral_money'	=> price_format($row['integral_money'], false),//积分 钱
 							'formated_bonus'			=> price_format($row['bonus'], false),//红包 钱

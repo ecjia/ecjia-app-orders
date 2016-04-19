@@ -17,7 +17,7 @@ class list_module implements ecjia_interface {
 		}
 		$page_parm = EM_Api::$pagination;
 		$page = $page_parm['page'];
-		$size = $page_parm['size'];
+		$size = $page_parm['count'];
 		
 		
 		

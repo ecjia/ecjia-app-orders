@@ -149,6 +149,9 @@ class orders_order_list_api extends Component_Event_Api {
 					{
 						$label_order_status = '待收货';
 					}
+					elseif (in_array($row['order_status'], array(OS_CANCELED))) {
+						$label_order_status = '已取消';
+					}
 					
 					$orders[$row['order_id']] = array(
 							'order_id'					=> $row['order_id'],

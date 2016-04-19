@@ -131,16 +131,14 @@ class orders_order_list_api extends Component_Event_Api {
 						in_array($row['pay_status'], array(PS_PAYED, PS_PAYING))) 
 					{
 						$label_order_status = '已完成';
-					}
-					
-					if (in_array($row['order_status'], array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) && 
+					} 
+					elseif (in_array($row['order_status'], array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) && 
 						in_array($row['shipping_status'], array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING)) &&
 						(in_array($row['pay_status'], array(PS_PAYED, PS_PAYING)) || $payment['is_cod']))
 					{
 						$label_order_status = '待发货';
-					}
-					
-					if (in_array($row['order_status'], array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) &&
+					} 
+					elseif (in_array($row['order_status'], array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) &&
 					in_array($row['pay_status'], array(PS_UNPAYED)) &&
 					(in_array($row['shipping_status'], array(SS_SHIPPED, SS_RECEIVED)) || !$payment['is_cod']))
 					{

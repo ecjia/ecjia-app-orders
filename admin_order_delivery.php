@@ -14,6 +14,7 @@ class admin_order_delivery extends ecjia_admin {
 	private $db_order_action;
 	private $db_goods;
 	private $db_products;
+	private $db_order_status_log;
 // 	private $db_admin_user;
 	
 	public function __construct() {
@@ -30,6 +31,7 @@ class admin_order_delivery extends ecjia_admin {
 		$this->db_order_action		= RC_Loader::load_app_model('order_action_model');
 		$this->db_goods				= RC_Loader::load_app_model('goods_model','goods');
 		$this->db_products			= RC_Loader::load_app_model('products_model','goods');
+		$this->db_order_status_log	= RC_Loader::load_app_model('order_status_log_model','orders');
 // 		$this->db_admin_user		= RC_Loader::load_model('admin_user_model');
 
 		// 增加操作对象
@@ -303,7 +305,15 @@ class admin_order_delivery extends ecjia_admin {
 		$_delivery['invoice_no']	= $invoice_no;
 		$_delivery['status']		= 0;	/* 0，为已发货 */
 		$result = $this->db_delivery_order->where(array('delivery_id' => $delivery_id))-> update($_delivery);
-	
+		if ($result) {
+			$data = array(
+					'order_status' => '已发货',
+					'message'	   => '订单号为'.$order['order_sn'].'的商品已发货，请您耐心等待。',
+					'order_id'	   => $order_id,
+					'add_time'	   => RC_Time::gmtime(),
+			);
+			$this->db_order_status_log->insert($data);
+		}
 		if (!$result) {
 			/* 操作失败 */
 			$links[] = array('text' => RC_Lang::lang('delivery_sn') . RC_Lang::lang('detail'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info','delivery_id=' . $delivery_id));

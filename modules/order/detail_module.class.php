@@ -76,6 +76,19 @@ class detail_module implements ecjia_interface {
 			$order['receipt_verification'] = $receipt_code;
 		}
 		
+		$order_status_log = RC_Model::model('orders/order_status_log_model')->where(array('order_id' => $order_id))->order(array('log_id' => 'desc'))->select();
+		$order['order_status_log'] = array();
+		if (!empty($order_status_log)) {
+			foreach ($order_status_log as $val) {
+				$order['order_status_log'][] = array(
+					'order_status'	=> $val['order_status'],
+					'message'		=> $val['message'],
+					'time'			=> RC_Time::local_date(ecjia::config('time_format'), $val['add_time']),
+				);
+			}
+		}
+		
+		
 		//支付方式信息
 		$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
 		$payment_info = array();

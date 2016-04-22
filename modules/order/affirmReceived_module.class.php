@@ -57,6 +57,14 @@ function affirm_received($order_id, $user_id = 0)
         );
         $query = $db->where(array('order_id' => $order_id))->update($data);
         if ($query) {
+        	$db_order_status_log = RC_Loader::load_app_model('order_status_log_model', 'orders');
+        	$order_status_data = array(
+            		'order_status' => '已完成',
+            		'order_id' 	   => $order_id,
+            		'message'	   => '',
+            		'add_time'	   => RC_Time::gmtime()
+            );
+            $db_order_status_log->insert($data);
             /* 记录日志 */
         	RC_Loader::load_app_func('order', 'orders');
             order_action($order['order_sn'], $order['order_status'], SS_RECEIVED, $order['pay_status'], '', RC_Lang::lang('buyer'));

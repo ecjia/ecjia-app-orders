@@ -74,7 +74,7 @@ class orders_order_list_api extends Component_Event_Api {
 		
 		if (!empty($type)) {
 			$order_type = 'order_'.$type;
-			$where = order_list::$order_type('oi.');
+			$where = array($where, order_list::$order_type('oi.'));
 		}
 		
 		$record_count = $dbview_order_info->join(array('order_info'))->where($where)->count('*');

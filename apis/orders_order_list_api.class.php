@@ -92,12 +92,12 @@ class orders_order_list_api extends Component_Event_Api {
 			
 		}
 		$field = 'oi.order_id, oi.order_sn, oi.order_status, oi.shipping_status, oi.pay_status, oi.add_time, (oi.goods_amount + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee + oi.tax - oi.integral_money - oi.bonus - oi.discount) AS total_fee, oi.discount, oi.integral_money, oi.bonus, oi.shipping_fee, oi.pay_id, oi.order_amount'.
-		', og.*, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, tr.relation_id';
+		', og.goods_id, og.goods_name, og.goods_attr, og.goods_price, og.goods_number, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, tr.relation_id';
 
 		$res = $dbview_order_info->join(array('order_info', 'order_goods', 'goods', 'term_relationship'))->field($field)->where($where)->order(array('oi.order_id' => 'desc'))->select();
 		
 		RC_Lang::load('orders/order');
-
+		
 		/* 取得订单列表 */
 		$orders = array();
 		if (!empty($res)) {

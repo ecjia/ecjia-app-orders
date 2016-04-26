@@ -40,8 +40,9 @@ class detail_module implements ecjia_interface {
 					$field ='msi.user_id, ssi.*, CONCAT(shoprz_brandName,shopNameSuffix) as seller_name';
 					$seller_info = $msi_dbview->join(array('seller_shopinfo'))
 												->field($field)
-												->where(array('msi.user_id' => $row['ru_id']))
+												->where(array('msi.user_id' => $v['ru_id']))
 												->find();
+					
 				}
 				
 				$order['seller_id']					= isset($v['ru_id']) ? intval($v['ru_id']) : 0;

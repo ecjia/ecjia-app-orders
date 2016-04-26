@@ -178,23 +178,28 @@ class orders_order_list_api extends Component_Event_Api {
 									'desc'			=> $subject,
 									'order_sn'		=> $row['order_sn'],
 							),
-							'goods_list'				=> array(
-										array(
-											'goods_id'	=> isset($row['goods_id']) ? $row['goods_id'] : 0,
-											'name'		=> isset($row['goods_name']) ? $row['goods_name'] : '',
-											'goods_attr'	=> empty($attr) ? '' : $attr,
-											'goods_number'	=> isset($row['goods_number']) ? $row['goods_number'] : 0,
-											'subtotal'		=> isset($row['subtotal']) ? price_format($row['subtotal'], false) : 0,
-											'formated_shop_price' => isset($row['goods_price']) ? price_format($row['goods_price'], false) : 0,
-											'img' => array(
-													'small'	=> (isset($row['goods_thumb']) && !empty($row['goods_thumb'])) ? RC_Upload::upload_url($row['goods_thumb']) : '',
-													'thumb'	=> (isset($row['goods_img']) && !empty($row['goods_img'])) ? RC_Upload::upload_url($row['goods_img']) : '',
-													'url'	=> (isset($row['original_img']) && !empty($row['original_img'])) ? RC_Upload::upload_url($row['original_img']) : '',
-											),
-											'is_commented'	=> empty($row['relation_id']) ? 0 : 1,
-									)
-							)
+							'goods_list' 				=> array()
+							
 					);
+					if (!empty($row['goods_id'])) {
+						$orders[$row['order_id']]['goods_list']	= array(
+								array(
+										'goods_id'	=> isset($row['goods_id']) ? $row['goods_id'] : 0,
+										'name'		=> isset($row['goods_name']) ? $row['goods_name'] : '',
+										'goods_attr'	=> empty($attr) ? '' : $attr,
+										'goods_number'	=> isset($row['goods_number']) ? $row['goods_number'] : 0,
+										'subtotal'		=> isset($row['subtotal']) ? price_format($row['subtotal'], false) : 0,
+										'formated_shop_price' => isset($row['goods_price']) ? price_format($row['goods_price'], false) : 0,
+										'img' => array(
+												'small'	=> (isset($row['goods_thumb']) && !empty($row['goods_thumb'])) ? RC_Upload::upload_url($row['goods_thumb']) : '',
+												'thumb'	=> (isset($row['goods_img']) && !empty($row['goods_img'])) ? RC_Upload::upload_url($row['goods_img']) : '',
+												'url'	=> (isset($row['original_img']) && !empty($row['original_img'])) ? RC_Upload::upload_url($row['original_img']) : '',
+										),
+										'is_commented'	=> empty($row['relation_id']) ? 0 : 1,
+								)
+						);
+					}
+					
 					
 					$order_id = $row['order_id'];
 				} else {

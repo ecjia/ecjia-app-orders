@@ -33,8 +33,20 @@ class detail_module implements ecjia_interface {
 		$order['city'] = $region_name[2]['region_name'];
 		$order['district'] = $region_name[3]['region_name'];
 		$goods_list = EM_order_goods($order_id);
-		
-		foreach ($goods_list as $k =>$v) {
+		$msi_dbview = RC_Loader::load_app_model('merchants_shop_information_viewmodel', 'seller');
+		foreach ($goods_list as $k => $v) {
+			if ($k == 0) {
+				if ($v['ru_id'] > 0) {
+					$field ='msi.user_id, ssi.*, CONCAT(shoprz_brandName,shopNameSuffix) as seller_name';
+					$seller_info = $msi_dbview->join(array('seller_shopinfo'))
+												->field($field)
+												->where(array('msi.user_id' => $row['ru_id']))
+												->find();
+				}
+				
+				$order['seller_id']					= isset($v['ru_id']) ? intval($v['ru_id']) : 0;
+				$order['seller_name']				= isset($seller_info['seller_name']) ? $seller_info['seller_name'] : '自营';
+			}
 			$attr = array();
 			if (!empty($v['goods_attr'])) {
 				$goods_attr = explode("\n", $v['goods_attr']);
@@ -61,6 +73,7 @@ class detail_module implements ecjia_interface {
 							'url' => API_DATA('PHOTO', $v['original_img'])
 					)
 			);
+			
 		}
 		$order['goods_list'] = $goods_list;
 		

@@ -92,7 +92,7 @@ class orders_order_list_api extends Component_Event_Api {
 			
 		}
 		$field = 'oi.order_id, oi.order_sn, oi.order_status, oi.shipping_status, oi.pay_status, oi.add_time, (oi.goods_amount + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee + oi.tax - oi.integral_money - oi.bonus - oi.discount) AS total_fee, oi.discount, oi.integral_money, oi.bonus, oi.shipping_fee, oi.pay_id, oi.order_amount'.
-		', og.goods_id, og.goods_name, og.goods_attr, og.goods_price, og.goods_number, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, tr.relation_id';
+		', og.goods_id, og.goods_name, og.goods_attr, og.goods_price, og.goods_number, og.ru_id, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, tr.relation_id';
 
 		$res = $dbview_order_info->join(array('order_info', 'order_goods', 'goods', 'term_relationship'))->field($field)->where($where)->order(array('oi.order_id' => 'desc'))->select();
 		
@@ -103,6 +103,7 @@ class orders_order_list_api extends Component_Event_Api {
 		if (!empty($res)) {
 			$order_id = $goods_number = $goods_type_number = 0;
 			$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
+			$msi_dbview = RC_Loader::load_app_model('merchants_shop_information_viewmodel', 'seller');
 			foreach ($res as $row) {
 				$attr = array();
 				if (isset($row['goods_attr']) && !empty($row['goods_attr'])) {
@@ -153,7 +154,17 @@ class orders_order_list_api extends Component_Event_Api {
 						$label_order_status = '已取消';
 					}
 					
+					if ($row['ru_id'] > 0) {
+						$field ='msi.user_id, ssi.*, CONCAT(shoprz_brandName,shopNameSuffix) as seller_name';
+						$seller_info = $msi_dbview->join(array('seller_shopinfo'))
+											->field($field)
+											->where(array('msi.user_id' => $row['ru_id']))
+											->find();
+					}
+					
 					$orders[$row['order_id']] = array(
+							'seller_id'					=> isset($row['ru_id']) ? intval($row['ru_id']) : 0,
+							'seller_name'				=> isset($seller_info['seller_name']) ? $seller_info['seller_name'] : '自营',
 							'order_id'					=> $row['order_id'],
 							'order_sn'					=> $row['order_sn'],
 							'order_status'				=> $row['order_status'],

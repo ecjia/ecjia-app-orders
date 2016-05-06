@@ -119,6 +119,12 @@ function cancel_order ($order_id, $user_id = 0)
             'surplus' => 0
         );
         update_order($order['order_id'], $arr);
+        RC_Model::model('orders/order_status_log_model')->insert(array(
+	        'order_status'	=> '订单取消',
+	        'order_id'		=> $order['order_id'],
+	        'message'		=> '您已取消订单！',
+	        'add_time'		=> RC_Time::gmtime(),
+        ));
         return true;
     } else {
         return new ecjia_error('database_query_error', $db->error());

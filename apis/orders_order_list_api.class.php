@@ -132,26 +132,31 @@ class orders_order_list_api extends Component_Event_Api {
 						in_array($row['pay_status'], array(PS_PAYED, PS_PAYING))) 
 					{
 						$label_order_status = '已完成';
+						$status_code = 'finished';
 					} 
 					elseif (in_array($row['order_status'], array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) && 
 						in_array($row['shipping_status'], array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING)) &&
 						(in_array($row['pay_status'], array(PS_PAYED, PS_PAYING)) || $payment['is_cod']))
 					{
 						$label_order_status = '待发货';
+						$status_code = 'await_ship';
 					} 
 					elseif (in_array($row['order_status'], array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) &&
 					in_array($row['pay_status'], array(PS_UNPAYED)) &&
 					(in_array($row['shipping_status'], array(SS_SHIPPED, SS_RECEIVED)) || !$payment['is_cod']))
 					{
 						$label_order_status = '待付款';
+						$status_code = 'await_pay';
 					} 
 					elseif (in_array($row['order_status'], array(OS_CONFIRMED)) &&
 					in_array($row['shipping_status'], array(SS_SHIPPED)))
 					{
 						$label_order_status = '待收货';
+						$status_code = 'shipped';
 					}
 					elseif (in_array($row['order_status'], array(OS_CANCELED))) {
 						$label_order_status = '已取消';
+						$status_code = 'canceled';
 					}
 					
 					if ($row['ru_id'] > 0) {
@@ -171,6 +176,7 @@ class orders_order_list_api extends Component_Event_Api {
 							'shipping_status'			=> $row['shipping_status'],
 							'pay_status'				=> $row['pay_status'],
 							'label_order_status'		=> $label_order_status,
+							'order_status_code'			=> $status_code,
 							'order_time'				=> RC_Time::local_date(ecjia::config('time_format'), $row['add_time']),
 							'total_fee'					=> $row['total_fee'],
 							'discount'					=> $row['discount'],

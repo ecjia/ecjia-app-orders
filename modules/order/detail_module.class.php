@@ -47,6 +47,7 @@ class detail_module implements ecjia_interface {
 				
 				$order['seller_id']					= isset($v['ru_id']) ? intval($v['ru_id']) : 0;
 				$order['seller_name']				= isset($seller_info['seller_name']) ? $seller_info['seller_name'] : '自营';
+				$order['service_phone']				= $seller_info['kf_tel'];
 			}
 			$attr = array();
 			if (!empty($v['goods_attr'])) {

@@ -3,7 +3,7 @@
  * 客户统计
 */
 defined('IN_ECJIA') or exit('No permission resources.');
-RC_Loader::load_sys_class('ecjia_admin', false);
+
 class admin_guest_stats extends ecjia_admin {
 	private $db_order_info;
 	private $db_users;
@@ -11,8 +11,8 @@ class admin_guest_stats extends ecjia_admin {
 		parent::__construct();
 		RC_Loader::load_app_func('global','orders');
 		RC_Lang::load('statistic');
-		$this->db_order_info  = RC_Loader::load_app_model('order_info_model','orders');
-		$this->db_users  = RC_Loader::load_app_model('users_model','orders');
+		$this->db_order_info  = RC_Loader::load_app_model('order_info_model', 'orders');
+		$this->db_users  = RC_Loader::load_app_model('users_model', 'orders');
 		/* 加载所有全局 js/css */
 		RC_Script::enqueue_script('bootstrap-placeholder');
 		RC_Script::enqueue_script('jquery-validate');
@@ -31,19 +31,19 @@ class admin_guest_stats extends ecjia_admin {
 	public function init() {
 		$this->admin_priv('guest_stats');
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('客户统计')));
-		ecjia_screen::get_current_screen()->add_help_tab( array(
-		'id'		=> 'overview',
-		'title'		=> __('概述'),
-		'content'	=>
-		'<p>' . __('欢迎访问ECJia智能后台客户统计页面，系统中所有的客户统计信息都会显示在此页面中。') . '</p>'
-		) );
+		ecjia_screen::get_current_screen()->add_help_tab(array(
+			'id'		=> 'overview',
+			'title'		=> __('概述'),
+			'content'	=>
+			'<p>' . __('欢迎访问ECJia智能后台客户统计页面，系统中所有的客户统计信息都会显示在此页面中。') . '</p>'
+		));
 		
 		ecjia_screen::get_current_screen()->set_help_sidebar(
-		'<p><strong>' . __('更多信息:') . '</strong></p>' .
-		'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:客户统计" target="_blank">关于客户统计帮助文档</a>') . '</p>'
+			'<p><strong>' . __('更多信息:') . '</strong></p>' .
+			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:客户统计" target="_blank">关于客户统计帮助文档</a>') . '</p>'
 		);
 		
-		$this->assign('ur_here',__('客户统计'));
+		$this->assign('ur_here', __('客户统计'));
 		$this->assign('action_link',array('text' => '客户统计报表下载','href'=>	RC_Uri::url('orders/admin_guest_stats/download')));
 		
 		/* 取得会员总数 */
@@ -76,18 +76,17 @@ class admin_guest_stats extends ecjia_admin {
 		$this->assign('guest_all_turnover',  price_format($guest_all_order['turnover'])); //匿名会员购物总额
 		$this->assign('guest_order_num',     $guest_all_order['order_num']);              //匿名会员订单总数
 		/* 每会员订单数 */
-		$this->assign('ave_user_ordernum',$user_num > 0 ? sprintf("%0.2f", $user_all_order['order_num'] / $user_num) : 0);
+		$this->assign('ave_user_ordernum', $user_num > 0 ? sprintf("%0.2f", $user_all_order['order_num'] / $user_num) : 0);
 		
 		/* 每会员购物额 */
-		$this->assign('ave_user_turnover',$user_num > 0 ? price_format($user_all_order['turnover'] / $user_num) : 0);
+		$this->assign('ave_user_turnover', $user_num > 0 ? price_format($user_all_order['turnover'] / $user_num) : 0);
 		
 		/* 注册会员购买率 */
-		$this->assign('user_ratio',sprintf("%0.2f", ($user_num > 0 ? $have_order_usernum / $user_num : 0) * 100));
+		$this->assign('user_ratio', sprintf("%0.2f", ($user_num > 0 ? $have_order_usernum / $user_num : 0) * 100));
 		
 		/* 匿名会员平均订单额 */
-		$this->assign('guest_order_amount',$guest_all_order['order_num'] > 0 ? price_format($guest_all_order['turnover'] / $guest_all_order['order_num']) : 0);
-		
-		$this->assign('all_order',$user_all_order);    //所有订单总数以及所有购物总额
+		$this->assign('guest_order_amount', $guest_all_order['order_num'] > 0 ? price_format($guest_all_order['turnover'] / $guest_all_order['order_num']) : 0);
+		$this->assign('all_order', $user_all_order);    //所有订单总数以及所有购物总额
 		
 		$this->assign_lang();
 		$this->display('guest_stats.dwt');
@@ -147,7 +146,7 @@ class admin_guest_stats extends ecjia_admin {
 		$order_num = $guest_all_order['order_num'] > 0 ? price_format($guest_all_order['turnover'] / $guest_all_order['order_num']) : 0;
 		$data .= price_format($guest_all_order['turnover']) . "\t" . $guest_all_order['order_num'] . "\t" . $order_num;
 		
-		echo mb_convert_encoding($data. "\t","GBK","UTF-8");
+		echo mb_convert_encoding($data. "\t", "GBK", "UTF-8");
 		exit;
 	}
 }

@@ -11,70 +11,69 @@
 </script>
 <!-- {/block} -->
 <!-- {block name="main_content"} -->
-	<div class="alert alert-info">
-		<a class="close" data-dismiss="alert">×</a>
-		<strong>注：</strong>{t}没有完成的订单不计入销售概况，默认为月走势{/t}
-	</div>
-	<div>
-		<h3 class="heading">
-			<!-- {if $ur_here}{$ur_here}{/if} -->
-			<!-- {if $action_link} -->
-			<a class="btn plus_or_reply" id="sticky_a" href='{$action_link.href}&start_time={$start_month_time}&end_time={$end_month_time}&query_type={$query_type}'><i class="fontello-icon-download"></i>{$action_link.text}</a>
-		    <!-- {/if} -->
-		</h3>
+<div class="alert alert-info">
+	<a class="close" data-dismiss="alert">×</a>
+	<strong>注：</strong>{t}没有完成的订单不计入销售概况，默认为月走势{/t}
+</div>
+<div>
+	<h3 class="heading">
+		<!-- {if $ur_here}{$ur_here}{/if} -->
+		<!-- {if $action_link} -->
+		<a class="btn plus_or_reply" id="sticky_a" href='{$action_link.href}&start_time={$start_month_time}&end_time={$end_month_time}&query_type={$query_type}'><i class="fontello-icon-download"></i>{$action_link.text}</a>
+	    <!-- {/if} -->
+	</h3>
+</div>
+
+<form action="{$form_action}" method="post" name="searchForm">
+	<div class="row-fluid">
+		<div class="choose_list f_r">
+			<strong class="f_l">年走势：</strong>
+			{html_select_date prefix="year_begin" class="w80" time=$start_time start_year="2006" end_year="+1" display_days=false display_months=false}
+			<span class="f_l">-</span>
+			{html_select_date prefix="year_end" class="w80" time=$end_time start_year="2006" end_year="+1" display_days=false display_months=false}
+			<input type="submit" name="query_by_year" value="查询" class="btn screen-btn" />
+		</div>
 	</div>
 	
-	<form action="{$form_action}" method="post" name="searchForm">
-		<div class="row-fluid">
-			<div class="choose_list f_r">
-				<strong class="f_l">年走势：</strong>
-				{html_select_date prefix="year_begin" class="w80" time=$start_time start_year="2006" end_year="+1" display_days=false display_months=false}
-				<span class="f_l">-</span>
-				{html_select_date prefix="year_end" class="w80" time=$end_time start_year="2006" end_year="+1" display_days=false display_months=false}
-				<input type="submit" name="query_by_year" value="查询" class="btn screen-btn" />
-			</div>
+	<div class="row-fluid">
+		<div class="choose_list f_r">
+			<strong class="f_l">月走势：</strong>
+			{html_select_date prefix="month_begin" class="w80" time=$start_month_time start_year="2006" end_year="+1" display_days=false field_order="YMD" month_format="%m"}
+			<span class="f_l">-</span>
+			{html_select_date prefix="month_end" class="w80" time=$end_month_time start_year="2006" end_year="+1" display_days=false field_order="YMD" month_format="%m"}
+			<input type="submit" name="query_by_month" value="查询" class="btn screen-btn1"/>
 		</div>
-		
-		<div class="row-fluid">
-			<div class="choose_list f_r">
-				<strong class="f_l">月走势：</strong>
-				{html_select_date prefix="month_begin" class="w80" time=$start_month_time start_year="2006" end_year="+1" display_days=false field_order="YMD" month_format="%m"}
-				<span class="f_l">-</span>
-				{html_select_date prefix="month_end" class="w80" time=$end_month_time start_year="2006" end_year="+1" display_days=false field_order="YMD" month_format="%m"}
-				<input type="submit" name="query_by_month" value="查询" class="btn screen-btn1"/>
-			</div>
-		</div>
-	</form>
-	
-	<div class="row-fluid edit-page">
-		<div class="span12">
-			<div class="tabbable">
-				<ul class="nav nav-tabs">
-					<li class="{if $page eq 'init'}active{/if}"><a class="data-pjax" href='{url path="orders/admin_sale_general/init"}'>{t}{$lang.order_status}{/t}</a></li>
-					<li class="{if $page eq 'sales_trends'}active{/if}"><a class="data-pjax" href='{url path="orders/admin_sale_general/sales_trends"}'>{t}{$lang.turnover_status}{/t}</a></li>
-				</ul>
-				<form class="form-horizontal">
-					<div class="tab-content">
-						{if $page eq 'init'}
-						<div class="tab-pane active" id="tab1">
-							<div class="m_t10">
-								<div id="order_count" data-url='{RC_Uri::url("orders/admin_sale_general/get_order_status","start_time={$start_time}&end_time={$end_time}&start_month_time={$start_month_time}&end_month_time={$end_month_time}&query_type={$query_type}&order_type=1")}'>
-								</div>
+	</div>
+</form>
+
+<div class="row-fluid edit-page">
+	<div class="span12">
+		<div class="tabbable">
+			<ul class="nav nav-tabs">
+				<li class="{if $page eq 'init'}active{/if}"><a class="data-pjax" href='{url path="orders/admin_sale_general/init"}'>{t}{$lang.order_status}{/t}</a></li>
+				<li class="{if $page eq 'sales_trends'}active{/if}"><a class="data-pjax" href='{url path="orders/admin_sale_general/sales_trends"}'>{t}{$lang.turnover_status}{/t}</a></li>
+			</ul>
+			<form class="form-horizontal">
+				<div class="tab-content">
+					{if $page eq 'init'}
+					<div class="tab-pane active" id="tab1">
+						<div class="m_t10">
+							<div id="order_count" data-url='{RC_Uri::url("orders/admin_sale_general/get_order_status","start_time={$start_time}&end_time={$end_time}&start_month_time={$start_month_time}&end_month_time={$end_month_time}&query_type={$query_type}&order_type=1")}'>
 							</div>
 						</div>
-						{/if}
-						{if $page eq 'sales_trends'}
-						<div class="tab-pane active" id="tab2">
-							<div class="m_t10">
-								<div id="order_amount" data-url='{RC_Uri::url("orders/admin_sale_general/get_order_status","start_time={$start_time}&end_time={$end_time}&start_month_time={$start_month_time}&end_month_time={$end_month_time}&query_type={$query_type}&order_type=0")}'>
-								</div>
-							</div>
-						</div>
-						{/if}
 					</div>
-				</form>
-			</div>
+					{/if}
+					{if $page eq 'sales_trends'}
+					<div class="tab-pane active" id="tab2">
+						<div class="m_t10">
+							<div id="order_amount" data-url='{RC_Uri::url("orders/admin_sale_general/get_order_status","start_time={$start_time}&end_time={$end_time}&start_month_time={$start_month_time}&end_month_time={$end_month_time}&query_type={$query_type}&order_type=0")}'>
+							</div>
+						</div>
+					</div>
+					{/if}
+				</div>
+			</form>
 		</div>
 	</div>
-	
+</div>
 <!-- {/block} -->

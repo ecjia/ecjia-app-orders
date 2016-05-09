@@ -22,7 +22,7 @@
 				</td>
 				<td>{$order.short_order_time}</td>
 				<td>{$order.formated_total_fee}</td>
-				<td>{$lang.os[$order.order_status]},{$lang.ps[$order.pay_status]},{$lang.ss[$order.shipping_status]}</td>
+				<td>{$lang_os[$order.order_status]},{$lang_ps[$order.pay_status]},{$lang_ss[$order.shipping_status]}</td>
 			</tr>
 			<!-- {/foreach} -->
 		</tbody>

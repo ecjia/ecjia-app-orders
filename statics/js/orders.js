@@ -188,13 +188,13 @@
 			var option = {
 				rules:{
 					action_note : {
-							required : true
-						},
+						required : true
+					},
 				},
 				messages:{
 					action_note : {
-							required : "请填写备注信息！"
-						},
+						required : "请填写备注信息！"
+					},
 				},
 				submitHandler:function(){
 					app.order.submitbatch();
@@ -742,8 +742,8 @@
 			if (eles.length>0) {
 				if (eles['goods_count'].value <= 0){
 					var data = {
-							message : "还没有添加商品哦！请搜索后加入订单！",
-							state : "error",
+						message : "还没有添加商品哦！请搜索后加入订单！",
+						state : "error",
 					};
 					ecjia.admin.showmessage(data);
 					return false;
@@ -856,8 +856,8 @@
 			if ($("#exist_real_goods").attr('data-real')=="true") {
 				if (!$("input[name='shipping']:radio").is(':checked')) {
 					var data = {
-							message : "请选择配送方式！",
-							state :    "error",
+						message : "请选择配送方式！",
+						state :    "error",
 					};
 					ecjia.admin.showmessage(data);
 					return false;

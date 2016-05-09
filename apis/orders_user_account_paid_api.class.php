@@ -65,12 +65,12 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		
 		/* 更新订单表支付后信息 */
 		$data = array(
-				'order_status'    => OS_CONFIRMED,
-				'confirm_time'    => RC_Time::gmtime(),
-				'pay_status'      => PS_PAYED,
-				'pay_time'        => RC_Time::gmtime(),
-				'order_amount'    => 0,
-				'surplus'         => $order_info['order_amount'],
+			'order_status'    => OS_CONFIRMED,
+			'confirm_time'    => RC_Time::gmtime(),
+			'pay_status'      => PS_PAYED,
+			'pay_time'        => RC_Time::gmtime(),
+			'order_amount'    => 0,
+			'surplus'         => $order_info['order_amount'],
 		);
 		
 		/*更新订单状态及信息*/
@@ -79,9 +79,9 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		/* 处理余额变动信息 */
 		if ($order_info['user_id'] > 0 && $data['surplus'] > 0) {
 			$options = array(
-					'user_id'       => $order_info['user_id'],
-					'user_money'    => $order_info['order_amount'] * (-1),
-					'change_desc'   => sprintf('支付订单 %s', $order_info['order_sn'])
+				'user_id'       => $order_info['user_id'],
+				'user_money'    => $order_info['order_amount'] * (-1),
+				'change_desc'   => sprintf('支付订单 %s', $order_info['order_sn'])
 			);
 			RC_Api::api('user', 'account_change_log', $options);
 			/* 插入支付日志 */
@@ -93,10 +93,10 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		$main_order_id = $order_info['main_order_id'];
 		if ($main_order_id <= 0) {
 			$data = array(
-					'order_status' => OS_CONFIRMED,
-					'confirm_time' => RC_Time::gmtime(),
-					'pay_status'   => PS_PAYED,
-					'pay_time'     => RC_Time::gmtime(),
+				'order_status' => OS_CONFIRMED,
+				'confirm_time' => RC_Time::gmtime(),
+				'pay_status'   => PS_PAYED,
+				'pay_time'     => RC_Time::gmtime(),
 			);
 			$db_order = RC_Loader::load_app_model('order_info_model', 'orders');
 			$db_order->where(array('main_order_id' => $order_info['order_id']))->update($data);
@@ -118,9 +118,9 @@ class orders_user_account_paid_api extends Component_Event_Api {
 				
 				$db_term_meta = RC_Loader::load_model('term_meta_model');
 				$meta_where = array(
-							'object_type'	=> 'ecjia.order',
-							'object_group'	=> 'order',
-							'meta_key'		=> 'receipt_verification',
+					'object_type'	=> 'ecjia.order',
+					'object_group'	=> 'order',
+					'meta_key'		=> 'receipt_verification',
 				);
 				$max_code = $db_term_meta->where($meta_where)->max('meta_value');
 				$max_code = $max_code ? ceil($max_code/10000) : 1000000;
@@ -136,19 +136,19 @@ class orders_user_account_paid_api extends Component_Event_Api {
 					$content = ecjia::$controller->fetch_string($tpl['template_content']);
 						
 					$options = array(
-							'mobile' 		=> $order_info['mobile'],
-							'msg'			=> $content,
-							'template_id' 	=> $tpl['template_id'],
+						'mobile' 		=> $order_info['mobile'],
+						'msg'			=> $content,
+						'template_id' 	=> $tpl['template_id'],
 					);
 					$response = RC_Api::api('sms', 'sms_send', $options);
 					
 // 					$db_term_meta = RC_Loader::load_model('term_meta_model');
 					$meta_data = array(
-							'object_type'	=> 'ecjia.order',
-							'object_group'	=> 'order',
-							'object_id'		=> $order_id,
-							'meta_key'		=> 'receipt_verification',
-							'meta_value'	=> $code,
+						'object_type'	=> 'ecjia.order',
+						'object_group'	=> 'order',
+						'object_id'		=> $order_id,
+						'meta_key'		=> 'receipt_verification',
+						'meta_value'	=> $code,
 					);
 					$db_term_meta->insert($meta_data);
 				}
@@ -156,11 +156,11 @@ class orders_user_account_paid_api extends Component_Event_Api {
 					$order_res = $db_order->field('order_id')->where(array('main_order_id' => $order_id))->select();
 					foreach ($order_res AS $row) {
 						$meta_data = array(
-								'object_type'	=> 'ecjia.order',
-								'object_group'	=> 'order',
-								'object_id'		=> $row['order_id'],
-								'meta_key'		=> 'receipt_verification',
-								'meta_value'	=> $code,
+							'object_type'	=> 'ecjia.order',
+							'object_group'	=> 'order',
+							'object_id'		=> $row['order_id'],
+							'meta_key'		=> 'receipt_verification',
+							'meta_value'	=> $code,
 						);
 						$db_term_meta->insert($meta_data);
 					}
@@ -176,20 +176,18 @@ class orders_user_account_paid_api extends Component_Event_Api {
 					ecjia::$view_object->assign('order_sn', $order_info['order_sn']);
 					ecjia::$view_object->assign('consignee', $order_info['consignee']);
 					ecjia::$view_object->assign('mobile', $order_info['mobile']);
-			
+					ecjia::$view_object->assign('order_amount', $order_info['order_amount']);
 					$content = ecjia::$controller->fetch_string($tpl['template_content']);
 			
 					$options = array(
-							'mobile' 		=> ecjia::config('sms_shop_mobile'),
-							'msg'			=> $content,
-							'template_id' 	=> $tpl['template_id'],
+						'mobile' 		=> ecjia::config('sms_shop_mobile'),
+						'msg'			=> $content,
+						'template_id' 	=> $tpl['template_id'],
 					);
 					$response = RC_Api::api('sms', 'sms_send', $options);
 				}
 			}
 		}
-		
-		
 		return true;
     }
 }

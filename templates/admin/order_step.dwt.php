@@ -3,7 +3,7 @@
 
 <!-- {block name="footer"} -->
 <script type="text/javascript">
-ecjia.admin.order.addedit();
+	ecjia.admin.order.addedit();
 </script>
 <!-- {/block} -->
 
@@ -192,13 +192,13 @@ ecjia.admin.order.addedit();
 	<table class="table order-goods-select form-inline formSep">
 		<thead>
 			<tr>
-				<th class="w200">{$lang.goods_name}</th>
+				<th class="w180">{$lang.goods_name}</th>
 				<th class="w100">{$lang.goods_sn}</th>
 				<th>{$lang.goods_price}</th>
 				<th class="w120">{$lang.goods_number}</th>
 				<th>{$lang.goods_attr}</th>
 				<th class="w100">{$lang.subtotal}</th>
-				<th class="w150">{$lang.handler}</th>
+				<th class="w180">{$lang.handler}</th>
 			</tr>
 		</thead>
 		<tbody>

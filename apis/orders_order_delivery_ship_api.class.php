@@ -65,19 +65,19 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 				/* 虚拟商品列表 virtual_card */
 				if ($value['is_real'] == 0) {
 					$virtual_goods[] = array(
-							'goods_id'		=> $value['goods_id'],
-							'goods_name'	=> $value['goods_name'],
-							'num'			=> $value['send_number']
+						'goods_id'		=> $value['goods_id'],
+						'goods_name'	=> $value['goods_name'],
+						'num'			=> $value['send_number']
 					);
 				}
 			}
 		} else {
 			$db_delivery->view = array(
 					'goods' => array(
-							'type'		=> Component_Model_View::TYPE_LEFT_JOIN,
-							'alias'		=> 'g',
-							'field'		=> 'dg.goods_id, dg.is_real, SUM(dg.send_number) AS sums, g.goods_number, g.goods_name, dg.send_number',
-							'on'		=> 'dg.goods_id = g.goods_id ',
+						'type'		=> Component_Model_View::TYPE_LEFT_JOIN,
+						'alias'		=> 'g',
+						'field'		=> 'dg.goods_id, dg.is_real, SUM(dg.send_number) AS sums, g.goods_number, g.goods_name, dg.send_number',
+						'on'		=> 'dg.goods_id = g.goods_id ',
 					)
 			);
 		
@@ -96,9 +96,9 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 				/* 虚拟商品列表 virtual_card*/
 				if ($value['is_real'] == 0) {
 					$virtual_goods[] = array(
-							'goods_id'		=> $value['goods_id'],
-							'goods_name'	=> $value['goods_name'],
-							'num'			=> $value['send_number']
+						'goods_id'		=> $value['goods_id'],
+						'goods_name'	=> $value['goods_name'],
+						'num'			=> $value['send_number']
 					);
 				}
 			}
@@ -120,12 +120,12 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 					/* （货品） */
 					if (!empty($value['product_id'])) {
 						$data = array(
-								'product_number' => $value['storage'] - $value['sums'],
+							'product_number' => $value['storage'] - $value['sums'],
 						);
 						$this->db_products->where(array('product_id' => $value['product_id']))->update($data);
 					} else {
 						$data = array(
-								'goods_number' => $value['storage'] - $value['sums'],
+							'goods_number' => $value['storage'] - $value['sums'],
 						);
 						$this->db_goods->where(array('goods_id' => $value['goods_id']))->update($data);
 					}
@@ -168,10 +168,10 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 				/* 计算并发放积分 */
 				$integral = integral_to_give($order);
 				$options = array(
-						'user_id'		=> $order['user_id'],
-						'rank_points'	=> intval($integral['rank_points']),
-						'pay_points'	=> intval($integral['custom_points']),
-						'change_desc'	=> sprintf(RC_Lang::lang('order_gift_integral'), $order['order_sn'])
+					'user_id'		=> $order['user_id'],
+					'rank_points'	=> intval($integral['rank_points']),
+					'pay_points'	=> intval($integral['custom_points']),
+					'change_desc'	=> sprintf(RC_Lang::lang('order_gift_integral'), $order['order_sn'])
 				);
 				RC_Api::api('user', 'account_change_log',$options);
 				/* 发放红包 */
@@ -186,17 +186,17 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 				$tpl_name = 'deliver_notice';
 				$tpl   = RC_Api::api('mail', 'mail_template', $tpl_name);
 		
-				$this->assign('order'			, $order);
-				$this->assign('send_time'		, RC_Time::local_date(ecjia::config('time_format')));
-				$this->assign('shop_name'		, ecjia::config('shop_name'));
-				$this->assign('send_date'		, RC_Time::local_date(ecjia::config('date_format')));
-				$this->assign('confirm_url'		, SITE_URL . 'receive.php?id=' . $order['order_id'] . '&con=' . rawurlencode($order['consignee']));
-				$this->assign('send_msg_url'	, SITE_URL . RC_Uri::url('user/admin/message_list','order_id=' . $order['order_id']));
+				$this->assign('order', $order);
+				$this->assign('send_time', RC_Time::local_date(ecjia::config('time_format')));
+				$this->assign('shop_name', ecjia::config('shop_name'));
+				$this->assign('send_date', RC_Time::local_date(ecjia::config('date_format')));
+				$this->assign('confirm_url', SITE_URL . 'receive.php?id=' . $order['order_id'] . '&con=' . rawurlencode($order['consignee']));
+				$this->assign('send_msg_url', SITE_URL . RC_Uri::url('user/admin/message_list','order_id=' . $order['order_id']));
 		
 				$content = $this->fetch_string($tpl['template_content']);
 		
 				if (!RC_Mail::send_mail($order['consignee'], $order['email'] , $tpl['template_subject'], $content, $tpl['is_html'])) {
-					$this->showmessage(RC_Lang::lang('send_mail_fail') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+					$this->showmessage(RC_Lang::lang('send_mail_fail'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 				}
 			}
 			$result = ecjia_app::validate_application('sms');
@@ -214,9 +214,9 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 						$content = $this->fetch_string($tpl['template_content']);
 		
 						$options = array(
-								'mobile' 		=> $order['mobile'],
-								'msg'			=> $content,
-								'template_id' 	=> $tpl['template_id'],
+							'mobile' 		=> $order['mobile'],
+							'msg'			=> $content,
+							'template_id' 	=> $tpl['template_id'],
 						);
 						$response = RC_Api::api('sms', 'sms_send', $options);
 					}

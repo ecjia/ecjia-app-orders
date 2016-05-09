@@ -3,7 +3,7 @@
 
 <!-- {block name="footer"} -->
 <script type="text/javascript">
-ecjia.admin.order.delivery_info();
+	ecjia.admin.order.delivery_info();
 </script>
 <!-- {/block} -->
 

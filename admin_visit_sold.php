@@ -3,7 +3,7 @@
  * 访问购买率
 */
 defined('IN_ECJIA') or exit('No permission resources.');
-RC_Loader::load_sys_class('ecjia_admin', false);
+
 class admin_visit_sold extends ecjia_admin {
 	private $db_goods_view;
 	public function __construct() {
@@ -22,24 +22,24 @@ class admin_visit_sold extends ecjia_admin {
 		RC_Style::enqueue_style('bootstrap-editable-css', RC_Uri::admin_url('statics/lib/x-editable/bootstrap-editable/css/bootstrap-editable.css'));
 		
 		RC_Lang::load('statistic');
-		RC_Loader::load_app_func('global','orders');
-		$this->db_goods_view = RC_Loader::load_app_model('goods_viewmodel','orders');
-		RC_Script::enqueue_script('visit_sold',RC_App::apps_url('statics/js/visit_sold.js',__FILE__));
+		RC_Loader::load_app_func('global', 'orders');
+		$this->db_goods_view = RC_Loader::load_app_model('goods_viewmodel', 'orders');
+		RC_Script::enqueue_script('visit_sold',RC_App::apps_url('statics/js/visit_sold.js', __FILE__));
 	}
 	
 	public function init() {
 		$this->admin_priv('visit_sold_stats');
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('访问购买率')));
-		ecjia_screen::get_current_screen()->add_help_tab( array(
-		'id'		=> 'overview',
-		'title'		=> __('概述'),
-		'content'	=>
-		'<p>' . __('欢迎访问ECJia智能后台访问购买率页面，系统中所有的访问购买率信息都会显示在此列表中。') . '</p>'
-		) );
+		ecjia_screen::get_current_screen()->add_help_tab(array(
+			'id'		=> 'overview',
+			'title'		=> __('概述'),
+			'content'	=>
+			'<p>' . __('欢迎访问ECJia智能后台访问购买率页面，系统中所有的访问购买率信息都会显示在此列表中。') . '</p>'
+		));
 		
 		ecjia_screen::get_current_screen()->set_help_sidebar(
-		'<p><strong>' . __('更多信息:') . '</strong></p>' .
-		'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:访问购买率" target="_blank">关于访问购买率帮助文档</a>') . '</p>'
+			'<p><strong>' . __('更多信息:') . '</strong></p>' .
+			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:访问购买率" target="_blank">关于访问购买率帮助文档</a>') . '</p>'
 		);
 		
 		$this->assign('ur_here',  __('访问购买率'));
@@ -82,9 +82,12 @@ class admin_visit_sold extends ecjia_admin {
 		header("Content-Disposition: attachment; filename=$filename.xls");
 
 		$data = RC_Lang::lang('order_by')."\t".RC_Lang::lang('goods_name')."\t".RC_Lang::lang('fav_exponential')."\t".RC_Lang::lang('buy_times')."\t".RC_Lang::lang('visit_buy')."\n";
-		foreach ($click_sold_info['item'] as $k=>$v) {
-			$order_by = $k + 1;
-			$data .= "$order_by\t$v[goods_name]\t$v[click_count]\t$v[sold_times]\t$v[scale]\n";
+		
+		if (!empty($click_sold_info['item'])) {
+			foreach ($click_sold_info['item'] as $k=>$v) {
+				$order_by = $k + 1;
+				$data .= "$order_by\t$v[goods_name]\t$v[click_count]\t$v[sold_times]\t$v[scale]\n";
+			}	
 		}
 		echo mb_convert_encoding($data."\t","GBK","UTF-8");
 		exit;
@@ -105,20 +108,16 @@ class admin_visit_sold extends ecjia_admin {
 		RC_Loader::load_sys_class('ecjia_page',false);
 		
 		$where = "og.goods_id" . order_query_sql('finished', 'o.');
-	
-		if ($cat_id > 0)
-		{
+		if ($cat_id > 0) {
 			$where .= "AND " . get_children($cat_id);
 		}
-		if ($brand_id > 0)
-		{
+		if ($brand_id > 0) {
 			$where .= "AND g.brand_id = $brand_id";
 		}
 		$click_sold_info = array();
 		
 		$count = $this->db_goods_view->where($where)->count('g.goods_name');
-		
-		$page = new ecjia_page($count, !empty($show_num) ? $show_num : 5, 5);
+		$page = new ecjia_page($count, !empty($show_num) ? $show_num : 10, 5);
 	
 		$limit = $page->limit();
 		$data = $this->db_goods_view->field('og.goods_id,g.goods_sn,g.goods_name,g.click_count,count(og.goods_id) AS sold_times')->where($where)->group('og.goods_id')->order(array('g.click_count'=>'DESC'))->limit($limit)->select();
@@ -134,7 +133,7 @@ class admin_visit_sold extends ecjia_admin {
 				$click_sold_info[] = $item;
 			}
 		}
-		$arr = array('item' => $click_sold_info);
+		$arr = array('item' => $click_sold_info, 'desc' => $page->page_desc(), 'page'=>$page->show(5));
 		return $arr;
 	}
 }

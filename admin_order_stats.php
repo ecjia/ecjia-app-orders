@@ -1,10 +1,8 @@
 <?php
-
 /**
  * 订单统计
 */
 defined('IN_ECJIA') or exit('No permission resources.');
-RC_Loader::load_sys_class('ecjia_admin', false);
 
 class admin_order_stats extends ecjia_admin {
 	private $db_order_info;
@@ -31,17 +29,17 @@ class admin_order_stats extends ecjia_admin {
 		RC_Script::enqueue_script('bootstrap-datepicker', RC_Uri::admin_url('statics/lib/datepicker/bootstrap-datepicker.min.js'));
 
 		/*加载自定义js*/
-		RC_Script::enqueue_script('acharts-min',RC_App::apps_url('statics/js/acharts-min.js', __FILE__));
+		RC_Script::enqueue_script('acharts-min', RC_App::apps_url('statics/js/acharts-min.js', __FILE__));
 		RC_Script::enqueue_script('order_stats', RC_App::apps_url('statics/js/order_stats.js', __FILE__));
-		RC_Script::enqueue_script('order_stats_chart',RC_App::apps_url('statics/js/order_stats_chart.js', __FILE__));
-		RC_Style::enqueue_style('orders-css',RC_App::apps_url('statics/css/orders.css', __FILE__));
+		RC_Script::enqueue_script('order_stats_chart', RC_App::apps_url('statics/js/order_stats_chart.js', __FILE__));
+		RC_Style::enqueue_style('orders-css', RC_App::apps_url('statics/css/orders.css', __FILE__));
 		RC_Lang::load('statistic');
 		RC_Loader::load_app_func('global','orders');
 
-		$this->db_order_info  = RC_Loader::load_app_model('order_info_model','orders');
-		$this->db_goods  = RC_Loader::load_app_model('goods_model','orders');
-		$this->db_payment_view  = RC_Loader::load_app_model('payment_viewmodel','orders');
-		$this->db_shipping_view  = RC_Loader::load_app_model('shipping_viewmodel','orders');
+		$this->db_order_info = RC_Loader::load_app_model('order_info_model', 'orders');
+		$this->db_goods = RC_Loader::load_app_model('goods_model', 'orders');
+		$this->db_payment_view = RC_Loader::load_app_model('payment_viewmodel', 'orders');
+		$this->db_shipping_view = RC_Loader::load_app_model('shipping_viewmodel', 'orders');
 	}
 	
 	/**
@@ -52,16 +50,16 @@ class admin_order_stats extends ecjia_admin {
 		
 		/* 加载面包屑  */
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('订单统计')));
-		ecjia_screen::get_current_screen()->add_help_tab( array(
-		'id'		=> 'overview',
-		'title'		=> __('概述'),
-		'content'	=>
-		'<p>' . __('欢迎访问ECJia智能后台订单统计页面，系统中所有的订单统计信息都会显示在此页面中。') . '</p>'
-		) );
+		ecjia_screen::get_current_screen()->add_help_tab(array(
+			'id'		=> 'overview',
+			'title'		=> __('概述'),
+			'content'	=>
+			'<p>' . __('欢迎访问ECJia智能后台订单统计页面，系统中所有的订单统计信息都会显示在此页面中。') . '</p>'
+		));
 		
 		ecjia_screen::get_current_screen()->set_help_sidebar(
-		'<p><strong>' . __('更多信息:') . '</strong></p>' .
-		'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E8.AE.A2.E5.8D.95.E6.A6.82.E5.86.B5" target="_blank">关于订单统计帮助文档</a>') . '</p>'
+			'<p><strong>' . __('更多信息:') . '</strong></p>' .
+			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E8.AE.A2.E5.8D.95.E6.A6.82.E5.86.B5" target="_blank">关于订单统计帮助文档</a>') . '</p>'
 		);
 		
 		$this->assign('ur_here','订单统计');
@@ -69,10 +67,8 @@ class admin_order_stats extends ecjia_admin {
 		
 		//获取订单统计信息
 		$order_stats = $this->get_order_stats();
-		
 		/* 时间参数 */
 		$is_multi = empty($_GET['is_multi']) ? false : true;
-
 		/* 时间参数 */
 		$start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date(ecjia::config('date_format'),strtotime('-1 month')-8*3600);
 		$end_date   = !empty($_GET['end_date'])   ? $_GET['end_date']   : RC_Time::local_date(ecjia::config('date_format'));
@@ -80,11 +76,11 @@ class admin_order_stats extends ecjia_admin {
 		$this->assign('start_date',$start_date);
 		$this->assign('end_date',$end_date);
 		
-		if (!empty($_GET['year_month'])) {
-			$filter	= explode('.',$_GET['year_month']);
+		$year_month = !empty($_GET['year_month']) ? $_GET['year_month'] : '';
+		if (!empty($year_month)) {
+			$filter	= explode('.', $year_month);
 			$arr 	= array_filter($filter);
 			$tmp 	= $arr;
-				
 			for ($i = 0; $i < count($tmp); $i++) {
 				if (!empty($tmp[$i])) {
 					$tmp_time 			= RC_Time::local_strtotime($tmp[$i] . '-1');
@@ -106,18 +102,16 @@ class admin_order_stats extends ecjia_admin {
 			}
 		}
 		
-		$this->assign('start_date_arr',$start_date_arr);
-		$this->assign('order_stats',$order_stats);
-		$this->assign('page','init');
-		$this->assign('form_action',RC_Uri::url('orders/admin_order_stats/init'));
-		
-		$this->assign('is_multi',$is_multi);
-		$this->assign('year_month',$_GET['year_month']);
-		
+		$this->assign('start_date_arr', $start_date_arr);
+		$this->assign('order_stats', $order_stats);
+		$this->assign('page', 'init');
+		$this->assign('form_action', RC_Uri::url('orders/admin_order_stats/init'));
+		$this->assign('is_multi', $is_multi);
+		$this->assign('year_month', $year_month);
 		$this->assign_lang();
+		
 		$this->display('order_stats.dwt');
 	}
-	
 	
 	/**
 	 * 配送方式
@@ -127,16 +121,16 @@ class admin_order_stats extends ecjia_admin {
 	
 		/* 加载面包屑  */
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('订单统计')));
-		ecjia_screen::get_current_screen()->add_help_tab( array(
-		'id'		=> 'overview',
-		'title'		=> __('概述'),
-		'content'	=>
-		'<p>' . __('欢迎访问ECJia智能后台订单统计页面，系统中所有的订单统计信息都会显示在此页面中。') . '</p>'
-		) );
+		ecjia_screen::get_current_screen()->add_help_tab(array(
+			'id'		=> 'overview',
+			'title'		=> __('概述'),
+			'content'	=>
+			'<p>' . __('欢迎访问ECJia智能后台订单统计页面，系统中所有的订单统计信息都会显示在此页面中。') . '</p>'
+		));
 		
 		ecjia_screen::get_current_screen()->set_help_sidebar(
-		'<p><strong>' . __('更多信息:') . '</strong></p>' .
-		'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E9.85.8D.E9.80.81.E6.96.B9.E5.BC.8F" target="_blank">关于订单统计帮助文档</a>') . '</p>'
+			'<p><strong>' . __('更多信息:') . '</strong></p>' .
+			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E9.85.8D.E9.80.81.E6.96.B9.E5.BC.8F" target="_blank">关于订单统计帮助文档</a>') . '</p>'
 		);
 		
 		$this->assign('ur_here','订单统计');
@@ -154,9 +148,11 @@ class admin_order_stats extends ecjia_admin {
 	
 		$this->assign('start_date',$start_date);
 		$this->assign('end_date',$end_date);
-	
-		if (!empty($_GET['year_month'])) {
-			$filter	= explode('.',$_GET['year_month']);
+		
+		$year_month = !empty($_GET['year_month']) ? $_GET['year_month'] : '';
+		
+		if (!empty($year_month)) {
+			$filter	= explode('.', $year_month);
 			$arr 	= array_filter($filter);
 			$tmp 	= $arr;
 	
@@ -181,15 +177,14 @@ class admin_order_stats extends ecjia_admin {
 			}
 		}
 	
-		$this->assign('start_date_arr',$start_date_arr);
-		$this->assign('order_stats',$order_stats);
-	
-		$this->assign('is_multi',$is_multi);
-		$this->assign('year_month',$_GET['year_month']);
-		$this->assign('page','shipping_status');
-		$this->assign('form_action',RC_Uri::url('orders/admin_order_stats/shipping_status'));
-	
+		$this->assign('start_date_arr', $start_date_arr);
+		$this->assign('order_stats', $order_stats);
+		$this->assign('is_multi', $is_multi);
+		$this->assign('year_month', $year_month);
+		$this->assign('page', 'shipping_status');
+		$this->assign('form_action', RC_Uri::url('orders/admin_order_stats/shipping_status'));
 		$this->assign_lang();
+		
 		$this->display('order_stats.dwt');
 	}
 	
@@ -201,19 +196,19 @@ class admin_order_stats extends ecjia_admin {
 	
 		/* 加载面包屑  */
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('订单统计')));
-		ecjia_screen::get_current_screen()->add_help_tab( array(
-		'id'		=> 'overview',
-		'title'		=> __('概述'),
-		'content'	=>
-		'<p>' . __('欢迎访问ECJia智能后台订单统计页面，系统中所有的订单统计信息都会显示在此页面中。') . '</p>'
-		) );
+		ecjia_screen::get_current_screen()->add_help_tab(array(
+			'id'		=> 'overview',
+			'title'		=> __('概述'),
+			'content'	=>
+			'<p>' . __('欢迎访问ECJia智能后台订单统计页面，系统中所有的订单统计信息都会显示在此页面中。') . '</p>'
+		));
 		
 		ecjia_screen::get_current_screen()->set_help_sidebar(
-		'<p><strong>' . __('更多信息:') . '</strong></p>' .
-		'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E6.94.AF.E4.BB.98.E6.96.B9.E5.BC.8F" target="_blank">关于订单统计帮助文档</a>') . '</p>'
+			'<p><strong>' . __('更多信息:') . '</strong></p>' .
+			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E6.94.AF.E4.BB.98.E6.96.B9.E5.BC.8F" target="_blank">关于订单统计帮助文档</a>') . '</p>'
 		);
 		
-		$this->assign('ur_here','订单统计');
+		$this->assign('ur_here', '订单统计');
 		$this->assign('action_link', array('text' => '订单统计报表下载', 'href' => RC_Uri::url('orders/admin_order_stats/download')));
 	
 		//获取订单统计信息
@@ -229,8 +224,10 @@ class admin_order_stats extends ecjia_admin {
 		$this->assign('start_date',$start_date);
 		$this->assign('end_date',$end_date);
 	
-		if (!empty($_GET['year_month'])) {
-			$filter	= explode('.',$_GET['year_month']);
+		$year_month = !empty($_GET['year_month']) ? $_GET['year_month'] : '';
+		
+		if (!empty($year_month)) {
+			$filter	= explode('.', $year_month);
 			$arr 	= array_filter($filter);
 			$tmp 	= $arr;
 	
@@ -255,15 +252,14 @@ class admin_order_stats extends ecjia_admin {
 			}
 		}
 	
-		$this->assign('start_date_arr',$start_date_arr);
-		$this->assign('order_stats',$order_stats);
-		$this->assign('page','pay_status');
-	
-		$this->assign('is_multi',$is_multi);
-		$this->assign('year_month',$_GET['year_month']);
-		$this->assign('form_action',RC_Uri::url('orders/admin_order_stats/pay_status'));
-	
+		$this->assign('start_date_arr', $start_date_arr);
+		$this->assign('order_stats', $order_stats);
+		$this->assign('page', 'pay_status');
+		$this->assign('is_multi', $is_multi);
+		$this->assign('year_month', $year_month);
+		$this->assign('form_action', RC_Uri::url('orders/admin_order_stats/pay_status'));
 		$this->assign_lang();
+		
 		$this->display('order_stats.dwt');
 	}
 	
@@ -278,29 +274,32 @@ class admin_order_stats extends ecjia_admin {
 			$end_date   = !empty($_GET['end_date'])   ? RC_Time::local_strtotime($_GET['end_date'])   : RC_Time::local_strtotime(RC_Time::local_date(ecjia::config('date_format')))+86400;
 				
 			$order_info = $this->get_orderinfo($start_date, $end_date);
-            foreach ($order_info as $k=>$v) {
-            	if ($k=='unconfirmed_num') {
-            		$order_info['未确认订单'] = $order_info['unconfirmed_num'];
-            		unset($order_info['unconfirmed_num']);
-            	} elseif ($k=='confirmed_num') {
-            		$order_info['已确认订单'] = $order_info['confirmed_num'];
-            		unset($order_info['confirmed_num']);
-            	} elseif ($k=='succeed_num') {
-            		$order_info['已完成订单'] = $order_info['succeed_num'];
-            		unset($order_info['succeed_num']);
-            	} elseif ($k=='invalid_num') {
-            		$order_info['已取消订单'] = $order_info['invalid_num'];
-            		unset($order_info['invalid_num']);
-            	}
-            }
-         	arsort($order_info);
-           	foreach ($order_info as $k=> $v) {
-           		if ($order_info['未确认订单'] == 0 && $order_info['已确认订单'] ==0 && $order_info['已完成订单'] ==0 && $order_info['已取消订单'] ==0 ) {
-           			$order_info = null;
-           		} else {
-           			break;
-           		}
-           	}
+			if (!empty($order_info)) {
+				foreach ($order_info as $k=>$v) {
+					if ($k=='unconfirmed_num') {
+						$order_info['未确认订单'] = $order_info['unconfirmed_num'];
+						unset($order_info['unconfirmed_num']);
+					} elseif ($k=='confirmed_num') {
+						$order_info['已确认订单'] = $order_info['confirmed_num'];
+						unset($order_info['confirmed_num']);
+					} elseif ($k=='succeed_num') {
+						$order_info['已完成订单'] = $order_info['succeed_num'];
+						unset($order_info['succeed_num']);
+					} elseif ($k=='invalid_num') {
+						$order_info['已取消订单'] = $order_info['invalid_num'];
+						unset($order_info['invalid_num']);
+					}
+				}
+				arsort($order_info);
+				foreach ($order_info as $k=> $v) {
+					if ($order_info['未确认订单'] == 0 && $order_info['已确认订单'] ==0 && $order_info['已完成订单'] ==0 && $order_info['已取消订单'] ==0 ) {
+						$order_info = null;
+					} else {
+						break;
+					}
+				}
+			}
+           
 			$order_infos = json_encode($order_info);
 			echo $order_infos;
 		}
@@ -364,7 +363,12 @@ class admin_order_stats extends ecjia_admin {
 			$end_date   = !empty($_GET['end_date'])   ? RC_Time::local_strtotime($_GET['end_date'])   : RC_Time::local_strtotime(RC_Time::local_date('Y-m-d'))+86400;
 			$where =  "i.add_time >= '$start_date' AND i.add_time <= '$end_date'".order_query_sql('finished');
 			$ship_info = $this->db_shipping_view->field('sp.shipping_name AS ship_name, COUNT(i.order_id) AS order_num')->where($where)->group('i.shipping_id')->order(array('order_num'=>'DESC'))->select();
-			arsort($ship_info);
+			
+			if (!empty($ship_info)) {
+				arsort($ship_info);
+			} else {
+				$ship_info = null;
+			}
 			$ship_infos = json_encode($ship_info);
 			echo $ship_infos;
 		}
@@ -390,27 +394,36 @@ class admin_order_stats extends ecjia_admin {
 				$where =  "i.add_time >= '$start_date_arr[$key]' AND i.add_time <= '$end_date_arr[$key]'".order_query_sql('finished');
 				$ship_info[] = $this->db_shipping_view->field('i.shipping_time,sp.shipping_name AS ship_name, COUNT(i.order_id) AS order_num')->where($where)->group('i.shipping_id')->order(array('order_num'=>'DESC'))->select();
 			}
-			foreach ($ship_info as $k=>$v) {
-				if (empty($v)) {
-					unset($ship_info[$k]);
-				}
-			}
-			foreach ($ship_info as $k=>$v) {
-				foreach ($v as $k1=>$v1) {
-					$arr1[$v1['ship_name']][RC_Time::local_date('Y-m',($v1['shipping_time']))] = $v1['order_num'];
-					$v2[] = RC_Time::local_date('Y-m',($v1['shipping_time']));
-				}
-			}
-			foreach ($arr1 as $k=>$v) {
-				foreach (array_unique($v2) as $v1) {
-					if (!array_key_exists($v1, $v)) {
-						foreach ($v as $k1 => $v2) {
-							$arr1[$k][$v1] = 0;
-						}
+			
+			$arr1 = array();
+			if (!empty($ship_info)) {
+				foreach ($ship_info as $k=>$v) {
+					if (empty($v)) {
+						unset($ship_info[$k]);
 					}
 				}
+				foreach ($ship_info as $k=>$v) {
+					foreach ($v as $k1=>$v1) {
+						$arr1[$v1['ship_name']][RC_Time::local_date('Y-m',($v1['shipping_time']))] = $v1['order_num'];
+						$v2[] = RC_Time::local_date('Y-m',($v1['shipping_time']));
+					}
+				}
+				if (!empty($arr1)) {
+					foreach ($arr1 as $k=>$v) {
+						foreach (array_unique($v2) as $v1) {
+							if (!array_key_exists($v1, $v)) {
+								foreach ($v as $k1 => $v2) {
+									$arr1[$k][$v1] = 0;
+								}
+							}
+						}
+					}
+					array_multisort($arr1);
+				}
 			}
-			array_multisort($arr1);
+			if (empty($arr1)) {
+				$arr1 = null;
+			}
 			$ship_infos = json_encode($arr1);
 			echo $ship_infos;
 		}
@@ -428,10 +441,15 @@ class admin_order_stats extends ecjia_admin {
 				
 			$where = "i.add_time >= '$start_date' AND i.add_time <= '$end_date'". order_query_sql('finished');
 			$pay_info = $this->db_payment_view->field('i.pay_id, p.pay_name, COUNT(i.order_id) AS order_num ')->where($where)->group('i.pay_id')->order(array('order_num'=>'DESC'))->select();
-			foreach ($pay_info as $key => $val) {
-				unset($pay_info[$key]['pay_id']);
+			
+			if (!empty($pay_info)) {
+				foreach ($pay_info as $key => $val) {
+					unset($pay_info[$key]['pay_id']);
+				}
+				arsort($pay_info);
+			} else {
+				$pay_info = null;
 			}
-			arsort($pay_info);
 			$pay_infos = json_encode($pay_info);
 			echo $pay_infos;
 		}
@@ -457,17 +475,24 @@ class admin_order_stats extends ecjia_admin {
 				$where =  "p.pay_id = i.pay_id AND i.order_status = '" .OS_CONFIRMED. "' AND i.pay_status > '" .PS_UNPAYED. "' AND i.shipping_status > '" .SS_UNSHIPPED. "' "."AND i.add_time >= '$start_date_arr[$key]' AND i.add_time <= '$end_date_arr[$key]'";
 				$pay_stats[] = $this->db_payment_view->field('i.pay_id, p.pay_name, i.pay_time, COUNT(i.order_id) AS order_num')->where($where)->group('i.pay_id ')->order(array('order_num'=>'DESC'))->select();
 			}
-			foreach ($pay_stats as $k=>$v) {
-				if (empty($v)) {
-					unset($pay_stats[$k]);
+			
+			$arr1 = array();
+			if (!empty($pay_stat)) {
+				foreach ($pay_stats as $k=>$v) {
+					if (empty($v)) {
+						unset($pay_stats[$k]);
+					}
 				}
-			}
-			foreach ($pay_stats as $k=>$v) {
-				foreach ($v as $k1=>$v1) {
-					$arr1[$v1['pay_name']][RC_Time::local_date('Y-m',$v1['pay_time'])] = $v1['order_num'];
+				foreach ($pay_stats as $k=>$v) {
+					foreach ($v as $k1=>$v1) {
+						$arr1[$v1['pay_name']][RC_Time::local_date('Y-m',$v1['pay_time'])] = $v1['order_num'];
+					}
 				}
+				array_multisort($arr1);
 			}
-			array_multisort($arr1);
+			if (empty($arr1)) {
+				$arr1 = null;
+			}
 			$pay_stat = json_encode($arr1);
 			echo $pay_stat;
 		}
@@ -506,21 +531,26 @@ class admin_order_stats extends ecjia_admin {
 			}
 		}
 		$data .= "\n";
-		foreach ($pay_res AS $val) {
-			$data .= $val['order_num'] . "\t";
+		if (!empty($pay_res)) {
+			foreach ($pay_res AS $val) {
+				$data .= $val['order_num'] . "\t";
+			}
 		}
-		
 		/* 配送方式 */
 		$where = 'i.add_time >= '.$start_date.' AND i.add_time <= '.$end_date.''.order_query_sql('finished') ;
 		$ship_res = $this->db_shipping_view->field('sp.shipping_id, sp.shipping_name AS ship_name, COUNT(i.order_id) AS order_num')->where($where)->group('i.shipping_id')->order(array('order_num'=>'DESC'))->select();
 		
 		$data .= "\n".RC_Lang::lang('shipping_method')."\n";
-		foreach ($ship_res AS $val) {
-			$data .= $val['ship_name']."\t";
+		if (!empty($ship_res)) {
+			foreach ($ship_res AS $val) {
+				$data .= $val['ship_name']."\t";
+			}	
 		}
 		$data .= "\n";
-		foreach ($ship_res AS $val) {
-			$data .= $val['order_num']."\t";
+		if (!empty($ship_res)) {
+			foreach ($ship_res AS $val) {
+				$data .= $val['order_num']."\t";
+			}
 		}
 		echo mb_convert_encoding($data."\t","GBK","UTF-8")."\t";
 		exit;
@@ -572,8 +602,8 @@ class admin_order_stats extends ecjia_admin {
 	 	$click_turnover = $click_count > 0 ? round(($order_general['total_turnover'] * 1000)/$click_count,2) : 0;
 	 	
 	 	/* 时区 */
-	 	$timezone = isset($_SESSION['timezone']) ? $_SESSION['timezone'] : $GLOBALS['_CFG']['timezone'];
-	 	
+	 	$timezone = isset($_SESSION['timezone']) ? $_SESSION['timezone'] : '';
+
 	 	$arr = array(
 	 		'total_turnover'	=> price_format($order_general['total_turnover']),
 	 		'click_count'		=> $click_count,

@@ -19,10 +19,11 @@ class order_sales_module implements ecjia_interface {
 		if (empty($start_date) || empty($end_date)) {
 			EM_Api::outPut(101);
 		}
-		$data = RC_Cache::app_cache_get('admin_stats_order_sales_'.$_SESSION['admin_id'], 'api');
+		$cache_key = 'admin_stats_order_sales_'.md5($start_date.$end_date);
+		$data = RC_Cache::app_cache_get($cache_key, 'api');
 		if (empty($data)) {
 			$response = orders_module($start_date, $end_date);
-			RC_Cache::app_cache_set('admin_stats_order_sales_'.$_SESSION['admin_id'], $response, 'api', API_CACHE_TIME);
+			RC_Cache::app_cache_set($cache_key, $response, 'api', 60);
 			//流程逻辑结束
 		} else {
 			$response = $data;
@@ -64,7 +65,7 @@ function orders_module($start_date, $end_date)
 
 	
 	$where = array();
-	if ($_SESSION['ru_id'] > 0) {
+	if (isset($_SESSION['ru_id']) && $_SESSION['ru_id'] > 0) {
 		/*入驻商*/
 		$where['ru_id'] = $_SESSION['ru_id'];
 		$where[] = 'oii.order_id is null';
@@ -83,7 +84,7 @@ function orders_module($start_date, $end_date)
 	
 	
 	/* 判断是否是入驻商*/
-	if ($_SESSION['ru_id'] > 0 ) {
+	if (isset($_SESSION['ru_id']) && $_SESSION['ru_id'] > 0 ) {
 		$join = array('order_info', 'order_goods');
 	} else {
 		$join = null;

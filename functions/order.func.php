@@ -199,8 +199,8 @@ function order_weight_price($order_id) {
 			'alias'	=> 'g',
 			'field'	=> 'SUM(g.goods_weight * o.goods_number)|weight,SUM(o.goods_price * o.goods_number)|amount,SUM(o.goods_number)|number',
 			'on'	=> 'o.goods_id = g.goods_id ',
-			)
-		);
+		)
+	);
 	$row = $dbview->find(array('o.order_id' => $order_id));
 	$row['weight'] = floatval($row['weight']);
 	$row['amount'] = floatval($row['amount']);
@@ -242,23 +242,23 @@ function order_fee($order, $goods, $consignee, $cart_id = array()) {
 //         $group_buy = group_buy_info($order['extension_id']);
 //     }
     
-    $total  = array('real_goods_count' => 0,
-                    'gift_amount'      => 0,
-                    'goods_price'      => 0,
-                    'market_price'     => 0,
-                    'discount'         => 0,
-                    'pack_fee'         => 0,
-                    'card_fee'         => 0,
-                    'shipping_fee'     => 0,
-                    'shipping_insure'  => 0,
-                    'integral_money'   => 0,
-                    'bonus'            => 0,
-                    'surplus'          => 0,
-                    'cod_fee'          => 0,
-                    'pay_fee'          => 0,
-                    'tax'              => 0
-    		
-    		);
+    $total = array(
+		'real_goods_count' => 0,
+        'gift_amount'      => 0,
+        'goods_price'      => 0,
+        'market_price'     => 0,
+        'discount'         => 0,
+        'pack_fee'         => 0,
+        'card_fee'         => 0,
+        'shipping_fee'     => 0,
+        'shipping_insure'  => 0,
+        'integral_money'   => 0,
+        'bonus'            => 0,
+        'surplus'          => 0,
+       	'cod_fee'          => 0,
+        'pay_fee'          => 0,
+        'tax'              => 0
+	);
     $weight = 0;
 
     /* 商品总价 */
@@ -513,7 +513,7 @@ function order_fee($order, $goods, $consignee, $cart_id = array()) {
 * @return  bool
 */
 function update_order($order_id, $order) {
-	$db = RC_Loader::load_app_model('order_info_model','orders');
+	$db = RC_Loader::load_app_model('order_info_model', 'orders');
 	return $db->where('order_id = '.$order_id.'')->update($order);
 }
 
@@ -540,8 +540,6 @@ function user_info($user_id) {
 //	if ($user['user_money'] < 0){
 //		$user['user_money'] = 0;
 //	}
-
-	
 	$db_users = RC_Loader::load_app_model("users_model","user");
 	$user = $db_users->find(array('user_id' => $user_id));
 
@@ -636,7 +634,7 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
 	/* 检查参数 */
 	$user_id = $order['user_id'];
 	if ($user_id == 0 && $refund_type == 1) {
-		ecjia_admin::$controller->showmessage(__('匿名用户不能返回退款到帐户余额！') , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
+		ecjia_admin::$controller->showmessage(__('匿名用户不能返回退款到帐户余额！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	$amount = $refund_amount > 0 ? $refund_amount : $order['money_paid'];
@@ -645,7 +643,7 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
 	}
 
 	if (!in_array($refund_type, array(1, 2, 3))) {
-		ecjia_admin::$controller->showmessage(__('操作有误！请重新操作！') , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
+		ecjia_admin::$controller->showmessage(__('操作有误！请重新操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	/* 备注信息 */
@@ -658,9 +656,9 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
 	/* 处理退款 */
 	if (1 == $refund_type) {
 		$options = array(
-				'user_id'		=> $user_id,
-				'user_money'	=> $amount,
-				'change_desc'	=> $change_desc
+			'user_id'		=> $user_id,
+			'user_money'	=> $amount,
+			'change_desc'	=> $change_desc
 		);
 		RC_Api::api('user', 'account_change_log',$options);
 		return true;
@@ -668,9 +666,9 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
 		/* 如果非匿名，退回余额 */
 		if ($user_id > 0) {
 			$options = array(
-					'user_id'		=> $user_id,
-					'user_money'	=> $amount,
-					'change_desc'	=> $change_desc
+				'user_id'		=> $user_id,
+				'user_money'	=> $amount,
+				'change_desc'	=> $change_desc
 			);
 			RC_Api::api('user', 'account_change_log',$options);
 		}
@@ -724,9 +722,6 @@ function exist_real_goods($order_id = 0, $flow_type = CART_GENERAL_GOODS) {
 	}
 	return $query > 0; 
 }
-
-
-
 
 /**
 * 查询配送区域属于哪个办事处管辖
@@ -900,8 +895,6 @@ function change_goods_storage($goods_id, $product_id, $number = 0) {
 //	$query = $GLOBALS['db']->query($sql);	
 }
 
-
-
 /**
 * 生成查询订单总金额的字段
 * @param   string  $alias  order表的别名（包括.例如 o.）
@@ -941,14 +934,14 @@ function integral_to_give($order) {
         return array('custom_points' => $group_buy['gift_integral'], 'rank_points' => $order['goods_amount']);
     } else {
     	$dbview->view = array(
-    			'goods' => array(
-    					'type'  => Component_Model_View::TYPE_LEFT_JOIN,
-    					'alias' => 'g',
-    					'field' => 'SUM(o.goods_number * IF(g.give_integral > -1, g.give_integral, o.goods_price)) AS custom_points, SUM(o.goods_number * IF(g.rank_integral > -1, g.rank_integral, o.goods_price)) AS rank_points',
-    					'on'    => 'o.goods_id = g.goods_id ',
-    			)
+    		'goods' => array(
+    			'type'  => Component_Model_View::TYPE_LEFT_JOIN,
+    			'alias' => 'g',
+    			'field' => 'SUM(o.goods_number * IF(g.give_integral > -1, g.give_integral, o.goods_price)) AS custom_points, SUM(o.goods_number * IF(g.rank_integral > -1, g.rank_integral, o.goods_price)) AS rank_points',
+    			'on'    => 'o.goods_id = g.goods_id ',
+    		)
     	);
-    	return $dbview->find(array('o.order_id' => $order[order_id] , 'o.goods_id' => array('gt' => 0 ) , 'o.parent_id' => 0 , 'o.is_gift' => 0 , 'o.extension_code' => array('neq' => 'package_buy')));
+    	return $dbview->find(array('o.order_id' => $order['order_id'] , 'o.goods_id' => array('gt' => 0 ) , 'o.parent_id' => 0 , 'o.is_gift' => 0 , 'o.extension_code' => array('neq' => 'package_buy')));
     }
     //         include_once(ROOT_PATH . 'includes/lib_goods.php');    
     // 	$sql = "SELECT SUM(o.goods_number * IF(g.give_integral > -1, g.give_integral, o.goods_price)) AS custom_points, SUM(o.goods_number * IF(g.rank_integral > -1, g.rank_integral, o.goods_price)) AS rank_points " .
@@ -1021,7 +1014,6 @@ function send_order_bonus($order_id) {
 			RC_Mail::send_mail($user['user_name'], $user['email'] , $tpl['template_subject'], $content, $tpl['is_html']);
 		}
 	}
-
 	return true;
 	
 //	$sql = "SELECT u.user_id, u.user_name, u.email " .
@@ -1060,7 +1052,6 @@ function return_order_bonus($order_id) {
 //	"AND user_id = '$user_id' " .
 //	"AND order_id = '0' LIMIT " . $bonus['number'];
 //	$GLOBALS['db']->query($sql);
-	
 }
 
 /**
@@ -1127,9 +1118,7 @@ function order_bonus($order_id) {
 //	"FROM " . $GLOBALS['ecs']->table('bonus_type') ."WHERE send_type = '" . SEND_BY_ORDER . "' " .
 //	"AND send_start_date <= '$order_time' " ."AND send_end_date >= '$order_time' ";
 //	$list = array_merge($list, $GLOBALS['db']->getAll($sql));
-
 }
-
 
 /**
 * 得到新发货单号
@@ -1160,15 +1149,12 @@ function get_delivery_sn() {
  * @return void
  */
 function order_action($order_sn, $order_status, $shipping_status, $pay_status, $note = '', $username = null, $place = 0) {
-
 	// 	$sql = 'INSERT INTO ' . $GLOBALS['ecs']->table('order_action') .
 	// 	' (order_id, action_user, order_status, shipping_status, pay_status, action_place, action_note, log_time) ' .
 	// 	'SELECT ' .
 	// 	"order_id, '$username', '$order_status', '$shipping_status', '$pay_status', '$place', '$note', '" .gmtime() . "' " .
 	// 	'FROM ' . $GLOBALS['ecs']->table('order_info') . " WHERE order_sn = '$order_sn'";
 	// 	$GLOBALS['db']->query($sql);
-
-
 
 	$db_action = RC_Loader::load_app_model ( 'order_action_model', 'orders' );
 	$db_info = RC_Loader::load_app_model ( 'order_info_model', 'orders' );
@@ -1178,14 +1164,14 @@ function order_action($order_sn, $order_status, $shipping_status, $pay_status, $
 
 	$row = $db_info->field('order_id')->find(array('order_sn' => $order_sn));
 	$data = array (
-			'order_id'           => $row ['order_id'],
-			'action_user'        => $username,
-			'order_status'       => $order_status,
-			'shipping_status'    => $shipping_status,
-			'pay_status'         => $pay_status,
-			'action_place'       => $place,
-			'action_note'        => $note,
-			'log_time'           => RC_Time::gmtime()
+		'order_id'           => $row ['order_id'],
+		'action_user'        => $username,
+		'order_status'       => $order_status,
+		'shipping_status'    => $shipping_status,
+		'pay_status'         => $pay_status,
+		'action_place'       => $place,
+		'action_note'        => $note,
+		'log_time'           => RC_Time::gmtime()
 	);
 	$db_action->insert($data);
 }
@@ -1541,19 +1527,19 @@ function get_goods_attr_info($arr, $type = 'pice', $warehouse_id = 0, $area_id =
 				 'on' 		=> 'a.attr_id = ga.attr_id'
 			),
        		'goods' => array(
-       				'type'  => Component_Model_View::TYPE_LEFT_JOIN,
-       				'alias' => 'g',
-       				'on'   	=> "g.goods_id = ga.goods_id"
+       			'type'  => Component_Model_View::TYPE_LEFT_JOIN,
+       			'alias' => 'g',
+       			'on'   	=> "g.goods_id = ga.goods_id"
        		),
        		'warehouse_attr' => array(
-       				'type'  => Component_Model_View::TYPE_LEFT_JOIN,
-       				'alias' => 'wap',
-       				'on'   	=> "ga.goods_id = wap.goods_id and wap.warehouse_id = '$warehouse_id' and ga.goods_attr_id = wap.goods_attr_id"
+       			'type'  => Component_Model_View::TYPE_LEFT_JOIN,
+       			'alias' => 'wap',
+       			'on'   	=> "ga.goods_id = wap.goods_id and wap.warehouse_id = '$warehouse_id' and ga.goods_attr_id = wap.goods_attr_id"
        		),
        		'warehouse_area_attr' => array(
-       				'type'  => Component_Model_View::TYPE_LEFT_JOIN,
-       				'alias' => 'wa',
-       				'on'   	=> "ga.goods_id = wa.goods_id and wa.area_id = '$area_id' and ga.goods_attr_id = wa.goods_attr_id"
+       			'type'  => Component_Model_View::TYPE_LEFT_JOIN,
+       			'alias' => 'wa',
+       			'on'   	=> "ga.goods_id = wa.goods_id and wa.area_id = '$area_id' and ga.goods_attr_id = wa.goods_attr_id"
        		),
 		);
         $data = $dbview->field($field)->join(array('attribute', 'goods', 'warehouse_attr', 'warehouse_area_attr'))->in(array('ga.goods_attr_id'=> $arr))->select();
@@ -1766,8 +1752,6 @@ function last_shipping_and_payment() {
 //	return true;
 //}
 
-
-
 /**
 * 检查礼包内商品的库存
 * @return  boolen
@@ -1803,12 +1787,12 @@ function judge_package_stock($package_id, $package_num = 1) {
     /* 检查商品库存 */
     if ($goods['goods_ids'] != '') {
     	$db_goods_view->view = array(
-    			'package_goods' => array(
-    					'type' 	=> Component_Model_View::TYPE_LEFT_JOIN,
-    					'alias'	=> 'pg',
-    					'field' => 'g.goods_id',
-    					'on' 	=> 'pg.goods_id = g.goods_id'
-    			)
+    		'package_goods' => array(
+    			'type' 	=> Component_Model_View::TYPE_LEFT_JOIN,
+    			'alias'	=> 'pg',
+    			'field' => 'g.goods_id',
+    			'on' 	=> 'pg.goods_id = g.goods_id'
+    		)
     	);
     	$row = $db_goods_view->where(array('pg.goods_number' * $package_num => array('gt' => 'g.goods_number')  , 'pg.package_id' => $package_id))->in(array('pg.goods_id' => trim($goods['goods_ids'] , ',')))->select();
         if (!empty($row)) {
@@ -2109,16 +2093,16 @@ function EM_order_goods($order_id , $page=1 , $pagesize = 10)
 {
 	$dbview = RC_Loader::load_app_model('order_goods_comment_viewmodel', 'orders');
 	$dbview->view = array(
-			'goods' => array(
-					'type' 		=> Component_Model_View::TYPE_LEFT_JOIN,
-					'alias' 	=> 'g',
-					'on' 		=> 'og.goods_id = g.goods_id'
-			),
-			'term_relationship' => array(
-					'type' 		=> Component_Model_View::TYPE_LEFT_JOIN,
-					'alias' 	=> 'tr',
-					'on' 		=> 'tr.object_id = og.rec_id'
-			),
+		'goods' => array(
+			'type' 		=> Component_Model_View::TYPE_LEFT_JOIN,
+			'alias' 	=> 'g',
+			'on' 		=> 'og.goods_id = g.goods_id'
+		),
+		'term_relationship' => array(
+			'type' 		=> Component_Model_View::TYPE_LEFT_JOIN,
+			'alias' 	=> 'tr',
+			'on' 		=> 'tr.object_id = og.rec_id'
+		),
 	);
 	$field = 'og.*, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, tr.relation_id';
 	
@@ -2212,6 +2196,7 @@ function get_goods_order_shipping_fee($goods = array(), $region = '', $shipping_
 	$cart_goods = get_warehouse_cart_goods_info($goods, 1, $region, $shipping_code);
 	$arr['shipping_fee'] = $cart_goods['shipping']['shipping_fee'];
 	$arr['ru_list'] = $cart_goods['ru_list'];
+	
 	return $arr;
 }
 
@@ -2253,6 +2238,7 @@ function get_cart_goods_ru_list($goods, $region = array()) { //商家划分
 	$arr = array();
 	foreach($ru_id_list as $wkey=>$ru){
 		foreach($goods as $gkey=>$row){
+			
 			if($ru == $row['ru_id']){
 				if (!empty($region)) {
 					$row['warehouse_id'] = $warehouse_id;
@@ -2324,11 +2310,12 @@ function get_cart_goods_combined_freight($goods, $type=0, $region = '', $shippin
 		foreach($goods as $key=>$row){
 			foreach($row as $warehouse => $rows){
 				foreach($rows as $gkey=>$grow){
-					@$arr[$key][$warehouse]['weight'] 	+= $grow['goodsWeight'] * $grow['goods_number']; //商品总重量
-					@$arr[$key][$warehouse]['goods_price'] 	+= $grow['goods_price'] * $grow['goods_number']; //商品总金额
-					@$arr[$key][$warehouse]['number'] 	+= $grow['goods_number']; //商品总数量
-					@$arr[$key][$warehouse]['ru_id']	= $key; //商家ID
-					@$arr[$key][$warehouse]['warehouse_id']	 = $warehouse; //仓库ID
+					$arr[$key][$warehouse]['weight'] 	+= $grow['goodsWeight'] * $grow['goods_number']; //商品总重量
+					$arr[$key][$warehouse]['goods_price'] 	+= $grow['goods_price'] * $grow['goods_number']; //商品总金额
+					$arr[$key][$warehouse]['number'] 	+= $grow['goods_number']; //商品总数量
+					$arr[$key][$warehouse]['ru_id']	= $key; //商家ID
+					$arr[$key][$warehouse]['warehouse_id']	 = $warehouse; //仓库ID
+					$arr[$key][$warehouse]['is_shipping'] = $grow['is_shipping'];
 // 					@$arr[$key][$warehouse]['warehouse_name'] = $GLOBALS['db']->getOne("SELECT region_name FROM " .$GLOBALS['ecs']->table("region_warehouse"). " WHERE region_id = '$warehouse'"); //仓库名称
 				}
 			}
@@ -2336,31 +2323,37 @@ function get_cart_goods_combined_freight($goods, $type=0, $region = '', $shippin
 
 		foreach($arr as $key=>$row){
 			foreach($row as $warehouse => $rows){
-				@$arr[$key][$warehouse]['shipping'] = get_goods_freight($rows, $rows['warehouse_id'], $region, $rows['goods_number'], $shipping_code);
+				$arr[$key][$warehouse]['shipping'] = get_goods_freight($rows, $rows['warehouse_id'], $region, $rows['goods_number'], $shipping_code);
+
 			}
 		}
 
 		$new_arr['shipping_fee'] = 0;
 		foreach($arr as $key=>$row){
 			foreach($row as $warehouse => $rows){
-				$new_arr['shipping_fee'] += $rows['shipping']['shipping_fee'];
+				$new_arr['shipping_fee'] += $rows['is_shipping'] == 1 ? 0 : $rows['shipping']['shipping_fee'];
 			}
 		}
 
 		$arr = array('ru_list' => $arr, 'shipping' => $new_arr);
 		return $arr;
 	} elseif($type == 2) { //订单分单
+		
 		$arr = get_cart_goods_warehouse_list($goods);
 // 		$new_arr['shipping_fee'] = 0;
 		$shipping_fee = 0;
+		$db = RC_Loader::load_app_model('goods_model', 'goods');
 		foreach($arr as $warehouse=>$row){
 			foreach($row as $gw=>$grow){
-				@$new_arr[$warehouse]['weight'] 			+= $grow['goodsWeight'] * $grow['goods_number']; //商品总重量
-				@$new_arr[$warehouse]['goods_price'] 	+= $grow['goods_price'] * $grow['goods_number']; //商品总金额
-				@$new_arr[$warehouse]['number'] 			+= $grow['goods_number']; //商品总数量
-				@$new_arr[$warehouse]['ru_id']			 = $grow['ru_id']; //商家ID
-				@$new_arr[$warehouse]['warehouse_id']	 = $warehouse; //仓库ID
-				@$new_arr[$warehouse]['order_id']		 = $grow['order_id']; //订单ID
+				$new_arr[$warehouse]['weight'] 			+= $grow['goodsWeight'] * $grow['goods_number']; //商品总重量
+				$new_arr[$warehouse]['goods_price'] 	+= $grow['goods_price'] * $grow['goods_number']; //商品总金额
+				$new_arr[$warehouse]['number'] 			+= $grow['goods_number']; //商品总数量
+				$new_arr[$warehouse]['ru_id']			 = $grow['ru_id']; //商家ID
+				$new_arr[$warehouse]['warehouse_id']	 = $warehouse; //仓库ID
+				$new_arr[$warehouse]['order_id']		 = $grow['order_id']; //订单ID
+				
+				$new_arr[$warehouse]['is_shipping']		 = $db->where(array('goods_id' => $grow['goods_id']))->get_field('is_shipping');
+// 				$new_arr[$warehouse]['is_shipping'] 	 = $grow['is_shipping'];
 // 				@$new_arr[$warehouse]['warehouse_name'] 	 = $GLOBALS['db']->getOne("SELECT region_name FROM " .$GLOBALS['ecs']->table("region_warehouse"). " WHERE region_id = '$warehouse'"); //仓库名称
 			}
 		}
@@ -2374,10 +2367,10 @@ function get_cart_goods_combined_freight($goods, $type=0, $region = '', $shippin
 			$db_shipping  = RC_Loader::load_app_model('shipping_model', 'shipping');
 			$shipping_code = $db_shipping->where(array('shipping_id' => $order['shipping_id']))->get_field('shipping_code');
 // 			$shipping_code	 	= $GLOBALS['db']->getOne("SELECT shipping_code FROM " .$GLOBALS['ecs']->table("shipping"). " WHERE shipping_id = '" .$order['shipping_id']. "'"); //配送代码
-			@$new_arr[$key]['shipping'] = get_goods_freight($row, $row['warehouse_id'], $order, $row['number'], $shipping_code);
-				
+			$new_arr[$key]['shipping'] = get_goods_freight($row, $row['warehouse_id'], $order, $row['number'], $shipping_code);
+			
 // 			$new_arr['shipping_fee'] += $new_arr[$key]['shipping']['shipping_fee'];
-			$shipping_fee += $new_arr[$key]['shipping']['shipping_fee'];
+			$shipping_fee += $new_arr[$warehouse]['is_shipping'] == 1 ? 0 : $new_arr[$key]['shipping']['shipping_fee'];
 		}
 		$new_arr['shipping_fee'] = $shipping_fee;
 		$arr = $new_arr;
@@ -2410,8 +2403,8 @@ function get_goods_freight($goods, $warehouse_id = 0, $goods_region = array(), $
 		
 	}
 
-	$shipping_cfg = sc_unserialize_config($configure);
-	
+// 	$shipping_cfg = sc_unserialize_config($configure);
+	$shipping_cfg = $shipping_method->unserialize_config($configure);
 // 	$configure_price = goods_shipping_fee($shipping_code, $configure, $goods['weight'], $goods['goods_price'], $goods['number']);
 	$configure_price = $shipping_method->shipping_fee($shipping_code, $configure, $goods['weight'], $goods['goods_price'], $goods['number']);
 	$arr['shipping_fee'] = $configure_price;
@@ -2426,7 +2419,6 @@ function get_goods_freight($goods, $warehouse_id = 0, $goods_region = array(), $
 	@$arr['pay_fee'] = price_format($shipping_cfg['pay_fee'], false); //货到付款支付费用
 
 	$arr['warehouse_id'] = $warehouse_id;
-
 	return $arr;
 }
 
@@ -2484,13 +2476,12 @@ function sc_unserialize_config($cfg)
  */
 function assign_adminlog_content() {
     ecjia_admin_log::instance()->add_action('produce', '生成');
-
+    
     ecjia_admin_log::instance()->add_object('delivery_order', '发货单');
     ecjia_admin_log::instance()->add_object('back_order', '退货单');
-    ecjia_admin_log::instance()->add_object('confirmation', '订单状态为“确认”');
-    ecjia_admin_log::instance()->add_object('payment', '订单状态为“付款”');
-    ecjia_admin_log::instance()->add_object('not_payment', '订单状态为“未付款”');
-    ecjia_admin_log::instance()->add_object('prepare', '订单状态为“配货”');
+    ecjia_admin_log::instance()->add_object('order_payment', '订单支付方式');
+    ecjia_admin_log::instance()->add_object('order_status', '订单状态');
+    ecjia_admin_log::instance()->add_object('order_consignee', '订单收货人');
 }
 
 //	TODO:下列方法已移到了相关class中
@@ -3297,6 +3288,5 @@ function assign_adminlog_content() {
 
 // 	//	$db_cartview = RC_Loader::load_app_model('cart_good_member_viewmodel','flow');
 // }
-
 
 // end

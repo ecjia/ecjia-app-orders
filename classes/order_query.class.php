@@ -1,5 +1,4 @@
 <?php
-defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * ECJIA 订单查询条件类文件
  */
@@ -8,7 +7,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 RC_Loader::load_app_class('order','orders', false);
 
 class order_query extends order {
-	
 	private $where = array();//where条件数组
 	
 	public function __construct() {
@@ -190,7 +188,8 @@ class order_query extends order {
     public function get_order_list($pagesize = '15') {
     	$db_order 		= RC_Loader::load_app_model('order_info_model','orders');
 	    $dbview 		= RC_Loader::load_app_model('order_order_info_viewmodel','orders');
-	    $db_admin 		= RC_Loader::load_model('admin_user_model');
+	    //$db_admin 		= RC_Loader::load_model('admin_user_model');
+		$db_admin 		= RC_Model::model('admin_user_model');
 	    $args = $_GET;
 	    $db_viewmodel 	= RC_Loader::load_app_model('merchants_order_goods_viewmodel','orders');
 	   
@@ -252,7 +251,7 @@ class order_query extends order {
                 break;
             case OS_SHIPPED_PART :
                 if ($filter['composite_status'] != -1) {
-                	$this->where['o.shipping_status'] = $filter[composite_status]-2;
+                	$this->where['o.shipping_status'] = $filter['composite_status']-2;
                 }
                 break;
             default:
@@ -260,7 +259,6 @@ class order_query extends order {
                 	$this->where['o.order_status'] = $filter['composite_status'];
                 }
         };
-
 		
 //		setcookie('ECJIA[composite_status]', urlencode(serialize($filter['composite_status'])), RC_Time::gmtime()+ 36000);
 		RC_Cookie::set('composite_status', $filter['composite_status']);
@@ -278,10 +276,7 @@ class order_query extends order {
 //             $count = $dbview->join(null)->where($this->where)->count();
 //         }
 		
-		
         $count = $dbview->join('users')->where($this->where)->count();
-        //加载分页类
-        RC_Loader::load_sys_class('ecjia_page', false);
         //实例化分页
         $page = new ecjia_page($count, $pagesize, 6);
 
@@ -298,39 +293,40 @@ class order_query extends order {
 //             )
 //         );
 
-        $fields = "o.order_id, o.main_order_id, o.order_sn, o.add_time, o.order_status, o.shipping_status, o.order_amount, o.money_paid,o.pay_status, o.consignee, o.address, o.email, o.tel,o.mobile,o.extension_code, o.extension_id ,(" . $this->order_amount_field('o.') . ") AS total_fee,ms.shoprz_brandName,ms.shopNameSuffix, u.user_name";
-        $row = $db_viewmodel->field($fields)->where($this->where)->order(array($filter[sort_by] => $filter[sort_order]))->limit($page->limit())->group('o.order_id')->select();
+        $fields = "o.order_id, o.main_order_id, o.order_sn, o.add_time, o.order_status, o.shipping_status, o.order_amount, o.money_paid,o.pay_status, o.consignee, o.address, o.email, o.tel, o.mobile, o.extension_code, o.extension_id ,(" . $this->order_amount_field('o.') . ") AS total_fee, ms.shoprz_brandName, ms.shopNameSuffix, u.user_name";
+        $row = $db_viewmodel->field($fields)->where($this->where)->order(array($filter['sort_by'] => $filter['sort_order']))->limit($page->limit())->group('o.order_id')->select();
     	foreach (array('order_sn', 'consignee', 'email', 'address', 'zipcode', 'tel', 'user_name') AS $val) {
             $filter[$val] = stripslashes($filter[$val]);
         }
 		RC_Loader::load_app_func('common','goods');
+		$order = array();
         /* 格式话数据 */
-	    if(!empty($row)) {
+	    if (!empty($row)) {
 	        foreach ($row AS $key => $value) {
 
-	            $order[$value['order_id']]['formated_order_amount']        = price_format($value['order_amount']);
-				$order[$value['order_id']]['formated_money_paid'] 	       = price_format($value['money_paid']);
-				$order[$value['order_id']]['formated_total_fee'] 	      = price_format($value['total_fee']);
-	            $order[$value['order_id']]['short_order_time'] 		      = RC_Time::local_date('Y-m-d H:i', $value['add_time']);
-	            $order[$value['order_id']]['shop_name'] 			    = $value['shoprz_brandName'].$value['shopNameSuffix'];
-                $order[$value['order_id']]['user_name']                 = empty($value['user_name']) ? '匿名购物' : $value['user_name'];
-                $order[$value['order_id']]['order_id']                  = $value['order_id'];
-                $order[$value['order_id']]['main_order_id']             = $value['main_order_id'];
-                $order[$value['order_id']]['order_sn']                  = $value['order_sn'];
-                $order[$value['order_id']]['add_time']                  = $value['add_time'];
-                $order[$value['order_id']]['order_status']              = $value['order_status'];
-                $order[$value['order_id']]['shipping_status']         = $value['shipping_status'];
-                $order[$value['order_id']]['order_amount']         = $value['order_amount'];
+	            $order[$value['order_id']]['formated_order_amount'] = price_format($value['order_amount']);
+				$order[$value['order_id']]['formated_money_paid'] 	= price_format($value['money_paid']);
+				$order[$value['order_id']]['formated_total_fee'] 	= price_format($value['total_fee']);
+	            $order[$value['order_id']]['short_order_time']		= RC_Time::local_date('Y-m-d H:i', $value['add_time']);
+	            $order[$value['order_id']]['shop_name'] 			= $value['shoprz_brandName'].$value['shopNameSuffix'];
+                $order[$value['order_id']]['user_name']             = empty($value['user_name']) ? '匿名购物' : $value['user_name'];
+                $order[$value['order_id']]['order_id']              = $value['order_id'];
                 $order[$value['order_id']]['main_order_id']         = $value['main_order_id'];
-                $order[$value['order_id']]['money_paid']         = $value['money_paid'];
-                $order[$value['order_id']]['pay_status']         = $value['pay_status'];
-                $order[$value['order_id']]['consignee']         = $value['consignee'];
-                $order[$value['order_id']]['email']         = $value['email'];
-                $order[$value['order_id']]['tel']         = $value['tel'];
-                $order[$value['order_id']]['mobile']         = $value['mobile'];
-                $order[$value['order_id']]['extension_code']         = $value['extension_code'];
-                $order[$value['order_id']]['extension_id']         = $value['extension_id'];
-                $order[$value['order_id']]['total_fee']         = $value['total_fee'];
+                $order[$value['order_id']]['order_sn']              = $value['order_sn'];
+                $order[$value['order_id']]['add_time']              = $value['add_time'];
+                $order[$value['order_id']]['order_status']          = $value['order_status'];
+                $order[$value['order_id']]['shipping_status']       = $value['shipping_status'];
+                $order[$value['order_id']]['order_amount']         	= $value['order_amount'];
+                $order[$value['order_id']]['main_order_id']         = $value['main_order_id'];
+                $order[$value['order_id']]['money_paid']         	= $value['money_paid'];
+                $order[$value['order_id']]['pay_status']         	= $value['pay_status'];
+                $order[$value['order_id']]['consignee']         	= $value['consignee'];
+                $order[$value['order_id']]['email']         		= $value['email'];
+                $order[$value['order_id']]['tel']         			= $value['tel'];
+                $order[$value['order_id']]['mobile']         		= $value['mobile'];
+                $order[$value['order_id']]['extension_code']        = $value['extension_code'];
+                $order[$value['order_id']]['extension_id']         	= $value['extension_id'];
+                $order[$value['order_id']]['total_fee']         	= $value['total_fee'];
              
 	            if ($value['order_status'] == OS_INVALID || $value['order_status'] == OS_CANCELED) {
 	                /* 如果该订单为无效或取消则显示删除链接 */
@@ -338,7 +334,7 @@ class order_query extends order {
 	            } else {
 	                $order[$value['order_id']]['can_remove'] = 0;
 	            }
-                if(empty($value['main_order_id'])) {
+                if (empty($value['main_order_id'])) {
                     $arr[] = $value['order_id'];
                 }else{
                    $order[$value['order_id']]['stet'] = '1'; // 子订单
@@ -346,12 +342,14 @@ class order_query extends order {
                 
 	        }
 	    }
-	    if(!empty($arr)){
+	    if (!empty($arr)) {
 	        $res = $db_order->field('order_id,order_sn,main_order_id')->in(array('main_order_id' => $arr))->select();
-	        foreach($res as $key => $val){
-	            $order[$val['main_order_id']]['children_order'][] = $val['order_sn'];
-	            $order[$val['main_order_id']]['stet'] = 2;
-	        }  
+	        if (!empty($res)) {
+		        foreach ($res as $key => $val) {
+		            $order[$val['main_order_id']]['children_order'][] = $val['order_sn'];
+		            $order[$val['main_order_id']]['stet'] = 2;
+		        } 
+	        }
 	    }
 	   	return array('orders' => $order, 'filter' => $filter, 'page' => $page->show($pagesize), 'desc' => $page->page_desc());
     }
@@ -366,9 +364,6 @@ class order_query extends order {
 	           " + {$alias}insure_fee + {$alias}pay_fee + {$alias}pack_fee" .
 	           " + {$alias}card_fee ";
 	}
-	
-	
-	 
 }
 
 // end

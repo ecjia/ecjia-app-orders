@@ -3,7 +3,7 @@
 
 <!-- {block name="footer"} -->
 <script type="text/javascript">
-ecjia.admin.order_query.init();
+	ecjia.admin.order_query.init();
 </script>
 <!-- {/block} -->
 
@@ -127,7 +127,7 @@ ecjia.admin.order_query.init();
 									<label class="control-label">{t}国家：{/t}</label>
 									<div>
 										<select name="country" data-toggle="regionSummary" data-url='{url path="shipping/region/init"}' data-type="1" data-target="region-summary-provinces" >
-											<option value="0">{$lang.select_please}</option>
+											<option value="-1">{$lang.select_please}</option>
 											<!-- {foreach from=$country_list item=country} -->
 											<option value="{$country.region_id}">{$country.region_name}</option>
 											<!-- {/foreach} -->
@@ -138,7 +138,7 @@ ecjia.admin.order_query.init();
 									<label class="control-label">{t}省/市：{/t}</label>
 									<div>
 										<select class="region-summary-provinces" name="province" data-toggle="regionSummary" data-type="2" data-target="region-summary-cities" >
-											<option value="0">{$lang.select_please}</option>
+											<option value="-1">{$lang.select_please}</option>
 										</select>
 									</div>
 								</div>
@@ -146,7 +146,7 @@ ecjia.admin.order_query.init();
 									<label class="control-label">{t}市：{/t}</label>
 									<div>
 										<select class="region-summary-cities" name="city" data-toggle="regionSummary" data-type="3" data-target="region-summary-districts" >
-											<option value="0">{$lang.select_please}</option>
+											<option value="-1">{$lang.select_please}</option>
 										</select>
 									</div>
 								</div>
@@ -154,7 +154,7 @@ ecjia.admin.order_query.init();
 									<label class="control-label">{t}区：{/t}</label>
 									<div>
 										<select class="region-summary-districts" name="district">
-											<option value="0">{$lang.select_please}</option>
+											<option value="-1">{$lang.select_please}</option>
 										</select>
 									</div>
 								</div>
@@ -179,7 +179,7 @@ ecjia.admin.order_query.init();
 									<label class="control-label">{$lang.label_shipping}</label>
 									<div>
 										<select name="shipping_id" id="select4">
-											<option value="0">{$lang.select_please}</option>
+											<option value="-1">{$lang.select_please}</option>
 											<!-- {foreach from=$shipping_list item=shipping} -->
 											<option value="{$shipping.shipping_id}">{$shipping.shipping_name}</option>
 											<!-- {/foreach} -->
@@ -190,7 +190,7 @@ ecjia.admin.order_query.init();
 									<label class="control-label">{$lang.label_payment}</label>
 									<div>
 										<select name="pay_id" id="select5">
-											<option value="0">{$lang.select_please}</option>
+											<option value="-1">{$lang.select_please}</option>
 											<!-- {foreach from=$pay_list item=pay} -->
 											<option value="{$pay.pay_id}">{$pay.pay_name}</option>
 											<!-- {/foreach} -->

@@ -3,7 +3,7 @@
 
 <!-- {block name="footer"} -->
 <script type="text/javascript">
-ecjia.admin.order_merge.init();
+	ecjia.admin.order_merge.init();
 </script>
 <!-- {/block} -->
 

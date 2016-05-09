@@ -19,10 +19,11 @@ class orders_module implements ecjia_interface {
 		if (empty($start_date) || empty($end_date)) {
 			EM_Api::outPut(101);
 		}
-		$data = RC_Cache::app_cache_get('admin_stats_orders_'.$_SESSION['admin_id'], 'api');
+		$cache_key = 'admin_stats_orders_'.md5($start_date.$end_date);
+		$data = RC_Cache::app_cache_get($cache_key, 'api');
 		if (empty($data)) {
 			$response = orders_module($start_date, $end_date);
-			RC_Cache::app_cache_set('admin_stats_orders_'.$_SESSION['admin_id'], $response, 'api', API_CACHE_TIME);
+			RC_Cache::app_cache_set($cache_key, $response, 'api', 60);
 			//流程逻辑结束
 		} else {
 			$response = $data;
@@ -69,7 +70,7 @@ function orders_module($start_date, $end_date)
 	$day = round(($end_date - $start_date)/(24*60*60));
 	
 	$where = array();
-	if ($_SESSION['ru_id'] > 0) {
+	if (isset($_SESSION['ru_id']) && $_SESSION['ru_id'] > 0) {
 		/*入驻商*/
 		$where['ru_id'] = $_SESSION['ru_id'];
 		$where[] = 'oii.order_id is null';
@@ -79,7 +80,7 @@ function orders_module($start_date, $end_date)
 			$where['oi.main_order_id'] = 0;
 		}
 	}
-
+	$where['oi.pay_status'] = 2;
 	$member_orders = 0;//会员数量
 	$anonymity_orders = 0;//非会员数量
 // 	$where[] = 'oi.pay_time >="' .$start_date. '" and oi.pay_time<="' .$end_date. '"';
@@ -89,7 +90,7 @@ function orders_module($start_date, $end_date)
 	
 	
 	/* 判断是否是入驻商*/
-	if ($_SESSION['ru_id'] > 0 ) {
+	if (isset($_SESSION['ru_id']) && $_SESSION['ru_id'] > 0 ) {
 		$join = array('order_info', 'order_goods');
 	} else {
 		$join = null;
@@ -110,8 +111,8 @@ function orders_module($start_date, $end_date)
 		$temp_total_orders = 0;
 		$result = $db_orderinfo_view->field($field)
 									->join($join)
-									->where(array_merge($where, array('oi.add_time >="' .$temp_start_time. '" and oi.add_time<="' .$temp_end_time. '"')))
-									->order(array('oi.add_time' => asc))
+									->where(array_merge($where, array('oi.pay_time >="' .$temp_start_time. '" and oi.pay_time<="' .$temp_end_time. '"')))
+									->order(array('oi.pay_time' => 'asc'))
 									->select();
 		if (!empty($result)) {
 			foreach ($result as $val) {
@@ -160,18 +161,18 @@ function orders_module($start_date, $end_date)
 
 	$order_query = RC_Loader::load_app_class('order_query', 'orders');
 	/* 已付款*/
-	$payed_orders = $db_orderinfo_view->field('oi.order_id')->join($join)->where(array_merge($where, array('oi.pay_status' => array(PS_PAYED, PS_PAYING)), array('oi.add_time >="' .$start_date. '" and oi.add_time<="' .$end_date. '"')))->group('oi.order_id')->select();
+	$payed_orders = $db_orderinfo_view->join($join)->where(array_merge($where, array('oi.pay_status' => array(PS_PAYED, PS_PAYING))))->count('oi.order_id');
 	/* 未发货*/
-	$wait_ship_orders = $db_orderinfo_view->field('oi.order_id')->join($join)->where(array_merge($where, $order_query->order_await_ship('oi.'), array('oi.add_time >="' .$start_date. '" and oi.add_time<="' .$end_date. '"')))->group('oi.order_id')->select();
+	$wait_ship_orders = $db_orderinfo_view->join($join)->where(array_merge($where, $order_query->order_await_ship('oi.')))->count('oi.order_id');
 	/* 已发货*/
-	$shipped_orders = $db_orderinfo_view->field('oi.order_id')->join($join)->where(array_merge($where, $order_query->order_shipped('oi.'),  array('oi.add_time >="' .$start_date. '" and oi.add_time<="' .$end_date. '"')))->group('oi.order_id')->select();
+	$shipped_orders = $db_orderinfo_view->join($join)->where(array_merge($where, $order_query->order_shipped('oi.')))->count('oi.order_id');
 	
 	$data = array(
 			'stats'				=> $stats,
 			'group'				=> $group,
-			'payed_orders'		=> count($payed_orders),
-			'wait_ship_orders'	=> count($wait_ship_orders),
-			'shipped_orders'	=> count($shipped_orders),
+			'payed_orders'		=> $payed_orders,
+			'wait_ship_orders'	=> $wait_ship_orders,
+			'shipped_orders'	=> $shipped_orders,
 			'member_orders'		=> $member_orders,
 			'anonymity_orders'	=> $anonymity_orders,
 	);

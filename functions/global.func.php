@@ -1,7 +1,6 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
 
-
 /**
  * 取得图表颜色
  *

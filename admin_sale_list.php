@@ -1,11 +1,9 @@
 <?php
-
 /**
  * 销售明细列表程序
 */
 
 defined('IN_ECJIA') or exit('No permission resources.');
-RC_Loader::load_sys_class('ecjia_admin', false);
 
 class admin_sale_list extends ecjia_admin {
 	private $order_goods_view;

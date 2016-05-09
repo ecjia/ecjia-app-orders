@@ -25,13 +25,13 @@ class orders_order_paid_api extends Component_Event_Api {
 
 	    /* 检查支付的金额是否相符 */
 	    if (!$this->check_money($options['log_id'], $options['money'])) {
-	    	RC_Log::write("支付的金额有误");
+// 	    	RC_Log::write("支付的金额有误");
 	        return new ecjia_error('check_money_fail', '支付的金额有误');
 	    }
 	    
 	    if (in_array($options['pay_status'], array(PS_UNPAYED, PS_PAYING, PS_PAYED)) && $options['pay_status'] == PS_PAYED) {
 	        /* 改变订单状态 */
-	    	RC_Log::write("改变订单状态");
+// 	    	RC_Log::write("改变订单状态");
 	        $this->order_paid($options['log_id'], PS_PAYED, $options['note']);
 	        return true;
 	    }
@@ -82,14 +82,14 @@ class orders_order_paid_api extends Component_Event_Api {
 	    RC_Loader::load_app_func('order', 'orders');
 	    /* 取得支付编号 */
 	    $log_id = intval($log_id);
-	    RC_Log::write("日志id".$log_id);
+// 	    RC_Log::write("日志id".$log_id);
 	    if ($log_id > 0) {
 	        /* 取得要修改的支付记录信息 */
 	        $pay_log = $db_pay->find(array('log_id' => $log_id));
 	        if ($pay_log && $pay_log['is_paid'] == 0) {
 	            /* 修改此次支付操作的状态为已付款 */
 	            $db_pay->where(array('log_id' => $log_id))->update(array('is_paid' => 1));
-				RC_Log::write("日志id".$log_id);
+// 				RC_Log::write("日志id".$log_id);
 	            /* 根据记录类型做相应处理 */
 	            if ($pay_log['order_type'] == PAY_ORDER) {
 	                /* 取得订单信息 */
@@ -105,7 +105,8 @@ class orders_order_paid_api extends Component_Event_Api {
 	                    'pay_time'     => RC_Time::gmtime(),
 	                    'money_paid'   => $order['order_amount'],
 	                    'order_amount' => 0,
-	                );RC_Log::write("订单id".$order_id);
+	                );
+// 	                RC_Log::write("订单id".$order_id);
 	                $db_order->where(array('order_id' => $order_id))->update($data);
 	
 	                /* 记录订单操作记录 */
@@ -114,12 +115,12 @@ class orders_order_paid_api extends Component_Event_Api {
 	                
 	                if ($main_order_id <= 0) {
 	                	$data = array(
-	                			'order_status' => OS_CONFIRMED,
-	                			'confirm_time' => RC_Time::gmtime(),
-	                			'pay_status'   => $pay_status,
-	                			'pay_time'     => RC_Time::gmtime(),
-// 	                			'money_paid'   => $order['order_amount'],
-// 	                			'order_amount' => 0,
+                			'order_status' => OS_CONFIRMED,
+                			'confirm_time' => RC_Time::gmtime(),
+                			'pay_status'   => $pay_status,
+                			'pay_time'     => RC_Time::gmtime(),
+//                 			'money_paid'   => $order['order_amount'],
+//                 			'order_amount' => 0,
 	                	);
 	                	$db_order->where(array('main_order_id' => $order_id))->update($data);
 	                	$db_order->inc('money_paid', "main_order_id=$order_id", '0, money_paid=order_amount, order_amount=0');
@@ -148,13 +149,11 @@ class orders_order_paid_api extends Component_Event_Api {
 	                if (!is_ecjia_error($result)) {
 		                /* 收货验证短信  */
 		                if (ecjia::config('sms_receipt_verification') == '1' && ecjia::config('sms_shop_mobile') != '') {
-			                
-		                	
 		                	$db_term_meta = RC_Loader::load_model('term_meta_model');
 		                	$meta_where = array(
-									'object_type'	=> 'ecjia.order',
-									'object_group'	=> 'order',
-									'meta_key'		=> 'receipt_verification',
+								'object_type'	=> 'ecjia.order',
+								'object_group'	=> 'order',
+								'meta_key'		=> 'receipt_verification',
 							);
 							$max_code = $db_term_meta->where($meta_where)->max('meta_value');
 							$max_code = $max_code ? ceil($max_code/10000) : 1000000;
@@ -170,19 +169,19 @@ class orders_order_paid_api extends Component_Event_Api {
 			                	$content = ecjia::$controller->fetch_string($tpl['template_content']);
 			                	 
 			                	$options = array(
-			                			'mobile' 		=> $order['mobile'],
-			                			'msg'			=> $content,
-			                			'template_id' 	=> $tpl['template_id'],
+		                			'mobile' 		=> $order['mobile'],
+		                			'msg'			=> $content,
+		                			'template_id' 	=> $tpl['template_id'],
 			                	);
 			                	$response = RC_Api::api('sms', 'sms_send', $options);
 			                	 
 // 			                	$db_term_meta = RC_Loader::load_model('term_meta_model');
 			                	$meta_data = array(
-			                			'object_type'	=> 'ecjia.order',
-			                			'object_group'	=> 'order',
-			                			'object_id'		=> $order_id,
-			                			'meta_key'		=> 'receipt_verification',
-			                			'meta_value'	=> $code,
+		                			'object_type'	=> 'ecjia.order',
+		                			'object_group'	=> 'order',
+		                			'object_id'		=> $order_id,
+		                			'meta_key'		=> 'receipt_verification',
+		                			'meta_value'	=> $code,
 			                	);
 			                	$db_term_meta->insert($meta_data);
 			                }
@@ -190,11 +189,11 @@ class orders_order_paid_api extends Component_Event_Api {
 			                	$order_res = $db_order->field('order_id')->where(array('main_order_id' => $order_id))->select();
 			                	foreach ($order_res AS $row) {
 			                		$meta_data = array(
-			                				'object_type'	=> 'ecjia.order',
-			                				'object_group'	=> 'order',
-			                				'object_id'		=> $row['order_id'],
-			                				'meta_key'		=> 'receipt_verification',
-			                				'meta_value'	=> $code,
+		                				'object_type'	=> 'ecjia.order',
+		                				'object_group'	=> 'order',
+		                				'object_id'		=> $row['order_id'],
+		                				'meta_key'		=> 'receipt_verification',
+		                				'meta_value'	=> $code,
 			                		);
 			                		$db_term_meta->insert($meta_data);
 			                	}
@@ -211,13 +210,13 @@ class orders_order_paid_api extends Component_Event_Api {
 			                	ecjia::$view_object->assign('order_sn', $order['order_sn']);
 			                	ecjia::$view_object->assign('consignee', $order['consignee']);
 			                	ecjia::$view_object->assign('mobile', $order['mobile']);
-			                
+			                	ecjia::$view_object->assign('order_amount', $order['order_amount']);
 			                	$content = ecjia::$controller->fetch_string($tpl['template_content']);
 			                	 
 			                	$options = array(
-			                			'mobile' 		=> ecjia::config('sms_shop_mobile'),
-			                			'msg'			=> $content,
-			                			'template_id' 	=> $tpl['template_id'],
+		                			'mobile' 		=> ecjia::config('sms_shop_mobile'),
+		                			'msg'			=> $content,
+		                			'template_id' 	=> $tpl['template_id'],
 			                	);
 			                	$response = RC_Api::api('sms', 'sms_send', $options);
 		                	}
@@ -254,10 +253,10 @@ class orders_order_paid_api extends Component_Event_Api {
                             order_action($order_sn, OS_CONFIRMED, SS_SHIPPED, $pay_status, $note, RC_Lang::lang('buyer'));
                             $integral = integral_to_give($order);
                             $options = array(
-                            		'user_id'		=> $order['user_id'],
-                            		'rank_points'	=> intval($integral['rank_points']),
-                            		'pay_points'	=> intval($integral['custom_points']),
-                            		'change_desc'	=> sprintf(RC_Lang::lang('order_gift_integral'), $order['order_sn'])
+                            	'user_id'		=> $order['user_id'],
+                            	'rank_points'	=> intval($integral['rank_points']),
+                            	'pay_points'	=> intval($integral['custom_points']),
+                            	'change_desc'	=> sprintf(RC_Lang::lang('order_gift_integral'), $order['order_sn'])
                             );
                             RC_Api::api('user', 'account_change_log',$options);
 //                             log_account_change($order['user_id'], 0, 0, intval($integral['rank_points']), intval($integral['custom_points']), sprintf(RC_Lang::lang('order_gift_integral'), $order['order_sn']));
@@ -277,10 +276,10 @@ class orders_order_paid_api extends Component_Event_Api {
                         $arr = $db_user->field('user_id, amount')->find(array('id' => $pay_log['order_id']));
                         /* 修改会员帐户金额 */
                         $options = array(
-                        		'user_id'		=> $arr['user_id'],
-                        		'user_money'	=> $arr['amount'],
-                        		'change_desc'	=> RC_Lang::lang('surplus_type_0'),
-                        		'change_type'	=> ACT_SAVING
+                        	'user_id'		=> $arr['user_id'],
+                        	'user_money'	=> $arr['amount'],
+                        	'change_desc'	=> RC_Lang::lang('surplus_type_0'),
+                        	'change_type'	=> ACT_SAVING
                         );
                         RC_Api::api('user', 'account_change_log',$options);
                         

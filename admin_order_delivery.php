@@ -14,7 +14,6 @@ class admin_order_delivery extends ecjia_admin {
 	private $db_order_action;
 	private $db_goods;
 	private $db_products;
-	private $db_order_status_log;
 // 	private $db_admin_user;
 	
 	public function __construct() {
@@ -31,7 +30,6 @@ class admin_order_delivery extends ecjia_admin {
 		$this->db_order_action		= RC_Loader::load_app_model('order_action_model');
 		$this->db_goods				= RC_Loader::load_app_model('goods_model','goods');
 		$this->db_products			= RC_Loader::load_app_model('products_model','goods');
-		$this->db_order_status_log	= RC_Loader::load_app_model('order_status_log_model','orders');
 // 		$this->db_admin_user		= RC_Loader::load_model('admin_user_model');
 
 		// 增加操作对象
@@ -102,10 +100,10 @@ class admin_order_delivery extends ecjia_admin {
 		if (!empty($delivery_id)) {
 			$delivery_order = delivery_order_info($delivery_id);
 		} else {
-			$this->showmessage(__('无法找到对应发货单！'), ecjia_admin::MSGTYPE_HTML | ecjia_admin::MSGSTAT_ERROR);
+			$this->showmessage(__('无法找到对应发货单！'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
 		}
 		if (empty($delivery_order)) {
-			$this->showmessage(__('无法找到对应发货单！'), ecjia_admin::MSGTYPE_HTML | ecjia_admin::MSGSTAT_ERROR);
+			$this->showmessage(__('无法找到对应发货单！'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
 		}
 		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('发货单操作：查看')));
@@ -114,7 +112,7 @@ class admin_order_delivery extends ecjia_admin {
 //		$agency_id = $this->db_admin_user->get_admin_agency_id($_SESSION['admin_id']);
 //		if ($agency_id > 0) {
 //			if ($delivery_order['agency_id'] != $agency_id) {
-//				$this->showmessage(RC_Lang::lang('priv_error') , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
+//				$this->showmessage(RC_Lang::lang('priv_error'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 //			}
 //
 //			/* 取当前办事处信息 */
@@ -182,7 +180,7 @@ class admin_order_delivery extends ecjia_admin {
 	public function delivery_ship() 
 	{
 		/* 检查权限 */
-		$this->admin_priv('delivery_view' , ecjia::MSGTYPE_JSON);
+		$this->admin_priv('delivery_view', ecjia::MSGTYPE_JSON);
 		$db_delivery = RC_Loader::load_app_model('delivery_viewmodel','orders');
 		
 		/* 对编辑红包类型名称进行权限检查  BY：JI  START */
@@ -204,10 +202,10 @@ class admin_order_delivery extends ecjia_admin {
 		if (!empty($delivery_id)) {
 			$delivery_order = delivery_order_info($delivery_id);
 		} else {
-			$this->showmessage( __('无法找到对应发货单！') , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
+			$this->showmessage( __('无法找到对应发货单！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		if (empty($delivery_order)) {
-			$this->showmessage( __('无法找到对应发货单！') , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
+			$this->showmessage( __('无法找到对应发货单！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		/* 查询订单信息 */
 		$order = order_info($order_id);
@@ -225,7 +223,7 @@ class admin_order_delivery extends ecjia_admin {
 					
 					/* 操作失败 */
 					$links[] = array('text' => RC_Lang::lang('order_info'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info', 'delivery_id=' . $delivery_id));
-					$this->showmessage('['.$value['goods_name'].']'.RC_Lang::lang('act_good_vacancy'), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR, array('links' => $links));
+					$this->showmessage('['.$value['goods_name'].']'.RC_Lang::lang('act_good_vacancy'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
 				}
 	
 				/* 虚拟商品列表 virtual_card */
@@ -255,7 +253,7 @@ class admin_order_delivery extends ecjia_admin {
 					(ecjia::config('use_storage') == '0' && $value['is_real'] == 0))) {
 					/* 操作失败 */
 					$links[] = array('text' => RC_Lang::lang('order_info'), 'href' => RC_Uri::url('orders/order_delilvery/delivery_info', 'delivery_id=' . $delivery_id));
-					$this->showmessage('['.$value['goods_name'].']'.RC_Lang::lang('act_good_vacancy'), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR, array('links' => $links));
+					$this->showmessage('['.$value['goods_name'].']'.RC_Lang::lang('act_good_vacancy'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
 					break;
 				}
 
@@ -305,19 +303,11 @@ class admin_order_delivery extends ecjia_admin {
 		$_delivery['invoice_no']	= $invoice_no;
 		$_delivery['status']		= 0;	/* 0，为已发货 */
 		$result = $this->db_delivery_order->where(array('delivery_id' => $delivery_id))-> update($_delivery);
-		if ($result) {
-			$data = array(
-					'order_status' => '已发货',
-					'message'	   => '订单号为'.$order['order_sn'].'的商品已发货，请您耐心等待。',
-					'order_id'	   => $order_id,
-					'add_time'	   => RC_Time::gmtime(),
-			);
-			$this->db_order_status_log->insert($data);
-		}
+	
 		if (!$result) {
 			/* 操作失败 */
 			$links[] = array('text' => RC_Lang::lang('delivery_sn') . RC_Lang::lang('detail'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info','delivery_id=' . $delivery_id));
-			$this->showmessage(RC_Lang::lang('act_false'), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR, array('links' => $links));
+			$this->showmessage(RC_Lang::lang('act_false'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
 		}
 	
 		/* 标记订单为已确认 “已发货” */
@@ -370,7 +360,7 @@ class admin_order_delivery extends ecjia_admin {
 				$content = $this->fetch_string($tpl['template_content']);
 
 				if (!RC_Mail::send_mail($order['consignee'], $order['email'] , $tpl['template_subject'], $content, $tpl['is_html'])) {
-					$this->showmessage(RC_Lang::lang('send_mail_fail') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+					$this->showmessage(RC_Lang::lang('send_mail_fail'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 				}
 			}
 			$result = ecjia_app::validate_application('sms');
@@ -407,7 +397,7 @@ class admin_order_delivery extends ecjia_admin {
 		/* 操作成功 */
 		$links[] = array('text' => RC_Lang::lang('09_delivery_order'), 'href' => RC_Uri::url('orders/admin_order_delivery/init'));
 		$links[] = array('text' => RC_Lang::lang('delivery_sn') . RC_Lang::lang('detail'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info', 'delivery_id=' . $delivery_id));
-		$this->showmessage(RC_Lang::lang('act_ok'), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_SUCCESS, array('links' => $links));
+		$this->showmessage(RC_Lang::lang('act_ok'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('links' => $links));
 		
 // 				log_account_change($order['user_id'], 0, 0, intval($integral['rank_points']), intval($integral['custom_points']), sprintf(RC_Lang::lang('order_gift_integral'), $order['order_sn']));
 	}
@@ -418,13 +408,11 @@ class admin_order_delivery extends ecjia_admin {
 	public function delivery_cancel_ship() 
 	{
 		/* 检查权限 */
-		$this->admin_priv('delivery_view' , ecjia::MSGTYPE_JSON);
+		$this->admin_priv('delivery_view', ecjia::MSGTYPE_JSON);
 		
-		/* 对编辑红包类型名称进行权限检查  BY：JI  START */
 		if (!empty($_SESSION['ru_id'])) {
 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
-		/* 对编辑红包类型名称进行权限检查  BY：JI END */
 
 		/* 取得参数 */
 		$delivery				= '';
@@ -437,11 +425,11 @@ class admin_order_delivery extends ecjia_admin {
 		if (!empty($delivery_id)) {
 			$delivery_order = delivery_order_info($delivery_id);
 		} else {
-			$this->showmessage( __('无法找到对应发货单！'), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
+			$this->showmessage( __('无法找到对应发货单！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 //			die('order does not exist');
 		}
 		if (empty($delivery_order)) {
-			$this->showmessage( __('无法找到对应发货单！') , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
+			$this->showmessage( __('无法找到对应发货单！') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		/* 查询订单信息 */
 		$order = order_info($order_id);
@@ -453,7 +441,7 @@ class admin_order_delivery extends ecjia_admin {
 		if (!$result) {
 			/* 操作失败 */
 			$links[] = array('text' => RC_Lang::lang('delivery_sn') . RC_Lang::lang('detail'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info', 'delivery_id=' . $delivery_id));
-			$this->showmessage(RC_Lang::lang('act_false'), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
+			$this->showmessage(RC_Lang::lang('act_false'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 	
 		/* 修改定单发货单号 */
@@ -533,7 +521,7 @@ class admin_order_delivery extends ecjia_admin {
 	
 		/* 操作成功 */
 		$links[] = array('text' => RC_Lang::lang('delivery_sn') . RC_Lang::lang('detail'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info', 'delivery_id=' . $delivery_id));
-		$this->showmessage(RC_Lang::lang('act_ok'), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_SUCCESS);
+		$this->showmessage(RC_Lang::lang('act_ok'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
 // 		log_account_change($order['user_id'], 0, 0, (-1) * intval($integral['rank_points']), (-1) * intval($integral['custom_points']), sprintf(RC_Lang::lang('return_order_gift_integral'), $order['order_sn']));
 	}
 	
@@ -541,13 +529,11 @@ class admin_order_delivery extends ecjia_admin {
 	public function remove() 
 	{
 		/* 检查权限 */
-		$this->admin_priv('order_os_edit' , ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
 		
-		/* 对编辑红包类型名称进行权限检查  BY：JI  START */
 		if (!empty($_SESSION['ru_id'])) {
 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
-		/* 对编辑红包类型名称进行权限检查  BY：JI END */
 
 		$delivery_id = $_REQUEST['delivery_id'];
 		if (!is_array($delivery_id)) {
@@ -581,13 +567,13 @@ class admin_order_delivery extends ecjia_admin {
 		/* 记录日志 */
 		ecjia_admin::admin_log($_REQUEST['delivery_id'], 'remove', 'delivery_order');
 
-		$this->showmessage(RC_Lang::lang('tips_delivery_del'), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_SUCCESS,array('pjaxurl'=>RC_Uri::url('orders/admin_order_delivery/init')));
+		$this->showmessage(RC_Lang::lang('tips_delivery_del'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('orders/admin_order_delivery/init')));
 	}
 	
 	/*收货人信息*/
 	public function consignee_info()
 	{
-		$this->admin_priv('delivery_view' ,ecjia::MSGTYPE_JSON);
+		$this->admin_priv('delivery_view', ecjia::MSGTYPE_JSON);
 		$id = $_GET['delivery_id'];
 		if (!empty($id)) {
 			$field = "order_id,consignee,address,country,province,city,district,sign_building,email,zipcode,tel,mobile,best_time";
@@ -598,10 +584,10 @@ class admin_order_delivery extends ecjia_admin {
 				
 				$row['region'] = $region['region'];
 			} else {
-				$this->showmessage(__('无法找到响应的发货单收货人！'), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
+				$this->showmessage(__('无法找到响应的发货单收货人！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 			}
 		} else {
-			$this->showmessage(__('操作有误！'), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
+			$this->showmessage(__('操作有误！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		die(json_encode($row));
 	}

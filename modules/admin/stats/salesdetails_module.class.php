@@ -57,8 +57,8 @@ class salesdetails_module implements ecjia_interface {
 		}
 		$where = array();
 		$where[] = 'oi.pay_time >="' .$start_date. '" and oi.pay_time<="' .$end_date. '"';
-		$where[] = "(oi.pay_status = '" . PS_PAYED . "' OR oi.pay_status = '" . PS_PAYING . "')";
-		if ($_SESSION['ru_id'] > 0) {
+		$where[] = 'oi.pay_status = 2';
+		if (isset($_SESSION['ru_id']) && $_SESSION['ru_id'] > 0) {
 			/*入驻商*/
 			$where['ru_id'] = $_SESSION['ru_id'];
 			$where[] = 'oii.order_id is null';
@@ -83,8 +83,7 @@ class salesdetails_module implements ecjia_interface {
 		$pagination = _POST('pagination');
 		$size = $pagination['count'];
 		$page = $pagination['page'];
-		//加载分页类
-		RC_Loader::load_sys_class('ecjia_page', false);
+
 		//实例化分页
 		$page_row = new ecjia_page($count, $size, 6, '', $page);
 	

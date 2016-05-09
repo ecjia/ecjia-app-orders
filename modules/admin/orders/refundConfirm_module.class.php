@@ -99,7 +99,7 @@ class refundConfirm_module implements ecjia_interface {
 // 			order_refund($order, $refund_type, $refund_note);
 			order_refund($order, 1, '收银台付款撤销');
 			/* 记录日志 */
-			ecjia_admin::admin_log($order_id, 'edit', 'not_payment');
+			ecjia_admin::admin_log('未付款，订单号是 '.$order['order_sn'], 'edit', 'order_status');
 			/* 记录log */
 			order_action($order['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_UNPAYED, '');
 			

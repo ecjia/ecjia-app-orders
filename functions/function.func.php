@@ -48,9 +48,9 @@ function return_user_surplus_integral_bonus($order)
 	if ($order['user_id'] > 0 && $order['surplus'] > 0) {
 		$surplus = $order['money_paid'] < 0 ? $order['surplus'] + $order['money_paid'] : $order['surplus'];
 		$options = array(
-				'user_id'		=> $order['user_id'],
-				'user_money'	=> $surplus,
-				'change_desc'	=> sprintf(RC_Lang::lang('return_order_surplus'), $order['order_sn'])
+			'user_id'		=> $order['user_id'],
+			'user_money'	=> $surplus,
+			'change_desc'	=> sprintf(RC_Lang::lang('return_order_surplus'), $order['order_sn'])
 		);
 		RC_Api::api('user', 'account_change_log',$options);
 		
@@ -62,9 +62,9 @@ function return_user_surplus_integral_bonus($order)
 
 	if ($order['user_id'] > 0 && $order['integral'] > 0) {
 		$options = array(
-				'user_id'		=> $order['user_id'],
-				'pay_points'	=> $order['integral'],
-				'change_desc'	=> sprintf(RC_Lang::lang('return_order_integral'), $order['order_sn'])
+			'user_id'		=> $order['user_id'],
+			'pay_points'	=> $order['integral'],
+			'change_desc'	=> sprintf(RC_Lang::lang('return_order_integral'), $order['order_sn'])
 		);
 		RC_Api::api('user', 'account_change_log',$options);
 
@@ -549,7 +549,7 @@ function order_deliveryed($order_id) {
 	if (empty($order_id)) {
 		return $return_res;
 	}
-	$sum = $db->where(array('order_id' => $order_id , 'status' => 0))->count('delivery_id');
+	$sum = $db->where(array('order_id' => $order_id, 'status' => 0))->count('delivery_id');
 	if ($sum) {
 		$return_res = 1;
 	}
@@ -597,7 +597,7 @@ function update_order_goods($order_id, $_sended, $goods_list = array()) {
 // 						'send_number' => goods_number,
 // 					);
 // 					$data = 'send_number=goods_number';
-// 					$db->where(array('order_id' => $order_id , 'goods_id' => $goods['goods_id']))->update($data);
+// 					$db->where(array('order_id' => $order_id, 'goods_id' => $goods['goods_id']))->update($data);
 					$db->inc('send_number','order_id='.$order_id. ' and goods_id='.$goods['goods_id'],'0,send_number=goods_number');
 				}
 			}
@@ -646,7 +646,7 @@ function update_order_virtual_goods($order_id, $_sended, $virtual_goods) {
 // 			'send_number' => send_number + $goods['num'],
 // 		);
 // 		$data = 'send_number = send_number +'.$goods['num'];
-// 		$query = $db->where(array('order_id' => $order_id , 'goods_id' => $goods['goods_id']))->update($data);
+// 		$query = $db->where(array('order_id' => $order_id, 'goods_id' => $goods['goods_id']))->update($data);
 		$query = $db->inc('send_number','order_id='.$order_id. ' and goods_id='.$goods['goods_id'],$goods['num']);
 		
 		if (!$query) {
@@ -722,7 +722,7 @@ function del_order_delivery($order_id) {
 			}
 		}
 		$query = $db_goods->where(array('delivery_id' => $delivery_id))->delete();
-		$query .= $db_order->where(array('order_id' => $order_id , 'status' => 0))->delete();
+		$query .= $db_order->where(array('order_id' => $order_id, 'status' => 0))->delete();
 	}
 
 	if ($query) {
@@ -947,7 +947,7 @@ function package_virtual_card_shipping($goods, $order_sn) {
 	// 取出超值礼包中的虚拟商品信息
 	foreach ($goods as $virtual_goods_key => $virtual_goods_value) {
 		/* 取出卡片信息 */
-		$arr = $db->field('card_id, card_sn, card_password, end_date, crc32')->where(array('goods_id' => $virtual_goods_value['goods_id'] , 'is_saled' => 0))->limit($virtual_goods_value['num'])->select();
+		$arr = $db->field('card_id, card_sn, card_password, end_date, crc32')->where(array('goods_id' => $virtual_goods_value['goods_id'], 'is_saled' => 0))->limit($virtual_goods_value['num'])->select();
 		/* 判断是否有库存 没有则推出循环 */
 		if (count($arr) == 0) {
 			continue;
@@ -1006,7 +1006,7 @@ function package_virtual_card_shipping($goods, $order_sn) {
 			$tpl   = RC_Api::api('mail', 'mail_template', $tpl_name);
 			
 			$content = $this->fetch_string($tpl['template_content']);
-			RC_Mail::send_mail($order['consignee'], $order['em'] , $tpl['template_subject'], $content, $tpl['is_html']);
+			RC_Mail::send_mail($order['consignee'], $order['em'], $tpl['template_subject'], $content, $tpl['is_html']);
 		}
 	}
 
@@ -1117,8 +1117,6 @@ function get_back_list()
 	$count = $db_back_order->where($where)->count();
 	$filter['record_count']		= $count;
 
-	//加载分页类
-	RC_Loader::load_sys_class('ecjia_page', false);
 	//实例化分页
 	$page = new ecjia_page($count, 15, 6);
 	
@@ -1369,16 +1367,14 @@ function delivery_return_goods($delivery_id, $delivery_order)
 	/* 查询：取得发货单商品 */
 	$goods_list = $db_delivery->where(array('delivery_id' => $delivery_order['delivery_id']))->select();
 	/* 更新： */
-	foreach ($goods_list as $key=>$val) {
-		$data = array(
-				'send_number' => send_number - $goods_list[$key]['send_number'],
-		);
-		$db_order_goods->where(array('order_id' => $delivery_order['order_id'] , 'goods_id' => $goods_list[$key]['goods_id']))->update($data);
+	if (!empty($goods_list)) {
+		foreach ($goods_list as $key => $val) {
+			$db_order_goods->dec('send_number', 'order_id='.$delivery_order['order_id']. ' and goods_id='.$val['goods_id'], $val['send_number']);
+		}
 	}
-
 	$data = array(
-			'shipping_status'	=> '0',
-			'order_status'		=> 1
+		'shipping_status'	=> '0',
+		'order_status'		=> 1
 	);
 	$db_order_info->where(array('order_id' => $delivery_order['order_id']))->update($data);
 }
@@ -1438,14 +1434,14 @@ function get_all_delivery_finish($order_id)
 	} else {
 		/* 已全部分单 */
 		/* 是否全部发货 */
-		$sum = $db->where(array('order_id' => $order_id , 'status' => 2))->count('delivery_id');
+		$sum = $db->where(array('order_id' => $order_id, 'status' => 2))->count('delivery_id');
 		/* 全部发货 */
 		if (empty($sum)) {
 			$return_res = 1;
 		} else {
 			/* 未全部发货 */
 			/* 订单全部发货中时：当前发货单总数 */
-			$_sum = $db->where(array('order_id' => $order_id , 'status' => array('neq' => 1)))->count('delivery_id');
+			$_sum = $db->where(array('order_id' => $order_id, 'status' => array('neq' => 1)))->count('delivery_id');
 			if ($_sum == $sum) {
 				$return_res = -2; // 完全没发货
 			} else {
@@ -1465,177 +1461,174 @@ function get_all_delivery_finish($order_id)
 	 */
 function merge_order($from_order_sn, $to_order_sn) 
 {
-		$db_order_good 	= RC_Loader::load_app_model('order_goods_model', 'orders');
-		$db_order_info 	= RC_Loader::load_app_model('order_info_model', 'orders');
-		$db_pay_log 	= RC_Loader::load_app_model('pay_log_model', 'orders');
-	
-		/* 订单号不能为空 */
-		if (trim($from_order_sn) == '' || trim($to_order_sn) == '') {
-			ecjia::$controller->showmessage(RC_Lang::lang('order_sn_not_null') , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
-		}
-	
-		/* 订单号不能相同 */
-		if ($from_order_sn == $to_order_sn) {
-			ecjia::$controller->showmessage(RC_Lang::lang('two_order_sn_same') , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
-		}
-	
-		/* 取得订单信息 */
-		$from_order = order_info(0, $from_order_sn);
-		$to_order   = order_info(0, $to_order_sn);
-	
-		/* 检查订单是否存在 */
-		if (!$from_order) {
-			ecjia::$controller->showmessage(sprintf(RC_Lang::lang('order_not_exist'), $from_order_sn) , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
-		} elseif (!$to_order) {
-			ecjia::$controller->showmessage(sprintf(RC_Lang::lang('order_not_exist'), $to_order_sn) , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
-		}
-	
-		/* 检查合并的订单是否为普通订单，非普通订单不允许合并 */
-		if ($from_order['extension_code'] != '' || $to_order['extension_code'] != 0) {
-			ecjia::$controller->showmessage(RC_Lang::lang('merge_invalid_order') , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
-		}
-	
-		/* 检查订单状态是否是已确认或未确认、未付款、未发货 */
-		if ($from_order['order_status'] != OS_UNCONFIRMED && $from_order['order_status'] != OS_CONFIRMED) {
-			ecjia::$controller->showmessage(sprintf(RC_Lang::lang('os_not_unconfirmed_or_confirmed'), $from_order_sn) , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
-			
-		} elseif ($from_order['pay_status'] != PS_UNPAYED) {
-			ecjia::$controller->showmessage(sprintf(RC_Lang::lang('ps_not_unpayed'), $from_order_sn) , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
-		} elseif ($from_order['shipping_status'] != SS_UNSHIPPED) {
-			ecjia::$controller->showmessage(sprintf(RC_Lang::lang('ss_not_unshipped'), $from_order_sn) , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
-		}
-	
-		if ($to_order['order_status'] != OS_UNCONFIRMED && $to_order['order_status'] != OS_CONFIRMED) {
-			ecjia::$controller->showmessage(sprintf(RC_Lang::lang('os_not_unconfirmed_or_confirmed'), $to_order_sn) , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
-		} elseif ($to_order['pay_status'] != PS_UNPAYED) {
-			ecjia::$controller->showmessage(sprintf(RC_Lang::lang('ps_not_unpayed'), $to_order_sn) , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
-		} elseif ($to_order['shipping_status'] != SS_UNSHIPPED) {
-			ecjia::$controller->showmessage(sprintf(RC_Lang::lang('ss_not_unshipped'), $to_order_sn) , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
-		}
-	
-		/* 检查订单用户是否相同 */
-		if ($from_order['user_id'] != $to_order['user_id']) {
-			ecjia::$controller->showmessage(RC_Lang::lang('order_user_not_same') , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
-		}
-	
-		/* 合并订单 */
-		$order = $to_order;
-		$order['order_id']  = '';
-		$order['add_time']  = RC_Time::gmtime();
-	
-		// 合并商品总额
-		$order['goods_amount'] += $from_order['goods_amount'];
-	
-		// 合并折扣
-		$order['discount'] += $from_order['discount'];
-	
-		if ($order['shipping_id'] > 0) {
-			// 重新计算配送费用
-			$weight_price       	= order_weight_price($to_order['order_id']);
-			$from_weight_price  	= order_weight_price($from_order['order_id']);
-			$weight_price['weight'] += $from_weight_price['weight'];
-			$weight_price['amount'] += $from_weight_price['amount'];
-			$weight_price['number'] += $from_weight_price['number'];
-	
-			$region_id_list = array($order['country'], $order['province'], $order['city'], $order['district']);
-			$shipping_method = RC_Loader::load_app_class('shipping_method','shipping');
-			$shipping_area = $shipping_method->shipping_area_info($order['shipping_id'], $region_id_list);
-	
-			$order['shipping_fee'] = $shipping_method->shipping_fee($shipping_area['shipping_code'],
-					unserialize($shipping_area['configure']), $weight_price['weight'], $weight_price['amount'], $weight_price['number']);
-	
-			// 如果保价了，重新计算保价费
-			if ($order['insure_fee'] > 0) {
-				$order['insure_fee'] = shipping_insure_fee($shipping_area['shipping_code'], $order['goods_amount'], $shipping_area['insure']);
-			}
-		}
-	
-		// 重新计算包装费、贺卡费
-		if ($order['pack_id'] > 0) {
-// 			$pack = pack_info($order['pack_id']);
-// 			$order['pack_fee'] = $pack['free_money'] > $order['goods_amount'] ? $pack['pack_fee'] : 0;
-			$order['pack_fee'] = 0;
-		}
-		if ($order['card_id'] > 0) {
-// 			$card = card_info($order['card_id']);
-// 			$order['card_fee'] = $card['free_money'] > $order['goods_amount'] ? $card['card_fee'] : 0;
-			$order['card_fee'] = 0;
-		}
-	
-		// 红包不变，合并积分、余额、已付款金额
-		$order['integral']      += $from_order['integral'];
-		$order['integral_money'] = value_of_integral($order['integral']);
-		$order['surplus']       += $from_order['surplus'];
-		$order['money_paid']    += $from_order['money_paid'];
-	
-		// 计算应付款金额（不包括支付费用）
-		$order['order_amount'] = $order['goods_amount'] - $order['discount']
-		+ $order['shipping_fee']
-		+ $order['insure_fee']
-		+ $order['pack_fee']
-		+ $order['card_fee']
-		- $order['bonus']
-		- $order['integral_money']
-		- $order['surplus']
-		- $order['money_paid'];
-	
-		// 重新计算支付费
-		if ($order['pay_id'] > 0) {
-			// 货到付款手续费
-			$cod_fee          = $shipping_area ? $shipping_area['pay_fee'] : 0;
-			$order['pay_fee'] = pay_fee($order['pay_id'], $order['order_amount'], $cod_fee);
-	
-			// 应付款金额加上支付费
-			$order['order_amount'] += $order['pay_fee'];
-		}
-	
-		/* 插入订单表 */
-		$order['order_sn'] = get_order_sn(); 
-		$result = $db_order_info->insert(rc_addslashes($order));
-		if (!$result) {
-			ecjia_admin::$controller->showmessage(__('订单合并失败！') , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
-		}
-//		do {
-//			$order['order_sn'] = get_order_sn();
-//			if ($db_order_info->insert(addslashes_deep($order))) {
-//				break;
-//			} else {
-//				if ($db_order_info->errno() != 1062) {
-//					die($db_order_info->errorMsg());
-//				}
-//			}
-//		}
-//		while (true); // 防止订单号重复
-	
-		/* 订单号 */
-		$order_id = $db_order_info->last_insert_id();
-		
-		/* 更新订单商品 */
-		$data = array(
-				'order_id' => $order_id
-		);
-		$db_order_good->in(array('order_id' => array($from_order['order_id'], $to_order['order_id'])))->update($data);
-		
-		$payment_method = RC_Loader::load_app_class('payment_method','payment');
-		/* 插入支付日志 */
-		$payment_method->insert_pay_log($order_id, $order['order_amount'], PAY_ORDER);
-		/* 删除原订单 */
-		$db_order_info->in(array('order_id' => array($from_order['order_id'], $to_order['order_id'])))->delete();
-	
-		/* 删除原订单支付日志 */
-		$db_pay_log->in(array('order_id' => array($from_order['order_id'], $to_order['order_id'])))->delete();
-		/* 返还 from_order 的红包，因为只使用 to_order 的红包 */
-		if ($from_order['bonus_id'] > 0) {
-			RC_Loader::load_app_func('bonus','bonus');
-			unuse_bonus($from_order['bonus_id']);
-		}
-		
-		ecjia_admin::admin_log($from_order['order_sn'].'与'.$to_order['order_sn'].'，合并成新订单，订单号为：'.$order['order_sn'], 'edit', 'order');
-		/* 返回成功 */
-		return true;
+	$db_order_good 	= RC_Loader::load_app_model('order_goods_model', 'orders');
+	$db_order_info 	= RC_Loader::load_app_model('order_info_model', 'orders');
+	$db_pay_log 	= RC_Loader::load_app_model('pay_log_model', 'orders');
+
+	/* 订单号不能为空 */
+	if (trim($from_order_sn) == '' || trim($to_order_sn) == '') {
+		ecjia::$controller->showmessage(RC_Lang::lang('order_sn_not_null'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
+	/* 订单号不能相同 */
+	if ($from_order_sn == $to_order_sn) {
+		ecjia::$controller->showmessage(RC_Lang::lang('two_order_sn_same'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+	}
 
+	/* 取得订单信息 */
+	$from_order = order_info(0, $from_order_sn);
+	$to_order   = order_info(0, $to_order_sn);
 
+	/* 检查订单是否存在 */
+	if (!$from_order) {
+		ecjia::$controller->showmessage(sprintf(RC_Lang::lang('order_not_exist'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+	} elseif (!$to_order) {
+		ecjia::$controller->showmessage(sprintf(RC_Lang::lang('order_not_exist'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+	}
+
+	/* 检查合并的订单是否为普通订单，非普通订单不允许合并 */
+	if ($from_order['extension_code'] != '' || $to_order['extension_code'] != 0) {
+		ecjia::$controller->showmessage(RC_Lang::lang('merge_invalid_order'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+	}
+
+	/* 检查订单状态是否是已确认或未确认、未付款、未发货 */
+	if ($from_order['order_status'] != OS_UNCONFIRMED && $from_order['order_status'] != OS_CONFIRMED) {
+		ecjia::$controller->showmessage(sprintf(RC_Lang::lang('os_not_unconfirmed_or_confirmed'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		
+	} elseif ($from_order['pay_status'] != PS_UNPAYED) {
+		ecjia::$controller->showmessage(sprintf(RC_Lang::lang('ps_not_unpayed'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+	} elseif ($from_order['shipping_status'] != SS_UNSHIPPED) {
+		ecjia::$controller->showmessage(sprintf(RC_Lang::lang('ss_not_unshipped'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+	}
+
+	if ($to_order['order_status'] != OS_UNCONFIRMED && $to_order['order_status'] != OS_CONFIRMED) {
+		ecjia::$controller->showmessage(sprintf(RC_Lang::lang('os_not_unconfirmed_or_confirmed'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+	} elseif ($to_order['pay_status'] != PS_UNPAYED) {
+		ecjia::$controller->showmessage(sprintf(RC_Lang::lang('ps_not_unpayed'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+	} elseif ($to_order['shipping_status'] != SS_UNSHIPPED) {
+		ecjia::$controller->showmessage(sprintf(RC_Lang::lang('ss_not_unshipped'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+	}
+
+	/* 检查订单用户是否相同 */
+	if ($from_order['user_id'] != $to_order['user_id']) {
+		ecjia::$controller->showmessage(RC_Lang::lang('order_user_not_same'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+	}
+
+	/* 合并订单 */
+	$order = $to_order;
+	$order['order_id']  = '';
+	$order['add_time']  = RC_Time::gmtime();
+
+	// 合并商品总额
+	$order['goods_amount'] += $from_order['goods_amount'];
+
+	// 合并折扣
+	$order['discount'] += $from_order['discount'];
+
+	if ($order['shipping_id'] > 0) {
+		// 重新计算配送费用
+		$weight_price       	= order_weight_price($to_order['order_id']);
+		$from_weight_price  	= order_weight_price($from_order['order_id']);
+		$weight_price['weight'] += $from_weight_price['weight'];
+		$weight_price['amount'] += $from_weight_price['amount'];
+		$weight_price['number'] += $from_weight_price['number'];
+
+		$region_id_list = array($order['country'], $order['province'], $order['city'], $order['district']);
+		$shipping_method = RC_Loader::load_app_class('shipping_method','shipping');
+		$shipping_area = $shipping_method->shipping_area_info($order['shipping_id'], $region_id_list);
+
+		$order['shipping_fee'] = $shipping_method->shipping_fee($shipping_area['shipping_code'],
+				unserialize($shipping_area['configure']), $weight_price['weight'], $weight_price['amount'], $weight_price['number']);
+
+		// 如果保价了，重新计算保价费
+		if ($order['insure_fee'] > 0) {
+			$order['insure_fee'] = shipping_insure_fee($shipping_area['shipping_code'], $order['goods_amount'], $shipping_area['insure']);
+		}
+	}
+	
+	// 重新计算包装费、贺卡费
+	if ($order['pack_id'] > 0) {
+// 		$pack = pack_info($order['pack_id']);
+// 		$order['pack_fee'] = $pack['free_money'] > $order['goods_amount'] ? $pack['pack_fee'] : 0;
+		$order['pack_fee'] = 0;
+	}
+	if ($order['card_id'] > 0) {
+// 		$card = card_info($order['card_id']);
+// 		$order['card_fee'] = $card['free_money'] > $order['goods_amount'] ? $card['card_fee'] : 0;
+		$order['card_fee'] = 0;
+	}
+	
+	// 红包不变，合并积分、余额、已付款金额
+	$order['integral']      += $from_order['integral'];
+	$order['integral_money'] = value_of_integral($order['integral']);
+	$order['surplus']       += $from_order['surplus'];
+	$order['money_paid']    += $from_order['money_paid'];
+
+	// 计算应付款金额（不包括支付费用）
+	$order['order_amount'] = $order['goods_amount'] - $order['discount']
+	+ $order['shipping_fee']
+	+ $order['insure_fee']
+	+ $order['pack_fee']
+	+ $order['card_fee']
+	- $order['bonus']
+	- $order['integral_money']
+	- $order['surplus']
+	- $order['money_paid'];
+
+	// 重新计算支付费
+	if ($order['pay_id'] > 0) {
+		// 货到付款手续费
+		$cod_fee          = $shipping_area ? $shipping_area['pay_fee'] : 0;
+		$order['pay_fee'] = pay_fee($order['pay_id'], $order['order_amount'], $cod_fee);
+
+		// 应付款金额加上支付费
+		$order['order_amount'] += $order['pay_fee'];
+	}
+	
+	/* 插入订单表 */
+	$order['order_sn'] = get_order_sn(); 
+	$result = $db_order_info->insert(rc_addslashes($order));
+	if (!$result) {
+		ecjia_admin::$controller->showmessage(__('订单合并失败！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+	}
+//	do {
+//		$order['order_sn'] = get_order_sn();
+//		if ($db_order_info->insert(addslashes_deep($order))) {
+//			break;
+//		} else {
+//			if ($db_order_info->errno() != 1062) {
+//				die($db_order_info->errorMsg());
+//			}
+//		}
+//	}
+//	while (true); // 防止订单号重复
+	
+	/* 订单号 */
+	$order_id = $db_order_info->last_insert_id();
+	
+	/* 更新订单商品 */
+	$data = array(
+			'order_id' => $order_id
+	);
+	$db_order_good->in(array('order_id' => array($from_order['order_id'], $to_order['order_id'])))->update($data);
+	
+	$payment_method = RC_Loader::load_app_class('payment_method','payment');
+	/* 插入支付日志 */
+	$payment_method->insert_pay_log($order_id, $order['order_amount'], PAY_ORDER);
+	/* 删除原订单 */
+	$db_order_info->in(array('order_id' => array($from_order['order_id'], $to_order['order_id'])))->delete();
+
+	/* 删除原订单支付日志 */
+	$db_pay_log->in(array('order_id' => array($from_order['order_id'], $to_order['order_id'])))->delete();
+	/* 返还 from_order 的红包，因为只使用 to_order 的红包 */
+	if ($from_order['bonus_id'] > 0) {
+		RC_Loader::load_app_func('bonus','bonus');
+		unuse_bonus($from_order['bonus_id']);
+	}
+	
+	ecjia_admin::admin_log($from_order['order_sn'].'与'.$to_order['order_sn'].'，合并成新订单，订单号为：'.$order['order_sn'], 'edit', 'order');
+	/* 返回成功 */
+	return true;
+}
 
 // end

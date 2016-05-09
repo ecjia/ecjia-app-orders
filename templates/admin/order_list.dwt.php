@@ -3,7 +3,7 @@
 
 <!-- {block name="footer"} -->
 <script type="text/javascript">
-ecjia.admin.order.init();
+	ecjia.admin.order.init();
 </script>
 <!-- {/block} -->
 

@@ -1,5 +1,4 @@
 <?php
-defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * ECJIA 订单操作
  */
@@ -23,7 +22,7 @@ class order_operate {
 		update_order_amount($order['order_id']);
 		
 		/* 记录日志 */
-		ecjia_admin::admin_log($order['order_id'], 'edit', 'confirmation');
+		ecjia_admin::admin_log('订单号是 '.$order['order_sn'], 'edit', 'order_status');
 		/* 记录log */
 		$this->order_action($order['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_UNPAYED, $note['action_note']);
 		
@@ -45,11 +44,11 @@ class order_operate {
 			$content = ecjia_admin::$controller->fetch_string($tpl['template_content']);
 		
 			if (!RC_Mail::send_mail($order['consignee'], $order['email'], $tpl['template_subject'], $content, $tpl['is_html'])) {
-// 				$this->showmessage(RC_Lang::lang('send_mail_fail') , ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_ERROR);
+// 				$this->showmessage(RC_Lang::lang('send_mail_fail'), ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_ERROR);
 			}
 		}
 		return true;
-// 		$this->showmessage(RC_Lang::lang('act_ok') , ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_SUCCESS);
+// 		$this->showmessage(RC_Lang::lang('act_ok'), ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_SUCCESS);
 		
 	}
 	
@@ -77,7 +76,7 @@ class order_operate {
 		}
 		$this->update_order($order['order_id'], $arr);
 		/* 记录日志 */
-		ecjia_admin::admin_log($order['order_id'], 'edit', 'payment');
+		ecjia_admin::admin_log('已付款，订单号是 '.$order['order_sn'], 'edit', 'order_status');
 		/* 记录log */
 		$this->order_action($order['order_sn'], OS_CONFIRMED, $order['shipping_status'], PS_PAYED, $note['action_note']);
 		return true;
@@ -95,7 +94,7 @@ class order_operate {
 		$arr['shipping_status']		= SS_PREPARING;
 		$this->update_order($order['order_id'], $arr);
 		/* 记录日志 */
-		ecjia_admin::admin_log($order['order_id'], 'edit', 'prepare');
+		ecjia_admin::admin_log('配货中，订单号是 '.$order['order_sn'], 'edit', 'order_status');
 		/* 记录log */
 		$this->order_action($order['order_sn'], OS_CONFIRMED, SS_PREPARING, $order['pay_status'], $action_note);
 	}
@@ -153,7 +152,7 @@ class order_operate {
 			return new ecjia_error('order_splited', '您的订单'.$order['order_sn'].',已分单，正在发货中');
 			// 			/* 操作失败 */
 			// 			$links[] = array('text' => RC_Lang::lang('order_info'), 'href' => RC_Uri::url('orders/admin/info', 'order_id=' . $order_id));
-			// 			$this->showmessage(sprintf(RC_Lang::lang('order_splited_sms'), $order['order_sn'],RC_Lang::lang('os/'.OS_SPLITED), RC_Lang::lang('ss/'.SS_SHIPPED_ING), ecjia::config('shop_name')) , ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_ERROR , array('links' => $links));
+			// 			$this->showmessage(sprintf(RC_Lang::lang('order_splited_sms'), $order['order_sn'],RC_Lang::lang('os/'.OS_SPLITED), RC_Lang::lang('ss/'.SS_SHIPPED_ING), ecjia::config('shop_name')), ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_ERROR , array('links' => $links));
 		}
 	
 		/* 取得订单商品 */
@@ -217,7 +216,7 @@ class order_operate {
 						return new ecjia_error('act_ship_num', '此单发货数量不能超出订单商品数量！');
 						// 						/* 操作失败 */
 						// 						$links[] = array('text' => RC_Lang::lang('order_info'), 'href' => RC_Uri::url('orders/admin/info', 'order_id=' . $order_id));
-						// 						$this->showmessage(RC_Lang::lang('act_ship_num') , ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_ERROR , array('links' => $links));
+						// 						$this->showmessage(RC_Lang::lang('act_ship_num'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR , array('links' => $links));
 					}
 				} else {
 					/* 超值礼包 */
@@ -255,15 +254,15 @@ class order_operate {
 						return new ecjia_error('act_good_vacancy', '商品已缺货！');
 						// 						/* 操作失败 */
 						// 						$links[] = array('text' => RC_Lang::lang('order_info'), 'href' => RC_Uri::url('orders/admin/info', 'order_id=' . $order_id));
-						// 						$this->showmessage(sprintf(RC_Lang::lang('act_good_vacancy'), $pg_value['goods_name']), ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_ERROR , array('links' => $links));
+						// 						$this->showmessage(sprintf(RC_Lang::lang('act_good_vacancy'), $pg_value['goods_name']), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR , array('links' => $links));
 					}
 	
 					/* 商品（超值礼包） 虚拟商品列表 package_virtual_goods*/
 					if ($pg_value['is_real'] == 0) {
 						$package_virtual_goods[] = array(
-								'goods_id'		=> $pg_value['goods_id'],
-								'goods_name'	=> $pg_value['goods_name'],
-								'num'			=> $send_number[$value['rec_id']][$pg_value['g_p']]
+							'goods_id'		=> $pg_value['goods_id'],
+							'goods_name'	=> $pg_value['goods_name'],
+							'num'			=> $send_number[$value['rec_id']][$pg_value['g_p']]
 						);
 					}
 				}
@@ -274,7 +273,7 @@ class order_operate {
 					return new ecjia_error('virtual_card_oos', '虚拟卡已缺货！');
 					// 					/* 操作失败 */
 					// 					$links[] = array('text' => RC_Lang::lang('order_info'), 'href' => RC_Uri::url('orders/admin/info', 'order_id=' . $order_id));
-					// 					$this->showmessage(sprintf(RC_Lang::lang('virtual_card_oos'), $value['goods_name']), ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_ERROR , array('links' => $links));
+					// 					$this->showmessage(sprintf(RC_Lang::lang('virtual_card_oos'), $value['goods_name']), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR , array('links' => $links));
 				}
 				/* 虚拟商品列表 virtual_card*/
 				if ($value['extension_code'] == 'virtual_card') {
@@ -295,7 +294,7 @@ class order_operate {
 					return new ecjia_error('act_good_vacancy', '商品已缺货！');
 					// 					/* 操作失败 */
 					// 					$links[] = array('text' => RC_Lang::lang('order_info'), 'href' => RC_Uri::url('orders/admin/info', 'order_id=' . $order_id));
-					// 					$this->showmessage(sprintf(RC_Lang::lang('act_good_vacancy'), $value['goods_name']) , ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_ERROR , array('links' => $links));
+					// 					$this->showmessage(sprintf(RC_Lang::lang('act_good_vacancy'), $value['goods_name']), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR , array('links' => $links));
 	
 				}
 			}
@@ -320,11 +319,11 @@ class order_operate {
 		$delivery['order_id']		= $order_id;
 		/* 过滤字段项 */
 		$filter_fileds = array(
-				'order_sn', 'add_time', 'user_id', 'how_oos', 'shipping_id', 'shipping_fee',
-				'consignee', 'address', 'country', 'province', 'city', 'district', 'sign_building',
-				'email', 'zipcode', 'tel', 'mobile', 'best_time', 'postscript', 'insure_fee',
-				'agency_id', 'delivery_sn', 'action_user', 'update_time',
-				'suppliers_id', 'status', 'order_id', 'shipping_name'
+			'order_sn', 'add_time', 'user_id', 'how_oos', 'shipping_id', 'shipping_fee',
+			'consignee', 'address', 'country', 'province', 'city', 'district', 'sign_building',
+			'email', 'zipcode', 'tel', 'mobile', 'best_time', 'postscript', 'insure_fee',
+			'agency_id', 'delivery_sn', 'action_user', 'update_time',
+			'suppliers_id', 'status', 'order_id', 'shipping_name'
 		);
 		$_delivery = array();
 		foreach ($filter_fileds as $value) {
@@ -343,18 +342,18 @@ class order_operate {
 					// 商品（实货）（虚货）
 					if (empty($value['extension_code']) || $value['extension_code'] == 'virtual_card') {
 						$delivery_goods = array(
-								'delivery_id'	=> $delivery_id,
-								'goods_id'		=> $value['goods_id'],
-								'product_id'	=> $value['product_id'],
-								'product_sn'	=> $value['product_sn'],
-								'goods_id'		=> $value['goods_id'],
-								'goods_name'	=> addslashes($value['goods_name']),
-								'brand_name'	=> addslashes($value['brand_name']),
-								'goods_sn'		=> $value['goods_sn'],
-								'send_number'	=> $send_number[$value['rec_id']],
-								'parent_id'		=> 0,
-								'is_real'		=> $value['is_real'],
-								'goods_attr'	=> addslashes($value['goods_attr'])
+							'delivery_id'	=> $delivery_id,
+							'goods_id'		=> $value['goods_id'],
+							'product_id'	=> $value['product_id'],
+							'product_sn'	=> $value['product_sn'],
+							'goods_id'		=> $value['goods_id'],
+							'goods_name'	=> addslashes($value['goods_name']),
+							'brand_name'	=> addslashes($value['brand_name']),
+							'goods_sn'		=> $value['goods_sn'],
+							'send_number'	=> $send_number[$value['rec_id']],
+							'parent_id'		=> 0,
+							'is_real'		=> $value['is_real'],
+							'goods_attr'	=> addslashes($value['goods_attr'])
 						);
 						/* 如果是货品 */
 						if (!empty($value['product_id'])) {
@@ -365,17 +364,17 @@ class order_operate {
 						// 商品（超值礼包）
 						foreach ($value['package_goods_list'] as $pg_key => $pg_value) {
 							$delivery_pg_goods = array(
-									'delivery_id'		=> $delivery_id,
-									'goods_id'			=> $pg_value['goods_id'],
-									'product_id'		=> $pg_value['product_id'],
-									'product_sn'		=> $pg_value['product_sn'],
-									'goods_name'		=> $pg_value['goods_name'],
-									'brand_name'		=> '',
-									'goods_sn'			=> $pg_value['goods_sn'],
-									'send_number'		=> $send_number[$value['rec_id']][$pg_value['g_p']],
-									'parent_id'			=> $value['goods_id'], // 礼包ID
-									'extension_code'	=> $value['extension_code'], // 礼包
-									'is_real'			=> $pg_value['is_real']
+								'delivery_id'		=> $delivery_id,
+								'goods_id'			=> $pg_value['goods_id'],
+								'product_id'		=> $pg_value['product_id'],
+								'product_sn'		=> $pg_value['product_sn'],
+								'goods_name'		=> $pg_value['goods_name'],
+								'brand_name'		=> '',
+								'goods_sn'			=> $pg_value['goods_sn'],
+								'send_number'		=> $send_number[$value['rec_id']][$pg_value['g_p']],
+								'parent_id'			=> $value['goods_id'], // 礼包ID
+								'extension_code'	=> $value['extension_code'], // 礼包
+								'is_real'			=> $pg_value['is_real']
 							);
 							$query = $db_delivery->insert($delivery_pg_goods);
 						}
@@ -452,13 +451,6 @@ class order_operate {
 		return true;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
 	/**
 	 * 修改订单
 	 * @param   int	 $order_id   订单id
@@ -498,14 +490,14 @@ class order_operate {
 	
 		$row = $db_info->field('order_id')->find(array('order_sn' => $order_sn));
 		$data = array (
-				'order_id'           => $row ['order_id'],
-				'action_user'        => $username,
-				'order_status'       => $order_status,
-				'shipping_status'    => $shipping_status,
-				'pay_status'         => $pay_status,
-				'action_place'       => $place,
-				'action_note'        => $note,
-				'log_time'           => RC_Time::gmtime()
+			'order_id'           => $row ['order_id'],
+			'action_user'        => $username,
+			'order_status'       => $order_status,
+			'shipping_status'    => $shipping_status,
+			'pay_status'         => $pay_status,
+			'action_place'       => $place,
+			'action_note'        => $note,
+			'log_time'           => RC_Time::gmtime()
 		);
 		$db_action->insert($data);
 		
@@ -516,10 +508,6 @@ class order_operate {
 		// 	'FROM ' . $GLOBALS['ecs']->table('order_info') . " WHERE order_sn = '$order_sn'";
 		// 	$GLOBALS['db']->query($sql);
 	}
-	
-	
-	
-	 
 }
 
 // end

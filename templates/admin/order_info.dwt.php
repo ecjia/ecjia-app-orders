@@ -3,7 +3,7 @@
 
 <!-- {block name="footer"} -->
 <script type="text/javascript">
-ecjia.admin.order.info();
+	ecjia.admin.order.info();
 </script>
 <!-- {/block} -->
 
@@ -300,12 +300,12 @@ ecjia.admin.order.info();
 									</td>
 									<td>{$goods.goods_sn}</td>
 									<td>{$goods.product_sn}</td>
-									<td><div >{$goods.formated_goods_price}</div></td>
-									<td><div >{$goods.goods_number}
+									<td><div>{$goods.formated_goods_price}</div></td>
+									<td><div>{$goods.goods_number}
 									</div></td>
 									<td>{$goods.goods_attr|nl2br}</td>
-									<td><div >{$goods.storage}</div></td>
-									<td><div >{$goods.formated_subtotal}</div></td>
+									<td><div>{$goods.storage}</div></td>
+									<td><div>{$goods.formated_subtotal}</div></td>
 								</tr>
 								<!-- {foreachelse} -->
 								<tr>
@@ -315,7 +315,7 @@ ecjia.admin.order.info();
 								<tr>
 									<td colspan="5">{if $order.total_weight}<div align="right"><strong>{$lang.label_total_weight}
 									</strong></div>{/if}</td>
-									<td colspan="2">{if $order.total_weight}<div align="right">{$order.total_weight}
+									<td colspan="3">{if $order.total_weight}<div align="right">{$order.total_weight}
 									</div>{/if}</td>
 									<td><div align="right"><strong>{$lang.label_total}</strong></div></td>
 									<td><div align="right">{$order.formated_goods_amount}</div></td>

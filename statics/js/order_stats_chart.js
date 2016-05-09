@@ -191,10 +191,11 @@
 				url: $("#ship_stats").attr("data-url"),
 				dataType: "json",
 				success: function(ship_infos){
-					if(ship_infos === null) {
+					if (ship_infos === null) {
 						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>没有找到任何记录<\/div>";
 						$("#ship_stats").append(nodata);
-					}else{
+					} else {
+						var tpl = [];
 						$.each(ship_infos,function(key,val){
 							var ticks = [];
 							var categories = [];

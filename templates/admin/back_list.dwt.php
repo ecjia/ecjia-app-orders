@@ -3,7 +3,7 @@
 
 <!-- {block name="footer"} -->
 <script type="text/javascript">
-ecjia.admin.order_delivery.back_init();
+	ecjia.admin.order_delivery.back_init();
 </script>
 <!-- {/block} -->
 

@@ -19,11 +19,11 @@ class sales_module implements ecjia_interface {
 		if (empty($start_date) || empty($end_date)) {
 			EM_Api::outPut(101);
 		}
-
-		$data = RC_Cache::app_cache_get('admin_stats_sales_'.$_SESSION['admin_id'], 'api');
+		$cache_key = 'admin_stats_sales_'.md5($start_date.$end_date);
+		$data = RC_Cache::app_cache_get($cache_key, 'api');
 		if (empty($data)) {
 			$response = sales_module($start_date, $end_date);
-			RC_Cache::app_cache_set('admin_stats_sales_'.$_SESSION['admin_id'], $response, 'api', API_CACHE_TIME);
+			RC_Cache::app_cache_set($cache_key, $response, 'api', 60);
 			//流程逻辑结束
 		} else {
 			$response = $data;
@@ -68,7 +68,7 @@ function sales_module($start_date,$end_date){
 	$stats_scale = ($end_date+1-$start_date)/30;
 	
 	$where = array();
-	if ($_SESSION['ru_id'] > 0) {
+	if (isset($_SESSION['ru_id']) && $_SESSION['ru_id'] > 0) {
 		/*入驻商*/
 		$where['ru_id'] = $_SESSION['ru_id'];
 		$where[] = 'oii.order_id is null';
@@ -93,7 +93,7 @@ function sales_module($start_date,$end_date){
 	$field = "oi.pay_time, (oi.goods_amount - oi.discount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) AS total_fee, oi.discount";
 	
 	/* 判断是否是入驻商*/
-	if ($_SESSION['ru_id'] > 0 ) {
+	if (isset($_SESSION['ru_id']) && $_SESSION['ru_id'] > 0 ) {
 		$join = array('order_info', 'order_goods');
 	} else {
 		$join = null;
@@ -120,7 +120,7 @@ function sales_module($start_date,$end_date){
 		$result = $db_orderinfo_view->field($field)
 									->join($join)
 									->where(array_merge($where, array('oi.pay_time >="' .$temp_start_time. '" and oi.pay_time<="' .$temp_end_time. '"')))
-									->order(array('oi.pay_time' => asc))
+									->order(array('oi.pay_time' => 'asc'))
 									->select();
 		
 		if (!empty($result)) {

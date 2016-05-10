@@ -79,7 +79,7 @@ class order_list{
 	/* 已发货订单：不论是否付款 */
 	public static function order_shipped($alias = '') {
 		$where = array();
-        $where[$alias.'order_status'] = OS_CONFIRMED;
+//         $where[$alias.'order_status'] = OS_CONFIRMED;
         $where[$alias.'shipping_status'] = array(SS_SHIPPED);
         return $where;
 	}

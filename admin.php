@@ -32,6 +32,7 @@ class admin extends ecjia_admin {
 	private $db_virtual_card;
 	private $order_class;
 	private $db_user;
+	private $db_order_status_log;
 	public function __construct() {
 		parent::__construct();
 
@@ -61,6 +62,7 @@ class admin extends ecjia_admin {
 		$this->db_delivery_order	= RC_Loader::load_app_model('delivery_order_model');
 		$this->db_virtual_card		= RC_Loader::load_app_model('virtual_card_model','goods');
 		$this->db_user				= RC_Loader::load_app_model('users_model','user');
+		$this->db_order_status_log    = RC_Loader::load_app_model('order_status_log_model','orders');
 		
 		// 增加管理员操作对象
 		assign_adminlog_content();
@@ -3103,8 +3105,16 @@ class admin extends ecjia_admin {
 				$_delivery[$value] = $delivery[$value];
 			}
 			/* 发货单入库 */
-
 			$delivery_id = $this->db_delivery_order->insert($_delivery);
+			if ($delivery_id) {
+				$data = array(
+						'order_status' => '备货中',
+						'order_id'        => $order_id,
+						'message'       => '订单号为'.$order['order_sn'].'的商品正在备货中，请您耐心等待。',
+						'add_time'       => RC_Time::gmtime()
+				);
+				$this->db_order_status_log->insert($data);
+			}	
 			/* 记录日志 */
 			ecjia_admin::admin_log('订单号是 '.$order['order_sn'], 'produce', 'delivery_order');
 			if ($delivery_id) {
@@ -3274,8 +3284,17 @@ class admin extends ecjia_admin {
 				'money_paid'	=> 0,
 				'order_amount'	=> $order['money_paid']
 			);
-			update_order($order_id, $arr);
-		
+			
+			$confirm_receive = update_order($order_id, $arr);
+			if ($confirm_receive) {
+				$data = array(
+						'order_status' => '已完成',
+						'order_id'       => $order_id,
+						'add_time'       => RC_Time::gmtime(),
+				);
+				$this->db_order_status_log->insert($data);
+			}
+				
 			/* todo 处理退款 */
 			if ($order['money_paid'] > 0) {
 				$refund_type = $_POST['refund'];

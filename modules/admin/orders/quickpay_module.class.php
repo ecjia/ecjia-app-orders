@@ -26,8 +26,8 @@ class quickpay_module implements ecjia_interface {
 		RC_Loader::load_app_func('cart','cart');
 		RC_Loader::load_app_func('order','orders');
 
-		$pay_id = _POST('pay_id', '9');
-		$amount = _POST('amount', '1100');
+		$pay_id = _POST('pay_id');
+		$amount = _POST('amount');
 		
 		/* 判断是否是会员 */
 		$consignee = array();

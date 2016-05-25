@@ -43,6 +43,7 @@ class payConfirm_module implements ecjia_interface {
 			}
 			/* 进行确认*/
 			RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'confirm', 'note' => array('action_note' => '收银台订单确认')));
+			$result = $payment->notify();
 			/* 配货*/
 			RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'prepare', 'note' => array('action_note' => '收银台配货')));
 			/* 分单（生成发货单）*/
@@ -56,7 +57,7 @@ class payConfirm_module implements ecjia_interface {
 			$delivery_id = $db_delivery_order->where(array('order_sn' => array('like' => '%'.$order_info['order_sn'].'%')))->order(array('delivery_id' => 'desc'))->get_field('delivery_id');
 			
 			$result = delivery_ship($order_id, $delivery_id);
-			$result = $payment->notify();
+			
 			if (is_ecjia_error($result)) {
 				return $result;
 			} else {

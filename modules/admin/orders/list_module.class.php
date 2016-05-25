@@ -22,9 +22,8 @@ class list_module implements ecjia_interface {
 		$page		= EM_Api::$pagination['page'];
 		
 		$device = _POST('device', array());
-		$device_code = isset($device['code']) ? $device['code'] : '8001';
-		$device_code = 8001;
-		$device_udid = isset($device['udid']) ? $device['udid'] : '5f3434e351a1c2aaf0e27292851bc1f18bcc0a84';
+		$device_code = isset($device['code']) ? $device['code'] : '';
+		$device_udid = isset($device['udid']) ? $device['udid'] : '';
 		$device_client = isset($device['client']) ? $device['client'] : '';
 		
 		$order_query = RC_Loader::load_app_class('order_query', 'orders');
@@ -83,25 +82,28 @@ class list_module implements ecjia_interface {
 			}
 			
 			if ($_SESSION['ru_id'] > 0) {
-				$where['ru_id'] = $_SESSION['ru_id'];
+				$where['og.ru_id'] = $_SESSION['ru_id'];
 				$where[] = 'oii.order_id is null';
 			}
-			/* 获取记录条数 */
-			$record_count = $db_orderinfo_view->where($where)->count('oi.order_id');
-		
+			/*获取记录条数*/
+			$record_count = $db_orderinfo_view->join(array('order_goods', 'order_info'))->where($where)->count('oi.order_id');
 			//实例化分页
 			$page_row = new ecjia_page($record_count, $size, 6, '', $page);
-			
 			$total_fee = "(oi.goods_amount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) as total_fee";
 			$field = 'oi.order_id, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time, og.goods_number, og.goods_id,  og.goods_name';
-			$order_ids = $db_orderinfo_view->where($where)->field('oi.order_id')->limit($page_row->limit())->select();
-			foreach ($order_ids as $val) {
-				$where['oi.order_id'][] = $val['order_id'];
-			}
-			if ($_SESSION['ru_id'] > 0) {
-				$data = $db_orderinfo_view->field($field)->where($where)->order(array('oi.order_id' => 'desc'))->limit($page_row->limit())->select();
+			$order_id_group = $db_orderinfo_view->join(array('order_goods', 'order_info'))->where($where)->limit($page_row->limit())->field('oi.order_id')->select();
+			
+			if (empty($order_id_group)) {
+				$data = array();
 			} else {
-				$data = $db_orderinfo_view->join(array('order_goods'))->field($field)->where($where)->order(array('oi.order_id' => 'desc'))->limit($page_row->limit())->select();
+				foreach ($order_id_group as $val) {
+					$where['oi.order_id'][] = $val['order_id'];
+				}
+				if ($_SESSION['ru_id'] > 0) {
+					$data = $db_orderinfo_view->join(array('order_info', 'order_goods'))->field($field)->where($where)->order(array('oi.order_id' => 'desc'))->select();
+				} else {
+					$data = $db_orderinfo_view->join(array('order_goods'))->field($field)->where($where)->order(array('oi.order_id' => 'desc'))->select();
+				}
 			}
 		} else {
 			$db_adviser_log_view = RC_Loader::load_app_model('adviser_log_viewmodel', 'orders');
@@ -127,7 +129,6 @@ class list_module implements ecjia_interface {
 
 		$order_list = array();
 		if (!empty($data)) {
-			$goods_db = RC_Loader::load_app_model('goods_model', 'goods');
 			$order_id = $goods_number = 0;
 			foreach ($data as $val) {
 				if ($order_id == 0 || $val['order_id'] != $order_id ) {

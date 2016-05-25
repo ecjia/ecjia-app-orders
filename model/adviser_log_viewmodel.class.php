@@ -24,6 +24,11 @@ class adviser_log_viewmodel extends Component_Model_View {
 					'alias'=> 'og',
 					'on'   => 'oi.order_id = og.order_id'
 			),
+			'goods' => array(
+					'type' => Component_Model_View::TYPE_LEFT_JOIN,
+					'alias'=> 'g',
+					'on'   => 'g.goods_id = og.goods_id'
+			),
 			'adviser' => array(
 					'type' => Component_Model_View::TYPE_LEFT_JOIN,
 					'alias'=> 'ad',

@@ -56,6 +56,10 @@ class list_module implements ecjia_interface {
 					break;
 			}
 
+			
+			$total_fee = "(oi.goods_amount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) as total_fee";
+			$field = 'oi.order_id, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time, og.goods_number, og.goods_id,  og.goods_name';
+			
 			$db_orderinfo_view = RC_Loader::load_app_model('order_info_viewmodel', 'orders');
 			$result = ecjia_app::validate_application('seller');
 			if (!is_ecjia_error($result)) {
@@ -69,40 +73,59 @@ class list_module implements ecjia_interface {
 								'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
 								'alias'	=> 'og',
 								'on'	=> 'oi.order_id = og.order_id'
-						)
+						),
+						'goods' => array(
+								'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+								'alias'	=> 'g',
+								'on'	=> 'g.goods_id = og.goods_id'
+						),
 				);
+				
+				if (isset($_SESSION['ru_id']) && $_SESSION['ru_id'] > 0) {
+					$where['og.ru_id'] = $_SESSION['ru_id'];
+					$where[] = 'oii.order_id is null';
+				}
+				
+				/*获取记录条数*/
+				$record_count = $db_orderinfo_view->join(array('order_info', 'order_goods'))->where($where)->count('DISTINCT oi.order_id');
+				
+				//实例化分页
+				$page_row = new ecjia_page($record_count, $size, 6, '', $page);
+				
+				$order_id_group = $db_orderinfo_view->field('oi.order_id')->join(array('order_info', 'order_goods'))->where($where)->limit($page_row->limit())->order(array('oi.add_time' => 'desc'))->group('oi.order_id')->select();
+
+				if (empty($order_id_group)) {
+					$data = array();
+				} else {
+					foreach ($order_id_group as $val) {
+						$where['oi.order_id'][] = $val['order_id'];
+					}
+					$data = $db_orderinfo_view->field($field)->join(array('order_info', 'order_goods', 'goods'))->where($where)->order(array('oi.add_time' => 'desc'))->select();
+				}
 			} else {
 				$db_orderinfo_view->view = array(
 						'order_goods' => array(
 								'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
 								'alias'	=> 'og',
 								'on'	=> 'oi.order_id = og.order_id'
-						)
+						),
+						'goods' => array(
+								'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+								'alias'	=> 'g',
+								'on'	=> 'g.goods_id = og.goods_id'
+						),
 				);
-			}
-			
-			if ($_SESSION['ru_id'] > 0) {
-				$where['og.ru_id'] = $_SESSION['ru_id'];
-				$where[] = 'oii.order_id is null';
-			}
-			/*获取记录条数*/
-			$record_count = $db_orderinfo_view->join(array('order_goods', 'order_info'))->where($where)->count('oi.order_id');
-			//实例化分页
-			$page_row = new ecjia_page($record_count, $size, 6, '', $page);
-			$total_fee = "(oi.goods_amount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) as total_fee";
-			$field = 'oi.order_id, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time, og.goods_number, og.goods_id,  og.goods_name';
-			$order_id_group = $db_orderinfo_view->join(array('order_goods', 'order_info'))->where($where)->limit($page_row->limit())->field('oi.order_id')->select();
-			
-			if (empty($order_id_group)) {
-				$data = array();
-			} else {
-				foreach ($order_id_group as $val) {
-					$where['oi.order_id'][] = $val['order_id'];
-				}
-				if ($_SESSION['ru_id'] > 0) {
-					$data = $db_orderinfo_view->join(array('order_info', 'order_goods'))->field($field)->where($where)->order(array('oi.order_id' => 'desc'))->select();
+				/*获取记录条数*/
+				$record_count = $db_orderinfo_view->join(null)->where($where)->count('oi.order_id');
+				//实例化分页
+				$page_row = new ecjia_page($record_count, $size, 6, '', $page);
+				
+				$order_id_group = $db_orderinfo_view->join(null)->where($where)->limit($page_row->limit())->order(array('oi.add_time' => 'desc'))->get_field('order_id', true);
+				if (empty($order_id_group)) {
+					$data = array();
 				} else {
-					$data = $db_orderinfo_view->join(array('order_goods'))->field($field)->where($where)->order(array('oi.order_id' => 'desc'))->select();
+					$where['al.order_id'] =  $order_id_group;
+					$data = $db_orderinfo_view->field($field)->join(array('order_goods', 'goods'))->where($where)->order(array('oi.add_time' => 'desc'))->select();
 				}
 			}
 		} else {
@@ -161,6 +184,8 @@ class list_module implements ecjia_interface {
 						} elseif ($val['pay_status'] == PS_UNPAYED) {
 							$label_order_status = '未支付';
 						}
+					} else {
+						$label_order_status = $order_status.','.RC_Lang::lang('ps/'.$val['pay_status']).','.RC_Lang::lang('ss/'.$val['shipping_status']);
 					}
 					
 					$goods_number = $val['goods_number'];
@@ -180,7 +205,7 @@ class list_module implements ecjia_interface {
 							'label_order_status'		=> $label_order_status,
 							'goods_number'				=> intval($goods_number),
 							'create_time' 				=> RC_Time::local_date(ecjia::config('date_format'), $val['add_time']),
-							'username' 					=> $val['username'],
+// 							'username' 					=> $val['username'],
 							'goods_items' 				=> $goods_lists
 					);
 					$order_id = $val['order_id'];

@@ -1883,7 +1883,7 @@ function get_order_detail ($order_id, $user_id = 0)
     $order['exist_real_goods'] = exist_real_goods($order_id);
     
     // 获取需要支付的log_id
-    $order['log_id'] = $pay_method->get_paylog_id($order['order_id'], $pay_type = PAY_ORDER);
+    $order['log_id'] = intval($pay_method->get_paylog_id($order['order_id'], $pay_type = PAY_ORDER));
 
     $order['user_name'] = $_SESSION['user_name'];
     

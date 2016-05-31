@@ -21,6 +21,20 @@ class detail_module implements ecjia_interface {
 		
 		/* 订单详情 */
 		$order = get_order_detail($order_id, $user_id);
+		/*返回数据处理*/
+		$order['order_id'] 			= intval($order['order_id']);
+		$order['main_order_id'] 	= intval($order['main_order_id']);
+		$order['user_id'] 			= intval($order['user_id']);
+		$order['order_status'] 		= intval($order['order_status']);
+		$order['shipping_status'] 	= intval($order['shipping_status']);
+		$order['pay_status'] 		= intval($order['pay_status']);
+		$order['shipping_id'] 		= intval($order['shipping_id']);
+		$order['pay_id'] 			= intval($order['pay_id']);
+		$order['pack_id'] 			= intval($order['pack_id']);
+		$order['card_id'] 			= intval($order['card_id']);
+		$order['bonus_id'] 			= intval($order['bonus_id']);
+		$order['agency_id'] 		= intval($order['agency_id']); 
+		$order['extension_id'] 		= intval($order['extension_id']);
 		
 		if ($order === false) {
 			EM_Api::outPut(8);

@@ -35,6 +35,7 @@ class detail_module implements ecjia_interface {
 		$order['bonus_id'] 			= intval($order['bonus_id']);
 		$order['agency_id'] 		= intval($order['agency_id']); 
 		$order['extension_id'] 		= intval($order['extension_id']);
+		$order['parent_id'] 		= intval($order['parent_id']);
 		
 		if ($order === false) {
 			EM_Api::outPut(8);

@@ -21,7 +21,7 @@ class list_module implements ecjia_interface {
 		$size		= EM_Api::$pagination['count'];
 		$page		= EM_Api::$pagination['page'];
 		
-		$device = _POST('device', array());
+		$device		 = _POST('device', array());
 		$device_code = isset($device['code']) ? $device['code'] : '';
 		$device_udid = isset($device['udid']) ? $device['udid'] : '';
 		$device_client = isset($device['client']) ? $device['client'] : '';
@@ -64,11 +64,11 @@ class list_module implements ecjia_interface {
 			$result = ecjia_app::validate_application('seller');
 			if (!is_ecjia_error($result)) {
 				$db_orderinfo_view->view = array(
-						'order_info' => array(
-								'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-								'alias'	=> 'oii',
-								'on'	=> 'oi.order_id = oii.main_order_id'
-						),
+// 						'order_info' => array(
+// 								'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+// 								'alias'	=> 'oii',
+// 								'on'	=> 'oi.order_id = oii.main_order_id'
+// 						),
 						'order_goods' => array(
 								'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
 								'alias'	=> 'og',
@@ -81,18 +81,24 @@ class list_module implements ecjia_interface {
 						),
 				);
 				
-				if (isset($_SESSION['ru_id']) && $_SESSION['ru_id'] > 0) {
-					$where['og.ru_id'] = $_SESSION['ru_id'];
-					$where[] = 'oii.order_id is null';
+// 				if (isset($_SESSION['ru_id']) && $_SESSION['ru_id'] > 0) {
+// 					$where['og.ru_id'] = $_SESSION['ru_id'];
+// 					$where[] = 'oii.order_id is null';
+// 				}
+				
+				if (isset($_SESSION['seller_id']) && $_SESSION['seller_id'] > 0) {
+					$where['oi.seller_id'] = $_SESSION['seller_id'];
 				}
 				
 				/*获取记录条数*/
-				$record_count = $db_orderinfo_view->join(array('order_info', 'order_goods'))->where($where)->count('DISTINCT oi.order_id');
+// 				$record_count = $db_orderinfo_view->join(array('order_info', 'order_goods'))->where($where)->count('DISTINCT oi.order_id');
+				$record_count = $db_orderinfo_view->join(array('order_goods'))->where($where)->count('DISTINCT oi.order_id');
 				
 				//实例化分页
 				$page_row = new ecjia_page($record_count, $size, 6, '', $page);
 				
-				$order_id_group = $db_orderinfo_view->field('oi.order_id')->join(array('order_info', 'order_goods'))->where($where)->limit($page_row->limit())->order(array('oi.add_time' => 'desc'))->group('oi.order_id')->select();
+// 				$order_id_group = $db_orderinfo_view->field('oi.order_id')->join(array('order_info', 'order_goods'))->where($where)->limit($page_row->limit())->order(array('oi.add_time' => 'desc'))->group('oi.order_id')->select();
+				$order_id_group = $db_orderinfo_view->field('oi.order_id')->join(array('order_goods'))->where($where)->limit($page_row->limit())->order(array('oi.add_time' => 'desc'))->group('oi.order_id')->select();
 
 				if (empty($order_id_group)) {
 					$data = array();
@@ -100,7 +106,8 @@ class list_module implements ecjia_interface {
 					foreach ($order_id_group as $val) {
 						$where['oi.order_id'][] = $val['order_id'];
 					}
-					$data = $db_orderinfo_view->field($field)->join(array('order_info', 'order_goods', 'goods'))->where($where)->order(array('oi.add_time' => 'desc'))->select();
+// 					$data = $db_orderinfo_view->field($field)->join(array('order_info', 'order_goods', 'goods'))->where($where)->order(array('oi.add_time' => 'desc'))->select();
+					$data = $db_orderinfo_view->field($field)->join(array('order_goods', 'goods'))->where($where)->order(array('oi.add_time' => 'desc'))->select();
 				}
 			} else {
 				$db_orderinfo_view->view = array(
@@ -217,9 +224,9 @@ class list_module implements ecjia_interface {
 							'name'		=> $val['goods_name'],
 							'goods_number' => intval($val['goods_number']),
 							'img'		=> array(
-									'thumb'	=> (isset($val['goods_img']) && !empty($val['goods_img']))		 ? RC_Upload::upload_url($val['goods_img'])		: RC_Uri::admin_url('statics/images/nopic.png'),
-									'url'	=> (isset($val['original_img']) && !empty($val['original_img'])) ? RC_Upload::upload_url($val['original_img'])  : RC_Uri::admin_url('statics/images/nopic.png'),
-									'small'	=> (isset($val['goods_thumb']) && !empty($val['goods_thumb']))   ? RC_Upload::upload_url($val['goods_thumb'])   : RC_Uri::admin_url('statics/images/nopic.png')
+									'thumb'	=> (isset($val['goods_img']) && !empty($val['goods_img']))		 ? RC_Upload::upload_url($val['goods_img'])		: '',
+									'url'	=> (isset($val['original_img']) && !empty($val['original_img'])) ? RC_Upload::upload_url($val['original_img'])  : '',
+									'small'	=> (isset($val['goods_thumb']) && !empty($val['goods_thumb']))   ? RC_Upload::upload_url($val['goods_thumb'])   : ''
 							)
 					);
 				}

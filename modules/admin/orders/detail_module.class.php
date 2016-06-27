@@ -85,9 +85,9 @@ public function run(ecjia_api & $api) {
 									'goods_sn'	 => $v['goods_sn'],
 									'number'	 => $v['goods_number'],
 									'img'	=> array(
-											'thumb'	=> API_DATA('PHOTO', $goods_info['goods_img']),
-											'url'	=> API_DATA('PHOTO', $goods_info['original_img']),
-											'small'	=> API_DATA('PHOTO', $goods_info['goods_thumb'])
+											'thumb'	=> !empty($goods_info['goods_img']) ? RC_Upload::upload_url($goods_info['goods_img']) : '',
+											'url'	=> !empty($goods_info['original_img']) ? RC_Upload::upload_url($goods_info['original_img']) : '',
+											'small'	=> !empty($goods_info['goods_thumb']) ? RC_Upload::upload_url($goods_info['goods_thumb']) : '',
 									),
 							);
 						}
@@ -120,16 +120,16 @@ public function run(ecjia_api & $api) {
 					$v['package_goods_list'] = get_package_goods($v['goods_id']);
 				}
 				$goods_list[$k] = array(
-						"id" => $v['goods_id'],
-						"name" => $v['goods_name'],
-						"goods_number" => $v['goods_number'],
-						"subtotal" => price_format($v['subtotal'], false),
-						"goods_attr" => trim($v['goods_attr']),
-						"formated_shop_price" => price_format($v['goods_price'], false),
-						"img" => array(
-								'small'=>API_DATA('PHOTO', $v['goods_thumb']),
-								'thumb'=>API_DATA('PHOTO', $v['goods_img']),
-								'url' => API_DATA('PHOTO', $v['original_img'])
+						'id'	=> $v['goods_id'],
+						'name'	=> $v['goods_name'],
+						'goods_number'	=> $v['goods_number'],
+						'subtotal'		=> price_format($v['subtotal'], false),
+						'goods_attr'	=> trim($v['goods_attr']),
+						'formated_shop_price' => price_format($v['goods_price'], false),
+						'img' => array(
+								'thumb'	=> !empty($v['goods_img']) ? RC_Upload::upload_url($v['goods_img']) : '',
+								'url'	=> !empty($v['original_img']) ? RC_Upload::upload_url($v['original_img']) : '',
+								'small'	=> !empty($v['goods_thumb']) ? RC_Upload::upload_url($v['goods_thumb']) : '',
 						)
 				);
 			}

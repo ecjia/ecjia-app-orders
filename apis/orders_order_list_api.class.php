@@ -47,11 +47,11 @@ class orders_order_list_api extends Component_Event_Api {
 		 */
 		$dbview_order_info = RC_Model::model('orders/order_info_viewmodel');
 		$dbview_order_info->view = array(
-				'order_info' => array(
-						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-						'alias'	=> 'oii',
-						'on'	=> 'oi.order_id = oii.main_order_id'
-				),
+// 				'order_info' => array(
+// 						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+// 						'alias'	=> 'oii',
+// 						'on'	=> 'oi.order_id = oii.main_order_id'
+// 				),
 				'order_goods' => array(
 						'type'  =>	Component_Model_View::TYPE_LEFT_JOIN,
 						'alias'	=>	'og',
@@ -67,21 +67,29 @@ class orders_order_list_api extends Component_Event_Api {
 						'alias' 	=> 'tr',
 						'on' 		=> 'tr.object_id = og.rec_id'
 				),
+				'seller_shopinfo' => array(
+						'type' 		=> Component_Model_View::TYPE_LEFT_JOIN,
+						'alias' 	=> 'ssi',
+						'on' 		=> 'oi.seller_id = ssi.id'
+				),
 		);
 		
 		RC_Loader::load_app_class('order_list', 'orders', false);
-		$where = array('oi.user_id' => $user_id, 'oii.order_id is null');
+// 		$where = array('oi.user_id' => $user_id, 'oii.order_id is null');
+		$where = array('oi.user_id' => $user_id);
 		
 		if (!empty($type)) {
 			$order_type = 'order_'.$type;
 			$where = array($where, order_list::$order_type('oi.'));
 		}
 		
-		$record_count = $dbview_order_info->join(array('order_info'))->where($where)->count('*');
+// 		$record_count = $dbview_order_info->join(array('order_info'))->where($where)->count('*');
+		$record_count = $dbview_order_info->join(null)->where($where)->count('*');
 		//实例化分页
 		$page_row = new ecjia_page($record_count, $size, 6, '', $page);
 		
-		$order_group = $dbview_order_info->join(array('order_info'))->field('oi.order_id')->where($where)->order(array('oi.add_time' => 'desc'))->limit($page_row->limit())->select();
+// 		$order_group = $dbview_order_info->join(array('order_info'))->field('oi.order_id')->where($where)->order(array('oi.add_time' => 'desc'))->limit($page_row->limit())->select();
+		$order_group = $dbview_order_info->join(null)->field('oi.order_id')->where($where)->order(array('oi.add_time' => 'desc'))->limit($page_row->limit())->select();
 		
 		if (empty($order_group)) {
 			return array('order_list' => array(), 'page' => $page_row);
@@ -92,9 +100,9 @@ class orders_order_list_api extends Component_Event_Api {
 			
 		}
 		$field = 'oi.order_id, oi.order_sn, oi.order_status, oi.shipping_status, oi.pay_status, oi.add_time, (oi.goods_amount + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee + oi.tax - oi.integral_money - oi.bonus - oi.discount) AS total_fee, oi.discount, oi.integral_money, oi.bonus, oi.shipping_fee, oi.pay_id, oi.order_amount'.
-		', og.goods_id, og.goods_name, og.goods_attr, og.goods_price, og.goods_number, og.ru_id, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, tr.relation_id';
-
-		$res = $dbview_order_info->join(array('order_info', 'order_goods', 'goods', 'term_relationship'))->field($field)->where($where)->order(array('oi.order_id' => 'desc'))->select();
+		', og.goods_id, og.goods_name, og.goods_attr, og.goods_price, og.goods_number, og.ru_id, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, tr.relation_id, ssi.id as seller_id, ssi.shop_name as seller_name';
+// 		array('order_info', 'order_goods', 'goods', 'term_relationship')
+		$res = $dbview_order_info->join(array('order_goods', 'goods', 'term_relationship', 'seller_shopinfo'))->field($field)->where($where)->order(array('oi.order_id' => 'desc'))->select();
 		
 		RC_Lang::load('orders/order');
 		
@@ -103,7 +111,7 @@ class orders_order_list_api extends Component_Event_Api {
 		if (!empty($res)) {
 			$order_id = $goods_number = $goods_type_number = 0;
 			$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
-			$msi_dbview = RC_Loader::load_app_model('merchants_shop_information_viewmodel', 'seller');
+// 			$msi_dbview = RC_Loader::load_app_model('merchants_shop_information_viewmodel', 'seller');
 			foreach ($res as $row) {
 				$attr = array();
 				if (isset($row['goods_attr']) && !empty($row['goods_attr'])) {
@@ -158,17 +166,17 @@ class orders_order_list_api extends Component_Event_Api {
 						$status_code = 'canceled';
 					}
 					
-					if ($row['ru_id'] > 0) {
-						$field ='msi.user_id, ssi.*, CONCAT(shoprz_brandName,shopNameSuffix) as seller_name';
-						$seller_info = $msi_dbview->join(array('seller_shopinfo'))
-											->field($field)
-											->where(array('msi.user_id' => $row['ru_id']))
-											->find();
-					}
+// 					if ($row['ru_id'] > 0) {
+// 						$field ='msi.user_id, ssi.*, CONCAT(shoprz_brandName,shopNameSuffix) as seller_name';
+// 						$seller_info = $msi_dbview->join(array('seller_shopinfo'))
+// 											->field($field)
+// 											->where(array('msi.user_id' => $row['ru_id']))
+// 											->find();
+// 					}
 					
 					$orders[$row['order_id']] = array(
-							'seller_id'					=> isset($row['ru_id']) ? intval($row['ru_id']) : 0,
-							'seller_name'				=> isset($seller_info['seller_name']) ? $seller_info['seller_name'] : '自营',
+							'seller_id'					=> empty($row['seller_id']) ? intval($row['seller_id']) : 0,
+							'seller_name'				=> empty($row['seller_name']) ? $row['seller_name'] : '自营',
 							'order_id'					=> $row['order_id'],
 							'order_sn'					=> $row['order_sn'],
 							'order_status'				=> $row['order_status'],
@@ -181,11 +189,11 @@ class orders_order_list_api extends Component_Event_Api {
 							'discount'					=> $row['discount'],
 							'goods_number'				=> $goods_number,
 							'is_cod'					=> $payment['is_cod'],
-							'formated_total_fee'		=> price_format($row['total_fee'], false), // 订单总价
-							'formated_integral_money'	=> price_format($row['integral_money'], false),//积分 钱
-							'formated_bonus'			=> price_format($row['bonus'], false),//红包 钱
-							'formated_shipping_fee'		=> price_format($row['shipping_fee'], false),//运送费
-							'formated_discount'			=> price_format($row['discount'], false), //折扣
+							'formated_total_fee'		=> price_format($row['total_fee'], false),
+							'formated_integral_money'	=> price_format($row['integral_money'], false),
+							'formated_bonus'			=> price_format($row['bonus'], false),
+							'formated_shipping_fee'		=> price_format($row['shipping_fee'], false),
+							'formated_discount'			=> price_format($row['discount'], false),
 							'order_info'				=> array(
 									'pay_code'		=> isset($payment['pay_code']) ? $payment['pay_code'] : '',
 									'order_amount'	=> $row['order_amount'],

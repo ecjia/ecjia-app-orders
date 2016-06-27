@@ -43,27 +43,27 @@ class detail_module implements ecjia_interface {
 		//收货人地址
 		$db_region = RC_Loader::load_app_model('region_model', 'shipping');
 		$region_name = $db_region->where(array('region_id' => array('in'=>$order['country'],$order['province'],$order['city'],$order['district'])))->order('region_type')->select();
-		$order['country'] = $region_name[0]['region_name'];
-		$order['province'] = $region_name[1]['region_name'];
-		$order['city'] = $region_name[2]['region_name'];
-		$order['district'] = $region_name[3]['region_name'];
+		$order['country']	= $region_name[0]['region_name'];
+		$order['province']	= $region_name[1]['region_name'];
+		$order['city']		= $region_name[2]['region_name'];
+		$order['district']	= $region_name[3]['region_name'];
 		$goods_list = EM_order_goods($order_id);
-		$msi_dbview = RC_Loader::load_app_model('merchants_shop_information_viewmodel', 'seller');
+// 		$msi_dbview = RC_Loader::load_app_model('merchants_shop_information_viewmodel', 'seller');
 		foreach ($goods_list as $k => $v) {
-			if ($k == 0) {
-				if ($v['ru_id'] > 0) {
-					$field ='msi.user_id, ssi.*, CONCAT(shoprz_brandName,shopNameSuffix) as seller_name';
-					$seller_info = $msi_dbview->join(array('seller_shopinfo'))
-												->field($field)
-												->where(array('msi.user_id' => $v['ru_id']))
-												->find();
+// 			if ($k == 0) {
+// 				if ($v['ru_id'] > 0) {
+// 					$field ='msi.user_id, ssi.*, CONCAT(shoprz_brandName,shopNameSuffix) as seller_name';
+// 					$seller_info = $msi_dbview->join(array('seller_shopinfo'))
+// 												->field($field)
+// 												->where(array('msi.user_id' => $v['ru_id']))
+// 												->find();
 					
-				}
+// 				}
 				
-				$order['seller_id']					= isset($v['ru_id']) ? intval($v['ru_id']) : 0;
-				$order['seller_name']				= isset($seller_info['seller_name']) ? $seller_info['seller_name'] : '自营';
-				$order['service_phone']				= $seller_info['kf_tel'];
-			}
+// 				$order['seller_id']					= isset($v['ru_id']) ? intval($v['ru_id']) : 0;
+// 				$order['seller_name']				= isset($seller_info['seller_name']) ? $seller_info['seller_name'] : '自营';
+// 				$order['service_phone']				= $seller_info['kf_tel'];
+// 			}
 			$attr = array();
 			if (!empty($v['goods_attr'])) {
 				$goods_attr = explode("\n", $v['goods_attr']);
@@ -77,17 +77,17 @@ class detail_module implements ecjia_interface {
 			}
 			
 			$goods_list[$k] = array(
-					"goods_id" => $v['goods_id'],
-					"name" => $v['goods_name'],
-					"goods_attr"   => empty($attr) ? '' : $attr,
-					"goods_number" => $v['goods_number'],
-					"subtotal" => price_format($v['subtotal'], false),
-					"formated_shop_price" => $v['goods_price'] > 0 ? price_format($v['goods_price'], false) : __('免费'),
+					'goods_id'	=> $v['goods_id'],
+					'name'		=> $v['goods_name'],
+					'goods_attr'	=> empty($attr) ? '' : $attr,
+					'goods_number'	=> $v['goods_number'],
+					'subtotal'		=> price_format($v['subtotal'], false),
+					'formated_shop_price' => $v['goods_price'] > 0 ? price_format($v['goods_price'], false) : __('免费'),
 					'is_commented'	=> $v['is_commented'],
-					"img" => array(
-							'small'=>API_DATA('PHOTO', $v['goods_thumb']),
-							'thumb'=>API_DATA('PHOTO', $v['goods_img']),
-							'url' => API_DATA('PHOTO', $v['original_img'])
+					'img' => array(
+							'small'	=> !empty($v['goods_thumb']) ? RC_Upload::upload_url($row['goods_thumb']) : '',
+							'thumb'	=> !empty($v['goods_img']) ? RC_Upload::upload_url($row['goods_img']) : '',
+							'url' 	=> !empty($v['original_img']) ? RC_Upload::upload_url($row['original_img']) : '',
 					)
 			);
 			

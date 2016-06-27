@@ -1842,7 +1842,6 @@ function get_order_detail ($order_id, $user_id = 0)
 
     $order_id = intval($order_id);
     if ($order_id <= 0) {
-//         $GLOBALS['err']->add(RC_Lang::lang('invalid_order_id'));
         EM_Api::outPut(8);
         return false;
     }
@@ -1850,26 +1849,24 @@ function get_order_detail ($order_id, $user_id = 0)
 
     // 检查订单是否属于该用户
     if ($user_id > 0 && $user_id != $order['user_id']) {
-//         $GLOBALS['err']->add(RC_Lang::lang('no_priv'));
         EM_Api::outPut(8);
         return false;
     }
 
+    /* 入住商信息*/
+    if ($order['seller_id'] > 0) {
+    	$seller_info = RC_Model::model('seller/seller_shopinfo_model')->find(array('id' => $order['seller_id']));
+    	$order['seller_name']	= $seller_info['shop_name'];
+    	$order['service_phone']	= $seller_info['kf_tel'];
+    } else {
+    	$order['seller_name']	= '自营';
+    	$order['service_phone']	= ecjia::config('service_phone');
+    }
+    
     /* 对发货号处理 */
     if (! empty($order['invoice_no'])) {
-        // $shipping_code = $GLOBALS['db']->GetOne("SELECT shipping_code FROM ".$GLOBALS['ecs']->table('shipping') ." WHERE shipping_id = '$order[shipping_id]'");
-
         $shipping_code = $db->field('shipping_code')->find('shipping_id = ' . $order[shipping_id] . '');
         $shipping_code = $shipping_code['shipping_code'];
-
-        //        $plugin = SITE_PATH . 'includes/modules/shipping/' . $shipping_code . '.php';
-        //        if (file_exists($plugin)) {
-        //            include_once ($plugin);
-        //            $shipping = new $shipping_code();
-        //            $order['invoice_no'] = $shipping->query($order['invoice_no']);
-        //        }
-//         $shipping  = RC_Loader::load_app_module($shipping_code, 'shipping');
-//         $order['invoice_no'] = $shipping->query($order['invoice_no']);
     }
 
     /* 只有未确认才允许用户修改订单地址 */
@@ -1886,43 +1883,6 @@ function get_order_detail ($order_id, $user_id = 0)
     $order['log_id'] = intval($pay_method->get_paylog_id($order['order_id'], $pay_type = PAY_ORDER));
 
     $order['user_name'] = $_SESSION['user_name'];
-    
-//     /* 如果是未付款状态，生成支付按钮 */
-//     if ($order['pay_status'] == PS_UNPAYED && ($order['order_status'] == OS_UNCONFIRMED || $order['order_status'] == OS_CONFIRMED)) {
-//         /*
-//          * 在线支付按钮
-//         */
-//         $order['pay_id'] = 13;
-//         // 支付方式信息
-// //         $payment_info = array();
-//         $payment_info = $pay_method->payment_info($order['pay_id']);
-// //         _dump($payment_info);
-//         // 无效支付方式
-//         if ($payment_info === null) {
-//             $order['pay_online'] = '';
-//         } else {
-//             // 取得支付信息，生成支付代码
-// //             $payment = unserialize_config($payment_info['pay_config']);
-
-            
-//             $order['user_name'] = $_SESSION['user_name'];
-// //             $order['pay_desc'] = $payment_info['pay_desc'];
-
-//             /* 调用相应的支付方式文件 */
-//             // include_once(SITE_PATH . 'includes/modules/payment/' . $payment_info['pay_code'] . '.php');
-// //             RC_Loader::load_app_module($payment_info['pay_code'], "payment");
-
-//             /* 取得在线支付方式的支付按钮 */
-// //             $pay_obj = new $payment_info['pay_code']();
-// //             RC_Loader::load_app_class('payment_abstract', 'payment', false);
-// //             RC_Loader::load_app_class('payment_factory', 'payment', false);
-// //             $handler = new payment_factory($payment_info['pay_code'], $payment);
-// //             $handler->set_orderinfo($order);
-// //             $order['pay_online'] = $handler->get_code(payment_abstract::PAYCODE_LINK);
-//         }
-//     } else {
-//         $order['pay_online'] = '';
-//     }
 
     /* 无配送时的处理 */
     $order['shipping_id'] == - 1 and $order['shipping_name'] = RC_Lang::lang('shipping_not_need');
@@ -1953,10 +1913,6 @@ function get_order_detail ($order_id, $user_id = 0)
             /* 处理超值礼包里面的虚拟卡 */
             if ($code == 'package_buy') {
                 foreach ($goods_list as $goods) {
-                    // $sql = 'SELECT g.goods_id FROM ' . $GLOBALS['ecs']->table('package_goods') . ' AS pg, ' . $GLOBALS['ecs']->table('goods') . ' AS g ' .
-                    // "WHERE pg.goods_id = g.goods_id AND pg.package_id = '" . $goods['goods_id'] . "' AND extension_code = 'virtual_card'";
-                    // $vcard_arr = $GLOBALS['db']->getAll($sql);
-
                     $dbview->view = array(
                         'goods' => array(
                             'type' => Component_Model_View::TYPE_LEFT_JOIN,
@@ -2101,16 +2057,16 @@ function EM_order_goods($order_id , $page=1 , $pagesize = 10)
 		'term_relationship' => array(
 			'type' 		=> Component_Model_View::TYPE_LEFT_JOIN,
 			'alias' 	=> 'tr',
-			'on' 		=> 'tr.object_id = og.rec_id'
+			'on' 		=> 'tr.object_id = og.rec_id and object_type = "ecjia.comment"'
 		),
 	);
 	$field = 'og.*, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, tr.relation_id';
 	
 	$res = $dbview->field($field)
-	->where(array('og.order_id' => $order_id))
-	->group(array('og.goods_id'))
-	->limit(($page-1)*$pagesize, $pagesize)
-	->select();
+				  ->where(array('og.order_id' => $order_id))
+// 				  ->group(array('og.goods_id'))
+				  ->limit(($page-1)*$pagesize, $pagesize)
+				  ->select();
 	
 	if (!empty($res)) {
 		RC_Loader::load_app_func('common', 'goods');
@@ -2123,17 +2079,6 @@ function EM_order_goods($order_id , $page=1 , $pagesize = 10)
 		}
 	}
 	return $goods_list;
-// 	$dbview = RC_Loader::load_app_model('order_goods_goods_viewmodel', 'orders');
-// 	$res = $dbview->join('goods')->where(array('o.order_id' => $order_id))->limit(($page-1)*$pagesize,$pagesize)->select();
-// 	if (!empty($res)) {
-// 		foreach ($res as $row) {
-// 			if ($row['extension_code'] == 'package_buy') {
-// 				$row['package_goods_list'] = get_package_goods($row['goods_id']);
-// 			}
-// 			$goods_list[] = $row;
-// 		}
-// 	}
-// 	return $goods_list;
 }
 
 

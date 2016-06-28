@@ -58,6 +58,7 @@ public function run(ecjia_api & $api) {
 				$goods_db = RC_Loader::load_app_model('goods_model', 'goods');
 				$db_order_goods = RC_Loader::load_app_model('order_goods_model', 'orders');
 				foreach ($sub_orders_result as $val) {
+					$seller_name = RC_Model::model('seller/seller_shopinfo_model')->where(array('id' => $val['seller_id']))->get_field('shop_name');
 					$order_goods = $db_order_goods->where(array('order_id' => $val['order_id']))->select();
 					
 					$order_status = ($val['order_status'] != '2' || $val['order_status'] != '3') ? RC_Lang::lang('os/'.$val['order_status']) : '';
@@ -67,23 +68,23 @@ public function run(ecjia_api & $api) {
 					$goods_lists = array();
 					if (!empty($order_goods)) {
 						foreach ($order_goods as $v) {
-							if ($v['ru_id'] > 0) {
-								$db_msi = RC_Loader::load_app_model('merchants_shop_information_model', 'seller');
-								$info = $db_msi->field('CONCAT(shoprz_brandName,shopNameSuffix) as seller_name')->where(array('user_id' => $v['ru_id']))->find();
-								$seller_name = $info['seller_name']; 
-							} else {
-								$seller_name = '自营';
-							}
+// 							if ($v['ru_id'] > 0) {
+// 								$db_msi = RC_Loader::load_app_model('merchants_shop_information_model', 'seller');
+// 								$info = $db_msi->field('CONCAT(shoprz_brandName,shopNameSuffix) as seller_name')->where(array('user_id' => $v['ru_id']))->find();
+// 								$seller_name = $info['seller_name']; 
+// 							} else {
+// 								$seller_name = '自营';
+// 							}
 							
 							$goods_info = $goods_db->find(array('goods_id' => $v['goods_id']));
 							
 							$goods_lists[] = array(
 									'id'	=> $v['goods_id'],
 									'name'	=> $v['goods_name'],
-									'seller_name' => $seller_name,
-									'shop_price' => price_format($v['goods_price'], false),
-									'goods_sn'	 => $v['goods_sn'],
-									'number'	 => $v['goods_number'],
+									'seller_name'	=> !empty($seller_name) ? $seller_name : '自营',
+									'shop_price'	=> price_format($v['goods_price'], false),
+									'goods_sn'		=> $v['goods_sn'],
+									'number'		=> $v['goods_number'],
 									'img'	=> array(
 											'thumb'	=> !empty($goods_info['goods_img']) ? RC_Upload::upload_url($goods_info['goods_img']) : '',
 											'url'	=> !empty($goods_info['original_img']) ? RC_Upload::upload_url($goods_info['original_img']) : '',

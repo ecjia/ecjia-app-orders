@@ -175,8 +175,8 @@ class orders_order_list_api extends Component_Event_Api {
 // 					}
 					
 					$orders[$row['order_id']] = array(
-							'seller_id'					=> empty($row['seller_id']) ? intval($row['seller_id']) : 0,
-							'seller_name'				=> empty($row['seller_name']) ? $row['seller_name'] : '自营',
+							'seller_id'					=> !empty($row['seller_id']) ? intval($row['seller_id']) : 0,
+							'seller_name'				=> !empty($row['seller_name']) ? $row['seller_name'] : '自营',
 							'order_id'					=> $row['order_id'],
 							'order_sn'					=> $row['order_sn'],
 							'order_status'				=> $row['order_status'],

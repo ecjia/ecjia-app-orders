@@ -64,7 +64,7 @@ function affirm_received($order_id, $user_id = 0)
             		'message'	   => '',
             		'add_time'	   => RC_Time::gmtime()
             );
-            $db_order_status_log->insert($data);
+            $db_order_status_log->insert($order_status_data);
             /* 记录日志 */
         	RC_Loader::load_app_func('order', 'orders');
             order_action($order['order_sn'], $order['order_status'], SS_RECEIVED, $order['pay_status'], '', RC_Lang::lang('buyer'));

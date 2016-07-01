@@ -59,7 +59,7 @@ function affirm_received($order_id, $user_id = 0)
         if ($query) {
         	$db_order_status_log = RC_Loader::load_app_model('order_status_log_model', 'orders');
         	$order_status_data = array(
-            		'order_status' => '已完成',
+            		'order_status' => '确认收货',
             		'order_id' 	   => $order_id,
             		'message'	   => '',
             		'add_time'	   => RC_Time::gmtime()
@@ -67,7 +67,7 @@ function affirm_received($order_id, $user_id = 0)
             $db_order_status_log->insert($order_status_data);
             /* 记录日志 */
         	RC_Loader::load_app_func('order', 'orders');
-            order_action($order['order_sn'], $order['order_status'], SS_RECEIVED, $order['pay_status'], '', RC_Lang::lang('buyer'));
+            order_action($order['order_sn'], $order['order_status'], SS_RECEIVED, $order['pay_status'], '', '买家');
             return true;
         } else {
             return new ecjia_error('database_query_error', $db->error());

@@ -131,7 +131,7 @@ class list_module implements ecjia_interface {
 				if (empty($order_id_group)) {
 					$data = array();
 				} else {
-					$where['al.order_id'] =  $order_id_group;
+					$where['oi.order_id'] =  $order_id_group;
 					$data = $db_orderinfo_view->field($field)->join(array('order_goods', 'goods'))->where($where)->order(array('oi.add_time' => 'desc'))->select();
 				}
 			}

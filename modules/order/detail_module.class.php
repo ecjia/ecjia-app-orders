@@ -85,9 +85,9 @@ class detail_module implements ecjia_interface {
 					'formated_shop_price' => $v['goods_price'] > 0 ? price_format($v['goods_price'], false) : __('免费'),
 					'is_commented'	=> $v['is_commented'],
 					'img' => array(
-							'small'	=> !empty($v['goods_thumb']) ? RC_Upload::upload_url($row['goods_thumb']) : '',
-							'thumb'	=> !empty($v['goods_img']) ? RC_Upload::upload_url($row['goods_img']) : '',
-							'url' 	=> !empty($v['original_img']) ? RC_Upload::upload_url($row['original_img']) : '',
+							'small'	=> !empty($v['goods_thumb']) ? RC_Upload::upload_url($v['goods_thumb']) : '',
+							'thumb'	=> !empty($v['goods_img']) ? RC_Upload::upload_url($v['goods_img']) : '',
+							'url' 	=> !empty($v['original_img']) ? RC_Upload::upload_url($v['original_img']) : '',
 					)
 			);
 			

@@ -111,6 +111,13 @@ class orders_user_account_paid_api extends Component_Event_Api {
 			}
 		}
 		
+		RC_Model::model('orders/order_status_log_model')->insert(array(
+				'order_status'	=> '已付款',
+				'order_id'		=> $order_info['order_id'],
+				'message'		=> '已通知商家揽收，请耐心等待！',
+				'add_time'		=> RC_Time::gmtime(),
+		));
+		
 		$result = ecjia_app::validate_application('sms');
 		if (!is_ecjia_error($result)) {
 			/* 收货验证短信  */

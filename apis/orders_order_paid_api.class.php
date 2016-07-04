@@ -25,13 +25,11 @@ class orders_order_paid_api extends Component_Event_Api {
 
 	    /* 检查支付的金额是否相符 */
 	    if (!$this->check_money($options['log_id'], $options['money'])) {
-// 	    	RC_Log::write("支付的金额有误");
 	        return new ecjia_error('check_money_fail', '支付的金额有误');
 	    }
 	    
 	    if (in_array($options['pay_status'], array(PS_UNPAYED, PS_PAYING, PS_PAYED)) && $options['pay_status'] == PS_PAYED) {
 	        /* 改变订单状态 */
-// 	    	RC_Log::write("改变订单状态");
 	        $this->order_paid($options['log_id'], PS_PAYED, $options['note']);
 	        return true;
 	    }
@@ -82,14 +80,12 @@ class orders_order_paid_api extends Component_Event_Api {
 	    RC_Loader::load_app_func('order', 'orders');
 	    /* 取得支付编号 */
 	    $log_id = intval($log_id);
-// 	    RC_Log::write("日志id".$log_id);
 	    if ($log_id > 0) {
 	        /* 取得要修改的支付记录信息 */
 	        $pay_log = $db_pay->find(array('log_id' => $log_id));
 	        if ($pay_log && $pay_log['is_paid'] == 0) {
 	            /* 修改此次支付操作的状态为已付款 */
 	            $db_pay->where(array('log_id' => $log_id))->update(array('is_paid' => 1));
-// 				RC_Log::write("日志id".$log_id);
 	            /* 根据记录类型做相应处理 */
 	            if ($pay_log['order_type'] == PAY_ORDER) {
 	                /* 取得订单信息 */
@@ -106,7 +102,6 @@ class orders_order_paid_api extends Component_Event_Api {
 	                    'money_paid'   => $order['order_amount'],
 	                    'order_amount' => 0,
 	                );
-// 	                RC_Log::write("订单id".$order_id);
 	                $db_order->where(array('order_id' => $order_id))->update($data);
 	
 	                /* 记录订单操作记录 */
@@ -119,32 +114,24 @@ class orders_order_paid_api extends Component_Event_Api {
                 			'confirm_time' => RC_Time::gmtime(),
                 			'pay_status'   => $pay_status,
                 			'pay_time'     => RC_Time::gmtime(),
-//                 			'money_paid'   => $order['order_amount'],
-//                 			'order_amount' => 0,
 	                	);
 	                	$db_order->where(array('main_order_id' => $order_id))->update($data);
 	                	$db_order->inc('money_paid', "main_order_id=$order_id", '0, money_paid=order_amount, order_amount=0');
 	                	
-// 	                	$sql = 'UPDATE ' . $this->db->opt['table'] . ' SET ' . $field . '=' . $field . '+' . $step . ' WHERE ' . $where;
-// 	                	$sql = 'UPDATE ' . $GLOBALS['ecs']->table('order_info') .
-// 	                	" SET order_status = '" . OS_CONFIRMED . "', " .
-// 	                	" confirm_time = '" . gmtime() . "', " .
-// 	                	" pay_status = '$pay_status', " .
-// 	                	" pay_time = '".gmtime()."', " .
-// 	                	" money_paid = order_amount," .
-// 	                	" order_amount = 0 ".
-// 	                	"WHERE main_order_id = '$order_id'";
-// 	                	$GLOBALS['db']->query($sql);
-	                
-// 	                	$sql = 'SELECT order_sn ' . 'FROM ' . $GLOBALS['ecs']->table('order_info') .
-// 	                	" WHERE main_order_id = '$order_id'";
 	                	$order_res = $db_order->field('order_sn')->where(array('main_order_id' => $order_id))->select();
-// 	                	$order_res    = $GLOBALS['db']->getAll($sql);
 	                	foreach ($order_res AS $row) {
 	                		/* 记录订单操作记录 */
 	                		order_action($row['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, $pay_status, $note, __('买家'));
 	                	}
 	                }
+	                
+	                RC_Model::model('orders/order_status_log_model')->insert(array(
+			                'order_status'	=> '已付款',
+			                'order_id'		=> $order_id,
+			                'message'		=> '已通知商家揽收，请耐心等待！',
+			                'add_time'		=> RC_Time::gmtime(),
+	                ));
+	                
 	                $result = ecjia_app::validate_application('sms');
 	                if (!is_ecjia_error($result)) {
 		                /* 收货验证短信  */
@@ -222,15 +209,6 @@ class orders_order_paid_api extends Component_Event_Api {
 		                	}
 		                }
 	                }
-	                // 	                if ($GLOBALS['_CFG']['sms_order_payed'] == '1' && $GLOBALS['_CFG']['sms_shop_mobile'] != '')
-                    // 	                {
-                    // 	                    //include_once(ROOT_PATH.'includes/cls_sms.php');
-
-                    // 	                    RC_Loader::load_sys_class('sms');
-                    // 	                    $sms = new sms();
-                    // 	                    $sms->send($GLOBALS['_CFG']['sms_shop_mobile'],
-                    // 	                        sprintf($GLOBALS['_LANG']['order_payed_sms'], $order_sn, $order['consignee'], $order['tel']),'', 13,1);
-                    // 	                }
 
                     /* 对虚拟商品的支持 */
                     $virtual_goods = get_virtual_goods($order_id);
@@ -259,7 +237,6 @@ class orders_order_paid_api extends Component_Event_Api {
                             	'change_desc'	=> sprintf(RC_Lang::lang('order_gift_integral'), $order['order_sn'])
                             );
                             RC_Api::api('user', 'account_change_log',$options);
-//                             log_account_change($order['user_id'], 0, 0, intval($integral['rank_points']), intval($integral['custom_points']), sprintf(RC_Lang::lang('order_gift_integral'), $order['order_sn']));
                         }
                     }
 
@@ -282,8 +259,6 @@ class orders_order_paid_api extends Component_Event_Api {
                         	'change_type'	=> ACT_SAVING
                         );
                         RC_Api::api('user', 'account_change_log',$options);
-                        
-//                         log_account_change($arr['user_id'], $arr['amount'], 0, 0, 0, RC_Lang::lang('surplus_type_0'), ACT_SAVING);
                     }
                 }
             } else {

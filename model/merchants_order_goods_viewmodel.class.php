@@ -10,11 +10,16 @@ class merchants_order_goods_viewmodel extends Component_Model_View {
 		$this->table_name = 'order_goods';
 		$this->table_alias_name = 'og';
 		
-		$this->view = array(			
+		$this->view = array(	
+			'seller_shopinfo' 	=> array(
+					'type' 		=> Component_Model_View::TYPE_LEFT_JOIN,
+					'alias' 	=> 'ssi',
+					'on' 		=> 'ssi.id = og.seller_id'
+			),
 		    'merchants_shop_information' 	=> array(
 		        'type' 		=> Component_Model_View::TYPE_LEFT_JOIN,
 		        'alias' 	=> 'ms',
-		        'on' 		=> 'og.ru_id = ms.user_id'
+		        'on' 		=> 'ssi.shop_id = ms.shop_id'
 		    ),
 			'order_info' => array(
 					'type'  =>	Component_Model_View::TYPE_LEFT_JOIN,

@@ -188,7 +188,7 @@ class order_query extends order {
     public function get_order_list($pagesize = '15') {
     	$db_order 		= RC_Loader::load_app_model('order_info_model','orders');
 	    $dbview 		= RC_Loader::load_app_model('order_order_info_viewmodel','orders');
-	    //$db_admin 		= RC_Loader::load_model('admin_user_model');
+	    //$db_admin 	= RC_Loader::load_model('admin_user_model');
 		$db_admin 		= RC_Model::model('admin_user_model');
 	    $args = $_GET;
 	    $db_viewmodel 	= RC_Loader::load_app_model('merchants_order_goods_viewmodel','orders');
@@ -218,8 +218,8 @@ class order_query extends order {
         $filter['group_buy_id'] 		= isset($args['group_buy_id']) 		? intval($args['group_buy_id']) : 0;
         $filter['sort_by'] 				= empty($args['sort_by']) 			? 'add_time' : trim($args['sort_by']);
         $filter['sort_order'] 			= empty($args['sort_order']) 		? 'DESC' : trim($args['sort_order']);
-        $filter['start_time'] 			= empty($args['start_time']) 		? '' : (strpos($args['start_time'], '-') > 0 ?  RC_Time::local_strtotime($_REQUEST['start_time']) : $_REQUEST['start_time']);
-        $filter['end_time'] 			= empty($args['end_time']) 			? '' : (strpos($args['end_time'], '-') > 0 ?  RC_Time::local_strtotime($_REQUEST['end_time']) : $_REQUEST['end_time']);
+        $filter['start_time'] 			= empty($args['start_time']) 		? '' : (strpos($args['start_time'], '-') > 0 ?  RC_Time::local_strtotime($_GET['start_time']) : $_GET['start_time']);
+        $filter['end_time'] 			= empty($args['end_time']) 			? '' : (strpos($args['end_time'], '-') > 0 ?  RC_Time::local_strtotime($_GET['end_time']) : $_GET['end_time']);
 		
         /* 团购订单 */
         if ($filter['group_buy_id']) {
@@ -293,7 +293,7 @@ class order_query extends order {
 //             )
 //         );
 
-        $fields = "o.order_id, o.main_order_id, o.order_sn, o.add_time, o.order_status, o.shipping_status, o.order_amount, o.money_paid,o.pay_status, o.consignee, o.address, o.email, o.tel, o.mobile, o.extension_code, o.extension_id ,(" . $this->order_amount_field('o.') . ") AS total_fee, ms.shoprz_brandName, ms.shopNameSuffix, u.user_name";
+        $fields = "o.order_id, o.main_order_id, o.order_sn, o.add_time, o.order_status, o.shipping_status, o.order_amount, o.money_paid,o.pay_status, o.consignee, o.address, o.email, o.tel, o.mobile, o.extension_code, o.extension_id ,(" . $this->order_amount_field('o.') . ") AS total_fee, ssi.shop_name, u.user_name";
         $row = $db_viewmodel->field($fields)->where($this->where)->order(array($filter['sort_by'] => $filter['sort_order']))->limit($page->limit())->group('o.order_id')->select();
     	foreach (array('order_sn', 'consignee', 'email', 'address', 'zipcode', 'tel', 'user_name') AS $val) {
             $filter[$val] = stripslashes($filter[$val]);
@@ -308,7 +308,7 @@ class order_query extends order {
 				$order[$value['order_id']]['formated_money_paid'] 	= price_format($value['money_paid']);
 				$order[$value['order_id']]['formated_total_fee'] 	= price_format($value['total_fee']);
 	            $order[$value['order_id']]['short_order_time']		= RC_Time::local_date('Y-m-d H:i', $value['add_time']);
-	            $order[$value['order_id']]['shop_name'] 			= $value['shoprz_brandName'].$value['shopNameSuffix'];
+	            $order[$value['order_id']]['shop_name'] 			= $value['shop_name'];
                 $order[$value['order_id']]['user_name']             = empty($value['user_name']) ? '匿名购物' : $value['user_name'];
                 $order[$value['order_id']]['order_id']              = $value['order_id'];
                 $order[$value['order_id']]['main_order_id']         = $value['main_order_id'];

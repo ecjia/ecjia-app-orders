@@ -188,9 +188,9 @@ class admin_order_delivery extends ecjia_admin {
 		$db_delivery = RC_Loader::load_app_model('delivery_viewmodel','orders');
 		
 		/* 对编辑红包类型名称进行权限检查  BY：JI  START */
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
+// 		if (!empty($_SESSION['ru_id'])) {
+// 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+// 		}
 		/* 对编辑红包类型名称进行权限检查  BY：JI END */
 
 		/* 定义当前时间 */
@@ -423,9 +423,9 @@ class admin_order_delivery extends ecjia_admin {
 		/* 检查权限 */
 		$this->admin_priv('delivery_view', ecjia::MSGTYPE_JSON);
 		
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
+// 		if (!empty($_SESSION['ru_id'])) {
+// 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+// 		}
 
 		/* 取得参数 */
 		$delivery				= '';
@@ -544,9 +544,9 @@ class admin_order_delivery extends ecjia_admin {
 		/* 检查权限 */
 		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
 		
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
+// 		if (!empty($_SESSION['ru_id'])) {
+// 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+// 		}
 
 		$delivery_id = $_REQUEST['delivery_id'];
 		if (!is_array($delivery_id)) {

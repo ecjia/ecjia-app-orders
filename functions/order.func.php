@@ -159,7 +159,7 @@ function order_finished($order) {
 function order_goods($order_id) {
 	$db = RC_Loader::load_app_model('order_goods_model','orders');
 	$data = $db->field('rec_id, goods_id, goods_name, goods_sn,product_id, market_price, goods_number,goods_price, goods_attr, is_real, parent_id, is_gift,goods_price * goods_number|subtotal, extension_code')->where(array('order_id' => $order_id))->select();
-
+	$goods_list = array();
 	if(!empty($data)) {
 		foreach ($data as $row) {
 			if ($row['extension_code'] == 'package_buy') {

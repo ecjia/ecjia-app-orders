@@ -137,11 +137,7 @@ class admin extends ecjia_admin {
 	 * 订单详情页面
 	 */	
 	public function info() 
-	{
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
-		
+	{		
 		/* 根据订单id或订单号查询订单信息 */
 		if (isset($_GET['order_id'])) {
 			$order_id	= intval($_GET['order_id']);
@@ -630,10 +626,6 @@ class admin extends ecjia_admin {
 		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
 		$from_order_sn	= empty($_POST['from_order_sn'])	? '' : $_POST['from_order_sn'];
 		$to_order_sn	= empty($_POST['to_order_sn'])		? '' : $_POST['to_order_sn'];
-		
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
 
 		/* 参数验证  */
 		$m_result	= merge_order($from_order_sn, $to_order_sn);
@@ -968,10 +960,6 @@ class admin extends ecjia_admin {
 		/* 检查权限 */
 		$this->admin_priv('order_edit');
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('编辑订单')));
-		
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
 
 		/* 取得参数 order_id */
 		$order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
@@ -1384,7 +1372,7 @@ class admin extends ecjia_admin {
 						'goods_number'		=> $goods_number,
 						'market_price'		=> $row['market_price'],
 						'goods_price'		=> $goods_price,
-						'goods_attr'		=> $attr_value,
+						'goods_attr'		=> isset($attr_value) ? $attr_value : '',
 						'is_real'			=> $row['is_real'],
 						'extension_code'	=> $row['extension_code'],
 						'parent_id'			=> 0,
@@ -1400,7 +1388,7 @@ class admin extends ecjia_admin {
 						'goods_number'		=> $goods_number,
 						'market_price'		=> $row['market_price'],
 						'goods_price'		=> $goods_price,
-						'goods_attr'		=> $attr_value,
+						'goods_attr'		=> isset($attr_value) ? $attr_value : '',
 						'is_real'			=> $row['is_real'],
 						'extension_code'	=> $row['extension_code'],
 						'parent_id'			=> 0,
@@ -1926,11 +1914,7 @@ class admin extends ecjia_admin {
 	public function process() 
 	{
 		/* 取得参数 func */
-		$func = isset($_REQUEST['func']) ? $_REQUEST['func'] : '';
-		
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
+		$func = isset($_GET['func']) ? $_GET['func'] : '';
 
 		/* 删除订单商品 */
 		if ('drop_order_goods' == $func) {
@@ -2144,10 +2128,6 @@ class admin extends ecjia_admin {
 		/* 检查权限 */
 		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
 		
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
-
 		/* 取得订单id（可能是多个，多个sn）和操作备注（可能没有） */
 		if (isset($_GET['order_id'])) {
 			/* 判断是一个还是多个 */
@@ -2251,7 +2231,7 @@ class admin extends ecjia_admin {
 		/* 检查权限 */
 		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
 		$order_id = '';
-		if (empty($_SESSION['ru_id'])) {
+		if (empty($_SESSION['seller_id'])) {
 		
 			/* 取得订单id（可能是多个，多个sn）和操作备注（可能没有） */
 			if (isset($_POST['order_id'])) {
@@ -2549,10 +2529,6 @@ class admin extends ecjia_admin {
 		/* 检查权限 */
 		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
 		
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
-
 		/* 取得参数 */
 		$order_id_list	= $_POST['order_id'];		// 订单id（逗号格开的多个订单id）
 		$operation		= isset($_POST['operation']) ? $_POST['operation']:$_GET['operation'];		// 订单操作
@@ -2785,10 +2761,6 @@ class admin extends ecjia_admin {
 	{
 		/* 检查权限 */
 		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
-		
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
 
 		/* 取得参数 */
 		$order_id	= intval(trim($_POST['order_id']));	// 订单id
@@ -3554,11 +3526,6 @@ class admin extends ecjia_admin {
 		/* 检查权限 */
 		$this->admin_priv('order_edit', ecjia::MSGTYPE_JSON);
 		$order_id = intval($_REQUEST['order_id']);
-		/* 检查权限 */
-
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
 		
 		/* 检查订单是否允许删除操作 */
 		$order = order_info($order_id);

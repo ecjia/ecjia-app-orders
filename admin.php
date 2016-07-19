@@ -1212,7 +1212,8 @@ class admin extends ecjia_admin {
 		/* 插入订单信息 */
 		if ('user' == $step || ('user_select'==$step && $_GET['user']=='0')) {
 			/* 取得参数：user_id */
-			$user_id = ($_POST['anonymous'] == 1) ? 0 : intval($_POST['user']);
+			$user_id = (!empty($_POST['anonymous']) && $_POST['anonymous'] == 1) ? 0 : intval(isset($_POST['user']));
+			
 			/* 插入新订单，状态为无效 */
 			$order = array(
 				'user_id'			=> $user_id,
@@ -1723,7 +1724,7 @@ class admin extends ecjia_admin {
 			$order['card_fee']			= isset($_POST['card_fee']) && floatval($_POST['card_fee']) >= 0 ? round(floatval($_POST['card_fee']), 2) : 0;
 			$order['money_paid']		= $old_order['money_paid'];
 			$order['surplus']			= 0;
-			$order['integral']			= intval($_POST['integral']) >= 0 ? intval($_POST['integral']) : 0;
+			$order['integral']			= intval(isset($_POST['integral'])) >= 0 ? intval(isset($_POST['integral'])) : 0;
 			$order['integral_money']	= 0;
 			$order['bonus_id']			= 0;
 			$order['bonus']				= 0;

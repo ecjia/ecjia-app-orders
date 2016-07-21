@@ -3241,8 +3241,16 @@ class admin extends ecjia_admin {
 				$arr['pay_status']		= PS_PAYED;
 				$order['pay_status']	= PS_PAYED;
 			}
-			update_order($order_id, $arr);
-		
+			$update = update_order($order_id, $arr);
+			if ($update) {
+				$data = array(
+						'order_status' => '确认收货',
+						'order_id'     => $order_id,
+						'message'      => '商品已送达，请签收，感谢您下次光顾！',
+						'add_time'     => RC_Time::gmtime()
+				);
+				$this->db_order_status_log->insert($data);
+			}
 			/* 记录log */
 			order_action($order['order_sn'], $order['order_status'], SS_RECEIVED, $order['pay_status'], $action_note);
 		} elseif ('cancel' == $operation) {

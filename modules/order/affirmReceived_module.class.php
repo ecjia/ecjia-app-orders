@@ -61,7 +61,7 @@ function affirm_received($order_id, $user_id = 0)
         	$order_status_data = array(
             		'order_status' => '确认收货',
             		'order_id' 	   => $order_id,
-            		'message'	   => '',
+            		'message'	   => '商品已送达，请签收，感谢您下次光顾！',
             		'add_time'	   => RC_Time::gmtime()
             );
             $db_order_status_log->insert($order_status_data);

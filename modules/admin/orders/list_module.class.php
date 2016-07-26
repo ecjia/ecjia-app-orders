@@ -12,7 +12,6 @@ class list_module implements ecjia_interface {
 		$ecjia = RC_Loader::load_app_class('api_admin', 'api');
 		$ecjia->authadminSession();
 		$result = $ecjia->admin_priv('order_view');
-		
 		if (is_ecjia_error($result)) {
 			EM_Api::outPut($result);
 		}
@@ -58,7 +57,7 @@ class list_module implements ecjia_interface {
 
 			
 			$total_fee = "(oi.goods_amount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) as total_fee";
-			$field = 'oi.order_id, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time, og.goods_number, og.goods_id,  og.goods_name';
+			$field = 'oi.order_id, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time, og.goods_number, og.goods_id, og.goods_name, g.goods_thumb, g.goods_img, g.original_img';
 			
 			$db_orderinfo_view = RC_Loader::load_app_model('order_info_viewmodel', 'orders');
 			$result = ecjia_app::validate_application('seller');
@@ -89,7 +88,7 @@ class list_module implements ecjia_interface {
 				if (isset($_SESSION['seller_id']) && $_SESSION['seller_id'] > 0) {
 					$where['oi.seller_id'] = $_SESSION['seller_id'];
 				}
-				
+
 				/*获取记录条数*/
 // 				$record_count = $db_orderinfo_view->join(array('order_info', 'order_goods'))->where($where)->count('DISTINCT oi.order_id');
 				$record_count = $db_orderinfo_view->join(array('order_goods'))->where($where)->count('DISTINCT oi.order_id');

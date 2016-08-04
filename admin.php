@@ -2533,7 +2533,7 @@ class admin extends ecjia_admin {
 		/* 取得参数 */
 		$order_id_list	= $_POST['order_id'];		// 订单id（逗号格开的多个订单id）
 		$operation		= isset($_POST['operation']) ? $_POST['operation']:$_GET['operation'];		// 订单操作
-		$action_note	= $_POST['action_note'];		// 操作备注
+		$action_note	= isset($_POST['action_note']) ? $_POST['action_note'] : '';		// 操作备注
 
 		if (!is_array($order_id_list)) {
 			if (strpos($order_id_list, ',') === false) {

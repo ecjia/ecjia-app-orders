@@ -82,7 +82,7 @@ class order_query extends order {
 	/* 已发货订单：不论是否付款 */
 	public function order_shipped($alias = '') {
 		$where = array();
-        $where[$alias.'order_status'] = OS_CONFIRMED;
+        $where[$alias.'order_status'] = array(OS_CONFIRMED, OS_SPLITED);
         $where[$alias.'shipping_status'] = array(SS_SHIPPED);
         return $where;
 	}

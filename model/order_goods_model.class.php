@@ -9,6 +9,11 @@ class order_goods_model extends Component_Model_Model {
 		$this->table_name 	= 'order_goods';
 		parent::__construct();
 	}
+	
+	public function get_exchange_goods_num ($where, $field) {
+		$res = $this->where($where)->field($field)->select();
+		return $res;
+	}
 }
 
 // end

@@ -293,7 +293,7 @@ class order_query extends order {
 //             )
 //         );
 
-        $fields = "o.order_id, o.main_order_id, o.order_sn, o.add_time, o.order_status, o.shipping_status, o.order_amount, o.money_paid,o.pay_status, o.consignee, o.address, o.email, o.tel, o.mobile, o.extension_code, o.extension_id ,(" . $this->order_amount_field('o.') . ") AS total_fee, ssi.shop_name, u.user_name";
+        $fields = "o.order_id, o.order_sn, o.add_time, o.order_status, o.shipping_status, o.order_amount, o.money_paid,o.pay_status, o.consignee, o.address, o.email, o.tel, o.mobile, o.extension_code, o.extension_id ,(" . $this->order_amount_field('o.') . ") AS total_fee, ssi.shop_name, u.user_name";
         $row = $db_viewmodel->field($fields)->where($this->where)->order(array($filter['sort_by'] => $filter['sort_order']))->limit($page->limit())->group('o.order_id')->select();
     	foreach (array('order_sn', 'consignee', 'email', 'address', 'zipcode', 'tel', 'user_name') AS $val) {
             $filter[$val] = stripslashes($filter[$val]);
@@ -334,23 +334,11 @@ class order_query extends order {
 	            } else {
 	                $order[$value['order_id']]['can_remove'] = 0;
 	            }
-                if (empty($value['main_order_id'])) {
-                    $arr[] = $value['order_id'];
-                }else{
-                   $order[$value['order_id']]['stet'] = '1'; // 子订单
-                }
+                
                 
 	        }
 	    }
-	    if (!empty($arr)) {
-	        $res = $db_order->field('order_id,order_sn,main_order_id')->in(array('main_order_id' => $arr))->select();
-	        if (!empty($res)) {
-		        foreach ($res as $key => $val) {
-		            $order[$val['main_order_id']]['children_order'][] = $val['order_sn'];
-		            $order[$val['main_order_id']]['stet'] = 2;
-		        } 
-	        }
-	    }
+	    
 	   	return array('orders' => $order, 'filter' => $filter, 'page' => $page->show($pagesize), 'desc' => $page->page_desc());
     }
 	

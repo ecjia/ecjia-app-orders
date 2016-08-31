@@ -12,6 +12,14 @@ class admin_order_stats extends ecjia_admin {
 	
 	public function __construct() {
 		parent::__construct();
+		
+		RC_Loader::load_app_func('global','orders');
+		
+		$this->db_order_info = RC_Loader::load_app_model('order_info_model', 'orders');
+		$this->db_goods = RC_Loader::load_app_model('goods_model', 'orders');
+		$this->db_payment_view = RC_Loader::load_app_model('payment_viewmodel', 'orders');
+		$this->db_shipping_view = RC_Loader::load_app_model('shipping_viewmodel', 'orders');
+		
 		/* 加载所有全局 js/css */
 		RC_Script::enqueue_script('bootstrap-placeholder');
 		RC_Script::enqueue_script('jquery-validate');
@@ -33,13 +41,9 @@ class admin_order_stats extends ecjia_admin {
 		RC_Script::enqueue_script('order_stats', RC_App::apps_url('statics/js/order_stats.js', __FILE__));
 		RC_Script::enqueue_script('order_stats_chart', RC_App::apps_url('statics/js/order_stats_chart.js', __FILE__));
 		RC_Style::enqueue_style('orders-css', RC_App::apps_url('statics/css/orders.css', __FILE__));
-		RC_Lang::load('statistic');
-		RC_Loader::load_app_func('global','orders');
-
-		$this->db_order_info = RC_Loader::load_app_model('order_info_model', 'orders');
-		$this->db_goods = RC_Loader::load_app_model('goods_model', 'orders');
-		$this->db_payment_view = RC_Loader::load_app_model('payment_viewmodel', 'orders');
-		$this->db_shipping_view = RC_Loader::load_app_model('shipping_viewmodel', 'orders');
+		
+		RC_Script::localize_script('order_stats', 'js_lang', RC_Lang::get('orders::statistic.js_lang'));
+		RC_Script::localize_script('order_stats_chart', 'js_lang', RC_Lang::get('orders::statistic.js_lang'));
 	}
 	
 	/**
@@ -48,22 +52,20 @@ class admin_order_stats extends ecjia_admin {
 	public function init() {
 		$this->admin_priv('order_stats');
 		
-		/* 加载面包屑  */
-		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('订单统计')));
+		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::statistic.order_stats')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
 			'id'		=> 'overview',
-			'title'		=> __('概述'),
-			'content'	=>
-			'<p>' . __('欢迎访问ECJia智能后台订单统计页面，系统中所有的订单统计信息都会显示在此页面中。') . '</p>'
+			'title'		=> RC_Lang::get('orders::statistic.overview'),
+			'content'	=> '<p>' . RC_Lang::get('orders::statistic.order_stats_help') . '</p>'
 		));
 		
 		ecjia_screen::get_current_screen()->set_help_sidebar(
-			'<p><strong>' . __('更多信息:') . '</strong></p>' .
-			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E8.AE.A2.E5.8D.95.E6.A6.82.E5.86.B5" target="_blank">关于订单统计帮助文档</a>') . '</p>'
+			'<p><strong>' . RC_Lang::get('orders::statistic.more_info') . '</strong></p>' .
+			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E8.AE.A2.E5.8D.95.E6.A6.82.E5.86.B5" target="_blank">'. RC_Lang::get('orders::statistic.about_order_stats') .'</a>') . '</p>'
 		);
 		
-		$this->assign('ur_here','订单统计');
-		$this->assign('action_link', array('text' => '订单统计报表下载', 'href' => RC_Uri::url('orders/admin_order_stats/download')));
+		$this->assign('ur_here', RC_Lang::get('orders::statistic.order_stats'));
+		$this->assign('action_link', array('text' => RC_Lang::get('orders::statistic.down_order_statistics'), 'href' => RC_Uri::url('orders/admin_order_stats/download')));
 		
 		//获取订单统计信息
 		$order_stats = $this->get_order_stats();
@@ -106,9 +108,9 @@ class admin_order_stats extends ecjia_admin {
 		$this->assign('order_stats', $order_stats);
 		$this->assign('page', 'init');
 		$this->assign('form_action', RC_Uri::url('orders/admin_order_stats/init'));
+		
 		$this->assign('is_multi', $is_multi);
 		$this->assign('year_month', $year_month);
-		$this->assign_lang();
 		
 		$this->display('order_stats.dwt');
 	}
@@ -119,22 +121,20 @@ class admin_order_stats extends ecjia_admin {
 	public function shipping_status() {
 		$this->admin_priv('order_stats');
 	
-		/* 加载面包屑  */
-		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('订单统计')));
+		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::statistic.order_stats')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
 			'id'		=> 'overview',
-			'title'		=> __('概述'),
-			'content'	=>
-			'<p>' . __('欢迎访问ECJia智能后台订单统计页面，系统中所有的订单统计信息都会显示在此页面中。') . '</p>'
+			'title'		=> RC_Lang::get('orders::statistic.overview'),
+			'content'	=> '<p>' . RC_Lang::get('orders::statistic.order_stats_help') . '</p>'
 		));
 		
 		ecjia_screen::get_current_screen()->set_help_sidebar(
-			'<p><strong>' . __('更多信息:') . '</strong></p>' .
-			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E9.85.8D.E9.80.81.E6.96.B9.E5.BC.8F" target="_blank">关于订单统计帮助文档</a>') . '</p>'
+			'<p><strong>' . RC_Lang::get('orders::statistic.more_info') . '</strong></p>' .
+			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E9.85.8D.E9.80.81.E6.96.B9.E5.BC.8F" target="_blank">'. RC_Lang::get('orders::statistic.about_order_stats') .'</a>') . '</p>'
 		);
 		
-		$this->assign('ur_here','订单统计');
-		$this->assign('action_link', array('text' => '订单统计报表下载', 'href' => RC_Uri::url('orders/admin_order_stats/download')));
+		$this->assign('ur_here', RC_Lang::get('orders::statistic.order_stats'));
+		$this->assign('action_link', array('text' => RC_Lang::get('orders::statistic.down_order_statistics'), 'href' => RC_Uri::url('orders/admin_order_stats/download')));
 	
 		//获取订单统计信息
 		$order_stats = $this->get_order_stats();
@@ -179,11 +179,11 @@ class admin_order_stats extends ecjia_admin {
 	
 		$this->assign('start_date_arr', $start_date_arr);
 		$this->assign('order_stats', $order_stats);
+		
 		$this->assign('is_multi', $is_multi);
 		$this->assign('year_month', $year_month);
 		$this->assign('page', 'shipping_status');
 		$this->assign('form_action', RC_Uri::url('orders/admin_order_stats/shipping_status'));
-		$this->assign_lang();
 		
 		$this->display('order_stats.dwt');
 	}
@@ -194,22 +194,20 @@ class admin_order_stats extends ecjia_admin {
 	public function pay_status() {
 		$this->admin_priv('order_stats');
 	
-		/* 加载面包屑  */
-		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('订单统计')));
+		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::statistic.order_stats')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
 			'id'		=> 'overview',
-			'title'		=> __('概述'),
-			'content'	=>
-			'<p>' . __('欢迎访问ECJia智能后台订单统计页面，系统中所有的订单统计信息都会显示在此页面中。') . '</p>'
+			'title'		=> RC_Lang::get('orders::statistic.overview'),
+			'content'	=> '<p>' . RC_Lang::get('orders::statistic.order_stats_help') . '</p>'
 		));
 		
 		ecjia_screen::get_current_screen()->set_help_sidebar(
-			'<p><strong>' . __('更多信息:') . '</strong></p>' .
-			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E6.94.AF.E4.BB.98.E6.96.B9.E5.BC.8F" target="_blank">关于订单统计帮助文档</a>') . '</p>'
+			'<p><strong>' . RC_Lang::get('orders::statistic.more_info') . '</strong></p>' .
+			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E6.94.AF.E4.BB.98.E6.96.B9.E5.BC.8F" target="_blank">'. RC_Lang::get('orders::statistic.about_order_stats') .'</a>') . '</p>'
 		);
 		
-		$this->assign('ur_here', '订单统计');
-		$this->assign('action_link', array('text' => '订单统计报表下载', 'href' => RC_Uri::url('orders/admin_order_stats/download')));
+		$this->assign('ur_here', RC_Lang::get('orders::statistic.order_stats'));
+		$this->assign('action_link', array('text' => RC_Lang::get('orders::statistic.down_order_statistics'), 'href' => RC_Uri::url('orders/admin_order_stats/download')));
 	
 		//获取订单统计信息
 		$order_stats = $this->get_order_stats();
@@ -277,22 +275,29 @@ class admin_order_stats extends ecjia_admin {
 			if (!empty($order_info)) {
 				foreach ($order_info as $k=>$v) {
 					if ($k=='unconfirmed_num') {
-						$order_info['未确认订单'] = $order_info['unconfirmed_num'];
+						$key = RC_Lang::get('orders::statistic.unconfirmed_order');
+						$order_info[$key] = $order_info['unconfirmed_num'];
 						unset($order_info['unconfirmed_num']);
+						
 					} elseif ($k=='confirmed_num') {
-						$order_info['已确认订单'] = $order_info['confirmed_num'];
-						unset($order_info['confirmed_num']);
-					} elseif ($k=='succeed_num') {
-						$order_info['已完成订单'] = $order_info['succeed_num'];
+						$key = RC_Lang::get('orders::statistic.confirmed_order');
+						$order_info[$key] = $order_info['confirmed_num'];
+						
+					} elseif ($k =='succeed_num') {
+						$key = RC_Lang::get('orders::statistic.succeed_order');
+						$order_info[$key] = $order_info['succeed_num'];
 						unset($order_info['succeed_num']);
-					} elseif ($k=='invalid_num') {
-						$order_info['已取消订单'] = $order_info['invalid_num'];
+						
+					} elseif ($k =='invalid_num') {
+						$key = RC_Lang::get('orders::statistic.invalid_order');
+						$order_info[$key] = $order_info['invalid_num'];
 						unset($order_info['invalid_num']);
 					}
 				}
 				arsort($order_info);
 				foreach ($order_info as $k=> $v) {
-					if ($order_info['未确认订单'] == 0 && $order_info['已确认订单'] ==0 && $order_info['已完成订单'] ==0 && $order_info['已取消订单'] ==0 ) {
+					if ($order_info[RC_Lang::get('orders::statistic.unconfirmed_order')] == 0 && $order_info[RC_Lang::get('orders::statistic.confirmed_order')] ==0 
+					&& $order_info[RC_Lang::get('orders::statistic.succeed_order')] ==0 && $order_info[RC_Lang::get('orders::statistic.invalid_order')] ==0 ) {
 						$order_info = null;
 					} else {
 						break;
@@ -332,16 +337,23 @@ class admin_order_stats extends ecjia_admin {
 			foreach ($order_info as $k=>$v) {
 				foreach ($v as $k1=>$v1) {
 					if ($k1=='unconfirmed_num') {
-						$arr1['未确认订单'][$k] = $v1;
+						$key = RC_Lang::get('orders::statistic.unconfirmed_order');
+						$arr1[$key][$k] = $v1;
 						unset($arr1['unconfirmed_num']);
+						
 					} elseif ($k1=='confirmed_num') {
-						$arr1['已确认订单'][$k] = $v1;
+						$key = RC_Lang::get('orders::statistic.confirmed_order');
+						$arr1[$key][$k] = $v1;
 						unset($arr1['confirmed_num']);
+						
 					} elseif ($k1=='succeed_num') {
-						$arr1['已完成订单'][$k] = $v1;
+						$key = RC_Lang::get('orders::statistic.succeed_order');
+						$arr1[$key][$k] = $v1;
 						unset($arr1['succeed_num']);
+						
 					} elseif ($k1=='invalid_num') {
-						$arr1['已取消订单'][$k] = $v1;
+						$key = RC_Lang::get('orders::statistic.invalid_order');
+						$arr1[$key][$k] = $v1;
 						unset($arr1['invalid_num']);
 					}
 				}
@@ -510,17 +522,17 @@ class admin_order_stats extends ecjia_admin {
 		$end_date = RC_Time::local_strtotime($_GET['end_date']);
 		
 		/*文件名*/
-		$filename = mb_convert_encoding(RC_Lang::lang('order_statement'),"GBK","UTF-8");
+		$filename = mb_convert_encoding(RC_Lang::get('orders::statistic.order_statement'), "GBK", "UTF-8");
 		header("Content-type: application/vnd.ms-excel; charset=utf-8");
 		header("Content-Disposition: attachment; filename=$filename.xls");
 		
 		/* 订单概况 */
 		$order_info = $this->get_orderinfo($start_date, $end_date);
 
-		$data = RC_Lang::lang('order_circs') . "\n";
-		$data .= RC_Lang::lang(confirmed) ."\t". RC_Lang::lang(succeed) ."\t". RC_Lang::lang(unconfirmed) ."\t". RC_Lang::lang(invalid)."\n";
-		$data .= $order_info[confirmed_num]."\t". $order_info[succeed_num] ."\t". $order_info[unconfirmed_num] ."\t". $order_info[invalid_num]."\n";
-		$data .= "\n".RC_Lang::lang(pay_method)."\n";
+		$data = RC_Lang::get('orders::statistic.order_circs') . "\n";
+		$data .= RC_Lang::get('orders::statistic.confirmed') ."\t". RC_Lang::get('orders::statistic.succeed') ."\t". RC_Lang::get('orders::statistic.unconfirmed') ."\t". RC_Lang::get('orders::statistic.invalid')."\n";
+		$data .= $order_info['confirmed_num']."\t". $order_info['succeed_num'] ."\t". $order_info['unconfirmed_num'] ."\t". $order_info['invalid_num']."\n";
+		$data .= "\n".RC_Lang::get('orders::statistic.pay_method')."\n";
 		
 		/* 支付方式 */
 		$where = "i.add_time >= '$start_date' AND i.add_time <= '$end_date'".order_query_sql('finished');
@@ -540,7 +552,7 @@ class admin_order_stats extends ecjia_admin {
 		$where = 'i.add_time >= '.$start_date.' AND i.add_time <= '.$end_date.''.order_query_sql('finished') ;
 		$ship_res = $this->db_shipping_view->field('sp.shipping_id, sp.shipping_name AS ship_name, COUNT(i.order_id) AS order_num')->where($where)->group('i.shipping_id')->order(array('order_num'=>'DESC'))->select();
 		
-		$data .= "\n".RC_Lang::lang('shipping_method')."\n";
+		$data .= "\n".RC_Lang::get('orders::statistic.shipping_method')."\n";
 		if (!empty($ship_res)) {
 			foreach ($ship_res AS $val) {
 				$data .= $val['ship_name']."\t";

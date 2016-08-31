@@ -20,7 +20,7 @@
 				dataType: "json",
 				success: function(order_infos){
 					if(order_infos === null) {
-						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>没有找到任何记录<\/div>";
+						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>" + js_lang.no_stats_data + "<\/div>";
 						$("#order_general").append(nodata);
 					}else{
 						$.each(order_infos,function(key,value){
@@ -37,10 +37,10 @@
 					          },
 					          xAxis : {
 					            categories: [
-					              '未确认订单',
-					              '已确认订单',
-					              '已完成订单',
-					              '已取消订单',
+									js_lang.unconfirmed_order,
+									js_lang.confirmed_order,
+									js_lang.succeed_order,
+									js_lang.invalid_order,
 					            ],
 					          },
 					          yAxis : {
@@ -80,7 +80,7 @@
 				dataType: "json",
 				success: function(templateCounts) {
 					if(templateCounts === null) {
-						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>没有找到任何记录<\/div>";
+						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>" + js_lang.no_stats_data + "<\/div>";
 						$("#order_status").append(nodata);
 					} else {
 						$.each(templateCounts,function(key,val){
@@ -137,7 +137,7 @@
 				dataType: "json",
 				success: function(ship_infos){
 					if(ship_infos === null) {
-						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>没有找到任何记录<\/div>";
+						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>" + js_lang.no_stats_data + "<\/div>";
 						$("#ship_status").append(nodata);
 					}else{
 						$.each(ship_infos,function(key,value){
@@ -192,7 +192,7 @@
 				dataType: "json",
 				success: function(ship_infos){
 					if (ship_infos === null) {
-						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>没有找到任何记录<\/div>";
+						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>" + js_lang.no_stats_data + "<\/div>";
 						$("#ship_stats").append(nodata);
 					} else {
 						var tpl = [];
@@ -250,7 +250,7 @@
 				dataType: "json",
 				success: function(pay_infos){
 					if(pay_infos === null) {
-						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>没有找到任何记录<\/div>";
+						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>" + js_lang.no_stats_data + "<\/div>";
 						$("#pay_status").append(nodata);
 					}else{
 						$.each(pay_infos,function(key,value){
@@ -306,7 +306,7 @@
 				dataType: "json",
 				success: function(pay_stat){
 					if(pay_stat === null) {
-						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>没有找到任何记录<\/div>";
+						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>" + js_lang.no_stats_data + "<\/div>";
 						$("#pay_stats").append(nodata);
 					}else{
 						$.each(pay_stat,function(key,val){
@@ -353,4 +353,5 @@
 		},
 	};
 })(ecjia.admin, jQuery);
+
 // end

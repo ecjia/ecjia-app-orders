@@ -45,7 +45,7 @@ $LANG['period'] = '时间段';
 $LANG['order_amount_trend'] = '营业额(单位:元)';
 $LANG['order_status'] = '订单走势';
 $LANG['turnover_status'] = '销售额走势';
-$LANG['sales_statistics']= '销售概况';
+$LANG['sales_statistics']= '销售统计';
 $LANG['down_sales_stats']= '销售概况报表下载';
 $LANG['sale_general_statement'] = '销售概况报表';
 $LANG['report_sell'] = '销售概况';
@@ -123,7 +123,7 @@ $LANG['sell_price'] = '售价';
 $LANG['sell_date'] = '售出日期';
 $LANG['down_sales'] = '下载销售明细';
 $LANG['sales_list'] = '销售明细';
-$LANG['sales_list_statement'] = '销售排行报表';
+$LANG['sales_list_statement'] = '销售明细报表';
 
 /* 访问购买比例 */
 $LANG['fav_exponential'] = '人气指数';

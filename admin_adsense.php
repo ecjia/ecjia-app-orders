@@ -38,22 +38,20 @@ class admin_adsense extends ecjia_admin {
 	 */
 	public function init() {
 		$this->admin_priv('adsense_conversion_stats');
-		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('广告转化率')));
+		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::statistic.adsense')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
 			'id'		=> 'overview',
-			'title'		=> __('概述'),
-			'content'	=>
-			'<p>' . __('欢迎访问ECJia智能后台广告转化率页面，系统中所有的广告转化率都会显示在此列表中。') . '</p>'
+			'title'		=> RC_Lang::get('orders::statistic.overview'),
+			'content'	=> '<p>' . RC_Lang::get('orders::statistic.adsense_help') . '</p>'
 		));
-		
 		ecjia_screen::get_current_screen()->set_help_sidebar(
-			'<p><strong>' . __('更多信息:') . '</strong></p>' .
-			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:广告转化率" target="_blank">关于广告转化率帮助文档</a>') . '</p>'
+			'<p><strong>' . RC_Lang::get('orders::statistic.more_info') . '</strong></p>' .
+			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:广告转化率" target="_blank">'. RC_Lang::get('orders::statistic.about_adsense') .'</a>') . '</p>'
 		);
 		
-		$this->assign('ur_here', __('广告转化率'));
-		$this->assign('action_link', array('href' => RC_Uri::url('adsense/admin/init'), 'text' => '广告列表'));
-		$this->assign('action_link_download', array('href' => RC_Uri::url('orders/admin_adsense/download'), 'text' => '下载广告转化率报表'));
+		$this->assign('ur_here', RC_Lang::get('orders::statistic.adsense'));
+		$this->assign('action_link', array('href' => RC_Uri::url('adsense/admin/init'), 'text' => RC_Lang::get('orders::statistic.adsense_list')));
+		$this->assign('action_link_download', array('href' => RC_Uri::url('orders/admin_adsense/download'), 'text' => RC_Lang::get('orders::statistic.down_adsense')));
 		
 		$ads_stats = $this->get_ads_stats();
 		if (!empty($ads_stats)) {
@@ -65,7 +63,6 @@ class admin_adsense extends ecjia_admin {
 			$this->assign('goods_stats', $goods_stats);
 		}
 		
-		$this->assign_lang();
 		$this->display('adsense.dwt');
 	}
 	
@@ -78,11 +75,11 @@ class admin_adsense extends ecjia_admin {
 		$ads_stats = $this->get_ads_stats();
 		$goods_stats = $this->get_goods_stats();
 		
-		$filename = mb_convert_encoding(RC_Lang::lang('adsense_statement'), "GBK", "UTF-8");
+		$filename = mb_convert_encoding(RC_Lang::get('orders::statistic.adsense_statement'), "GBK", "UTF-8");
 		
 		header("Content-type: application/vnd.ms-excel; charset=utf-8");
 		header("Content-Disposition: attachment; filename=$filename.xls");
-		$data = RC_Lang::lang('adsense_name')."\t".RC_Lang::lang('cleck_referer')."\t".RC_Lang::lang('click_count')."\t".RC_Lang::lang('confirm_order')."\t".RC_Lang::lang('gen_order_amount')."\n";
+		$data = RC_Lang::get('orders::statistic.adsense_name')."\t".RC_Lang::get('orders::statistic.cleck_referer')."\t".RC_Lang::get('orders::statistic.click_count')."\t".RC_Lang::get('orders::statistic.confirm_order')."\t".RC_Lang::get('orders::statistic.gen_order_amount')."\n";
 		$res = array_merge($ads_stats, $goods_stats);
 		if (!empty($res)) {
 			foreach ($res AS $row) {
@@ -121,7 +118,7 @@ class admin_adsense extends ecjia_admin {
 				$rows2['order_num'] = $this->db_order_info->where('referer = "'.$rows2['referer'].'"')->count('order_id');
 				/*当前广告所产生的已完成的有效订单 */
 				$rows2['order_confirm'] = $this->db_order_info->where('referer = "'.$rows2['referer']. order_query_sql('finished').'"')->count('order_id');
-				$rows2['ad_name']  = RC_Lang::lang('adsense_js_goods');
+				$rows2['ad_name'] = RC_Lang::get('orders::statistic.adsense_js_goods');
 				$goods_stats[]  = $rows2;
 			}
 		}

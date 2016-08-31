@@ -158,7 +158,6 @@ $LANG['label_agency'] 			= '办事处：';
 $LANG['suppliers_name'] 		= '供货商';
 
 $LANG['product_sn'] 			= '货品号';
-$LANG['order_name'] 			= '商家名称';
 $LANG['goods_info'] 			= '商品信息';
 $LANG['goods_name'] 			= '商品名称';
 $LANG['goods_name_brand'] 		= '商品名称 [ 品牌 ]';

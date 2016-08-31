@@ -19,6 +19,10 @@ return array(
 	'area_analyse' 		=> '地域分布',
 	'visit_site' 		=> '来访网站分析',
 	'key_analyse' 		=> '关键字分析',
+		
+	'general_statement' => '综合访问量统计',
+	'area_statement'	=> '地区分布统计',
+	'from_statement' 	=> '来源网站统计',		
 	
 	'start_date' 	=> '开始日期',
 	'end_date' 		=> '结束日期',
@@ -53,8 +57,8 @@ return array(
 	/* 订单统计 */
 	'overall_sum' 		=> '有效订单总金额',
 	'overall_choose' 	=> '总点击数',
-	'kilo_buy_amount' 	=> '每千点击订单数',
-	'kilo_buy_sum' 		=> '每千点击购物额',
+	'kilo_buy_amount' 	=> '每千点击订单数：',
+	'kilo_buy_sum' 		=> '每千点击购物额：',
 	"pay_type" 			=> "支付方式",
 	"succeed" 			=> "已成交",
 	"confirmed" 		=> "已确认",
@@ -76,8 +80,8 @@ return array(
 	
 	'order_by_goodsnum' 	=> '按销售量排序',
 	"order_by_money" 		=> '按销售额排序',
-	"download_sale_sort" 	=> "销售排行报表下载",
-	'sale_order_statement' 	=> "销售排行报表",
+	"download_sale_sort" 	=> '销售排行报表下载',
+	'sale_order_statement' 	=> '销售排行报表',
 	
 	/* 客户统计 */
 	'guest_order_sum' 		=> '匿名会员平均订单额',
@@ -111,8 +115,8 @@ return array(
 	'order_amount' 	=> '订单数(单位:个)',
 	'buy_sum' 		=> '购物金额',
 	
-	'order_amount_sort' => '按订单数量排序',
-	'buy_sum_sort' 		=> '按购物金额排序',
+	'order_amount_sort' 	=> '按订单数量排序',
+	'buy_sum_sort' 			=> '按购物金额排序',
 	'download_amount_sort' 	=> '下载购物金额报表',
 	'users_order_statement' => '购物金额报表',
 	
@@ -132,6 +136,7 @@ return array(
 	'fav_exponential' 	=> '人气指数',
 	'buy_times' 		=> '购买次数',
 	'visit_buy' 		=> '访问购买率',
+	'list_visit_buy' 	=> '访问购买率',
 	
 	'download_visit_buy' 	=> '下载访问购买率报表',
 	'visit_buy_statement' 	=> '访问购买率报表',
@@ -156,8 +161,95 @@ return array(
 	'gen_order_amount' 	=> '产生订单总数',
 	'adsense_statement' => '广告转化率报表',
 	
-// 	追加
-'adsense_js_goods' 	=> '站外JS调用商品',
+	// 	追加
+	'adsense_js_goods' 		=>  '站外JS调用商品',
+	'search_keywords'		=>	'搜索关键字',
+	'start_date_msg' 		=>	'开始日期',
+	'end_date_msg' 			=>	'结束日期',
+	'keywords' 				=>	'关键词',
+	'down_searchengine' 	=> 	'下载搜索关键字报表',
+	'tips'					=>	'温馨提示：',
+	'searchengine_stats'	=>	'搜索引擎统计主要统计每日搜索引擎蜘蛛抓取页面的次数',
+	'today'					=>	'今天',
+	'yesterday'				=>	'昨天',
+	'this_week'				=>	'本周',
+	'this_month'			=>	'本月',
+	'month'					=>	'月',
+	'loading'				=>	'正在加载中……',
+	'guest_stats' 			=>	'客户统计',
+	
+	'adsense'				=>	'广告转化率',
+	'adsense_list'			=>	'广告列表',
+	'down_adsense'			=>	'下载广告转化率报表',
+	'no_stats_data' 		=>	'没有统计数据',
+	'order_stats'			=>	'订单统计',
+	'order_stats_date'		=>	'订单统计图表默认显示为按时间段查询',
+	'order_stats_info'		=>	'订单统计信息',
+	'overall_sum_lable' 	=>	'有效订单总金额：',
+	'overall_choose_lable' 	=>	'总点击数：',
+	'select_date_lable'		=>	'按时间段查询：',			
+	'select_month_lable'	=>	'按月份查询：',
+	
+	'no_order_default'		=>	'没有完成的订单不计入销售概况，默认为月走势',
+	'year_status_lable' 	=>	'年走势：',
+	'month_status_lable' 	=>	'月走势：',
+	'no_sales_details'		=>	'没有完成的订单不计入销售明细',
+	'search'				=>	'搜索',
+	'no_sale_sort'			=>	'没有完成的订单不计入销售排行',
+	'no_included_member'	=>	'没有完成过订单交易的会员不计入会员排行',
+	
+	'no_orders_visit_buy'	=>	'没有完成的订单不计入访问购买率',
+	'pls_select_category'	=>	'请选择商品分类',
+	'pls_select_brand'		=>	'请选择商品品牌',
+	
+	'unconfirmed_order'		=> '未确认订单',
+	'confirmed_order'		=> '已确认订单',
+	'succeed_order'			=> '已完成订单',
+	'invalid_order'			=> '已取消订单',
+	
+	'overview'              => '概述',
+	'more_info'             => '更多信息：',
+	'adsense_help'			=> '欢迎访问ECJia智能后台广告转化率页面，系统中所有的广告转化率都会显示在此列表中。',
+	'about_adsense'			=> '关于广告转化率帮助文档',
+	
+	'guest_stats_help'		=> '欢迎访问ECJia智能后台客户统计页面，系统中所有的客户统计信息都会显示在此页面中。',
+	'about_guest_stats'		=> '关于客户统计帮助文档',
+	
+	'order_stats_help'		=> '欢迎访问ECJia智能后台订单统计页面，系统中所有的订单统计信息都会显示在此页面中。',
+	'about_order_stats'		=> '关于订单统计帮助文档',
+	
+	'sale_general_help'		=> '欢迎访问ECJia智能后台销售概况页面，系统中所有的销售概况信息都会显示在此页面中。',
+	'about_sale_general'	=> '关于销售概况帮助文档',
+	
+	'sale_list_help'		=> '欢迎访问ECJia智能后台销售明细页面，系统中所有的销售明细信息都会显示在此列表中。',
+	'about_sale_list'		=> '关于销售明细帮助文档',
+	
+	'sale_order_help'		=> '欢迎访问ECJia智能后台销售排行页面，系统中所有的销售排行信息都会显示在此页面中。',
+	'about_sale_order'		=> '关于销售排行帮助文档',
+	
+	'users_order_help'		=> '欢迎访问ECJia智能后台会员排行页面，系统中所有的会员排行信息都会显示在此列表中。',
+	'about_users_order'		=> '关于会员排行帮助文档',
+	
+	'visit_sold_help'		=> '欢迎访问ECJia智能后台访问购买率页面，系统中所有的访问购买率信息都会显示在此列表中。',
+	'about_visit_sold'		=> '关于访问购买率帮助文档',
+	
+	'js_lang' => array(
+		'start_time_required'	=> '查询的开始时间不能为空！',
+		'end_time_required'		=> '查询的结束时间不能为空！',
+		'time_exceed'			=> '查询的开始时间不能超于结束时间！',
+		'time_required'			=> '查询的时间不能为空！',
+		'no_stats_data' 		=> '没有统计数据',
+		'unconfirmed_order'		=> '未确认订单',
+		'confirmed_order'		=> '已确认订单',
+		'succeed_order'			=> '已完成订单',
+		'invalid_order'			=> '已取消订单',
+		'number'				=> '数量',
+		'start_year_required'	=> '查询的开始年份不能为空！',
+		'end_year_required'		=> '查询的结束年份不能为空！',
+		'order_number'			=> '订单数量',
+		'sales_volume'			=> '销售额',
+		'show_num_min'			=> '显示数量的值必须大于零！',
+	)	
 );
 
 //end

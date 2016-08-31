@@ -333,9 +333,8 @@ class admin_order_stats extends ecjia_admin {
 				$end = $end_date_arr[$key];
 				$order_info[$month] = $this->get_orderinfo($sta,$end);
 			}
-			
 			foreach ($order_info as $k=>$v) {
-				foreach ($v as $k1=>$v1) {
+				foreach ($v as $k1 => $v1) {
 					if ($k1=='unconfirmed_num') {
 						$key = RC_Lang::get('orders::statistic.unconfirmed_order');
 						$arr1[$key][$k] = $v1;
@@ -579,9 +578,9 @@ class admin_order_stats extends ecjia_admin {
 	    /* 未确认订单数 */
 	 	$order_info['unconfirmed_num'] = $this->db_order_info->field('COUNT(*) AS unconfirmed_num')->where("order_status = '" .OS_UNCONFIRMED. "' AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "' ")->count('*|unconfirmed_num');
 	 	/* 已确认订单数 */
-	 	$order_info['confirmed_num'] = $this->db_order_info->field('COUNT(*) AS confirmed_num')->where("order_status = '" .OS_CONFIRMED. "' AND shipping_status != ".SS_SHIPPED." && shipping_status != ".SS_RECEIVED." AND pay_status != ".PS_PAYED." && pay_status != ".PS_PAYING." AND add_time >= '$start_date' ")->count('*|confirmed_num');
+	 	$order_info['confirmed_num'] = $this->db_order_info->field('COUNT(*) AS confirmed_num')->where("order_status = '" .OS_CONFIRMED. "' AND shipping_status != ".SS_SHIPPED." && shipping_status != ".SS_RECEIVED." AND pay_status != ".PS_PAYED." && pay_status != ".PS_PAYING." AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "'")->count('*|confirmed_num');
 	    /* 已成交订单数 */
-	   $order_info['succeed_num'] = $this->db_order_info->field('COUNT(*) AS succeed_num')->where(" 1 AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "' ". order_query_sql('finished'))->count('*|succeed_num');
+		$order_info['succeed_num'] = $this->db_order_info->field('COUNT(*) AS succeed_num')->where(" 1 AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "' ". order_query_sql('finished'))->count('*|succeed_num');
 	    /* 无效或已取消订单数 */
 	    $order_info['invalid_num'] = $this->db_order_info->field('COUNT(*) AS invalid_num')->where("order_status > '" .OS_CONFIRMED. "' AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "' ")->count('*|invalid_num');
 	    return $order_info;

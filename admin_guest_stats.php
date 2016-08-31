@@ -12,7 +12,7 @@ class admin_guest_stats extends ecjia_admin {
 		RC_Loader::load_app_func('global','orders');
 		RC_Lang::load('statistic');
 		$this->db_order_info  = RC_Loader::load_app_model('order_info_model', 'orders');
-		$this->db_users  = RC_Loader::load_app_model('users_model', 'orders');
+		$this->db_users  = RC_Loader::load_app_model('users_model', 'user');
 		/* 加载所有全局 js/css */
 		RC_Script::enqueue_script('bootstrap-placeholder');
 		RC_Script::enqueue_script('jquery-validate');

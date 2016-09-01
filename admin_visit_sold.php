@@ -6,8 +6,12 @@ defined('IN_ECJIA') or exit('No permission resources.');
 
 class admin_visit_sold extends ecjia_admin {
 	private $db_goods_view;
+	
 	public function __construct() {
 		parent::__construct();
+		
+		RC_Loader::load_app_func('global', 'orders');
+		$this->db_goods_view = RC_Loader::load_app_model('goods_viewmodel', 'orders');
 		
 		/* 加载所有全局 js/css */
 		RC_Script::enqueue_script('bootstrap-placeholder');
@@ -21,29 +25,27 @@ class admin_visit_sold extends ecjia_admin {
 		RC_Script::enqueue_script('bootstrap-editable-script', RC_Uri::admin_url('statics/lib/x-editable/bootstrap-editable/js/bootstrap-editable.min.js'));
 		RC_Style::enqueue_style('bootstrap-editable-css', RC_Uri::admin_url('statics/lib/x-editable/bootstrap-editable/css/bootstrap-editable.css'));
 		
-		RC_Lang::load('statistic');
-		RC_Loader::load_app_func('global', 'orders');
-		$this->db_goods_view = RC_Loader::load_app_model('goods_viewmodel', 'orders');
 		RC_Script::enqueue_script('visit_sold',RC_App::apps_url('statics/js/visit_sold.js', __FILE__));
+		RC_Script::localize_script('visit_sold', 'js_lang', RC_Lang::get('orders::statistic.js_lang'));
 	}
 	
 	public function init() {
 		$this->admin_priv('visit_sold_stats');
-		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('访问购买率')));
+		
+		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::statistic.visit_buy')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
 			'id'		=> 'overview',
-			'title'		=> __('概述'),
-			'content'	=>
-			'<p>' . __('欢迎访问ECJia智能后台访问购买率页面，系统中所有的访问购买率信息都会显示在此列表中。') . '</p>'
+			'title'		=> RC_Lang::get('orders::statistic.overview'),
+			'content'	=> '<p>' . RC_Lang::get('orders::statistic.visit_sold_help') . '</p>'
 		));
 		
 		ecjia_screen::get_current_screen()->set_help_sidebar(
-			'<p><strong>' . __('更多信息:') . '</strong></p>' .
-			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:访问购买率" target="_blank">关于访问购买率帮助文档</a>') . '</p>'
+			'<p><strong>' . RC_Lang::get('orders::statistic.more_info') . '</strong></p>' .
+			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:访问购买率" target="_blank">'. RC_Lang::get('orders::statistic.about_visit_sold') .'</a>') . '</p>'
 		);
 		
-		$this->assign('ur_here',  __('访问购买率'));
-		$this->assign('action_link', array('text' => RC_Lang::lang('download_visit_buy'), 'href' => RC_Uri::url('orders/admin_visit_sold/download')));
+		$this->assign('ur_here',  RC_Lang::get('orders::statistic.visit_buy'));
+		$this->assign('action_link', array('text' => RC_Lang::get('orders::statistic.download_visit_buy'), 'href' => RC_Uri::url('orders/admin_visit_sold/download')));
 		
 		/* 变量的初始化 */
 		$cat_id   = (!empty($_REQUEST['cat_id']))   ? intval($_REQUEST['cat_id'])   : 0;
@@ -64,7 +66,6 @@ class admin_visit_sold extends ecjia_admin {
 		$this->assign('brand_list', get_brand_list());
 		
 		/* 显示页面 */
-		$this->assign_lang();
 		$this->display('visit_sold.dwt');
 	}
 	
@@ -77,16 +78,16 @@ class admin_visit_sold extends ecjia_admin {
 		/* 获取访问购买的比例数据 */
 		$click_sold_info = $this->click_sold_info($cat_id, $brand_id, $show_num);
 		
-		$filename = mb_convert_encoding(RC_Lang::lang('visit_buy_statement'),"GBK","UTF-8");
+		$filename = mb_convert_encoding(RC_Lang::get('orders::statistic.visit_buy_statement'), "GBK", "UTF-8");
 		header("Content-type: application/vnd.ms-excel; charset=utf-8");
 		header("Content-Disposition: attachment; filename=$filename.xls");
 
-		$data = RC_Lang::lang('order_by')."\t".RC_Lang::lang('goods_name')."\t".RC_Lang::lang('fav_exponential')."\t".RC_Lang::lang('buy_times')."\t".RC_Lang::lang('visit_buy')."\n";
-		
+		$data = RC_Lang::get('orders::statistic.order_by')."\t".RC_Lang::get('orders::statistic.goods_name')."\t".RC_Lang::get('orders::statistic.fav_exponential')."\t".RC_Lang::get('orders::statistic.buy_times')."\t".RC_Lang::get('orders::statistic.visit_buy')."\n";
+
 		if (!empty($click_sold_info['item'])) {
 			foreach ($click_sold_info['item'] as $k=>$v) {
 				$order_by = $k + 1;
-				$data .= "$order_by\t$v[goods_name]\t$v[click_count]\t$v[sold_times]\t$v[scale]\n";
+				$data .= $order_by."\t".$v['goods_name']."\t".$v['click_count']."\t".$v['sold_times']."\t".$v['scale']."\n";
 			}	
 		}
 		echo mb_convert_encoding($data."\t","GBK","UTF-8");
@@ -105,8 +106,6 @@ class admin_visit_sold extends ecjia_admin {
 	 * @return  array           $click_sold_info  访问购买比例数据
 	 */
 	private function click_sold_info($cat_id, $brand_id, $show_num) {
-		RC_Loader::load_sys_class('ecjia_page',false);
-		
 		$where = "og.goods_id" . order_query_sql('finished', 'o.');
 		if ($cat_id > 0) {
 			$where .= "AND " . get_children($cat_id);
@@ -115,12 +114,10 @@ class admin_visit_sold extends ecjia_admin {
 			$where .= "AND g.brand_id = $brand_id";
 		}
 		$click_sold_info = array();
+		$limit = $show_num;
 		
-		$count = $this->db_goods_view->where($where)->count('g.goods_name');
-		$page = new ecjia_page($count, !empty($show_num) ? $show_num : 10, 5);
-	
-		$limit = $page->limit();
-		$data = $this->db_goods_view->field('og.goods_id,g.goods_sn,g.goods_name,g.click_count,count(og.goods_id) AS sold_times')->where($where)->group('og.goods_id')->order(array('g.click_count'=>'DESC'))->limit($limit)->select();
+		$data = $this->db_goods_view->field('og.goods_id, g.goods_sn, g.goods_name, g.click_count, count(og.goods_id) AS sold_times')->where($where)->group('og.goods_id')->order(array('g.click_count'=>'DESC'))->limit($limit)->select();
+
 		if (!empty($data)) {
 			foreach ($data as $item) {
 				if ($item['click_count'] <= 0) {
@@ -129,11 +126,10 @@ class admin_visit_sold extends ecjia_admin {
 					/* 每一百个点击的订单比率 */
 					$item['scale'] = sprintf("%0.2f", ($item['sold_times'] / $item['click_count']) * 100) .'%';
 				}
-	
 				$click_sold_info[] = $item;
 			}
 		}
-		$arr = array('item' => $click_sold_info, 'desc' => $page->page_desc(), 'page'=>$page->show(5));
+		$arr = array('item' => $click_sold_info);
 		return $arr;
 	}
 }

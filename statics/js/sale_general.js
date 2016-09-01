@@ -5,6 +5,7 @@
 		init : function() {
 			app.sale_general.searchForm();
 		},
+		
 		searchForm : function () {
 			$('.screen-btn').on('click', function(e){
 				e.preventDefault();
@@ -70,5 +71,7 @@
 			});
 		}
 	};
+	
 })(ecjia.admin, jQuery);
+
 // end

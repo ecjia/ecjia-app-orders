@@ -1,20 +1,22 @@
 <?php
-
 /**
  * 广告转化率的统计程序
 */
-
 defined('IN_ECJIA') or exit('No permission resources.');
 
 class admin_adsense extends ecjia_admin {
 	private $db_adview;
 	private $db_order_info;
 	private $db_adsense;
+	
 	public function __construct() {
 		parent::__construct();
 		
 		RC_Loader::load_app_func('global','orders');
-		RC_Lang::load('statistic');
+		
+		$this->db_adview 		= RC_Loader::load_app_model('ad_viewmodel', 'orders');
+		$this->db_order_info  	= RC_Loader::load_app_model('order_info_model', 'orders');
+		$this->db_adsense  		= RC_Loader::load_app_model('adsense_model', 'orders');
 		
 		/* 加载所有全局 js/css */
 		RC_Script::enqueue_script('bootstrap-placeholder');
@@ -27,10 +29,6 @@ class admin_adsense extends ecjia_admin {
 		RC_Style::enqueue_style('uniform-aristo');
 		RC_Script::enqueue_script('bootstrap-editable-script', RC_Uri::admin_url('statics/lib/x-editable/bootstrap-editable/js/bootstrap-editable.min.js'));
 		RC_Style::enqueue_style('bootstrap-editable-css', RC_Uri::admin_url('statics/lib/x-editable/bootstrap-editable/css/bootstrap-editable.css'));
-		
-		$this->db_adview  = RC_Loader::load_app_model('ad_viewmodel', 'orders');
-		$this->db_order_info  = RC_Loader::load_app_model('order_info_model', 'orders');
-		$this->db_adsense  = RC_Loader::load_app_model('adsense_model', 'orders');
 	}
 	
 	/**

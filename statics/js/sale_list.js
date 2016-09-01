@@ -5,6 +5,7 @@
 		init : function() {
 			app.sale_list.theForm();
 		},
+		
 		theForm : function () {
 			$(".start_date,.end_date").datepicker({
 				format: "yyyy-mm-dd"

@@ -2,7 +2,6 @@
 /**
  * 销售明细列表程序
 */
-
 defined('IN_ECJIA') or exit('No permission resources.');
 
 class admin_sale_list extends ecjia_admin {
@@ -76,13 +75,14 @@ class admin_sale_list extends ecjia_admin {
 	public function download() {
 		/* 检查权限 */
 		$this->admin_priv('sale_list_stats');
+		
 		/* 时间参数 */
 		$start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date(ecjia::config('date_format'),RC_Time::local_strtotime('-7 days'));
 		$end_date = !empty($_GET['end_date']) ? $_GET['end_date'] : RC_Time::local_date(ecjia::config('date_format'),RC_Time::local_strtotime('today'));
 
 		/*文件名*/
 		$file_name = mb_convert_encoding(RC_Lang::get('orders::statistic.sales_list_statement'), "GBK", "UTF-8");
-		$goods_sales_list = $this->get_sale_list(false);
+		$goods_sales_list = $this->db_goods_view->get_sale_list(false);
 		
 		/*强制下载,下载类型EXCEL*/
 		header("Content-type: application/vnd.ms-excel; charset=utf-8");
@@ -91,7 +91,7 @@ class admin_sale_list extends ecjia_admin {
 		$data = RC_Lang::get('orders::statistic.goods_name')."\t".RC_Lang::get('orders::statistic.order_sn')."\t".RC_Lang::get('orders::statistic.amount')."\t".RC_Lang::get('orders::statistic.sell_price')."\t".RC_Lang::get('orders::statistic.sell_date')."\n";
 		if (!empty($goods_sales_list['item'])) {
 			foreach ($goods_sales_list['item'] as $v) {
-				$data .= mb_convert_encoding("$v[goods_name]\t$v[order_sn]\t$v[goods_num]\t$v[sales_price]\t$v[sales_time]\n", 'UTF-8', 'auto');
+				$data .= mb_convert_encoding("$v[goods_name]\t$v[order_sn]\t$v[goods_num]\t$v[sales_price]\t$v[sales_time]\n",'UTF-8','auto');
 			}
 		}
 		echo mb_convert_encoding($data."\t","GBK","UTF-8");
@@ -111,18 +111,24 @@ class admin_sale_list extends ecjia_admin {
 
 	    $count = $this->order_goods_view->where($where)->count('og.goods_id');
 		$page = new ecjia_page($count,10,5);
-	    if ($is_pagination) {
-           $limit = $page->limit();
-	    }
+		$limit = null;
+		if ($is_pagination) {
+			$limit = $page->limit();
+		}
+	    
 	    $sale_list_data = $this->order_goods_view->field('og.goods_id, og.goods_sn, og.goods_name, og.goods_number AS goods_num, og.goods_price '.
            'AS sales_price, oi.add_time AS sales_time, oi.order_id, oi.order_sn ')->where($where)->order(array('sales_time'=> 'DESC', 'goods_num'=> 'DESC'))->limit($limit)->select();
 	    
-	    foreach ($sale_list_data as $key => $item) {
-	        $sale_list_data[$key]['sales_price'] = price_format($sale_list_data[$key]['sales_price']);
-	        $sale_list_data[$key]['sales_time']  = RC_Time::local_date(ecjia::config('date_format'), $sale_list_data[$key]['sales_time']);
+	    if (!empty($sale_list_data)) {
+	    	foreach ($sale_list_data as $key => $item) {
+	    		$sale_list_data[$key]['sales_price'] = price_format($sale_list_data[$key]['sales_price']);
+	    		$sale_list_data[$key]['sales_time']  = RC_Time::local_date(ecjia::config('date_format'), $sale_list_data[$key]['sales_time']);
+	    	}
 	    }
+
 	    $arr = array('item' => $sale_list_data, 'filter' => $filter, 'desc' => $page->page_desc(), 'page' => $page->show(5));
 	    return $arr;
 	}
 }
+
 // end

@@ -6,6 +6,7 @@
 			app.chart.order_count();
 			app.chart.order_amount();
 		},
+		
 		order_count : function(){
 			var dataset = [];
 			var ticks = [];
@@ -24,39 +25,40 @@
 					    	ticks.push(tmp.period);
 					    });
 					    var chart = new AChart({
-					          theme : AChart.Theme.SmoothBase,
-					          id : 'order_count',
-//					          forceFit : true, //自适应宽度
-					          width:1000,
-					          height : 550,
-					          plotCfg : {
-					            margin : [50,50,50] //画板的边距
-					          },
-					          xAxis : {
-					            categories : ticks
-					          },
-					          seriesOptions : { //设置多个序列共同的属性
+					    	theme : AChart.Theme.SmoothBase,
+					        id : 'order_count',
+//					        forceFit : true, //自适应宽度
+					        width:1000,
+					        height : 550,
+					        plotCfg : {
+					        	margin : [50,50,50] //画板的边距
+					        },
+					        xAxis : {
+					        	categories : ticks
+					        },
+					        seriesOptions : { //设置多个序列共同的属性
 					            lineCfg : { //不同类型的图对应不同的共用属性，lineCfg,areaCfg,columnCfg等，type + Cfg 标示
-					              smooth : true
-					            }
-					          },
-					          legend: null,
-					          tooltip : {
+					            	smooth : true
+					       	    }
+					        },
+					        legend: null,
+					        tooltip : {
 					        	/* valueSuffix : '°C',
 					            shared : true, //是否多个数据序列共同显示信息
 					            crosshairs : true //是否出现基准线
 					            */
-					          },
-					          series : [{
-					              name: js_lang.order_number,
-					              data: dataset
-					          }]
-					  });
-					  chart.render();
+					        },
+					        series : [{
+					        	name: js_lang.order_number,
+					        	data: dataset
+					        }]
+					    });
+					    chart.render();
 					}
 				}
 			});
 		},
+		
 		order_amount : function(){
 			var dataset = [];
 			var ticks = [];
@@ -75,34 +77,34 @@
 					    	ticks.push(tmp.period);
 					    });
 					    var chart = new AChart({
-					          theme : AChart.Theme.SmoothBase,
-					          id : 'order_amount',
-//					          forceFit : true, //自适应宽度
-					          width:1000,
-					          height : 550,
-					          plotCfg : {
-					            margin : [50,50,50] //画板的边距
-					          },
-					          xAxis : {
+					    	theme : AChart.Theme.SmoothBase,
+					     	id : 'order_amount',
+//					        forceFit : true, //自适应宽度
+					        width:1000,
+					        height : 550,
+					        plotCfg : {
+					        	margin : [50,50,50] //画板的边距
+					        },
+					        xAxis : {
 					            categories : ticks
-					          },
-					          seriesOptions : { //设置多个序列共同的属性
+					        },
+					        seriesOptions : { //设置多个序列共同的属性
 					            lineCfg : { //不同类型的图对应不同的共用属性，lineCfg,areaCfg,columnCfg等，type + Cfg 标示
-					              smooth : true
+					            	smooth : true
 					            }
-					          },
-					          legend: null,
-					          tooltip : {
+					        },
+					        legend: null,
+					        tooltip : {
 					        	/* valueSuffix : '°C',
 					            shared : true, //是否多个数据序列共同显示信息
 					            crosshairs : true //是否出现基准线
 					            */
-					          },
-					          series : [{
-					              name: js_lang.sales_volume,
-					              data: dataset
-					          }]
-					   });
+					        },
+					        series : [{
+					          	name: js_lang.sales_volume,
+					        	data: dataset
+					        }]
+					    });
 					  chart.render();
 					}
 				}

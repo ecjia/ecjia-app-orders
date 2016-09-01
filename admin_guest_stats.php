@@ -7,12 +7,14 @@ defined('IN_ECJIA') or exit('No permission resources.');
 class admin_guest_stats extends ecjia_admin {
 	private $db_order_info;
 	private $db_users;
+	
 	public function __construct() {
 		parent::__construct();
 		RC_Loader::load_app_func('global','orders');
 		
 		$this->db_order_info  = RC_Loader::load_app_model('order_info_model', 'orders');
 		$this->db_users  = RC_Loader::load_app_model('users_model', 'user');
+		
 		/* 加载所有全局 js/css */
 		RC_Script::enqueue_script('bootstrap-placeholder');
 		RC_Script::enqueue_script('jquery-validate');
@@ -44,7 +46,7 @@ class admin_guest_stats extends ecjia_admin {
 		);
 		
 		$this->assign('ur_here', RC_Lang::get('orders::statistic.guest_stats'));
-		$this->assign('action_link',array('text' => RC_Lang::get('orders::statistic.down_guest_stats'),'href'=>	RC_Uri::url('orders/admin_guest_stats/download')));
+		$this->assign('action_link', array('text' => RC_Lang::get('orders::statistic.down_guest_stats'), 'href'=> RC_Uri::url('orders/admin_guest_stats/download')));
 		
 		/* 取得会员总数 */
 		$res = $this->db_users->count();

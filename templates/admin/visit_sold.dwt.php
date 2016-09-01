@@ -6,11 +6,13 @@
 </script>
 <!-- {/block} -->
 <!-- {block name="main_content"} -->
+
 <!--访问购买率-->
 <div class="alert alert-info">
 	<a class="close" data-dismiss="alert">×</a>
-	<strong>注：</strong>{t}没有完成的订单不计入访问购买率{/t}
+	<strong>{lang key='orders::statistic.tips'}</strong>{lang key='orders::statistic.no_orders_visit_buy'}
 </div>
+
 <div>
 	<h3 class="heading">
 		<!-- {if $ur_here}{$ur_here}{/if} -->
@@ -24,15 +26,15 @@
 	<div class="choose_list f_r">
 		<form name="searchForm" action="{RC_Uri::url('orders/admin_visit_sold/init')}" method="post">
 			<select class="w150" name="cat_id">
-		      	<option value="0">请选择商品分类</option><!-- {$cat_list} -->
+		      	<option value="0">{lang key='orders::statistic.pls_select_category'}</option><!-- {$cat_list} -->
 		    </select>
 		    <select class="w150" name="brand_id">
-		      	<option value="0">请选择商品品牌</option>
+		      	<option value="0">{lang key='orders::statistic.pls_select_brand'}</option>
 		      <!-- {html_options options=$brand_list selected=$brand_id} -->
     		</select>
-		    <input name="show_num" type="text" class="w70" value="{$show_num}" placeholder="显示数量" />
+		    <input name="show_num" type="text" class="w70" value="{$show_num}" placeholder="{lang key='orders::statistic.show_num'}" />
 		    <input type="hidden" name="order_type" value="{$order_type}" />
-		    <input type="submit" name="submit" value="查询" class="btn" />
+		    <input type="submit" name="submit" value="{lang key='orders::statistic.query'}" class="btn" />
 		</form>
 	</div>
 </div>
@@ -41,30 +43,28 @@
 	<table class="table table-striped" id="smpl_tbl">
 		<thead>
 			<tr>
-				<th class="w100">{t}排行{/t}</th>
-				<th>{t}商品名称{/t}</th>
-				<th class="w150">{t}人气指数{/t}</th>
-				<th class="w150">{t}购买次数{/t}</th>
-				<th class="w100">{t}访问购买率{/t}</th>
+				<th class="w100">{lang key='orders::statistic.order_by'}</th>
+				<th>{lang key='orders::statistic.goods_name'}</th>
+				<th class="w150">{lang key='orders::statistic.fav_exponential'}</th>
+				<th class="w150">{lang key='orders::statistic.buy_times'}</th>
+				<th class="w100">{lang key='orders::statistic.list_visit_buy'}</th>
 			</tr>
 		</thead>
 		<tbody>
-		<!-- {foreach from=$click_sold_info.item key=Key item=list} -->
+			<!-- {foreach from=$click_sold_info.item key=Key item=list} -->
 			<tr>
 				<td>{$Key+1}</td>
 				<td>
-					{assign var =goods_url value=RC_Uri::url('goods/admin/preview',"id={$list.goods_id}")}
-					<a href="{$goods_url}" target="_blank">{$list.goods_name}</a>
+					<a href='{RC_Uri::url("goods/admin/preview", "id={$list.goods_id}")}' target="_blank">{$list.goods_name}</a>
 				</td>
 				<td>{$list.click_count}</td>
 				<td>{$list.sold_times}</td>
 				<td>{$list.scale}</td>
 			</tr>
-		<!-- {foreachelse} -->
-	    	<tr><td class="dataTables_empty" colspan="5">没有找到任何记录</td></tr>
-	  	<!-- {/foreach} -->
+			<!-- {foreachelse} -->
+	    	<tr><td class="dataTables_empty" colspan="5">{lang key='system::system.no_records'}</td></tr>
+	  		<!-- {/foreach} -->
 		</tbody>
 	</table>
-	<!-- {$click_sold_info.page} -->
 </div>
 <!-- {/block} -->

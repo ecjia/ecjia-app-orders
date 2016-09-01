@@ -6,11 +6,13 @@
 </script>
 <!-- {/block} -->
 <!-- {block name="main_content"} -->
+
 <!--销售明细-->
 <div class="alert alert-info">
 	<a class="close" data-dismiss="alert">×</a>
 	<strong>{lang key='orders::statistic.tips'}</strong>{lang key='orders::statistic.no_sales_details'}
 </div>
+
 <div>
 	<h3 class="heading">
 		<!-- {if $ur_here}{$ur_here}{/if} -->

@@ -15,10 +15,10 @@
 				url: $("#order_count").attr("data-url"),
 				dataType: "json",
 				success: function(templateCounts){
-					if(templateCounts === null) {
-						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>没有找到任何记录<\/div>";
+					if (templateCounts === null) {
+						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>" + js_lang.no_stats_data + "<\/div>";
 						$("#order_count").append(nodata);
-					}else{
+					} else {
 					    $.each(templateCounts,function(index,tmp){
 					    	dataset.push(parseInt(tmp.order_count));
 					    	ticks.push(tmp.period);
@@ -48,10 +48,10 @@
 					            */
 					          },
 					          series : [{
-					              name: '订单数量',
+					              name: js_lang.order_number,
 					              data: dataset
 					          }]
-					        });
+					  });
 					  chart.render();
 					}
 				}
@@ -66,10 +66,10 @@
 				url: $("#order_amount").attr("data-url"),
 				dataType: "json",
 				success: function(templateCounts){
-					if(templateCounts === null) {
-						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>没有找到任何记录<\/div>";
+					if (templateCounts === null) {
+						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>" + js_lang.no_stats_data + "<\/div>";
 						$("#order_amount").append(nodata);
-					}else{
+					} else {
 						$.each(templateCounts,function(index,tmp){
 					    	dataset.push(parseInt(tmp.order_amount));
 					    	ticks.push(tmp.period);
@@ -99,15 +99,17 @@
 					            */
 					          },
 					          series : [{
-					              name: '销售额',
+					              name: js_lang.sales_volume,
 					              data: dataset
 					          }]
-					        });
+					   });
 					  chart.render();
 					}
 				}
 			});
 		},
 	};
+	
 })(ecjia.admin, jQuery);
+
 // end

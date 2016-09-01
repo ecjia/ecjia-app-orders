@@ -18,15 +18,15 @@
 				
 				if (year_beginYear == '') {
 					var data = {
-							message : "查询的开始年份不能为空！",
-							state : "error",
+                        message: js_lang.start_year_required,
+                        state: "error",
 					};
 					ecjia.admin.showmessage(data);
 					return false;
 				} else if(year_endYear == '') {
 					var data = {
-							message : "查询的结束年份不能为空！",
-							state : "error",
+                        message: js_lang.end_year_required,
+                        state: "error",
 					};
 					ecjia.admin.showmessage(data);
 					return false;
@@ -34,15 +34,16 @@
 				
 				if (year_beginYear > year_endYear && (year_beginYear != '' && year_endYear !='')) {
 					var data = {
-							message : "查询的开始时间不能超于结束时间！",
-							state : "error",
+                        message: js_lang.time_exceed,
+                        state: "error",
 					};
 					ecjia.admin.showmessage(data);
 					return false;
-				}else{
+				} else {
 					ecjia.pjax(url + '&query_by_year=' + query_by_year +'&year_beginYear=' + year_beginYear + '&year_endYear=' + year_endYear);
 				}
 			});
+			
 			$('.screen-btn1').on('click', function(e){
 				e.preventDefault();
 				var month_beginYear	= $("select[name='month_beginYear']").val();	
@@ -58,12 +59,12 @@
 				if(url        		== 'undefind')url='';
 				if (month_beginYear+month_beginMonth >= month_endYear+month_endMonth) {
 					var data = {
-							message : "查询的开始时间不能超于结束时间！",
-							state : "error",
+                        message: js_lang.time_exceed,
+                        state: "error",
 					};
 					ecjia.admin.showmessage(data);
 					return false;
-				}else{
+				} else {
 					ecjia.pjax(url+'&query_by_month='+query_by_month+'&month_beginYear='+month_beginYear+'&month_beginMonth='+month_beginMonth+'&month_endYear='+month_endYear+'&month_endMonth='+month_endMonth);
 				}
 			});

@@ -54,7 +54,7 @@
 						<tr>
 							<th class="table_checkbox"><input type="checkbox" data-toggle="selectall" data-children=".checkbox" /></th>
 							<th>{$lang.order_sn}</th>
-							<th>{$lang.order_name}</th>
+							<th>商家名称</th>
 							<th>{$lang.order_time}</th>
 							<th>{$lang.consignee}</th>
 							<th>{$lang.total_fee}</th>

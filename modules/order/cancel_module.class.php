@@ -5,11 +5,9 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * @author royalwang
  *
  */
-class cancel_module implements ecjia_interface {
-	
-	public function run(ecjia_api & $api) {
-
- 		EM_Api::authSession();
+class cancel_module extends api_front implements api_interface {
+    public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {	
+    	$this->authSession();
 		
 		$user_id = $_SESSION['user_id'];
 		$order_id = _POST('order_id', 0);

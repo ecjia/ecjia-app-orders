@@ -5,12 +5,12 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * @author royalwang
  *
  */
-class update_module implements ecjia_interface {
-	
-	public function run(ecjia_api & $api) {
+class update_module extends api_admin implements api_interface {
+    public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
+    		
+		$this->authadminSession();
 
  		$ecjia = RC_Loader::load_app_class('api_admin', 'api');
-		$ecjia->authadminSession();
  		$order_id	= _POST('order_id', 0);
 		$pay_id		= _POST('pay_id',0);
 		if (!$order_id || !$pay_id) {

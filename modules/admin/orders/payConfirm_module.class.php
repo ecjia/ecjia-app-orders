@@ -15,7 +15,7 @@ class payConfirm_module extends api_admin implements api_interface {
 			EM_Api::outPut($result);
 		}
 
-		$order_id = _POST('order_id');
+		$order_id = $this->requestData('order_id');
 		if (empty($order_id)) {
 			EM_Api::outPut(101);
 		}
@@ -135,8 +135,8 @@ function delivery_ship($order_id, $delivery_id) {
 	$delivery				= array();
 	$order_id				= intval(trim($order_id));			// 订单id
 	$delivery_id			= intval(trim($delivery_id));		// 发货单id
-	$delivery['invoice_no']	= isset($_POST['invoice_no']) ? trim($_POST['invoice_no']) : '';
-	$action_note			= isset($_POST['action_note']) ? trim($_POST['action_note']) : '';
+	$delivery['invoice_no']	= $this->requestDataisset('invoice_no','');
+	$action_note			= $this->requestData('action_note','');
 
 	/* 根据发货单id查询发货单信息 */
 	if (!empty($delivery_id)) {

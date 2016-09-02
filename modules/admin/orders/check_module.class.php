@@ -15,8 +15,8 @@ class check_module extends api_admin implements api_interface {
  			EM_Api::outPut($result);
  		}
  		
- 		$verification_code = _POST('verify_code');
- 		$id = _POST('order_id', 0);
+ 		$verification_code = $this->requestData('verify_code');
+ 		$id = $this->requestData('order_id', 0);
  		if (empty($verification_code)) {
  			EM_Api::outPut(101);
  		}
@@ -94,8 +94,8 @@ function delivery_ship($order_id, $delivery_id) {
 	$delivery				= array();
 	$order_id				= intval(trim($order_id));			// 订单id
 	$delivery_id			= intval(trim($delivery_id));		// 发货单id
-	$delivery['invoice_no']	= isset($_POST['invoice_no']) ? trim($_POST['invoice_no']) : '';
-	$action_note			= isset($_POST['action_note']) ? trim($_POST['action_note']) : '';
+	$delivery['invoice_no']	=$this->requestData('invoice_no','');
+	$action_note			= $this->requestData('action_note','');
 
 	/* 根据发货单id查询发货单信息 */
 	if (!empty($delivery_id)) {

@@ -15,8 +15,8 @@ class order_sales_module extends api_admin implements api_interface {
 			EM_Api::outPut($result);
 		}
 		//传入参数
-		$start_date = _POST('start_date');
-		$end_date = _POST('end_date');
+		$start_date = $this->requestData('start_date');
+		$end_date = $this->requestData('end_date');
 		if (empty($start_date) || empty($end_date)) {
 			EM_Api::outPut(101);
 		}

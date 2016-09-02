@@ -14,8 +14,8 @@ class detail_module extends api_admin implements api_interface {
  		if (is_ecjia_error($result)) {
  			EM_Api::outPut($result);
  		}
-		$order_id = _POST('id', 0);
-		$order_sn = _POST('order_sn');
+		$order_id = $this->requestData('id', 0);
+		$order_sn = $this->requestData('order_sn');
 
  		if (empty($order_id) && empty($order_sn)) {
  			EM_Api::outPut(101);

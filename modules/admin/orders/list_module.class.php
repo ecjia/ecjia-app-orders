@@ -14,12 +14,12 @@ class list_module extends api_admin implements api_interface {
 		if (is_ecjia_error($result)) {
 			EM_Api::outPut($result);
 		}
-		$type		= _POST('type', 'whole');
-		$keywords	= _POST('keywords');
+		$type		= $this->requestData('type', 'whole');
+		$keywords	= $this->requestData('keywords');
 		$size		= EM_Api::$pagination['count'];
 		$page		= EM_Api::$pagination['page'];
 		
-		$device		 = _POST('device', array());
+		$device		 = $this->requestData('device', array());
 		$device_code = isset($device['code']) ? $device['code'] : '';
 		$device_udid = isset($device['udid']) ? $device['udid'] : '';
 		$device_client = isset($device['client']) ? $device['client'] : '';

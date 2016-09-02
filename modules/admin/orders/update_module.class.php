@@ -11,8 +11,8 @@ class update_module extends api_admin implements api_interface {
 		$this->authadminSession();
 
  		$ecjia = RC_Loader::load_app_class('api_admin', 'api');
- 		$order_id	= _POST('order_id', 0);
-		$pay_id		= _POST('pay_id',0);
+ 		$order_id	= $this->requestData('order_id', 0);
+		$pay_id		= $this->requestData('pay_id',0);
 		if (!$order_id || !$pay_id) {
 			EM_Api::outPut(101);
 		}

@@ -18,8 +18,8 @@ class split_module extends api_admin implements api_interface {
 		if (is_ecjia_error($result)) {
 			EM_Api::outPut($result);
 		}
-		$order_id = _POST('order_id', 0);
-		$action_note = _POST('note');
+		$order_id = $this->requestData('order_id', 0);
+		$action_note = $this->requestData('note');
 		if (empty($order_id)) {
 			EM_Api::outPut(101);
 		}	

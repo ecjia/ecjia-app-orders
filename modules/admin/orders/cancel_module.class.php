@@ -14,7 +14,7 @@ class cancel_module extends api_admin implements api_interface {
 		if (is_ecjia_error($result)) {
 			EM_Api::outPut($result);
 		}
-		$order_id = _POST('id');
+		$order_id = $this->requestData('id');
 		
 		if (empty($order_id)) {
 			EM_Api::outPut(101);
@@ -26,8 +26,8 @@ class cancel_module extends api_admin implements api_interface {
 		
 		/* 取消 */
 		/* 标记订单为“取消”，记录取消原因 */
-		$cancel_note = isset($_POST['cancel_note']) ? trim($_POST['cancel_note']) : '';
-		$action_note = isset($_POST['action_note']) ? trim($_POST['action_note']) : '';
+		$cancel_note = $this->requestData('cancel_note','');
+		$action_note = $this->requestData('action_note','');
 		$arr = array(
 				'order_status'	=> OS_CANCELED,
 				'to_buyer'		=> $cancel_note,

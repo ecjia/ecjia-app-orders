@@ -26,8 +26,8 @@ class quickpay_module extends api_admin implements api_interface {
 		RC_Loader::load_app_func('cart','cart');
 		RC_Loader::load_app_func('order','orders');
 
-		$pay_id = _POST('pay_id');
-		$amount = _POST('amount');
+		$pay_id = $this->requestData('pay_id');
+		$amount = $this->requestData('amount');
 		
 		/* 判断是否是会员 */
 		$consignee = array();

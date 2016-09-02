@@ -15,7 +15,7 @@ class refundConfirm_module extends api_admin implements api_interface {
 			EM_Api::outPut($result);
 		}
 
-		$order_id = _POST('order_id');
+		$order_id = $this->requestData('order_id');
 		if (empty($order_id)) {
 			EM_Api::outPut(101);
 		}

@@ -10,7 +10,7 @@ class affirmReceived_module extends api_front implements api_interface {
     	$this->authSession();
 		
 		$user_id = $_SESSION['user_id'];
-		$order_id = _POST('order_id', 0);
+		$order_id = $this->requestdata('order_id', 0);
 		
 		$result = affirm_received($order_id, $user_id);	
 		

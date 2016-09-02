@@ -9,7 +9,7 @@ class list_module extends api_front implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {	
     	$this->authSession();
 		
-		$type = _POST('type');
+		$type = $this->requestdata('type');
 		if (!empty($type) && !in_array($type, array('await_pay', 'await_ship', 'shipped', 'finished', 'unconfirmed'))) {
 			EM_Api::outPut(101);
 		}

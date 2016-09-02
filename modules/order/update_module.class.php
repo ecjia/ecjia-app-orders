@@ -10,8 +10,8 @@ class update_module extends api_front implements api_interface {
     	$this->authSession();
     	
  		$user_id	= $_SESSION['user_id'];
- 		$order_id	= _POST('order_id', 0);
-		$pay_id		= _POST('pay_id',0);
+ 		$order_id	= $this->requestdata('order_id', 0);
+		$pay_id		= $this->requestdata('pay_id',0);
 		if (!$order_id || !$pay_id) {
 			EM_Api::outPut(101);
 		}

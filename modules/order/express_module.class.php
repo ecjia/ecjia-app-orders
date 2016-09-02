@@ -13,8 +13,8 @@ class express_module extends api_front implements api_interface {
 
 		RC_Loader::load_app_func('order','orders');
 
-		$AppKey = _POST('app_key', '');
-		$order_id = _POST('order_id', 0);
+		$AppKey = $this->requestdata('app_key', '');
+		$order_id = $this->requestdata('order_id', 0);
 		
 		if (empty($order_id)) {
 			EM_Api::outPut(101);

@@ -6,13 +6,11 @@ defined('IN_ECJIA') or exit('No permission resources.');
  *
  */
 class express_module extends api_front implements api_interface {
-    public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {	
+    public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
+    		
     	$this->authSession();
-    	
 		define('INIT_NO_USERS', true);
-
 		RC_Loader::load_app_func('order','orders');
-
 		$AppKey = $this->requestdata('app_key', '');
 		$order_id = $this->requestdata('order_id', 0);
 		
@@ -21,11 +19,9 @@ class express_module extends api_front implements api_interface {
 		}
 		
 		$order_info = order_info($order_id);
-
 		if (!$order_info || empty($order_info['shipping_name']) || empty($order_info['invoice_no'])) {
 			EM_Api::outPut(10009);
 		}
-
 		$typeCom = getComType($order_info['shipping_name']);//快递公司类型
 		
 		if (empty($typeCom)) {
@@ -54,8 +50,7 @@ class express_module extends api_front implements api_interface {
 }
 
 
-function getComType($typeCom)
-{
+function getComType($typeCom) {
 	if ($typeCom == 'AAE全球专递'){
 		$typeCom = 'aae';
 	}elseif ($typeCom == '安捷快递'){
@@ -199,6 +194,5 @@ function getComType($typeCom)
 	}
 	return $typeCom;
 }
-
 
 // end

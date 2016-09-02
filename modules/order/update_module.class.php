@@ -7,8 +7,8 @@ defined('IN_ECJIA') or exit('No permission resources.');
  */
 class update_module extends api_front implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {	
-    	$this->authSession();
     	
+    	$this->authSession();
  		$user_id	= $_SESSION['user_id'];
  		$order_id	= $this->requestdata('order_id', 0);
 		$pay_id		= $this->requestdata('pay_id',0);
@@ -48,6 +48,5 @@ class update_module extends api_front implements api_interface {
 		}
 	}
 }
-
 
 // end

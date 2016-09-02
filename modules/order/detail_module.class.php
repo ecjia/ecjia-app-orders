@@ -6,9 +6,9 @@ defined('IN_ECJIA') or exit('No permission resources.');
  *
  */
 class detail_module extends api_front implements api_interface {
-    public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {	
+    public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
+    		
     	$this->authSession();
-
 		RC_Loader::load_app_func('order', 'orders');
 		$order_id = $this->requestdata('order_id', 0);
 		if (!$order_id) {

@@ -6,14 +6,12 @@ defined('IN_ECJIA') or exit('No permission resources.');
  *
  */
 class affirmReceived_module extends api_front implements api_interface {
-    public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {	
+    public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
+    		
     	$this->authSession();
-		
 		$user_id = $_SESSION['user_id'];
 		$order_id = $this->requestdata('order_id', 0);
-		
 		$result = affirm_received($order_id, $user_id);	
-		
 		if (!is_ecjia_error($result)) {
 		    return array();
 		} else {
@@ -34,8 +32,7 @@ class affirmReceived_module extends api_front implements api_interface {
  *
  * @return bool $bool
  */
-function affirm_received($order_id, $user_id = 0)
-{
+function affirm_received($order_id, $user_id = 0) {
     $db = RC_Loader::load_app_model('order_info_model', 'orders');
     /* 查询订单信息，检查状态 */
     $order = $db->field('user_id, order_sn , order_status, shipping_status, pay_status')->find(array('order_id' => $order_id));

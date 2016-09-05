@@ -61,6 +61,7 @@ return array(
 	'label_invoice_no' 		=> '发货单号：',
 	'label_cancel_note'	 	=> '取消原因：',
 	'notice_cancel_note' 	=> '（会记录在商家给客户的留言中）',
+	'pay_order'				=> '支付订单 %s',
 	
 	'op_confirm' 	=> '确认',
 	'op_pay' 		=> '付款',

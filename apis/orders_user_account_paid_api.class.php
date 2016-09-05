@@ -81,7 +81,7 @@ class orders_user_account_paid_api extends Component_Event_Api {
 			$options = array(
 				'user_id'       => $order_info['user_id'],
 				'user_money'    => $order_info['order_amount'] * (-1),
-				'change_desc'   => sprintf('支付订单 %s', $order_info['order_sn'])
+				'change_desc'	=> sprintf(RC_Lang::get('orders::order.pay_order'), $order_info['order_sn'])
 			);
 			RC_Api::api('user', 'account_change_log', $options);
 			/* 插入支付日志 */
@@ -107,14 +107,14 @@ class orders_user_account_paid_api extends Component_Event_Api {
 			 
 			foreach ($order_res AS $row) {
 				/* 记录订单操作记录 */
-				order_action($row['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_PAYED, '', '买家');
+				order_action($row['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_PAYED, '', RC_Lang::get('orders::order.buyers'));
 			}
 		}
 		
 		RC_Model::model('orders/order_status_log_model')->insert(array(
-				'order_status'	=> '已付款',
+				'order_status'	=> RC_Lang::get('orders::order.ps.'.PS_PAYED),
 				'order_id'		=> $order_info['order_id'],
-				'message'		=> '已通知商家揽收，请耐心等待！',
+				'message'		=> RC_Lang::get('orders::order.notice_merchant_message'),
 				'add_time'		=> RC_Time::gmtime(),
 		));
 		

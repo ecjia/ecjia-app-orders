@@ -61,6 +61,7 @@ return array(
 	'label_invoice_no'		=> 'Invoice No.:',
 	'label_cancel_note'		=> 'Cause of cancel:',
 	'notice_cancel_note'	=> '(Note in message of shopkeeper)',
+	'pay_order'				=> 'Pay order %s',
 		
 	'op_confirm'	=> 'Confirm',
 	'op_pay'		=> 'Payment',

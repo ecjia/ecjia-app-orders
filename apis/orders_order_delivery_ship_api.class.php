@@ -58,8 +58,8 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 						(ecjia::config('use_storage') == '0' && $value['is_real'] == 0))) {
 						
 					/* 操作失败 */
-					$links[] = array('text' => RC_Lang::lang('order_info'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info', 'delivery_id=' . $delivery_id));
-					$this->showmessage(sprintf(RC_Lang::lang('act_good_vacancy'), $value['goods_name']), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR, array('links' => $links));
+					$links[] = array('text' => RC_Lang::get('orders::order.order_info'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info', 'delivery_id=' . $delivery_id));
+					$this->showmessage(sprintf(RC_Lang::get('orders::order.act_good_vacancy'), $value['goods_name']), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
 				}
 		
 				/* 虚拟商品列表 virtual_card */
@@ -88,8 +88,8 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 				((ecjia::config('use_storage') == '1'  && ecjia::config('stock_dec_time') == SDT_SHIP) ||
 						(ecjia::config('use_storage') == '0' && $value['is_real'] == 0))) {
 					/* 操作失败 */
-					$links[] = array('text' => RC_Lang::lang('order_info'), 'href' => RC_Uri::url('orders/order_delilvery/delivery_info', 'delivery_id=' . $delivery_id));
-					$this->showmessage(sprintf(RC_Lang::lang('act_good_vacancy'), $value['goods_name']), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR, array('links' => $links));
+					$links[] = array('text' => RC_Lang::get('orders::order.order_info'), 'href' => RC_Uri::url('orders/order_delilvery/delivery_info', 'delivery_id=' . $delivery_id));
+					$this->showmessage(sprintf(RC_Lang::get('orders::order.act_good_vacancy'), $value['goods_name']), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR, array('links' => $links));
 					break;
 				}
 		
@@ -142,8 +142,8 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 		
 		if (!$result) {
 			/* 操作失败 */
-			$links[] = array('text' => RC_Lang::lang('delivery_sn') . RC_Lang::lang('detail'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info','delivery_id=' . $delivery_id));
-			$this->showmessage(RC_Lang::lang('act_false'), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR, array('links' => $links));
+			$links[] = array('text' => RC_Lang::get('orders::order.delivery_sn') . RC_Lang::get('orders::order.detail'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info','delivery_id=' . $delivery_id));
+			$this->showmessage(RC_Lang::get('orders::order.act_false'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
 		}
 		
 		/* 标记订单为已确认 “已发货” */
@@ -171,7 +171,7 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 					'user_id'		=> $order['user_id'],
 					'rank_points'	=> intval($integral['rank_points']),
 					'pay_points'	=> intval($integral['custom_points']),
-					'change_desc'	=> sprintf(RC_Lang::lang('order_gift_integral'), $order['order_sn'])
+					'change_desc'	=> sprintf(RC_Lang::get('orders::order.order_gift_integral'), $order['order_sn'])
 				);
 				RC_Api::api('user', 'account_change_log',$options);
 				/* 发放红包 */
@@ -196,7 +196,7 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 				$content = $this->fetch_string($tpl['template_content']);
 		
 				if (!RC_Mail::send_mail($order['consignee'], $order['email'] , $tpl['template_subject'], $content, $tpl['is_html'])) {
-					$this->showmessage(RC_Lang::lang('send_mail_fail'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+					$this->showmessage(RC_Lang::get('orders::order.send_mail_fail'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 				}
 			}
 			$result = ecjia_app::validate_application('sms');
@@ -208,7 +208,7 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 					$tpl   = RC_Api::api('sms', 'sms_template', $tpl_name);
 					if (!empty($tpl)) {
 						$this->assign('order_sn', $order['order_sn']);
-						$this->assign('shipped_time', RC_Time::local_date(RC_Lang::lang('sms_time_format')));
+						$this->assign('shipped_time', RC_Time::local_date(RC_Lang::get('orders::order.sms_time_format')));
 						$this->assign('mobile', $order['mobile']);
 		
 						$content = $this->fetch_string($tpl['template_content']);

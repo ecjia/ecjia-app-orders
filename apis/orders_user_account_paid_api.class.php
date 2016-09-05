@@ -49,12 +49,12 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		$user_info = user_info($user_id);
 		/* 检查订单是否已经付款 */
 		if ($order_info['pay_status'] == PS_PAYED && $order_info['pay_time']) {
-			return new ecjia_error('order_paid', '该订单已经支付，请勿重复支付。');
+			return new ecjia_error('order_paid', RC_Lang::get('orders::order.pay_repeat_message'));
 		}
 		
 		/* 检查订单金额是否大于余额 */
 		if ($order_info['order_amount'] > ($user_info['user_money'] + $user_info['credit_line'])) {
-			return new ecjia_error('balance_less', '您的余额不足以支付整个订单，请选择其他支付方式。');
+			return new ecjia_error('balance_less', RC_Lang::get('orders::order.not_enough_balance'));
 		}
 		
 		/* 余额支付里如果输入了一个金额 */

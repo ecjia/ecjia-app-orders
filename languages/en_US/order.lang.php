@@ -227,6 +227,9 @@ return array(
 	'order_prepare_message' => 'Order No. %s for the goods are in stock, please wait patiently',
 	'order_goods_served'	=> 'Goods have been served, please sign, thank you for your next visit!',
 	'order_send_message'	=> 'Order No. %s goods have been shipped, please wait patiently',
+	'notice_merchant_message' => 'Has been notified businesses embrace, please be patient',
+	'pay_repeat_message'	=> 'The order has been paid, please do not repeat the payment.',
+	'not_enough_balance'	=> 'Your balance is not enough to pay the entire order, please choose other payment methods.',
 	
 	/* Buy the goods person\'s information*/
 	'display_buyer'	=> 'Display buyer information',

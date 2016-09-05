@@ -38,10 +38,10 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 		if (!empty($delivery_id)) {
 			$delivery_order = delivery_order_info($delivery_id);
 		} else {
-			$this->showmessage( __('无法找到对应发货单！') , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
+			$this->showmessage(RC_Lang::get('orders::order.no_delivery_order'), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
 		}
 		if (empty($delivery_order)) {
-			$this->showmessage( __('无法找到对应发货单！') , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
+			$this->showmessage(RC_Lang::get('orders::order.no_delivery_order'), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
 		}
 		/* 查询订单信息 */
 		$order = order_info($order_id);
@@ -157,7 +157,7 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 		
 		/* 发货单发货记录log */
 		order_action($order['order_sn'], OS_CONFIRMED, $shipping_status, $order['pay_status'], $action_note, null, 1);
-		ecjia_admin::admin_log('发货，订单号是'.$order['order_sn'], 'setup', 'order');
+		ecjia_admin::admin_log(RC_Lang::get('orders::order.op_ship').' '.RC_Lang::get('orders::order.order_is').$order['order_sn'], 'setup', 'order');
 		
 		/* 如果当前订单已经全部发货 */
 		if ($order_finish) {

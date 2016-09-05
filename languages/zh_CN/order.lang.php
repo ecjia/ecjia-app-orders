@@ -227,7 +227,10 @@ return array(
 	'order_prepare_message' => '订单号为 %s 的商品正在备货中，请您耐心等待',
 	'order_goods_served'	=> '商品已送达，请签收，感谢您下次光顾！',
 	'order_send_message'	=> '订单号为 %s 的商品已发货，请您耐心等待',
-		
+	'notice_merchant_message' => '已通知商家揽收，请耐心等待',
+	'pay_repeat_message'	=> '该订单已经支付，请勿重复支付。',
+	'not_enough_balance'	=> '您的余额不足以支付整个订单，请选择其他支付方式。',
+			
 	/* 购货人信息 */
 	'display_buyer' => '显示购货人信息',
 	'buyer_info' 	=> '购货人信息',

@@ -126,9 +126,9 @@ class orders_order_paid_api extends Component_Event_Api {
 	                }
 	                
 	                RC_Model::model('orders/order_status_log_model')->insert(array(
-			                'order_status'	=> '已付款',
+			                'order_status'	=> RC_Lang::get('orders::order.ps.'.PS_PAYED),
 			                'order_id'		=> $order_id,
-			                'message'		=> '已通知商家揽收，请耐心等待！',
+			                'message'		=> RC_Lang::get('orders::order.notice_merchant_message'),
 			                'add_time'		=> RC_Time::gmtime(),
 	                ));
 	                

@@ -9,7 +9,7 @@
 
 <!-- {block name="main_content"} -->
 <div class="alert alert-info">	
-	<strong>{$lang.notice_order_sn}</strong>
+	<strong>{lang key='orders::order.notice_order_sn'}</strong>
 </div>
 
 <div>
@@ -25,35 +25,35 @@
 		<form class="form-horizontal" id="form-privilege" name="theForm" method="post" action="{$form_action}" data-pjax-url='{url path="orders/admin/merge"}'>
 			<fieldset>
 				<div class="control-group formSep">
-					<label class="control-label">{$lang.to_order_sn}</label>
+					<label class="control-label">{lang key='orders::order.to_order_sn'}</label>
 					<div class="controls">
 						<input name="to_order_sn" type="text" id="to_order_sn" class="f_l m_r5"/>
 						<select name="to_list" id="to_list" >
-							<option value="">{$lang.select_please}</option>
+							<option value="">{lang key='system::system.select_please'}</option>
 							<!-- {foreach from=$order_list item=order} -->
 							<option value="{$order.order_sn}">{$order.order_sn} [{$order.user_name}]</option>
 							<!-- {/foreach} -->
 						</select>
-						<span class="input-must">{$lang.require_field}</span>
-						<span class="help-block" {if $help_open}style="display:block" {else} style="display:none" {/if} id="noticeOrderSn">{$lang.notice_order_sn}</span>
+						<span class="input-must">{lang key='system::system.require_field'}</span>
+						<span class="help-block" {if $help_open}style="display:block" {else} style="display:none" {/if} id="noticeOrderSn">{lang key='orders::order.notice_order_sn'}</span>
 					</div>
 				</div>
 				<div class="control-group formSep">
-					<label class="control-label">{$lang.from_order_sn}</label>
+					<label class="control-label">{lang key='orders::order.from_order_sn'}</label>
 					<div class="controls">
 						<input name="from_order_sn" type="text" id="from_order_sn" class="f_l m_r5"/>
 						<select name="from_list" id="from_list" >
-							<option value="">{$lang.select_please}</option>
+							<option value="">{lang key='system::system.select_please'}</option>
 							<!-- {foreach from=$order_list item=order} -->
 							<option value="{$order.order_sn}">{$order.order_sn} [{$order.user_name}]</option>
 							<!-- {/foreach} -->
 						</select>
-						<span class="input-must">{$lang.require_field}</span>
+						<span class="input-must">{lang key='system::system.require_field'}</span>
 					</div>
 				</div>
 				<div class="control-group">
 					<div class="controls">
-						<button class="btn btn-gebo" type="submit">{$lang.merge}</button>
+						<button class="btn btn-gebo" type="submit">{lang key='orders::order.merge'}</button>
 					</div>
 				</div>
 			</fieldset>

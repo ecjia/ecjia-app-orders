@@ -1,10 +1,9 @@
 // JavaScript Document
 
 ;(function(app, $) {
-	var html;
 	app.order = {
 		init : function() {
-			html = $(".modal-header").children("h3").html();
+			var html = $(".modal-header").children("h3").html();
 			app.order.screen();
 			app.order.searchform();
 			app.order.batch_print();
@@ -12,8 +11,8 @@
 //			app.order.operate();
 			app.order.batchForm();
 			app.order.tooltip();
-
 		},
+		
 		tooltip : function(){
 			$('span').tooltip({
 				trigger : 'hover',
@@ -21,6 +20,7 @@
 				placement : 'right'
 			})
 		},
+		
 		screen : function() {
 			//筛选功能
 			$(".screen-btn").on('click', function(e){
@@ -29,6 +29,7 @@
 				ecjia.pjax(url);
 			});
 		},
+		
 		searchform : function() {
 			//搜索功能
 			$("form[name='searchForm']").on('submit', function(e){
@@ -37,6 +38,7 @@
 				ecjia.pjax(url);
 			});
 		},
+		
 		batch_print : function() {
 			//批量打印
 			$(".batch-print").on("click", function(){
@@ -48,6 +50,7 @@
 				window.open(url);
 			});
 		},
+		
 		batch_operate : function() {
 			//批量操作备注
 			$(".batch-operate").on('click', function(e){
@@ -56,7 +59,7 @@
 					order_id.push($(this).val());
 				});
 				if (order_id == '') {
-					smoke.alert("请选择需要操作的订单！");
+					smoke.alert(js_lang.operate_order_required);
 					return false;
 				} else {
 					$("input[name='order_id']").val(order_id);
@@ -82,6 +85,7 @@
 				}
 			});
 		},
+		
 		operate : function(operatetype) {
 			//操作
 			var order_id = [];
@@ -98,12 +102,12 @@
 			var url = $("form[name='orderpostForm']").attr("action");
 			url += "&" + operatetype + "=1";
 			if (operatetype == 'remove') {
-				smoke.confirm("删除订单将清除该订单的所有信息。您确定要这么做吗？",function(e){
+				smoke.confirm(js_lang.remove_confirm, function(e){
 					if (e) {
 						$.ajax({
 							type: "POST",
 							url: url,
-							data: {order_id : order_id , operation:operatetype,action_note:action_note},
+							data: {order_id : order_id, operation:operatetype,action_note:action_note},
 							dataType: "json",
 							success: function(data){
 								ecjia.pjax(data.url , function(){
@@ -112,7 +116,10 @@
 							}
 						});
 					}
-				}, {ok:'确定', cancel:'取消'});
+                }, {
+                    ok: js_lang.ok,
+                    cancel: js_lang.cancel
+                });
 			} else {
 				if ($("input[name='order_sn']").val()!=undefined) {
 					url += "&order_sn=" + $("input[name='order_sn']").val();
@@ -135,21 +142,23 @@
 			}
 		},
 		operate_note : function (operatetype,data) {
+			var html = $(".modal-header").children("h3").html();
+			
 			//用户填写备注的js控制
 			$("#operate .modal-body").find("fieldset").children().not("div:eq(0)").not("div:last").addClass("ecjiaf-dn");
 			$('.batchtype').val(operatetype);
 			var arr = new Array();
-			arr['confirm']	= '确认';
-			arr['pay']		= '付款';
-			arr['unpay']	= '未付款';
-			arr['prepare']	= '配货';
-			arr['unship']	= '未发货';
-			arr['receive']	= '收货确认';
-			arr['cancel']	= '取消';
-			arr['invalid']	= '无效';
-			arr['after_service'] = '售后';
-			arr['return']	= '退货';
-			arr['refund']	= '退款';
+            arr['confirm']  = js_lang.confirm;
+            arr['pay']      = js_lang.pay;
+            arr['unpay']    = js_lang.unpay;
+            arr['prepare']  = js_lang.prepare;
+            arr['unship']   = js_lang.unship;
+            arr['receive']  = js_lang.receive;
+            arr['cancel']   = js_lang.cancel;
+            arr['invalid']  = js_lang.invalid;
+            arr['after_service'] = js_lang.after_service;
+            arr['return']   = js_lang.return_goods;
+            arr['refund']   = js_lang.refund;
 
 			$("#operate .modal-header").children("h3").html(html+arr[operatetype]);
 			if(data != '') {
@@ -193,7 +202,7 @@
 				},
 				messages:{
 					action_note : {
-						required : "请填写备注信息！"
+						required: js_lang.pls_input_note
 					},
 				},
 				submitHandler:function(){
@@ -204,7 +213,7 @@
 			var options = $.extend(ecjia.admin.defaultOptions.validate, option);
 			$this.validate(options);
 			if(batchtype == 'cancel') {
-				$("#cancel_note").rules("add",{ required : true,messages:{required : "请输入取消原因！"} });
+				$("#cancel_note").rules("add",{ required : true,messages:{required : js_lang.pls_input_cancel}});
 			}
 			if(batchtype == 'cancel') {
 				$("#cancel_note").rules("remove");
@@ -235,7 +244,10 @@
 							}
 						});
 					}
-				}, {ok:'确定', cancel:'取消'});
+                }, {
+                    ok: js_lang.ok,
+                    cancel: js_lang.cancel
+                });
 			} else {
 				var refund = $("input[name='refund']").val();
 				var refund_note = $("textarea[name='refund_note']").val();
@@ -409,7 +421,7 @@
 								$('.nav-list-ready').append(opt);
 							};
 						} else {
-							$('.nav-list-ready').html('<li class="ms-elem-selectable disabled"><span>未搜索到会员信息</span></li>');
+							$('.nav-list-ready').html('<li class="ms-elem-selectable disabled"><span>' + js_lang.select_user_empty + '</span></li>');
 						}
 						$(".users_info").addClass("ecjiaf-dn");
 						app.order.search_opt();
@@ -516,7 +528,7 @@
 			/* 如果搜索会员，检查是否找到 */
 			if ($("input[name='user']").val()<1) {
 				var data = {
-					message : "请搜索并选择会员！",
+					message : js_lang.pls_search_user,
 					state : "error",
 				};
 				ecjia.admin.showmessage(data);
@@ -543,7 +555,7 @@
 								$('.nav-list-ready').append(opt);
 							};
 						} else {
-							$('.nav-list-ready').html('<li class="ms-elem-selectable disabled"><span>未搜索到商品信息</span></li>');
+							$('.nav-list-ready').html('<li class="ms-elem-selectable disabled"><span>' + js_lang.select_goods_empty + '</span></li>');
 						}
 						app.order.search_opt();
 						app.order.click_search_goods();
@@ -593,19 +605,19 @@
 					$("#goods_sn").text(goods.goods_sn);
 					$("#goods_cat").text(goods.cat_name);
 					$("#goods_number").html(goods.goods_number);
-					goods.brand_name = goods.brand_name == null ? '无品牌' : goods.brand_name.trim()==''?'无品牌':goods.brand_name;
+					goods.brand_name = goods.brand_name == null ? js_lang.no_brand_name : goods.brand_name.trim()=='' ? js_lang.no_brand_name : goods.brand_name;
 					$("#goods_brand").text(goods.brand_name);
 					var img = '<img src="'+ goods.goods_img + '" class="w130"/>'
 					$("#goods_img").html(img);
 					// 显示价格：包括市场价、本店价（促销价）、会员价
-					var priceHtml = '<input type="radio" name="add_price" value="' + goods.market_price + '" /><span>市场价 [' + goods.market_price + ']</span><br />' +
-									'<input type="radio" name="add_price" value="' + goods.goods_price + '" checked /><span>本店价 [' + goods.goods_price + ']</span><br />';
+					var priceHtml = '<input type="radio" name="add_price" value="' + goods.market_price + '" /><span>' + js_lang.market_price + ' [' + goods.market_price + ']</span><br />' +
+									'<input type="radio" name="add_price" value="' + goods.goods_price + '" checked /><span>' + js_lang.goods_price + ' [' + goods.goods_price + ']</span><br />';
 					if(goods.user_price != null) {
 						for (var i = 0; i < goods.user_price.length; i++) {
 							priceHtml += '<input type="radio" name="add_price" value="' + goods.user_price[i].user_price + '" />' + goods.user_price[i].rank_name + ' [' + goods.user_price[i].user_price + ']<br />';
 						}
 					}
-					priceHtml += '<div><input type="radio" name="add_price" value="user_input" /><span>自定义价格</span>&nbsp;&nbsp;<input class="w100" type="text" name="input_price" value="" /></div>';
+					priceHtml += '<div><input type="radio" name="add_price" value="user_input" /><span>' + js_lang.custom_price + '</span>&nbsp;&nbsp;<input class="w100" type="text" name="input_price" value="" /></div>';
 					$("#add_price").html(priceHtml);
 					/*显示商品属性*/
 					// 显示属性
@@ -651,7 +663,7 @@
 						}
 					}
 					$("input[name='spec_count']").val(specCnt);
-					$("#goods_attr").html(attrHtml.trim()==""?'暂无其他属性':attrHtml);
+					$("#goods_attr").html(attrHtml.trim()=="" ? js_lang.no_other_attr : attrHtml);
 					$("#sel_goodsattr").html(selattrHtml);
 					$("input[type='radio'],input[type='checkbox']").uniform();
 					$(".goods_info").removeClass('ecjiaf-dn');
@@ -742,7 +754,7 @@
 			if (eles.length>0) {
 				if (eles['goods_count'].value <= 0){
 					var data = {
-						message : "还没有添加商品哦！请搜索后加入订单！",
+						message: js_lang.not_add_goods,
 						state : "error",
 					};
 					ecjia.admin.showmessage(data);
@@ -751,8 +763,8 @@
 				return true;
 			} else {
 				var data = {
-						message : "还没有添加商品哦！请搜索后加入订单！",
-						state : "error",
+					message: js_lang.not_add_goods,
+					state : "error",
 				};
 				ecjia.admin.showmessage(data);
 				return false;
@@ -808,11 +820,21 @@
 						city		: {required : true}
 					},
 					messages : {
-						consignee	: {required : "请填写收货人！"},
-						email		: {required : "请输入电子邮件！"},
-						tel			: {required : "请输入电话号码！"},
-						address		: {required : "请输入详细地址！"},
-						city		: {required : "请选择所在地区！"}
+						consignee: {
+	                        required: js_lang.consignee_required
+	                    },
+	                    email: {
+	                        required: js_lang.email_required
+	                    },
+	                    tel: {
+	                        required: js_lang.tel_required
+	                    },
+	                    address: {
+	                        required: js_lang.address_required
+	                    },
+	                    city: {
+	                        required: js_lang.city_required
+	                    }
 					},
 					submitHandler:function(){
 						app.order.submitConsigneeForm($this);
@@ -856,8 +878,8 @@
 			if ($("#exist_real_goods").attr('data-real')=="true") {
 				if (!$("input[name='shipping']:radio").is(':checked')) {
 					var data = {
-						message : "请选择配送方式！",
-						state :    "error",
+						message: js_lang.shipping_required,
+						state: "error",
 					};
 					ecjia.admin.showmessage(data);
 					return false;
@@ -923,10 +945,10 @@
 //		},
 		checkPayment : function() {
 			if (!$("input[name='payment']:radio").is(':checked')) {
-				var data = {
-						message : "请选择支付方式！",
-						state :    "error",
-				};
+                var data = {
+                    message: js_lang.payment_required,
+                    state: "error",
+                };
 				ecjia.admin.showmessage(data);
 				return false;
 			}
@@ -1028,8 +1050,6 @@
 		},
 	};
 
-
 })(ecjia.admin, jQuery);
-
 
 // end

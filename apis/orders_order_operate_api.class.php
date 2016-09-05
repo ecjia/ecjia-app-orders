@@ -15,7 +15,7 @@ class orders_order_operate_api extends Component_Event_Api {
 	public function call(&$options) {	
 	    if (!is_array($options) 
 	        || !isset($options['order_id'])) {
-	        return new ecjia_error('invalid_parameter', '参数无效');
+	        return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
 	    }
 	    
 	    /* 查询订单信息 */
@@ -24,7 +24,7 @@ class orders_order_operate_api extends Component_Event_Api {
 	    /* 检查能否操作 */
 		$operable_list = RC_Api::api('orders', 'order_operable_list', $order);
 		if (!isset($operable_list[$options['operation']])) {
-			return new ecjia_error('operate_error', '无法对订单执行该操作');
+			return new ecjia_error('operate_error', RC_Lang::get('orders::order.unable_operation_order'));
 		}
 		$operate = RC_Loader::load_app_class('order_operate', 'orders');
 		

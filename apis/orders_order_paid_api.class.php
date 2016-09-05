@@ -20,12 +20,12 @@ class orders_order_paid_api extends Component_Event_Api {
 	        || !isset($options['log_id']) 
 	        || !isset($options['money']) 
 	        || !isset($options['pay_status'])) {
-	        return new ecjia_error('invalid_parameter', '参数无效');
+	        return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
 	    }
 
 	    /* 检查支付的金额是否相符 */
 	    if (!$this->check_money($options['log_id'], $options['money'])) {
-	        return new ecjia_error('check_money_fail', '支付的金额有误');
+	        return new ecjia_error('check_money_fail', RC_Lang::get('orders::order.check_money_fail'));
 	    }
 	    
 	    if (in_array($options['pay_status'], array(PS_UNPAYED, PS_PAYING, PS_PAYED)) && $options['pay_status'] == PS_PAYED) {
@@ -105,7 +105,7 @@ class orders_order_paid_api extends Component_Event_Api {
 	                $db_order->where(array('order_id' => $order_id))->update($data);
 	
 	                /* 记录订单操作记录 */
-	                order_action($order_sn, OS_CONFIRMED, SS_UNSHIPPED, $pay_status, $note, __('买家'));
+	                order_action($order_sn, OS_CONFIRMED, SS_UNSHIPPED, $pay_status, $note, RC_Lang::get('orders::order.buyers'));
 	
 	                
 	                if ($main_order_id <= 0) {
@@ -121,7 +121,7 @@ class orders_order_paid_api extends Component_Event_Api {
 	                	$order_res = $db_order->field('order_sn')->where(array('main_order_id' => $order_id))->select();
 	                	foreach ($order_res AS $row) {
 	                		/* 记录订单操作记录 */
-	                		order_action($row['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, $pay_status, $note, __('买家'));
+	                		order_action($row['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, $pay_status, $note, RC_Lang::get('orders::order.buyers'));
 	                	}
 	                }
 	                

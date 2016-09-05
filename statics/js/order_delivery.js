@@ -81,11 +81,8 @@
 				ecjia.pjax(url);
 			});
 		},
-		
-		
 	}
 	
 })(ecjia.admin, jQuery);
-
 
 // end

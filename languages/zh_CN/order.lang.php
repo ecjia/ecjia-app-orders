@@ -183,6 +183,8 @@ return array(
 	'subtotal' 				=> '小计',
 	'label_total' 			=> '合计：',
 	'label_total_weight' 	=> '商品总重量：',
+	'label_goods_price'		=> '商品价格：',
+	'label_goods_number'	=> '商品数量：',
 	
 	'label_goods_amount' 	=> '商品总金额：',
 	'label_discount' 		=> '折扣：',
@@ -209,7 +211,7 @@ return array(
 	'order_status' 		=> '订单状态',
 	'pay_status' 		=> '付款状态',
 	'shipping_status' 	=> '发货状态',
-	'action_note' 		=> '备注',
+	'action_note' 		=> '备注：',
 	'pay_note' 			=> '支付备注：',
 	
 	'sms_time_format' 	=> 'm月j日G时',
@@ -222,7 +224,10 @@ return array(
 	'surplus_not_enough'	=> '该订单使用 %s 余额支付，现在用户余额不足',
 	'integral_not_enough' 	=> '该订单使用 %s 积分支付，现在用户积分不足',
 	'bonus_not_available' 	=> '该订单使用红包支付，现在红包不可用',
-	
+	'order_prepare_message' => '订单号为 %s 的商品正在备货中，请您耐心等待',
+	'order_goods_served'	=> '商品已送达，请签收，感谢您下次光顾！',
+	'order_send_message'	=> '订单号为 %s 的商品已发货，请您耐心等待',
+		
 	/* 购货人信息 */
 	'display_buyer' => '显示购货人信息',
 	'buyer_info' 	=> '购货人信息',
@@ -239,7 +244,7 @@ return array(
 	/* 合并订单 */
 	'order_sn_not_null'					=> '请填写要合并的订单号',
 	'two_order_sn_same'					=> '要合并的两个订单号不能相同',
-	'order_not_exist' 					=> '定单 %s 不存在',
+	'order_not_exist' 					=> '订单 %s 不存在',
 	'os_not_unconfirmed_or_confirmed' 	=> '%s 的订单状态不是“未确认”或“已确认”',
 	'ps_not_unpayed' 					=> '订单 %s 的付款状态不是“未付款”',
 	'ss_not_unshipped' 					=> '订单 %s 的发货状态不是“未发货”',
@@ -317,7 +322,7 @@ return array(
 	'available_integral'=> '可用积分：',
 	'available_bonus' 	=> '可用红包：',
 	'admin' 			=> '管理员添加',
-	'search_goods' 		=> '按商品编号或商品名称或商品货号搜索',
+	'search_goods' 		=> '按商品编号或商品名称或商品货号搜索：',
 	'category' 			=> '分类',
 	'brand' 			=> '品牌',
 	'user_money_not_enough' 	=> '用户余额不足',
@@ -534,7 +539,7 @@ return array(
 	'log_edit_info'					=>	'编辑信息，订单号是 ',
 	'cancel_add_new_order'			=>	'取消添加新订单',
 	'order_operating'				=>	'订单操作：生成发货单',
-	'order_no'						=>	'该订单不存在',
+	'not_exist_order'				=>	'该订单不存在',
 	'pls_other_remark'				=>	'请填写备注信息及其他信息',
 	'confirm_ok_order'				=>	'确认成功的订单：',
 	'invalid_ok_order'				=>	'无效成功的订单：',
@@ -562,9 +567,14 @@ return array(
 	'pls_order_id'					=>	'请输入订单号或者订单id',
 	'invoice_information'			=>	'发票信息',
 	'product_thumbnail'				=>	'商品缩略图',
+	'warehouse_name'				=>  '仓库名称',
 	'order_no_goods'				=>	'该订单暂无商品',
 	'operation_record'				=>	'操作记录',
 	'order_operate_list' 			=> 	'订单操作',
+	'self_support'					=>  '自营',
+	'merchant_name'					=>  '商家名称',
+	'main_order'					=>  '（主订单）',
+	'child_order'					=>  '（子订单）',
 	
 	'start_time' 					=> 	'开始时间',
 	'end_time' 						=> 	'结束时间',

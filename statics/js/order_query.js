@@ -8,6 +8,7 @@
 			});
 			app.order_query.theFormsubmit();
 		},
+		
 		theFormsubmit : function() {
 			$("form[name='theForm']").on('submit', function(e) {
 				e.preventDefault();
@@ -43,7 +44,7 @@
 			ecjia.pjax(url);
 		},
 	}
+	
 })(ecjia.admin, jQuery);
-
 
 // end

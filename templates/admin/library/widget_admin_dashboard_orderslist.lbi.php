@@ -8,10 +8,10 @@
 	<table class="table table-striped table-bordered mediaTable">
 		<thead>
 			<tr>
-				<th class="optional">{t}订单号{/t}</th>
-				<th class="essential persist">{t}下单时间{/t}</th>
-				<th class="optional">{t}总金额{/t}</th>
-				<th class="optional">{t}订单状态{/t}</th>
+				<th class="optional">{lang key='orders::order.order_sn'}</th>
+				<th class="essential persist">{lang key='orders::order.order_time'}</th>
+				<th class="optional">{lang key='orders::order.total_fee'}</th>
+				<th class="optional">{lang key='orders::order.order_status'}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -27,5 +27,5 @@
 			<!-- {/foreach} -->
 		</tbody>
 	</table>
-	<div class="ecjiaf-tar"><a href='{url path="orders/admin/init"}' title="{t}查看更多{/t}">{t}查看更多{/t}</a></div>
+	<div class="ecjiaf-tar"><a href='{url path="orders/admin/init"}' title="{lang key='orders::order.more'}">{lang key='orders::order.more'}</a></div>
 </div>

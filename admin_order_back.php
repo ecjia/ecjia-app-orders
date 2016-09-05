@@ -6,7 +6,6 @@
 defined('IN_ECJIA') or exit('No permission resources.');
 
 class admin_order_back extends ecjia_admin {
-
 	private $db_back_order;
 	private $db_back_goods;
 	private $db_order_region;
@@ -36,7 +35,7 @@ class admin_order_back extends ecjia_admin {
 		RC_Style::enqueue_style('uniform-aristo');
 		RC_Script::enqueue_script('jquery-uniform');
 		
-		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('退货单列表'), RC_Uri::url('orders/admin_order_back/init')));
+		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.order_back_list'), RC_Uri::url('orders/admin_order_back/init')));
 	}
 	
 	/**
@@ -45,18 +44,18 @@ class admin_order_back extends ecjia_admin {
 	public function init() {
 		/* 检查权限 */
 		$this->admin_priv('back_view');
+		
 		ecjia_screen::get_current_screen()->remove_last_nav_here();
-		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('退货单列表')));
+		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.order_back_list')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
 			'id'		=> 'overview',
-			'title'		=> __('概述'),
-			'content'	=>
-			'<p>' . __('欢迎访问ECJia智能后台退货单列表页面，系统中有关退货单都会显示在此列表中。') . '</p>'
+			'title'		=> RC_Lang::get('orders::order.overview'),
+			'content'	=> '<p>' . RC_Lang::get('orders::order.order_back_help') . '</p>'
 		));
 		
 		ecjia_screen::get_current_screen()->set_help_sidebar(
-			'<p><strong>' . __('更多信息:') . '</strong></p>' .
-			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:退货单列表" target="_blank">关于退货单列表帮助文档</a>') . '</p>'
+			'<p><strong>' . RC_Lang::get('orders::order.more_info') . '</strong></p>' .
+			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:退货单列表" target="_blank">'. RC_Lang::get('orders::order.about_order_back') .'</a>') . '</p>'
 		);
 		
 		/* 查询 */
@@ -64,16 +63,15 @@ class admin_order_back extends ecjia_admin {
 		$result = get_back_list();
 
 		/* 模板赋值 */
-		$this->assign('ur_here', RC_Lang::lang('10_back_order'));
+		$this->assign('ur_here', 		RC_Lang::get(RC_Lang::get('orders::order.order_back_list')));
 		$this->assign('os_unconfirmed', OS_UNCONFIRMED);
-		$this->assign('cs_await_pay', CS_AWAIT_PAY);
-		$this->assign('cs_await_ship', CS_AWAIT_SHIP);
-		$this->assign('back_list', $result);
-		$this->assign('filter', $result['filter']);
-		$this->assign('form_action', RC_Uri::url('orders/admin_order_back/init'));
-		$this->assign('del_action', RC_Uri::url('orders/admin_order_back/remove'));
+		$this->assign('cs_await_pay', 	CS_AWAIT_PAY);
+		$this->assign('cs_await_ship', 	CS_AWAIT_SHIP);
+		$this->assign('back_list', 		$result);
+		$this->assign('filter', 		$result['filter']);
+		$this->assign('form_action', 	RC_Uri::url('orders/admin_order_back/init'));
+		$this->assign('del_action', 	RC_Uri::url('orders/admin_order_back/remove'));
 		
-		$this->assign_lang();
 		$this->display('back_list.dwt');
 	}
 	
@@ -84,8 +82,8 @@ class admin_order_back extends ecjia_admin {
 		/* 检查权限 */
 		$this->admin_priv('back_view');
 
-		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('退货单操作：查看')));
-		
+		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.return_look')));
+
 		$back_id = intval(trim($_GET['back_id']));
 	
 		/* 根据发货单id查询发货单信息 */
@@ -93,10 +91,10 @@ class admin_order_back extends ecjia_admin {
 			RC_Loader::load_app_func('function');
 			$back_order = back_order_info($back_id);
 		} else {
-			$this->showmessage(__('无法找到对应退货单！') , ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR) ;
+			$this->showmessage(RC_Lang::get('orders::order.return_form'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
 		}
 		if (empty($back_order)) {
-			$this->showmessage(__('无法找到对应退货单！') , ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR) ;
+			$this->showmessage(RC_Lang::get('orders::order.return_form'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
 		}
 
 		/* 如果管理员属于某个办事处，检查该订单是否也属于这个办事处 */
@@ -141,16 +139,15 @@ class admin_order_back extends ecjia_admin {
 		}
 	
 		/* 模板赋值 */
-		$this->assign('back_order', $back_order);
-		$this->assign('exist_real_goods', $exist_real_goods);
-		$this->assign('goods_list', $goods_list);
-		$this->assign('back_id', $back_id); // 发货单id
+		$this->assign('back_order', 		$back_order);
+		$this->assign('exist_real_goods', 	$exist_real_goods);
+		$this->assign('goods_list', 		$goods_list);
+		$this->assign('back_id', 			$back_id); // 发货单id
 	
 		/* 显示模板 */
-		$this->assign('ur_here', RC_Lang::lang('back_operate') . RC_Lang::lang('detail'));
-		$this->assign('action_link', array('href' => RC_Uri::url('orders/admin_order_back/init'), 'text' => RC_Lang::lang('10_back_order')));
+		$this->assign('ur_here', 		RC_Lang::get('orders::order.back_operate') . RC_Lang::get('orders::order.detail'));
+		$this->assign('action_link', 	array('href' => RC_Uri::url('orders/admin_order_back/init'), 'text' => RC_Lang::lang('10_back_order')));
 		
-		$this->assign_lang();
 		$this->display('back_info.dwt');
 	}
 	
@@ -168,7 +165,7 @@ class admin_order_back extends ecjia_admin {
 		/* 记录日志 */
 		ecjia_admin::admin_log($back_id, 'remove', 'back_order');
 
-		$this->showmessage(RC_Lang::lang('tips_back_del'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('orders/admin_order_back/init')));
+		$this->showmessage(RC_Lang::get('orders::order.tips_back_del'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('orders/admin_order_back/init')));
 	}
 	
 	/*收货人信息*/
@@ -176,7 +173,7 @@ class admin_order_back extends ecjia_admin {
 		$this->admin_priv('back_view' , ecjia::MSGTYPE_JSON);
 		$id = $_GET['back_id'];
 		if (!empty($id)) {
-			$field = "order_id,consignee,address,country,province,city,district,sign_building,email,zipcode,tel,mobile,best_time";
+			$field = "order_id, consignee, address, country, province, city, district, sign_building, email, zipcode, tel, mobile, best_time";
 			$row = $this->db_back_order->field($field)->where(array('back_id'=>$id))->find();
 			if (!empty($row)) {
 				$field = array("concat(IFNULL(c.region_name, ''), '  ', IFNULL(p.region_name, ''),'  ', IFNULL(t.region_name, ''), '  ', IFNULL(d.region_name, '')) AS region");
@@ -184,10 +181,10 @@ class admin_order_back extends ecjia_admin {
 	
 				$row['region'] = $region['region'];
 			} else {
-				$this->showmessage(__('无法找到响应的发货单收货人！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+				$this->showmessage(RC_Lang::get('orders::order.no_invoice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 			}
 		} else {
-			$this->showmessage(__('操作有误！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			$this->showmessage(RC_Lang::get('orders::order.a_mistake'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		die(json_encode($row));
 	}

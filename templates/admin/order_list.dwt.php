@@ -21,27 +21,27 @@
 	<form action="{$search_action}" name="searchForm" method="post" >
 		<div class="btn-group f_l m_r5">
 			<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-				<i class="fontello-icon-cog"></i>{t}批量操作{/t}
+				<i class="fontello-icon-cog"></i>{lang key='orders::order.bulk_operations'}
 				<span class="caret"></span>
 			</a>
 			<ul class="dropdown-menu operate_note" data-url='{url path="orders/admin/operate_note"}'>
-				<li><a class="batch-del-btn" data-toggle="ecjiabatch" data-name="order_id" data-idClass=".checkbox:checked" data-url="{$form_action}&operation=confirm" data-msg="您确定要审批这些订单吗？" data-noSelectMsg="请选择需要操作的订单！" href="javascript:;"><i class="fontello-icon-ok"></i>{$lang.op_confirm}</a></li>
-				<li><a class="batch-operate batch-operate-invalid" data-operatetype="invalid" data-url="{$form_action}&operation=invalid" data-invalid-msg="您确定需要把这些订单设置为无效吗？" href="javascript:;"><i class="fontello-icon-block"></i>{$lang.op_invalid}</a></li>
-				<li><a class="batch-operate batch-operate-cancel" data-operatetype="cancel" data-url="{$form_action}&operation=cancel" data-cancel-msg="您确定要取消这些订单吗？" href="javascript:;"><i class="fontello-icon-cancel"></i>{$lang.op_cancel}</a></li>
-				<li><a class="batch-del-btn" data-toggle="ecjiabatch" data-name="order_id" data-idClass=".checkbox:checked" data-url="{$form_action}&operation=remove" data-msg="删除订单将清除该订单的所有信息。您确定要这么做吗？" href="javascript:;"><i class="fontello-icon-trash"></i>{$lang.remove}</a></li>
-				<li><a class="batch-print" data-url="{$form_action}&print=1" href="javascript:;"><i class="fontello-icon-print"></i>{$lang.print_order}</a></li>
+				<li><a class="batch-del-btn" data-toggle="ecjiabatch" data-name="order_id" data-idClass=".checkbox:checked" data-url="{$form_action}&operation=confirm" data-msg="{lang key='orders::order.confirm_approval_order'}" data-noSelectMsg="{lang key='orders::order.pls_select_order'}" href="javascript:;"><i class="fontello-icon-ok"></i>{lang key='orders::order.op_confirm'}</a></li>
+				<li><a class="batch-operate batch-operate-invalid" data-operatetype="invalid" data-url="{$form_action}&operation=invalid" data-invalid-msg="{lang key='orders::order.confirm_order_invalid'}" href="javascript:;"><i class="fontello-icon-block"></i>{lang key='orders::order.op_invalid'}</a></li>
+				<li><a class="batch-operate batch-operate-cancel" data-operatetype="cancel" data-url="{$form_action}&operation=cancel" data-cancel-msg="{lang key='orders::order.confirm_order_cancel'}" href="javascript:;"><i class="fontello-icon-cancel"></i>{lang key='orders::order.op_cancel'}</a></li>
+				<li><a class="batch-del-btn" data-toggle="ecjiabatch" data-name="order_id" data-idClass=".checkbox:checked" data-url="{$form_action}&operation=remove" data-msg="{lang key='orders::order.remove_confirm'}" href="javascript:;"><i class="fontello-icon-trash"></i>{lang key='system::system.remove'}</a></li>
+				<li><a class="batch-print" data-url="{$form_action}&print=1" href="javascript:;"><i class="fontello-icon-print"></i>{lang key='orders::order.print_order'}</a></li>
 			</ul>
 			<input name="batch" type="hidden" value="1" />
 		</div>
 		<!-- 订单状态-->
 		<select class="down-menu w120" name="status" id="select-rank">
-			<option value="-1">{$lang.all_status}</option>
+			<option value="-1">{lang key='orders::order.all_status'}</option>
 			<!-- {html_options options=$status_list selected=$order_list.filter.composite_status } -->
 		</select>
 		<a class="btn m_l5 screen-btn">{t}筛选{/t}</a>
 		<div class="choose_list f_r" >
-			<input type="text" name="keywords" value="{$order_list.filter.keywords}" placeholder="请输入订单号或者收货人"/> 
-			<button class="btn" type="submit">{t}搜索订单{/t}</button>
+			<input type="text" name="keywords" value="{$order_list.filter.keywords}" placeholder="{lang key='orders::order.pls_consignee'}"/> 
+			<button class="btn" type="submit">{lang key='orders::order.search_order'}</button>
 		</div>
 	</form>
 </div>
@@ -53,13 +53,13 @@
 					<thead>
 						<tr>
 							<th class="table_checkbox"><input type="checkbox" data-toggle="selectall" data-children=".checkbox" /></th>
-							<th>{$lang.order_sn}</th>
-							<th>商家名称</th>
-							<th>{$lang.order_time}</th>
-							<th>{$lang.consignee}</th>
-							<th>{$lang.total_fee}</th>
-							<th>{$lang.order_amount}</th>
-							<th>{$lang.all_status}</th>
+							<th class="w100">{lang key='orders::order.order_sn'}</th>
+							<th class="w100">{lang key='orders::order.merchant_name'}</th>
+							<th class="w120">{lang key='orders::order.order_time'}</th>
+							<th>{lang key='orders::order.user_purchase_information'}</th>
+							<th class="w120">{lang key='orders::order.total_fee'}</th>
+							<th class="w110">{lang key='orders::order.order_amount'}</th>
+							<th class="w150">{lang key='orders::order.all_status'}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -67,13 +67,13 @@
 						<tr>
 							<td><input type="checkbox" class="checkbox" name="order_id[]"  value="{$order.order_id}" /></td>
 							<td class="hide-edit-area">
-								{$order.order_sn}{if $order.extension_code eq "group_buy"}{$lang.group_buy}{elseif $order.extension_code eq "exchange_goods"}{$lang.exchange_goods}{/if}
-								{if $order.stet eq 1}<font style="color:#0e92d0;">(子订单)</font>{elseif $order.stet eq 2}<font style="color:#F00;"><span data-original-title="{foreach from=$order.children_order item=val}{$val};{/foreach}" data-toggle="tooltip">(主订单)</span></font>{/if}
+								{$order.order_sn}{if $order.extension_code eq "group_buy"}{lang key='orders::order.group_buy'}{elseif $order.extension_code eq "exchange_goods"}{lang key='orders::order.exchange_goods'}{/if}
+								{if $order.stet eq 1}<font style="color:#0e92d0;">{lang key='orders::order.child_order'}</font>{elseif $order.stet eq 2}<font style="color:#F00;"><span data-original-title="{foreach from=$order.children_order item=val}{$val};{/foreach}" data-toggle="tooltip">{lang key='orders::order.main_order'}</span></font>{/if}
 								<div class="edit-list">
-									<a href='{url path="orders/admin/info" args="order_id={$order.order_id}"}' class="data-pjax" title="{$lang.detail}">{t}查看详情{/t}</a>
+									<a href='{url path="orders/admin/info" args="order_id={$order.order_id}"}' class="data-pjax" title="{lang key='orders::order.detail'}">{lang key='orders::order.detail'}</a>
 									{if $order.can_remove}
 									&nbsp;|&nbsp;
-									<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg='{t name="{$order.order_sn}"}您确定要删除订单[ %1 ]吗？{/t}' href='{url path="orders/admin/remove_order" args="order_id={$order.order_id}"}' title="{t}移除{/t}">{t}移除{/t}</a>
+									<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg='{lang key='orders::order.confirm_delete_order'}' href='{url path="orders/admin/remove_order" args="order_id={$order.order_id}"}' title="{lang key='orders::order.op_remove'}">{lang key='orders::order.op_remove'}</a>
 									{/if}
 								</div>
 							</td>
@@ -81,7 +81,7 @@
 								<!-- {if $order.shop_name} -->
 								<font style="color:#F00;">{$order.shop_name}</font>
 								<!-- {else} -->
-								<font style="color:#0e92d0;">{t}自营{/t}</font>
+								<font style="color:#0e92d0;">{lang key='orders::order.self_support'}</font>
 								<!-- {/if} -->
 							</td>
 							<td>
@@ -92,10 +92,10 @@
 							</td>
 							<td align="right" valign="top" nowrap="nowrap">{$order.formated_total_fee}</td>
 							<td align="right" valign="top" nowrap="nowrap">{$order.formated_order_amount}</td>
-							<td align="center" valign="top" nowrap="nowrap">{$lang.os[$order.order_status]},{$lang.ps[$order.pay_status]},{$lang.ss[$order.shipping_status]}</td>
+							<td align="center" valign="top" nowrap="nowrap">{$os[$order.order_status]},{$ps[$order.pay_status]},{$ss[$order.shipping_status]}</td>
 						</tr>
 						<!-- {foreachelse}-->
-						<tr><td class="no-records" colspan="11">{$lang.no_records}</td></tr>
+						<tr><td class="no-records" colspan="7">{lang key='system::system.no_records'}</td></tr>
 						<!-- {/foreach} -->
 					</tbody>
 				</table>

@@ -17,7 +17,7 @@ class orders_user_account_paid_api extends Component_Event_Api {
 	    if (!is_array($options) 
 	        || !isset($options['user_id']) 
 	        || !isset($options['order_id'])) {
-	        return new ecjia_error('invalid_parameter', '参数无效');
+	        return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
 	    }
 	    
 	    $result = $this->user_account_paid($options['user_id'], $options['order_id']);

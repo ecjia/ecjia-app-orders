@@ -13,7 +13,7 @@ class orders_order_list_api extends Component_Event_Api {
 	 */
 	public function call (&$options) {
 		if (!is_array($options) || !isset($options['type'])) {
-			return new ecjia_error('invalid_parameter', '参数无效');
+			return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
 		}
 		
 		$user_id	= $_SESSION['user_id'];

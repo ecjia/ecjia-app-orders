@@ -138,7 +138,6 @@ class detail_module extends api_admin implements api_interface {
 		$order['goods_items'] = $goods_list;
 		
 		
-		
 		/* 取得订单操作记录 */
 		$act_list = array();
 		$db_order_action		= RC_Loader::load_app_model('order_action_model', 'orders');
@@ -159,7 +158,7 @@ class detail_module extends api_admin implements api_interface {
 		
 		
 		$order['action_logs']   = $act_list;
-		EM_Api::outPut($order);
+		return $order;
 	}
 	
 	

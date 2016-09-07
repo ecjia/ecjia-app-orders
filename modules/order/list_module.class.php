@@ -13,11 +13,8 @@ class list_module extends api_front implements api_interface {
 		if (!empty($type) && !in_array($type, array('await_pay', 'await_ship', 'shipped', 'finished', 'unconfirmed'))) {
 			EM_Api::outPut(101);
 		}
-		$page_parm = EM_Api::$pagination;
-		$page = $page_parm['page'];
-		$size = $page_parm['count'];
-		
-		
+		$size = $this->requestData('pagination.count', 15);
+		$page = $this->requestData('pagination.page', 1);
 		
 		$options = array('type' => $type, 'page' => $page, 'size' => $size);
 		$result = RC_Api::api('orders', 'order_list', $options);
@@ -31,7 +28,7 @@ class list_module extends api_front implements api_interface {
 				'more'	=> $result['page']->total_pages <= $page ? 0 : 1,
 		);
 		
-		EM_Api::outPut($result['order_list'], $pager);
+		return array('list' => $result['order_list'], 'pager' => $pager);
 
 	 }	
 }

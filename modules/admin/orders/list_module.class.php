@@ -16,8 +16,8 @@ class list_module extends api_admin implements api_interface {
 		}
 		$type		= $this->requestData('type', 'whole');
 		$keywords	= $this->requestData('keywords');
-		$size		= EM_Api::$pagination['count'];
-		$page		= EM_Api::$pagination['page'];
+		$size = $this->requestData('pagination.count', 15);
+		$page = $this->requestData('pagination.page', 1);
 		
 		$device		 = $this->requestData('device', array());
 		$device_code = isset($device['code']) ? $device['code'] : '';

@@ -28,7 +28,7 @@ class list_module extends api_front implements api_interface {
 				'more'	=> $result['page']->total_pages <= $page ? 0 : 1,
 		);
 		
-		return array('list' => $result['order_list'], 'pager' => $pager);
+		return array('data' => $result['order_list'], 'pager' => $pager);
 
 	 }	
 }

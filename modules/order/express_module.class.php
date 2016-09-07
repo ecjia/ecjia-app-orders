@@ -45,7 +45,7 @@ class express_module extends api_front implements api_interface {
 		$out['shipping_number'] = $order_info['invoice_no'];  //快递单号
 		$out['status'] = $data['state'] == 3 ? 1 : 0;   //是否签收
 		
-		EM_Api::outPut($out);		
+		return $out;		
 	}
 }
 

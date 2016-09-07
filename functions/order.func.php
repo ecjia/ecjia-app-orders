@@ -1842,15 +1842,13 @@ function get_order_detail ($order_id, $user_id = 0)
 
     $order_id = intval($order_id);
     if ($order_id <= 0) {
-        EM_Api::outPut(8);
-        return false;
+        return new ecjia_error('error_order_detail', '参数错误');
     }
     $order = order_info($order_id);
 
     // 检查订单是否属于该用户
     if ($user_id > 0 && $user_id != $order['user_id']) {
-        EM_Api::outPut(8);
-        return false;
+        return new ecjia_error('error_order_detail ', '订单不属于该用户');
     }
 
     /* 入住商信息*/

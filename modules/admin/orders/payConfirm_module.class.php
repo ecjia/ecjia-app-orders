@@ -12,7 +12,7 @@ class payConfirm_module extends api_admin implements api_interface {
 		$ecjia = RC_Loader::load_app_class('api_admin', 'api');
 		$result = $ecjia->admin_priv('order_stats');
 		if (is_ecjia_error($result)) {
-			EM_Api::outPut($result);
+			return $result;
 		}
 
 		$order_id = $this->requestData('order_id');
@@ -39,7 +39,7 @@ class payConfirm_module extends api_admin implements api_interface {
 		if ($pay_info['pay_code'] == 'pay_cash') {
 			$pay_priv = $ecjia->admin_priv('order_ps_edit');
 			if (is_ecjia_error($pay_priv)) {
-				EM_Api::outPut($pay_priv);
+				return $pay_priv;
 			}
 			/* 进行确认*/
 			RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'confirm', 'note' => array('action_note' => '收银台订单确认')));

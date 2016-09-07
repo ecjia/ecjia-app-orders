@@ -149,7 +149,7 @@ class detail_module extends api_front implements api_interface {
 		    }
 		}
 		
-		EM_Api::outPut(array('data' => $order));
+		return array('data' => $order);
 	}
 }
 

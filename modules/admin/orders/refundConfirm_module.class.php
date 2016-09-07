@@ -12,7 +12,7 @@ class refundConfirm_module extends api_admin implements api_interface {
 		$ecjia = RC_Loader::load_app_class('api_admin', 'api');
 		$result = $ecjia->admin_priv('order_stats');
 		if (is_ecjia_error($result)) {
-			EM_Api::outPut($result);
+			return $result;
 		}
 
 		$order_id = $this->requestData('order_id');
@@ -39,7 +39,7 @@ class refundConfirm_module extends api_admin implements api_interface {
 		if ($pay_info['pay_code'] == 'pay_cash') {
 			$pay_priv = $ecjia->admin_priv('order_ps_edit');
 			if (is_ecjia_error($pay_priv)) {
-				EM_Api::outPut($pay_priv);
+				return  $pay_priv;
 			}
 			$result = $payment->refund();
 			if (is_ecjia_error($result)) {

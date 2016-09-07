@@ -172,7 +172,7 @@ class quickpay_module extends api_admin implements api_interface {
 						'order_sn' 		=> $order['order_sn']
 				)
 		);
-		EM_Api::outPut($out);
+		return $out;
 	}
 }
 

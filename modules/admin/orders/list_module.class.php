@@ -12,7 +12,7 @@ class list_module extends api_admin implements api_interface {
 		$ecjia = RC_Loader::load_app_class('api_admin', 'api');
 		$result = $ecjia->admin_priv('order_view');
 		if (is_ecjia_error($result)) {
-			EM_Api::outPut($result);
+			return $result;
 		}
 		$type		= $this->requestData('type', 'whole');
 		$keywords	= $this->requestData('keywords');
@@ -243,10 +243,7 @@ class list_module extends api_admin implements api_interface {
 				'more'	=> $page_row->total_pages <= $page ? 0 : 1,
 		);
 		
-		
-		
-		EM_Api::outPut($order_list, $pager);
-		
+		return array('data' => $order_list, 'pager' => $pager);
 
 	} 
 }

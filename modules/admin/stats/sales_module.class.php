@@ -12,7 +12,7 @@ class sales_module extends api_admin implements api_interface {
 		$ecjia = RC_Loader::load_app_class('api_admin', 'api');
 		$result = $ecjia->admin_priv('sale_order_stats');
 		if (is_ecjia_error($result)) {
-			EM_Api::outPut($result);
+			return $result;
 		}
 		//传入参数
 		$start_date = $this->requestData('start_date');

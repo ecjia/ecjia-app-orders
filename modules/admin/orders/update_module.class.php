@@ -41,7 +41,7 @@ class update_module extends api_admin implements api_interface {
 			$db_order = RC_Loader::load_app_model('order_info_model','orders');
 			$result = $db_order->where($where)->update($data);
 			if ($result) {
-				EM_Api::outPut(array());
+				return array();
 			} else {
 				EM_Api::outPut(8);
 			}

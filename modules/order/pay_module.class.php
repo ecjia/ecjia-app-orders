@@ -40,7 +40,7 @@ class pay_module extends api_front implements api_interface {
 		
 		$result = $handler->get_code(payment_abstract::PAYCODE_PARAM);
         if (is_ecjia_error($result)) {
-            EM_Api::outPut($result);
+            return $result;
         } else {
             $order['payment'] = $result;
         }

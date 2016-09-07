@@ -13,7 +13,7 @@ class cancel_module extends api_front implements api_interface {
 		$order_id = $this->requestdata('order_id', 0);
 		$result = cancel_order($order_id, $user_id);
 		if (!is_ecjia_error($result)) {
-			EM_Api::outPut(array());
+			return array();
 		} else {
 			EM_Api::outPut(8);
 		}

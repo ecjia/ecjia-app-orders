@@ -13,7 +13,7 @@ class salesdetails_module extends api_admin implements api_interface {
 		$ecjia = RC_Loader::load_app_class('api_admin', 'api');
 		$result = $ecjia->admin_priv('sale_order_stats');
 		if (is_ecjia_error($result)) {
-			EM_Api::outPut($result);
+			return $result;
 		}
 		//传入参数
 		$start_date = $this->requestData('start_date');
@@ -78,7 +78,7 @@ class salesdetails_module extends api_admin implements api_interface {
 					'count' => 0,
 					'more'	=> 0,
 			);
-			EM_Api::outPut(array(), $pager);
+			return array('data' => array(), 'pager' => $pager);
 		}
 		/* 获取数量 */
 		$pagination = $this->requestData('pagination');
@@ -87,7 +87,6 @@ class salesdetails_module extends api_admin implements api_interface {
 
 		//实例化分页
 		$page_row = new ecjia_page($count, $size, 6, '', $page);
-	
 		
 		$field = "oi.pay_time, oi.goods_amount - oi.discount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee AS total_fee";
 		
@@ -117,7 +116,7 @@ class salesdetails_module extends api_admin implements api_interface {
 				"more"	=> $page_row->total_pages <= $page ? 0 : 1,
 		);
 		
-		EM_Api::outPut($stats, $pager);
+		return array('data' => $stats, 'pager' => $pager);
 	}
 	
 }

@@ -8,7 +8,7 @@ defined('IN_ECJIA') or exit('No permission resources.');
 class orders_admin_menu_api extends Component_Event_Api {
 	
 	public function call(&$options) {	
-		$menus = ecjia_admin::make_admin_menu('04_order', RC_Lang::get('orders::order.order_manage'), '', 2);
+		$menus = ecjia_admin::make_admin_menu('04_order', RC_Lang::get('orders::order.order_manage'), '', 5);
 		$submenus = array(
 			ecjia_admin::make_admin_menu('02_order_list', RC_Lang::get('orders::order.order_list'), RC_Uri::url('orders/admin/init'), 1)->add_purview('order_view'),
 			ecjia_admin::make_admin_menu('03_order_query', RC_Lang::get('orders::order.order_query'), RC_Uri::url('orders/admin/order_query'), 2)->add_purview('order_view'),

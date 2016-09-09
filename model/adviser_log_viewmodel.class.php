@@ -15,24 +15,24 @@ class adviser_log_viewmodel extends Component_Model_View {
 		
 		$this->view = array(
 			'order_info' => array(
-					'type' => Component_Model_View::TYPE_LEFT_JOIN,
-					'alias'=> 'oi',
-					'on'   => 'oi.order_id = al.order_id'
+				'type' => Component_Model_View::TYPE_LEFT_JOIN,
+				'alias'=> 'oi',
+				'on'   => 'oi.order_id = al.order_id'
 			),
 			'order_goods' => array(
-					'type' => Component_Model_View::TYPE_LEFT_JOIN,
-					'alias'=> 'og',
-					'on'   => 'oi.order_id = og.order_id'
+				'type' => Component_Model_View::TYPE_LEFT_JOIN,
+				'alias'=> 'og',
+				'on'   => 'oi.order_id = og.order_id'
 			),
 			'goods' => array(
-					'type' => Component_Model_View::TYPE_LEFT_JOIN,
-					'alias'=> 'g',
-					'on'   => 'g.goods_id = og.goods_id'
+				'type' => Component_Model_View::TYPE_LEFT_JOIN,
+				'alias'=> 'g',
+				'on'   => 'g.goods_id = og.goods_id'
 			),
 			'adviser' => array(
-					'type' => Component_Model_View::TYPE_LEFT_JOIN,
-					'alias'=> 'ad',
-					'on'   => 'ad.id = al.adviser_id'
+				'type' => Component_Model_View::TYPE_LEFT_JOIN,
+				'alias'=> 'ad',
+				'on'   => 'ad.id = al.adviser_id'
 			),
 		);
 		parent::__construct();

@@ -15,18 +15,17 @@ class express_module extends api_front implements api_interface {
 		$order_id = $this->requestdata('order_id', 0);
 		
 		if (empty($order_id)) {
-			EM_Api::outPut(101);
+			return new ecjia_error(101, '参数错误');
 		}
 		
 		$order_info = order_info($order_id);
 		if (!$order_info || empty($order_info['shipping_name']) || empty($order_info['invoice_no'])) {
-			EM_Api::outPut(10009);
+			return new ecjia_error(10009, '订单无发货信息');
 		}
 		$typeCom = getComType($order_info['shipping_name']);//快递公司类型
 		
 		if (empty($typeCom)) {
-		  
-			EM_Api::outPut(10009);
+			return new ecjia_error(10009, '订单无发货信息');
 		}
 		$AppKey = '3b9fdc7e57c597ab';
 		$url = 'http://api.kuaidi100.com/api?id='.$AppKey.'&com='.$typeCom.'&nu='.$order_info['invoice_no'].'&valicode=[]&show=0&muti=1&order=asc';
@@ -35,7 +34,10 @@ class express_module extends api_front implements api_interface {
 		$data = json_decode($json, true);
 
 		if (empty($data)) {
-			EM_Api::outPut(array('content'=>array('context'=>'无物流记录', 'time'=>''), 'shipping_name'=>$order_info['shipping_name']));
+			return array(
+    			    'content' => array('context'=>'无物流记录', 'time'=>''),
+    			    'shipping_name' => $order_info['shipping_name']
+			     );
 		} else {
 			$data['data'] = array_reverse($data['data']);
 		}

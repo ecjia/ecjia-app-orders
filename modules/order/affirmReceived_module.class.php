@@ -15,7 +15,7 @@ class affirmReceived_module extends api_front implements api_interface {
 		if (!is_ecjia_error($result)) {
 		    return array();
 		} else {
-			EM_Api::outPut(8);
+			return new ecjia_error(8, 'fail');
 		}
 	}
 }

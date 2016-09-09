@@ -11,7 +11,7 @@ class list_module extends api_front implements api_interface {
 		
 		$type = $this->requestdata('type');
 		if (!empty($type) && !in_array($type, array('await_pay', 'await_ship', 'shipped', 'finished', 'unconfirmed'))) {
-			EM_Api::outPut(101);
+			return new ecjia_error(101, '参数错误');
 		}
 		$size = $this->requestData('pagination.count', 15);
 		$page = $this->requestData('pagination.page', 1);

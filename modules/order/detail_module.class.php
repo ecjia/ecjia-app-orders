@@ -12,7 +12,7 @@ class detail_module extends api_front implements api_interface {
 		RC_Loader::load_app_func('order', 'orders');
 		$order_id = $this->requestdata('order_id', 0);
 		if (!$order_id) {
-			EM_Api::outPut(101);
+			return new ecjia_error(101, '参数错误');
 		}
 		
 		$user_id = $_SESSION['user_id'];
@@ -36,7 +36,7 @@ class detail_module extends api_front implements api_interface {
 		$order['parent_id'] 		= intval($order['parent_id']);
 		
 		if ($order === false) {
-			EM_Api::outPut(8);
+			return new ecjia_error(8, 'fail');
 		}
 		//收货人地址
 		$db_region = RC_Loader::load_app_model('region_model', 'shipping');

@@ -19,7 +19,7 @@ class salesdetails_module extends api_admin implements api_interface {
 		$start_date = $this->requestData('start_date');
 		$end_date = $this->requestData('end_date');
 		if (empty($start_date) || empty($end_date)) {
-			EM_Api::outPut(101);
+			return new ecjia_error(101, '参数错误');
 		}
 		
 		$db_orderinfo_view = RC_Loader::load_app_model('order_info_viewmodel', 'orders');

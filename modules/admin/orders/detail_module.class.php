@@ -18,7 +18,7 @@ class detail_module extends api_admin implements api_interface {
 		$order_sn = $this->requestData('order_sn');
 
  		if (empty($order_id) && empty($order_sn)) {
- 			EM_Api::outPut(101);
+ 			return new ecjia_error(101, '参数错误');
 		}
 		RC_Loader::load_app_func('order', 'orders');
 		
@@ -27,7 +27,7 @@ class detail_module extends api_admin implements api_interface {
 		$order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => $order_sn));
 		
 		if ($order === false) {
-			EM_Api::outPut(8);
+			return new ecjia_error(8, 'fail');
 		}
 		$db_user = RC_Loader::load_app_model('users_model', 'user');
 		$user_name = $db_user->where(array('user_id' => $order['user_id']))->get_field('user_name');

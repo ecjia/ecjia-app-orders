@@ -17,7 +17,7 @@ class cancel_module extends api_admin implements api_interface {
 		$order_id = $this->requestData('id');
 		
 		if (empty($order_id)) {
-			EM_Api::outPut(101);
+			return new ecjia_error(101, '参数错误');
 		}
 		RC_Loader::load_app_func('order', 'orders');
 		RC_Loader::load_app_func('function', 'orders');

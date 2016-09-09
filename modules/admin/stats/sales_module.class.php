@@ -18,7 +18,7 @@ class sales_module extends api_admin implements api_interface {
 		$start_date = $this->requestData('start_date');
 		$end_date = $this->requestData('end_date');
 		if (empty($start_date) || empty($end_date)) {
-			EM_Api::outPut(101);
+			return new ecjia_error(101, '参数错误');
 		}
 		$cache_key = 'admin_stats_sales_'.md5($start_date.$end_date);
 		$data = RC_Cache::app_cache_get($cache_key, 'api');

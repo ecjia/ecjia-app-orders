@@ -13,13 +13,13 @@ class update_module extends api_front implements api_interface {
  		$order_id	= $this->requestdata('order_id', 0);
 		$pay_id		= $this->requestdata('pay_id',0);
 		if (!$order_id || !$pay_id) {
-			EM_Api::outPut(101);
+			return new ecjia_error(101, '参数错误');
 		}
 		$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
 		$payment_info = $payment_method->payment_info($pay_id);
 		
 		if (empty($payment_info) || $payment_info['is_online'] == 0) {
-			EM_Api::outPut(8);
+			return new ecjia_error(8, 'fail');
 		} else {
 			RC_Loader::load_app_func('order','orders');
 			$order_info = get_order_detail($order_id,$user_id);
@@ -43,7 +43,7 @@ class update_module extends api_front implements api_interface {
 			if ($result) {
 				return array();
 			} else {
-				EM_Api::outPut(8);
+				return new ecjia_error(8, 'fail');
 			}
 		}
 	}

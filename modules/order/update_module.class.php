@@ -38,7 +38,7 @@ class update_module extends api_front implements api_interface {
 				'pay_status'		=> 0,
 				'shipping_status'	=> 0,
 			);
-			$db_order = RC_Loader::load_app_model('order_info_model','orders');
+			$db_order = RC_Model::model('orders/order_info_model');
 			$result = $db_order->where($where)->update($data);
 			if ($result) {
 				return array();

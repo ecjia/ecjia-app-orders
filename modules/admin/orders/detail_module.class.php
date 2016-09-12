@@ -29,12 +29,12 @@ class detail_module extends api_admin implements api_interface {
 		if ($order === false) {
 			return new ecjia_error(8, 'fail');
 		}
-		$db_user = RC_Loader::load_app_model('users_model', 'user');
+		$db_user = RC_Model::model('user/users_model');
 		$user_name = $db_user->where(array('user_id' => $order['user_id']))->get_field('user_name');
 		
 		$order['user_name'] = empty($user_name) ? __('匿名用户') : $user_name;
 		//收货人地址
-		$db_region = RC_Loader::load_app_model('region_model', 'shipping');
+		$db_region = RC_Model::model('shipping/region_model');
 		$region_name = $db_region->where(array('region_id' => array('in'=>$order['country'], $order['province'], $order['city'], $order['district'])))->order('region_type')->select();
 		$order['country']	= $region_name[0]['region_name'];
 		$order['province']	= $region_name[1]['region_name'];
@@ -48,14 +48,14 @@ class detail_module extends api_admin implements api_interface {
 		
 		$order['status'] =strip_tags($order_status.','.RC_Lang::lang('ps/'.$order['pay_status']).','.RC_Lang::lang('ss/'.$order['shipping_status']));
 		$order['sub_orders'] = array();
-		$db_orderinfo_view = RC_Loader::load_app_model('order_info_viewmodel', 'orders');
+		$db_orderinfo_view = RC_Model::model('orders/order_info_viewmodel');
 		$total_fee = "(oi.goods_amount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) as total_fee";
 		$result = ecjia_app::validate_application('seller');
 		if (!is_ecjia_error($result)) {
 			$sub_orders_result = $db_orderinfo_view->join(null)->field(array('oi.*,'.$total_fee))->where(array('main_order_id' => $order['order_id']))->select();
 			if (!empty($sub_orders_result)) {
-				$goods_db = RC_Loader::load_app_model('goods_model', 'goods');
-				$db_order_goods = RC_Loader::load_app_model('order_goods_model', 'orders');
+				$goods_db = RC_Model::model('goods/goods_model');
+				$db_order_goods = RC_Model::model('orders/order_goods_model');
 				foreach ($sub_orders_result as $val) {
 					$seller_name = RC_Model::model('seller/seller_shopinfo_model')->where(array('id' => $val['seller_id']))->get_field('shop_name');
 					$order_goods = $db_order_goods->where(array('order_id' => $val['order_id']))->select();
@@ -111,7 +111,7 @@ class detail_module extends api_admin implements api_interface {
 				}
 			}
 		}
-		$ordergoods_viewdb = RC_Loader::load_app_model('order_goods_goods_viewmodel', 'orders');
+		$ordergoods_viewdb = RC_Model::model('orders/order_goods_goods_viewmodel');
 		$goods_list = $ordergoods_viewdb->where(array('order_id' => $order_id))->select();
 		if (!empty($goods_list)) {
 			RC_Loader::load_app_func('common', 'goods');
@@ -140,7 +140,7 @@ class detail_module extends api_admin implements api_interface {
 		
 		/* 取得订单操作记录 */
 		$act_list = array();
-		$db_order_action		= RC_Loader::load_app_model('order_action_model', 'orders');
+		$db_order_action = RC_Model::model('orders/order_action_model');
 		$data = $db_order_action->where(array('order_id' => $order['order_id']))->order(array('log_time' => 'asc' ,'action_id' => 'asc'))->select();
 		if(!empty($data)) {
 			foreach ($data as $key => $row) {

@@ -25,8 +25,8 @@ class list_module extends api_admin implements api_interface {
 		$device_client = isset($device['client']) ? $device['client'] : '';
 		
 		$order_query = RC_Loader::load_app_class('order_query', 'orders');
-		$db = RC_Loader::load_app_model('order_info_model', 'orders');
-		$db_view = RC_Loader::load_app_model('order_info_viewmodel', 'orders');
+		$db = RC_Model::model('orders/order_info_model');
+		$db_view = RC_Model::model('orders/order_info_viewmodel');
 		
 		$where = array();
 		if ( !empty($keywords)) {
@@ -64,7 +64,7 @@ class list_module extends api_admin implements api_interface {
 			$total_fee = "(oi.goods_amount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) as total_fee";
 			$field = 'oi.order_id, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time, og.goods_number, og.goods_id, og.goods_name, g.goods_thumb, g.goods_img, g.original_img';
 			
-			$db_orderinfo_view = RC_Loader::load_app_model('order_info_viewmodel', 'orders');
+			$db_orderinfo_view = RC_Model::model('orders/order_info_viewmodel');
 			$result = ecjia_app::validate_application('seller');
 			if (!is_ecjia_error($result)) {
 				$db_orderinfo_view->view = array(
@@ -140,7 +140,7 @@ class list_module extends api_admin implements api_interface {
 				}
 			}
 		} else {
-			$db_adviser_log_view = RC_Loader::load_app_model('adviser_log_viewmodel', 'orders');
+			$db_adviser_log_view = RC_Model::model('orders/adviser_log_viewmodel');
 			$where['al.device_id'] = $_SESSION['device_id'];
 			
 			/*获取记录条数 */

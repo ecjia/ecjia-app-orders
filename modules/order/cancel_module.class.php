@@ -32,7 +32,7 @@ class cancel_module extends api_front implements api_interface {
  * @return void
  */
 function cancel_order ($order_id, $user_id = 0) {
-    $db = RC_Loader::load_app_model('order_info_model', 'orders');
+    $db = RC_Model::model('orders/order_info_model');
     /* 查询订单信息，检查状态 */
     $order = $db->field('user_id, order_id, order_sn , surplus , integral , bonus_id, order_status, shipping_status, pay_status')->find(array('order_id' => $order_id));
 

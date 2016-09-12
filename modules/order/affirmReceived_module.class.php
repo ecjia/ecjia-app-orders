@@ -33,7 +33,7 @@ class affirmReceived_module extends api_front implements api_interface {
  * @return bool $bool
  */
 function affirm_received($order_id, $user_id = 0) {
-    $db = RC_Loader::load_app_model('order_info_model', 'orders');
+    $db = RC_Model::model('orders/order_info_model');
     /* 查询订单信息，检查状态 */
     $order = $db->field('user_id, order_sn , order_status, shipping_status, pay_status')->find(array('order_id' => $order_id));
 
@@ -52,7 +52,7 @@ function affirm_received($order_id, $user_id = 0) {
         );
         $query = $db->where(array('order_id' => $order_id))->update($data);
         if ($query) {
-        	$db_order_status_log = RC_Loader::load_app_model('order_status_log_model', 'orders');
+        	$db_order_status_log = RC_Model::model('orders/order_status_log_model');
         	$order_status_data = array(
             		'order_status' => '确认收货',
             		'order_id' 	   => $order_id,

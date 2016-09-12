@@ -22,7 +22,7 @@ class salesdetails_module extends api_admin implements api_interface {
 			return new ecjia_error(101, '参数错误');
 		}
 		
-		$db_orderinfo_view = RC_Loader::load_app_model('order_info_viewmodel', 'orders');
+		$db_orderinfo_view = RC_Model::model('orders/order_info_viewmodel');
 		$result = ecjia_app::validate_application('seller');
 		if (!is_ecjia_error($result)) {
 			$db_orderinfo_view->view = array(

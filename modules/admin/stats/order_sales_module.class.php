@@ -35,7 +35,7 @@ class order_sales_module extends api_admin implements api_interface {
 }
 function orders_module($start_date, $end_date)
 {
-	$db_orderinfo_view = RC_Loader::load_app_model('order_info_viewmodel', 'orders');
+	$db_orderinfo_view = RC_Model::model('orders/order_info_viewmodel');
 	$result = ecjia_app::validate_application('seller');
 	if (!is_ecjia_error($result)) {
 		$db_orderinfo_view->view = array(

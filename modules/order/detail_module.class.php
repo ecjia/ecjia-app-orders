@@ -39,7 +39,7 @@ class detail_module extends api_front implements api_interface {
 			return new ecjia_error(8, 'fail');
 		}
 		//收货人地址
-		$db_region = RC_Loader::load_app_model('region_model', 'shipping');
+		$db_region = RC_Model::model('shipping/region_model');
 		$region_name = $db_region->where(array('region_id' => array('in'=>$order['country'],$order['province'],$order['city'],$order['district'])))->order('region_type')->select();
 		$order['country']	= $region_name[0]['region_name'];
 		$order['province']	= $region_name[1]['region_name'];

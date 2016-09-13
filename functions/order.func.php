@@ -108,17 +108,23 @@ function pay_fee($payment_id, $order_amount, $cod_fee=null) {
 * @return  array   订单信息（金额都有相应格式化的字段，前缀是formated_）
 */
 function order_info($order_id, $order_sn = '') {
-	RC_Loader::load_app_func('common','goods');
-	$db = RC_Loader::load_app_model('order_info_model','orders');
+// 	RC_Loader::load_app_func('common', 'goods');
+// 	$db = RC_Loader::load_app_model('order_info_model', 'orders');
+	
+	$db_order_info = RC_DB::table('order_info');
 	/* 计算订单各种费用之和的语句 */
 	$total_fee = " (goods_amount - discount + tax + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee) AS total_fee ";
+	
 	$order_id = intval($order_id);
 	if ($order_id > 0) {
-		$order = $db->field('*,'.$total_fee)->find(array('order_id' => $order_id));
+// 		$order = $db->field('*,'.$total_fee)->find(array('order_id' => $order_id));
+		$db_order_info->where('order_id', $order_id);
 	} else {
-		$order = $db->field('*,'.$total_fee)->find(array('order_sn' => $order_sn));
+// 		$order = $db->field('*,'.$total_fee)->find(array('order_sn' => $order_sn));
+		$db_order_info->where('order_sn', $order_sn);
 	}
-
+	$order = $db_order_info->select('*', RC_DB::raw($total_fee))->first();
+	
 	/* 格式化金额字段 */
 	if ($order) {
 		$order['formated_goods_amount']		= price_format($order['goods_amount'], false);
@@ -178,11 +184,16 @@ function order_goods($order_id) {
 * @return  float   订单总金额
 */
 function order_amount($order_id, $include_gift = true) {
-	$db = RC_Loader::load_app_model('order_goods_model','orders');
+// 	$db = RC_Loader::load_app_model('order_goods_model', 'orders');
+	$db_order_goods = RC_DB::table('order_goods')->where('order_id', $order_id);
+	
 	if (!$include_gift) {
-		$data = $db->where(array('order_id' => $order_id , 'is_gift' => 0))->sum('goods_price * goods_number');
+// 		$data = $db->where(array('order_id' => $order_id , 'is_gift' => 0))->sum('goods_price * goods_number');
+		$db_order_goods->where('is_gift', 0);
 	}
-	$data = $db->where(array('order_id' => $order_id))->sum('goods_price * goods_number');
+// 	$data = $db->where(array('order_id' => $order_id))->sum('goods_price * goods_number');
+	$data = $db_order_goods->sum(RC_DB::raw('goods_price * goods_number'));
+	
 	return floatval($data);
 }
 
@@ -513,8 +524,10 @@ function order_fee($order, $goods, $consignee, $cart_id = array()) {
 * @return  bool
 */
 function update_order($order_id, $order) {
-	$db = RC_Loader::load_app_model('order_info_model', 'orders');
-	return $db->where('order_id = '.$order_id.'')->update($order);
+// 	$db = RC_Loader::load_app_model('order_info_model', 'orders');
+// 	return $db->where('order_id = '.$order_id.'')->update($order);
+	
+	return RC_DB::table('order_info')->where('order_id', $order_id)->update($order);
 }
 
 /**
@@ -533,15 +546,7 @@ function get_order_sn() {
 * @return  array   用户信息
 */
 function user_info($user_id) {	
-//	$sql = "SELECT * FROM " . $GLOBALS['ecs']->table('') .
-//	" WHERE user_id = '$user_id'";
-//	$user = $GLOBALS['db']->getRow($sql);
-//	$user = $db_users->get_one("user_id = ".$user_id);
-//	if ($user['user_money'] < 0){
-//		$user['user_money'] = 0;
-//	}
-	$db_users = RC_Loader::load_app_model("users_model","user");
-	$user = $db_users->find(array('user_id' => $user_id));
+	$user = RC_DB::table('users')->where('user_id', $user_id)->first();
 
 	unset($user['question']);
 	unset($user['answer']);
@@ -924,24 +929,34 @@ function order_due_field($alias = '') {
 * @return  int	 积分数
 */
 function integral_to_give($order) {
-	$dbview = RC_Loader::load_app_model('order_order_goods_viewmodel','orders');
+// 	$dbview = RC_Loader::load_app_model('order_order_goods_viewmodel', 'orders');
     /* 判断是否团购 */
 // 	TODO:团购暂时注释给的固定参数
 	$order['extension_code'] = '';
     if ($order['extension_code'] == 'group_buy') {
-		RC_Loader::load_app_func('goods','goods');
+		RC_Loader::load_app_func('goods', 'goods');
+		//TODO
         $group_buy = group_buy_info(intval($order['extension_id']));
         return array('custom_points' => $group_buy['gift_integral'], 'rank_points' => $order['goods_amount']);
     } else {
-    	$dbview->view = array(
-    		'goods' => array(
-    			'type'  => Component_Model_View::TYPE_LEFT_JOIN,
-    			'alias' => 'g',
-    			'field' => 'SUM(o.goods_number * IF(g.give_integral > -1, g.give_integral, o.goods_price)) AS custom_points, SUM(o.goods_number * IF(g.rank_integral > -1, g.rank_integral, o.goods_price)) AS rank_points',
-    			'on'    => 'o.goods_id = g.goods_id ',
-    		)
-    	);
-    	return $dbview->find(array('o.order_id' => $order['order_id'] , 'o.goods_id' => array('gt' => 0 ) , 'o.parent_id' => 0 , 'o.is_gift' => 0 , 'o.extension_code' => array('neq' => 'package_buy')));
+//     	$dbview->view = array(
+//     		'goods' => array(
+//     			'type'  => Component_Model_View::TYPE_LEFT_JOIN,
+//     			'alias' => 'g',
+//     			'field' => 'SUM(o.goods_number * IF(g.give_integral > -1, g.give_integral, o.goods_price)) AS custom_points, SUM(o.goods_number * IF(g.rank_integral > -1, g.rank_integral, o.goods_price)) AS rank_points',
+//     			'on'    => 'o.goods_id = g.goods_id ',
+//     		)
+//     	);
+//     	return $dbview->find(array('o.order_id' => $order['order_id'] , 'o.goods_id' => array('gt' => 0 ) , 'o.parent_id' => 0 , 'o.is_gift' => 0 , 'o.extension_code' => array('neq' => 'package_buy')));
+    	
+    	return RC_DB::table('order_goods as o')->leftJoin('goods as g', RC_DB::raw('o.goods_id'), '=', RC_DB::raw('g.goods_id'))
+    		->select(RC_DB::raw('SUM(o.goods_number * IF(g.give_integral > -1, g.give_integral, o.goods_price)) AS custom_points, SUM(o.goods_number * IF(g.rank_integral > -1, g.rank_integral, o.goods_price)) AS rank_points'))
+    		->where(RC_DB::raw('o.order_id'), $order['order_id'])
+    		->where(RC_DB::raw('o.goods_id'), '>', 0)
+    		->where(RC_DB::raw('o.parent_id'), '=', 0)
+    		->where(RC_DB::raw('o.is_gift'), '=', 0)
+    		->where(RC_DB::raw('o.extension_code'), '!=', 'package_buy')
+    		->first();
     }
     //         include_once(ROOT_PATH . 'includes/lib_goods.php');    
     // 	$sql = "SELECT SUM(o.goods_number * IF(g.give_integral > -1, g.give_integral, o.goods_price)) AS custom_points, SUM(o.goods_number * IF(g.rank_integral > -1, g.rank_integral, o.goods_price)) AS rank_points " .
@@ -961,25 +976,31 @@ function integral_to_give($order) {
 * @return  bool
 */
 function send_order_bonus($order_id) {
-	RC_Loader::load_app_func('common','goods');
-	$db		=  RC_Loader::load_app_model('user_bonus_model','bonus');
-	$dbview	=  RC_Loader::load_app_model('order_info_viewmodel','orders');
+// 	RC_Loader::load_app_func('common', 'goods');
+// 	$db		=  RC_Loader::load_app_model('user_bonus_model', 'bonus');
+// 	$dbview	=  RC_Loader::load_app_model('order_info_viewmodel', 'orders');
 	/* 取得订单应该发放的红包 */
 	$bonus_list = order_bonus($order_id);
-
+	
 	/* 如果有红包，统计并发送 */
 	if ($bonus_list) {
 		/* 用户信息 */
-		$dbview->view = array(
-			'users' => array(
-				'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-				'alias'	=> 'u',
-				'field'	=> 'u.user_id, u.user_name, u.email',
-				'on'	=> 'oi.user_id = u.user_id ',
-			)
-		);
-		$user = $dbview->find(array('oi.order_id' => $order_id));
+// 		$dbview->view = array(
+// 			'users' => array(
+// 				'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+// 				'alias'	=> 'u',
+// 				'field'	=> 'u.user_id, u.user_name, u.email',
+// 				'on'	=> 'oi.user_id = u.user_id ',
+// 			)
+// 		);
+// 		$user = $dbview->find(array('oi.order_id' => $order_id));
 
+		$user = RC_DB::table('order_info as oi')
+			->leftJoin('users as u', RC_DB::raw('oi.user_id'), '=', RC_DB::raw('u.user_id'))
+			->select(RC_DB::raw('u.user_id, u.user_name, u.email'))
+			->where(RC_DB::raw('oi.order_id'), $order_id)
+			->first();
+		
 		/* 统计 */
 		$count = 0;
 		$money = '';
@@ -990,25 +1011,27 @@ function send_order_bonus($order_id) {
 			/* 修改用户红包 */
 			$data = array(
 				'bonus_type_id' => $bonus['type_id'],
-				'user_id'	   => $user['user_id']
-				);
+				'user_id'	   	=> $user['user_id']
+			);
 
 			for ($i = 0; $i < $bonus['number']; $i++) {
-				if(!$db->insert($data)) {
-					return $db->errorMsg();
-				}
+// 				if (!$db->insert($data)) {
+// 					return $db->errorMsg();
+// 				}
+				$id = RC_DB::table('user_bonus')->insertGetId($data);
 			}
 		}
 
 		/* 如果有红包，发送邮件 */
 		if ($count > 0) {
 			$tpl_name = 'send_bonus';
-			$tpl   = RC_Api::api('mail', 'mail_template', $tpl_name);
-			ecjia::$view_object->assign('user_name'	, $user['user_name']);
-			ecjia::$view_object->assign('count'		, $count);
-			ecjia::$view_object->assign('money'		, $money);
-			ecjia::$view_object->assign('shop_name'	, ecjia::config('shop_name'));
-			ecjia::$view_object->assign('send_date'	, RC_Time::local_date(ecjia::config('date_format')));
+			$tpl = RC_Api::api('mail', 'mail_template', $tpl_name);
+			
+			ecjia::$view_object->assign('user_name', $user['user_name']);
+			ecjia::$view_object->assign('count', $count);
+			ecjia::$view_object->assign('money', $money);
+			ecjia::$view_object->assign('shop_name', ecjia::config('shop_name'));
+			ecjia::$view_object->assign('send_date', RC_Time::local_date(ecjia::config('date_format')));
 
 			$content = ecjia::$controller->fetch_string($tpl['template_content']);
 			RC_Mail::send_mail($user['user_name'], $user['email'] , $tpl['template_subject'], $content, $tpl['is_html']);
@@ -1033,7 +1056,7 @@ function send_order_bonus($order_id) {
 * @param   int	 $order_id   订单id
 */
 function return_order_bonus($order_id) {
-	$db	=  RC_Loader::load_app_model('user_bonus_model','bonus');
+// 	$db	= RC_Loader::load_app_model('user_bonus_model', 'bonus');
 	/* 取得订单应该发放的红包 */
 	$bonus_list = order_bonus($order_id);
 
@@ -1043,7 +1066,13 @@ function return_order_bonus($order_id) {
 		$order = order_info($order_id);
 		$user_id = $order['user_id'];
 		foreach ($bonus_list AS $bonus) {
-			$db->where(array('bonus_type_id' => $bonus[type_id] , 'user_id' => $user_id , 'order_id' => 0))->limit($bonus['number'])->delete();
+// 			$db->where(array('bonus_type_id' => $bonus[type_id] , 'user_id' => $user_id , 'order_id' => 0))->limit($bonus['number'])->delete();
+			RC_DB::table('user_bonus')
+				->where('bonus_type_id', $bonus['type_id'])
+				->where('user_id', $user_id)
+				->where('order_id', 0)
+				->limit($bonus['limit'])
+				->delete();
 		}
 	}
 	
@@ -1060,38 +1089,51 @@ function return_order_bonus($order_id) {
 * @return  array
 */
 function order_bonus($order_id) {
-	$db_bonus_type	= RC_Loader::load_app_model('bonus_type_model','bonus');
-	$db_order_info	= RC_Loader::load_app_model('order_info_model','orders');
-	$dbview			= RC_Loader::load_app_model('order_order_goods_viewmodel','orders');
+// 	$db_bonus_type	= RC_Loader::load_app_model('bonus_type_model', 'bonus');
+// 	$db_order_info	= RC_Loader::load_app_model('order_info_model', 'orders');
+// 	$dbview			= RC_Loader::load_app_model('order_order_goods_viewmodel', 'orders');
 
 	/* 查询按商品发的红包 */
 // 	$day	= getdate();
 // 	$today	= RC_Time::local_mktime(23, 59, 59, $day['mon'], $day['mday'], $day['year']);
 
 	$today = RC_Time::gmtime();
-	
-	$dbview->view = array(
-		'goods' => array(
-			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-			'alias'	=> 'g',
-			'field'	=> 'b.type_id, b.type_money, SUM(o.goods_number) AS number',
-			'on'	=> 'o.goods_id = g.goods_id',
-		),
-		'bonus_type' => array(
-			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-			'alias'	=> 'b',
-			'on'	=> 'g.bonus_type_id = b.type_id ',
-		)
-	);
 
-	$list = $dbview->where(array('o.order_id' => $order_id , 'o.is_gift' => 0 , 'b.send_type' => SEND_BY_GOODS , 'b.send_start_date' => array('elt' => $today) , 'b.send_end_date' => array('egt' => $today)))->group('b.type_id')->select();
+// 	$dbview->view = array(
+// 		'goods' => array(
+// 			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+// 			'alias'	=> 'g',
+// 			'field'	=> 'b.type_id, b.type_money, SUM(o.goods_number) AS number',
+// 			'on'	=> 'o.goods_id = g.goods_id',
+// 		),
+// 		'bonus_type' => array(
+// 			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+// 			'alias'	=> 'b',
+// 			'on'	=> 'g.bonus_type_id = b.type_id',
+// 		)
+// 	);
+// 	$list = $dbview->where(array('o.order_id' => $order_id , 'o.is_gift' => 0 , 'b.send_type' => SEND_BY_GOODS , 'b.send_start_date' => array('elt' => $today) , 'b.send_end_date' => array('egt' => $today)))->group('b.type_id')->select();
+		
+	$list = RC_DB::table('order_goods as o')
+		->leftJoin('goods as g', RC_DB::raw('o.goods_id'), '=', RC_DB::raw('g.goods_id'))
+		->leftJoin('bonus_type as b', RC_DB::raw('g.bonus_type_id'), '=', RC_DB::raw('b.type_id'))
+		->whereRaw('o.order_id = ' . $order_id . ' and o.is_gift = 0 and b.send_type = ' . SEND_BY_GOODS . ' and b.send_start_date <= ' . $today . ' and b.send_end_date >= ' . $today)
+		->groupby(RC_DB::raw('b.type_id'))
+		->get();
+	
 	/* 查询定单中非赠品总金额 */
 	$amount = order_amount($order_id, false);
 
 	/* 查询订单日期 */
-	$order_time = $db_order_info->where(array('order_id' => $order_id))->get_field('add_time');
+// 	$order_time = $db_order_info->where(array('order_id' => $order_id))->get_field('add_time');
+	$order_time = RC_DB::table('order_info')->where('order_id', $order_id)->pluck('add_time');
+	
 	/* 查询按订单发的红包 */
-	$data = $db_bonus_type->field('type_id, type_money, IFNULL(FLOOR('.$amount.' / min_amount), 1)|number')->where(array('send_type' => SEND_BY_ORDER , 'send_start_date' => array('elt' => $order_time) ,  'send_end_date' => array('egt' => $order_time)))->select();
+// 	$data = $db_bonus_type->field('type_id, type_money, IFNULL(FLOOR('.$amount.' / min_amount), 1)|number')->where(array('send_type' => SEND_BY_ORDER , 'send_start_date' => array('elt' => $order_time) ,  'send_end_date' => array('egt' => $order_time)))->select();
+	$data = RC_DB::table('bonus_type')->select('type_id', 'type_money', RC_DB::raw('IFNULL(FLOOR('.$amount.' / min_amount), 1) as number'))
+		->where('send_type', SEND_BY_ORDER)->where('send_start_date', '<=', $order_time)->where('send_end_date', '>=', $order_time)
+		->get();
+	
 	if (!empty($data)) {
 		$list = array_merge($list, $data);
 	}
@@ -1156,13 +1198,15 @@ function order_action($order_sn, $order_status, $shipping_status, $pay_status, $
 	// 	'FROM ' . $GLOBALS['ecs']->table('order_info') . " WHERE order_sn = '$order_sn'";
 	// 	$GLOBALS['db']->query($sql);
 
-	$db_action = RC_Loader::load_app_model ( 'order_action_model', 'orders' );
-	$db_info = RC_Loader::load_app_model ( 'order_info_model', 'orders' );
+// 	$db_action = RC_Loader::load_app_model ( 'order_action_model', 'orders' );
+// 	$db_info = RC_Loader::load_app_model ( 'order_info_model', 'orders' );
 	if (is_null ( $username )) {
 		$username = $_SESSION ['admin_name'];
 	}
 
-	$row = $db_info->field('order_id')->find(array('order_sn' => $order_sn));
+// 	$row = $db_info->field('order_id')->find(array('order_sn' => $order_sn));
+	$row = RC_DB::table('order_info')->where('order_sn', $order_sn)->first();
+
 	$data = array (
 		'order_id'           => $row ['order_id'],
 		'action_user'        => $username,
@@ -1173,7 +1217,8 @@ function order_action($order_sn, $order_status, $shipping_status, $pay_status, $
 		'action_note'        => $note,
 		'log_time'           => RC_Time::gmtime()
 	);
-	$db_action->insert($data);
+// 	$db_action->insert($data);
+	RC_DB::table('order_action')->insert($data);
 }
 
 

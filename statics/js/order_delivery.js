@@ -58,13 +58,7 @@
 				$(this).ajaxSubmit({
 					dataType:"json",
 					success:function(data){
-						if (data.state == "success") {
-							ecjia.pjax(data.url , function(){
-								ecjia.admin.showmessage(data);
-							});
-						} else {
-							ecjia.admin.showmessage(data);
-						}	
+						ecjia.admin.showmessage(data);
 					}
 				});
 			});

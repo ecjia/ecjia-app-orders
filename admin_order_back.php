@@ -6,11 +6,6 @@
 defined('IN_ECJIA') or exit('No permission resources.');
 
 class admin_order_back extends ecjia_admin {
-	private $db_back_order;
-	private $db_back_goods;
-	private $db_order_region;
-// 	private $db_admin_user;
-	
 	public function __construct() {
 		parent::__construct();
 
@@ -18,11 +13,6 @@ class admin_order_back extends ecjia_admin {
 		RC_Loader::load_app_func('order', 'orders');
 		RC_Loader::load_app_func('common', 'goods');
 		assign_adminlog_content();
-		
-		$this->db_back_order		= RC_Loader::load_app_model('back_order_model');
-		$this->db_back_goods		= RC_Loader::load_app_model('back_goods_model');
-		$this->db_order_region		= RC_Loader::load_app_model('order_region_viewmodel');
-// 		$this->db_admin_user		= RC_Loader::load_model('admin_user_model');
 		
 		/* 加载所有全局 js/css */
 		RC_Script::enqueue_script('jquery-form');
@@ -81,7 +71,6 @@ class admin_order_back extends ecjia_admin {
 	public function back_info() {
 		/* 检查权限 */
 		$this->admin_priv('back_view');
-
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.return_look')));
 
 		$back_id = intval(trim($_GET['back_id']));
@@ -118,15 +107,22 @@ class admin_order_back extends ecjia_admin {
 		}
 	
 		/* 取得区域名 */
-		$field = array("concat(IFNULL(c.region_name, ''), '  ', IFNULL(p.region_name, ''),'  ', IFNULL(t.region_name, ''), '  ', IFNULL(d.region_name, '')) AS region");
-		$region = $this->db_order_region->field($field)->find('o.order_id = "'.$back_order['order_id'].'"');
+		$region = RC_DB::table('order_info as o')
+			->leftJoin('region as c', RC_DB::raw('o.country'), '=', RC_DB::raw('c.region_id'))
+			->leftJoin('region as p', RC_DB::raw('o.province'), '=', RC_DB::raw('p.region_id'))
+			->leftJoin('region as t', RC_DB::raw('o.city'), '=', RC_DB::raw('t.region_id'))
+			->leftJoin('region as d', RC_DB::raw('o.district'), '=', RC_DB::raw('d.region_id'))
+			->select(RC_DB::raw("concat(IFNULL(c.region_name, ''), '  ', IFNULL(p.region_name, ''),'  ', IFNULL(t.region_name, ''), '  ', IFNULL(d.region_name, '')) AS region"))
+			->where(RC_DB::raw('o.order_id'), $back_order['order_id'])
+			->first();
+		
 		$back_order['region'] = $region['region'] ;
 	
 		/* 是否保价 */
 		$order['insure_yn'] = empty($order['insure_fee']) ? 0 : 1;
 	
 		/* 取得发货单商品 */
-		$goods_list = $this->db_back_goods->where(array('back_id' => $back_order['back_id']))->select();
+		$goods_list = RC_DB::table('back_goods')->where('back_id', $back_order['back_id'])->get();
 	
 		/* 是否存在实体商品 */
 		$exist_real_goods = 0;
@@ -151,15 +147,16 @@ class admin_order_back extends ecjia_admin {
 		$this->display('back_info.dwt');
 	}
 	
-	
 	/* 退货单删除 */
 	public function remove() {
 		/* 检查权限 */
 		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
-		if(empty($_SESSION['ru_id'])) {
-			$back_id = $_REQUEST['back_id'];
+		
+		if (empty($_SESSION['ru_id'])) {
+			$back_id = !empty($_GET['back_id']) ? intval($_GET['back_id']) : 0;
+			
 			/* 删除退货单 */
-			$this->db_back_order->in($back_id)->delete();
+			RC_DB::table('back_order')->where('back_id', $back_id)->delete();
 		}
 
 		/* 记录日志 */
@@ -170,15 +167,21 @@ class admin_order_back extends ecjia_admin {
 	
 	/*收货人信息*/
 	public function consignee_info(){
-		$this->admin_priv('back_view' , ecjia::MSGTYPE_JSON);
+		$this->admin_priv('back_view', ecjia::MSGTYPE_JSON);
 		$id = $_GET['back_id'];
 		if (!empty($id)) {
-			$field = "order_id, consignee, address, country, province, city, district, sign_building, email, zipcode, tel, mobile, best_time";
-			$row = $this->db_back_order->field($field)->where(array('back_id'=>$id))->find();
+			$field = array('order_id', 'consignee', 'address', 'country', 'province', 'city', 'district', 'sign_building', 'email', 'zipcode', 'tel', 'mobile', 'best_time');
+			$row = RC_DB::table('back_order')->select($field)->where('back_id', $id)->first();
+			
 			if (!empty($row)) {
-				$field = array("concat(IFNULL(c.region_name, ''), '  ', IFNULL(p.region_name, ''),'  ', IFNULL(t.region_name, ''), '  ', IFNULL(d.region_name, '')) AS region");
-				$region = $this->db_order_region->field($field)->find('o.order_id = "'.$row['order_id'].'"');
-	
+				$region = RC_DB::table('order_info as o')
+					->leftJoin('region as c', RC_DB::raw('o.country'), '=', RC_DB::raw('c.region_id'))
+					->leftJoin('region as p', RC_DB::raw('o.province'), '=', RC_DB::raw('p.region_id'))
+					->leftJoin('region as t', RC_DB::raw('o.city'), '=', RC_DB::raw('t.region_id'))
+					->leftJoin('region as d', RC_DB::raw('o.district'), '=', RC_DB::raw('d.region_id'))
+					->select(RC_DB::raw("concat(IFNULL(c.region_name, ''), '  ', IFNULL(p.region_name, ''),'  ', IFNULL(t.region_name, ''), '  ', IFNULL(d.region_name, '')) AS region"))
+					->where(RC_DB::raw('o.order_id'), $row['order_id'])
+					->first();
 				$row['region'] = $region['region'];
 			} else {
 				$this->showmessage(RC_Lang::get('orders::order.no_invoice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
@@ -188,7 +191,6 @@ class admin_order_back extends ecjia_admin {
 		}
 		die(json_encode($row));
 	}
-
 }
 
 // end

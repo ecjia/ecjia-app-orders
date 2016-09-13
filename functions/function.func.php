@@ -662,26 +662,26 @@ function update_order_virtual_goods($order_id, $_sended, $virtual_goods) {
  * @return  int     1，全部发货；0，未全部发货
  */
 function get_order_finish($order_id) {
-	$db = RC_Loader::load_app_model('order_goods_model', 'orders');
-
+// 	$db = RC_Loader::load_app_model('order_goods_model', 'orders');
+	$db_order_goods = RC_DB::table('order_goods');
+	
 	$return_res = 0;
 
 	if (empty($order_id)) {
 		return $return_res;
 	}
-	$where = array();
-	$where['order_id'] = $order_id;
-	$where[] = "goods_number > send_number";
-
-	$sum = $db->where($where)->count('rec_id');
+// 	$where = array();
+// 	$where['order_id'] = $order_id;
+// 	$where[] = "goods_number > send_number";
+// 	$sum = $db->where($where)->count('rec_id');
+	
+	$sum = $db_order_goods->where('order_id', $order_id)->where('goods_number', '>', 'send_number')->count('rec_id');
 
 	if (empty($sum)) {
 		$return_res = 1;
 	}
 	return $return_res;
 }
-
-
 
 function trim_array_walk(&$array_value) {
 	if (is_array($array_value)) {
@@ -1081,9 +1081,9 @@ function get_regions($order_id) {
  * @param
  * @return void
  */
-function get_back_list()
-{	
-
+function get_back_list() {	
+	$db_back_order = RC_DB::table('back_order');
+	
 	$args = $_GET;
 	/* 过滤信息 */
 	$filter['delivery_sn']	= empty($args['delivery_sn'])	? '' : trim($args['delivery_sn']);
@@ -1094,34 +1094,36 @@ function get_back_list()
 	$filter['sort_order']	= empty($args['sort_order'])	? 'DESC' : trim($args['sort_order']);
 	$filter['keywords']		= empty($args['keywords'])		? '' : trim($args['keywords']);
 	
-	$where = array();
 	if ($filter['order_sn']) {
-		$where['order_sn'] = array('like' => '%'.mysql_like_quote($filter['order_sn']).'%');
+		$db_back_order->where('order_sn', 'like', '%'.mysql_like_quote($filter['order_sn']).'%');
 	}
 	if ($filter['consignee']) {
-		$where['consignee'] = array('like' => '%'.mysql_like_quote($filter['consignee']).'%');
+		$db_back_order->where('consignee', 'like', '%'.mysql_like_quote($filter['consignee']).'%');
 	}
 	if ($filter['delivery_sn']) {
-		$where['delivery_sn'] = array('like' => '%'.mysql_like_quote($filter['delivery_sn']).'%');
+		$db_back_order->where('delivery_sn', 'like', '%'.mysql_like_quote($filter['delivery_sn']).'%');
 	}
 	if ($filter['keywords']) {
-		$where[] = "(order_sn like '%".mysql_like_quote($filter['keywords'])."%' or consignee like '%".mysql_like_quote($filter['keywords'])."%')";
+		$db_back_order->where('order_sn', 'like', '%'.mysql_like_quote($filter['keywords']).'%')->orWhere('consignee', 'like', '%'.mysql_like_quote($filter['keywords']).'%');
 	}
-	
 	
 // 	/* 获取管理员信息 */
 // 	$where = array_merge($where, get_order_bac_where());
 
 	/* 记录总数 */
-	$db_back_order = RC_Loader::load_app_model('back_order_model', 'orders');
-	$count = $db_back_order->where($where)->count();
-	$filter['record_count']		= $count;
+	
+	$count = $db_back_order->count();
+	$filter['record_count'] = $count;
 
 	//实例化分页
 	$page = new ecjia_page($count, 15, 6);
 	
 	/* 查询 */
-	$row = $db_back_order->field('back_id, order_id, delivery_sn, order_sn, order_id, add_time, action_user, consignee, country,province, city, district, tel, status, update_time, email, return_time')->where($where)->order(array($filter['sort_by'] => $filter['sort_order']))->limit($page->limit())->select();
+	$row = $db_back_order
+		->select('back_id', 'order_id', 'delivery_sn', 'order_sn', 'order_id', 'add_time', 'action_user', 'consignee', 'country', 'province', 'city', 'district', 'tel', 'status', 'update_time', 'email', 'return_time')
+		->orderby($filter['sort_by'], $filter['sort_order'])
+		->take(15)->skip($page->start_id-1)->get();
+	
 	if (!empty($row) && is_array($row)) {
 		/* 格式化数据 */
 		foreach ($row AS $key => $value) {
@@ -1144,20 +1146,18 @@ function get_back_list()
  * @param   int     $back_id   退货单 id（如果 back_id > 0 就按 id 查，否则按 sn 查）
  * @return  array   退货单信息（金额都有相应格式化的字段，前缀是 formated_ ）
  */
-function back_order_info($back_id)
-{
+function back_order_info($back_id) {
 	$return_order = array();
 	if (empty($back_id) || !is_numeric($back_id)) {
 		return $return_order;
 	}
 
-	$where = array();
-	$where['back_id'] = $back_id ;
+	$db_back_order = RC_DB::table('back_order')->where('back_id', $back_id);
 	
 // 	/* 获取管理员信息 */
 // 	$where = array_merge($where, get_order_bac_where());
-	$db_back_order = RC_Loader::load_app_model('back_order_model', 'orders');
-	$back = $db_back_order->find($where);
+
+	$back = $db_back_order->first();
 	if ($back) {
 		/* 格式化金额字段 */
 		$back['formated_insure_fee']		= price_format($back['insure_fee'], false);
@@ -1211,34 +1211,44 @@ function back_order_info($back_id)
  *
  * @return void
  */
-function get_delivery_list() 
-{
+function get_delivery_list() {
 	$args = $_GET;
 	/* 过滤信息 */
-	$filter['delivery_sn']	= empty($args['delivery_sn'])	? '' : trim($args['delivery_sn']);
-	$filter['order_sn']		= empty($args['order_sn'])		? '' : trim($args['order_sn']);
-	$filter['order_id']		= empty($args['order_id'])		? 0 : intval($args['order_id']);
-	$filter['consignee']	= empty($args['consignee'])		? '' : trim($args['consignee']);
-	$filter['status']		= isset($args['status'])		? $args['status'] : -1;
-	$filter['sort_by']		= empty($args['sort_by'])		? 'update_time' : trim($args['sort_by']);
-	$filter['sort_order']	= empty($args['sort_order'])	? 'DESC' : trim($args['sort_order']);
-	$filter['keywords']		= empty($args['keywords'])		? '' : trim($args['keywords']);
+	$filter['delivery_sn']	= empty($args['delivery_sn'])	? '' 				: trim($args['delivery_sn']);
+	$filter['order_sn']		= empty($args['order_sn'])		? '' 				: trim($args['order_sn']);
+	$filter['order_id']		= empty($args['order_id'])		? 0 				: intval($args['order_id']);
+	$filter['consignee']	= empty($args['consignee'])		? '' 				: trim($args['consignee']);
+	$filter['status']		= isset($args['status'])		? $args['status'] 	: -1;
+	$filter['sort_by']		= empty($args['sort_by'])		? 'update_time' 	: trim($args['sort_by']);
+	$filter['sort_order']	= empty($args['sort_order'])	? 'DESC' 			: trim($args['sort_order']);
+	$filter['keywords']		= empty($args['keywords'])		? '' 				: trim($args['keywords']);
 	
+	$db_delivery_order = RC_DB::table('delivery_order as do');
 	$where = array();
 	if ($filter['order_sn']) {
 		$where['order_sn'] = array('like' => '%'.mysql_like_quote($filter['order_sn']).'%');
+		
+		$db_delivery_order->where('order_sn', 'like', '%'.mysql_like_quote($filter['order_sn']).'%');
 	}
 	if ($filter['consignee']) {
 		$where['consignee'] = array('like' => '%'.mysql_like_quote($filter['consignee']).'%');
+		
+		$db_delivery_order->where('consignee', 'like', '%'.mysql_like_quote($filter['consignee']).'%');
 	}
 	if ($filter['status'] >= 0) {
 		$where['status'] = mysql_like_quote($filter['status']);
+		
+		$db_delivery_order->where('status', $filter['status']);
 	}
 	if ($filter['delivery_sn']) {
 		$where['delivery_sn'] = array('like' => '%'.mysql_like_quote($filter['delivery_sn']).'%');
+		
+		$db_delivery_order->where('delivery_sn', 'like', '%'.mysql_like_quote($filter['delivery_sn']).'%');
 	}
 	if ($filter['keywords']) {
 		$where[] = "(order_sn like '%".mysql_like_quote($filter['keywords'])."%' or consignee like '%".mysql_like_quote($filter['keywords'])."%')";
+		
+		$db_delivery_order->where('order_sn', 'like', '%'.mysql_like_quote($filter['keywords']).'%')->orWhere('consignee', 'like', '%'.mysql_like_quote($filter['keywords']).'%');
 	}
 	
 // 	TODO:此版本不用办事处与供货商	
@@ -1256,20 +1266,21 @@ function get_delivery_list()
 // 	}
 	
 	/* 记录总数 */
-	$db_delivery_order	= RC_Loader::load_app_model('delivery_order_model', 'orders');
-	$delivery_order_viewmodel	= RC_Loader::load_app_model('delivery_order_suppliers_viewmodel', 'orders');
+// 	$db_delivery_order	= RC_Loader::load_app_model('delivery_order_model', 'orders');
+	$delivery_order_viewmodel = RC_Loader::load_app_model('delivery_order_suppliers_viewmodel', 'orders');
 	
-	$count = $db_delivery_order->where($where)->count();
-	$filter['record_count']  = $count;
-	
-	//加载分页类
-	RC_Loader::load_sys_class('ecjia_page', false);
-	//实例化分页
+// 	$count = $db_delivery_order->where($where)->count();
+	$count = $db_delivery_order->count();
+	$filter['record_count'] = $count;
 	$page = new ecjia_page($count, 15, 6);
 	
 	/* 查询 */
-	$field = 'do.delivery_id, do.order_id, do.delivery_sn, do.order_sn, do.order_id, do.add_time, do.action_user, do.consignee, do.country,do.province, do.city, do.district, do.tel, do.status, do.update_time, do.email, do.suppliers_id, s.suppliers_name';
-	$row = $delivery_order_viewmodel->field($field)->where($where)->order(array($filter['sort_by'] => $filter['sort_order']))->limit($page->limit())->select();
+// 	$field = 'do.delivery_id, do.order_id, do.delivery_sn, do.order_sn, do.order_id, do.add_time, do.action_user, do.consignee, do.country,do.province, do.city, do.district, do.tel, do.status, do.update_time, do.email, do.suppliers_id, s.suppliers_name';
+// 	$row = $delivery_order_viewmodel->field($field)->where($where)->order(array($filter['sort_by'] => $filter['sort_order']))->limit($page->limit())->select();
+	
+	$row = $db_delivery_order->leftJoin('suppliers as s', RC_DB::raw('do.suppliers_id'), '=', RC_DB::raw('s.suppliers_id'))
+		->select(RC_DB::raw('do.delivery_id, do.order_id, do.delivery_sn, do.order_sn, do.order_id, do.add_time, do.action_user, do.consignee, do.country, do.province, do.city, do.district, do.tel, do.status, do.update_time, do.email, do.suppliers_id, s.suppliers_name'))
+		->orderby($filter['sort_by'], $filter['sort_order'])->take(15)->skip($page->start_id-1)->get();
 	
 // 	TODO:暂不用供货商
 // 	/* 获取供货商列表 */
@@ -1287,11 +1298,11 @@ function get_delivery_list()
 			$row[$key]['add_time'] = RC_Time::local_date(ecjia::config('time_format'), $value['add_time']);
 			$row[$key]['update_time'] = RC_Time::local_date(ecjia::config('time_format'), $value['update_time']);
 			if ($value['status'] == 1) {
-				$row[$key]['status_name'] = RC_Lang::lang('delivery_status/1');
+				$row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.1');
 			} elseif ($value['status'] == 2) {
-				$row[$key]['status_name'] = RC_Lang::lang('delivery_status/2');
+				$row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.2');
 			} else {
-				$row[$key]['status_name'] = RC_Lang::lang('delivery_status/0');
+				$row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.0');
 			}
 // 			$row[$key]['suppliers_name'] = isset($_suppliers_list[$value['suppliers_id']]) ? $_suppliers_list[$value['suppliers_id']] : '';
 		}
@@ -1311,11 +1322,12 @@ function delivery_order_info($delivery_id, $delivery_sn = '') {
 	if (empty($delivery_id) || !is_numeric($delivery_id)) {
 		return $return_order;
 	}
-	$where = array();
+	
+	$db_delivery_order = RC_DB::table('delivery_order');
 	if ($delivery_id > 0) {
-		$where['delivery_id'] = $delivery_id;
+		$db_delivery_order->where('delivery_id', $delivery_id);
 	} else {
-		$where['delivery_sn'] = $delivery_sn;
+		$db_delivery_order->where('delivery_sn', $delivery_sn);
 	}
 	
 // 	TODO:此版本不用办事处与供货商	
@@ -1331,9 +1343,8 @@ function delivery_order_info($delivery_id, $delivery_sn = '') {
 // 	if ($admin_info['suppliers_id'] > 0) {
 // 		$where['suppliers_id'] = $admin_info['suppliers_id'];
 // 	}
-	$db_delivery_order	= RC_Loader::load_app_model('delivery_order_model', 'orders');
-	$delivery = $db_delivery_order->find($where);
-	
+
+	$delivery = $db_delivery_order->first();
 	if ($delivery) {
 		/* 格式化金额字段 */
 		$delivery['formated_insure_fee']	= price_format($delivery['insure_fee'], false);
@@ -1345,7 +1356,6 @@ function delivery_order_info($delivery_id, $delivery_sn = '') {
 
 		$return_order = $delivery;
 	}
-
 	return $return_order;
 }
 
@@ -1358,25 +1368,31 @@ function delivery_order_info($delivery_id, $delivery_sn = '') {
  *
  * @return  void
  */
-function delivery_return_goods($delivery_id, $delivery_order) 
-{
-	$db_delivery	= RC_Loader::load_app_model('delivery_goods_model', 'orders');
-	$db_order_goods = RC_Loader::load_app_model('order_goods_model', 'orders');
-	$db_order_info	= RC_Loader::load_app_model('order_info_model', 'orders');
+function delivery_return_goods($delivery_id, $delivery_order) {
+// 	$db_delivery	= RC_Loader::load_app_model('delivery_goods_model', 'orders');
+// 	$db_order_goods = RC_Loader::load_app_model('order_goods_model', 'orders');
+// 	$db_order_info	= RC_Loader::load_app_model('order_info_model', 'orders');
 
 	/* 查询：取得发货单商品 */
-	$goods_list = $db_delivery->where(array('delivery_id' => $delivery_order['delivery_id']))->select();
+// 	$goods_list = $db_delivery->where(array('delivery_id' => $delivery_order['delivery_id']))->select();
+	$goods_list = RC_DB::table('delivery_goods')->where('delivery_id', $delivery_order['delivery_id'])->get();
+
 	/* 更新： */
 	if (!empty($goods_list)) {
 		foreach ($goods_list as $key => $val) {
-			$db_order_goods->dec('send_number', 'order_id='.$delivery_order['order_id']. ' and goods_id='.$val['goods_id'], $val['send_number']);
+// 			$db_order_goods->dec('send_number', 'order_id='.$delivery_order['order_id']. ' and goods_id='.$val['goods_id'], $val['send_number']);
+			RC_DB::table('order_goods')
+				->where('order_id', $delivery_order['order_id'])
+				->where('goods_id', $val['goods_id'])
+				->decrement('send_number', $val['send_number']);
 		}
 	}
 	$data = array(
 		'shipping_status'	=> '0',
 		'order_status'		=> 1
 	);
-	$db_order_info->where(array('order_id' => $delivery_order['order_id']))->update($data);
+// 	$db_order_info->where(array('order_id' => $delivery_order['order_id']))->update($data);
+	RC_DB::table('order_info')->where('order_id', $delivery_order['order_id'])->update($data);
 }
 
 /**
@@ -1388,11 +1404,11 @@ function delivery_return_goods($delivery_id, $delivery_order)
  *
  * @return  void
  */
-function del_order_invoice_no($order_id, $delivery_invoice_no) 
-{
+function del_order_invoice_no($order_id, $delivery_invoice_no) {
 	/* 查询：取得订单中的发货单号 */
-	$db = RC_Loader::load_app_model('order_info_model', 'orders');
-	$order_invoice_no = $db->where(array('order_id' => $order_id))->get_field('invoice_no');
+// 	$db = RC_Loader::load_app_model('order_info_model', 'orders');
+// 	$order_invoice_no = $db->where(array('order_id' => $order_id))->get_field('invoice_no');
+	$order_invoice_no = RC_DB::table('order_info')->where('order_id', $order_id)->pluck('invoice_no');
 
 	/* 如果为空就结束处理 */
 	if (empty($order_invoice_no)) {
@@ -1419,9 +1435,10 @@ function del_order_invoice_no($order_id, $delivery_invoice_no)
  * @param   int     $order_id  订单 id
  * @return  int     1，全部发货；0，未全部发货；-1，部分发货；-2，完全没发货；
  */
-function get_all_delivery_finish($order_id) 
-{
-	$db = RC_Loader::load_app_model('delivery_order_model', 'orders');
+function get_all_delivery_finish($order_id) {
+// 	$db = RC_Loader::load_app_model('delivery_order_model', 'orders');
+	$db_delivery_order = RC_DB::table('delivery_order');
+	
 	$return_res = 0;
 
 	if (empty($order_id)) {
@@ -1434,14 +1451,17 @@ function get_all_delivery_finish($order_id)
 	} else {
 		/* 已全部分单 */
 		/* 是否全部发货 */
-		$sum = $db->where(array('order_id' => $order_id, 'status' => 2))->count('delivery_id');
+// 		$sum = $db->where(array('order_id' => $order_id, 'status' => 2))->count('delivery_id');
+		$sum = $db_delivery_order->where('order_id', $order_id)->where('status', 2)->count('delivery_id');
 		/* 全部发货 */
 		if (empty($sum)) {
 			$return_res = 1;
 		} else {
 			/* 未全部发货 */
 			/* 订单全部发货中时：当前发货单总数 */
-			$_sum = $db->where(array('order_id' => $order_id, 'status' => array('neq' => 1)))->count('delivery_id');
+// 			$_sum = $db->where(array('order_id' => $order_id, 'status' => array('neq' => 1)))->count('delivery_id');
+			$_sum = $db_delivery_order->where('order_id', $order_id)->where('status', '!=', 1)->count('delivery_id');
+			
 			if ($_sum == $sum) {
 				$return_res = -2; // 完全没发货
 			} else {
@@ -1449,7 +1469,6 @@ function get_all_delivery_finish($order_id)
 			}
 		}
 	}
-
 	return $return_res;
 }
 

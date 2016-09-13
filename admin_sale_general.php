@@ -5,14 +5,10 @@
 defined('IN_ECJIA') or exit('No permission resources.');
 
 class admin_sale_general extends ecjia_admin {
-	private $db_order_info;
-	
 	public function __construct() {
 		parent::__construct();
 		
 		RC_Loader::load_app_func('global', 'orders');
-		$this->db_order_info = RC_Loader::load_app_model('order_info_model', 'orders');
-		
 		/* 加载所有全局 js/css */
 		RC_Script::enqueue_script('bootstrap-placeholder');
 		RC_Script::enqueue_script('jquery-validate');
@@ -160,7 +156,13 @@ class admin_sale_general extends ecjia_admin {
 		}
 		$format = ($query_type == 'year') ? '%Y' : '%Y-%m';
 		$where =  "(order_status = '" . OS_CONFIRMED . "' OR order_status >= '" . OS_SPLITED . "' ) AND ( pay_status = '" . PS_PAYED . "' OR pay_status = '" . PS_PAYING . "') AND (shipping_status = '" . SS_SHIPPED . "' OR shipping_status = '" . SS_RECEIVED . "' ) AND (shipping_time >= ' ". $start_time ."' AND shipping_time <= '" .$end_time. "')";
-		$templateCount = $this->db_order_info->field("DATE_FORMAT(FROM_UNIXTIME(shipping_time), '". $format ."') AS period, COUNT(*) AS order_count, SUM(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee - discount) AS order_amount")->where($where)->group('period')->select();
+		
+		$templateCount = RC_DB::table('order_info')
+			->select(RC_DB::raw("DATE_FORMAT(FROM_UNIXTIME(shipping_time), '". $format ."') AS period, COUNT(*) AS order_count, SUM(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee - discount) AS order_amount"))
+			->whereRaw($where)
+			->groupby('period')
+			->get();
+		
 		if ($_GET['order_type'] == 1) {
 			if (!empty($templateCount)) {
 				foreach ($templateCount as $k=>$v) {
@@ -197,7 +199,12 @@ class admin_sale_general extends ecjia_admin {
 		/* 分组统计订单数和销售额：已发货时间为准 */	
 		$format = ($query_type == 'year') ? '%Y' : '%Y-%m';
 		$where =  " (order_status = '" . OS_CONFIRMED . "' OR order_status >= '" . OS_SPLITED . "' ) AND ( pay_status = '" . PS_PAYED . "' OR pay_status = '" . PS_PAYING . "') AND (shipping_status = '" . SS_SHIPPED . "' OR shipping_status = '" . SS_RECEIVED . "' ) AND (shipping_time >= ' ". $start_time ."' AND shipping_time <= '" .$end_time. "'  )";
-		$data_list = $this->db_order_info->field("DATE_FORMAT(FROM_UNIXTIME(shipping_time), '". $format ."') AS period, COUNT(*) AS order_count, SUM(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee - discount) AS order_amount")->where($where)->group('period')->select();
+		
+		$data_list = RC_DB::table('order_info')
+			->select(RC_DB::raw("DATE_FORMAT(FROM_UNIXTIME(shipping_time), '". $format ."') AS period, COUNT(*) AS order_count, SUM(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee - discount) AS order_amount"))
+			->whereRaw($where)
+			->groupby('period')
+			->get();
 		
 		/* 文件名 */
 		$filename = mb_convert_encoding(RC_Lang::get('orders::statistic.sales_statistics'), "GBK", "UTF-8");

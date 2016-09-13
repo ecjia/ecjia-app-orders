@@ -5,16 +5,10 @@
 defined('IN_ECJIA') or exit('No permission resources.');
 
 class admin_sale_list extends ecjia_admin {
-	private $order_goods_view;
-	private $order_info_view;
-	
 	public function __construct() {
 		parent::__construct();
 		RC_Loader::load_app_func('global', 'orders');
 
-		$this->order_info_view = RC_Loader::load_app_model('order_info_viewmodel', 'orders');
-		$this->order_goods_view = RC_Loader::load_app_model('order_goods_viewmodel', 'orders');
-		
 		/* 加载所有全局 js/css */
 		RC_Script::enqueue_script('bootstrap-placeholder');
 		RC_Script::enqueue_script('jquery-validate');
@@ -108,26 +102,28 @@ class admin_sale_list extends ecjia_admin {
 	    $filter['start_date'] = empty($_REQUEST['start_date']) ? RC_Time::local_strtotime('-7 days') : RC_Time::local_strtotime($_REQUEST['start_date']);
 	    $filter['end_date'] = empty($_REQUEST['end_date']) ? RC_Time::local_strtotime('today') : RC_Time::local_strtotime($_REQUEST['end_date']);
 	    $where = "1" .order_query_sql('finished', 'oi.') ." AND oi.add_time >= '".$filter['start_date']."' AND oi.add_time < '" . ($filter['end_date'] + 86400) . "'";
-
-	    $count = $this->order_goods_view->where($where)->count('og.goods_id');
-		$page = new ecjia_page($count,10,5);
-		$limit = null;
+	    
+	    $db_goods = RC_DB::table('goods as g')
+	    	->leftJoin('order_goods as og', RC_DB::raw('og.goods_id'), '=', RC_DB::raw('g.goods_id'))
+	    	->leftJoin('order_info as oi', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('og.order_id'))
+	    	->whereRaw($where);
+	    	
+	    $count = $db_goods->count(RC_DB::raw('og.goods_id'));
+		$page = new ecjia_page($count, 15, 5);
 		if ($is_pagination) {
-			$limit = $page->limit();
+			$db_goods->take(15)->skip($page->start_id-1);
 		}
 	    
-	    $sale_list_data = $this->order_goods_view->field('og.goods_id, og.goods_sn, og.goods_name, og.goods_number AS goods_num, og.goods_price '.
-           'AS sales_price, oi.add_time AS sales_time, oi.order_id, oi.order_sn ')->where($where)->order(array('sales_time'=> 'DESC', 'goods_num'=> 'DESC'))->limit($limit)->select();
-	    
+	    $sale_list_data = $db_goods->select(RC_DB::raw('og.goods_id, og.goods_sn, og.goods_name, og.goods_number AS goods_num, og.goods_price '.
+           'AS sales_price, oi.add_time AS sales_time, oi.order_id, oi.order_sn'))->orderby('sales_time', 'desc')->orderby('goods_num', 'desc')->get();
+	    	
 	    if (!empty($sale_list_data)) {
 	    	foreach ($sale_list_data as $key => $item) {
 	    		$sale_list_data[$key]['sales_price'] = price_format($sale_list_data[$key]['sales_price']);
 	    		$sale_list_data[$key]['sales_time']  = RC_Time::local_date(ecjia::config('date_format'), $sale_list_data[$key]['sales_time']);
 	    	}
 	    }
-
-	    $arr = array('item' => $sale_list_data, 'filter' => $filter, 'desc' => $page->page_desc(), 'page' => $page->show(5));
-	    return $arr;
+	    return array('item' => $sale_list_data, 'filter' => $filter, 'desc' => $page->page_desc(), 'page' => $page->show(5));
 	}
 }
 

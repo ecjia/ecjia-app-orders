@@ -17,7 +17,6 @@ class users_viewmodel extends Component_Model_View {
 			'order_info' => array(
 				'type' => Component_Model_View::TYPE_LEFT_JOIN,
 				'alias'=> 'o',
-				'field'=> '',
 				'on'   => 'o.user_id = u.user_id'
 			)	
 		);

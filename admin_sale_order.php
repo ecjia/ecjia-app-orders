@@ -5,13 +5,10 @@
 defined('IN_ECJIA') or exit('No permission resources.');
 
 class admin_sale_order extends ecjia_admin {
-	private $db_order_goods_view;
-	
 	public function __construct() {
 		parent::__construct();
 		
-		RC_Loader::load_app_func('global','orders');
-		$this->db_order_goods_view = RC_Loader::load_app_model('order_goods_viewmodel', 'orders');
+		RC_Loader::load_app_func('global', 'orders');
 		
 		/* 加载所有全局 js/css */
 		RC_Script::enqueue_script('bootstrap-placeholder');
@@ -51,14 +48,14 @@ class admin_sale_order extends ecjia_admin {
 		$this->assign('action_link', array('text' => RC_Lang::get('orders::statistic.download_sale_sort'), 'href' => RC_Uri::url('orders/admin_sale_order/download')));
 		
 		/*时间参数*/
-		$start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date(ecjia::config('date_format'),strtotime('-1 month')-8*3600);
-		$end_date = !empty($_GET['end_date']) ? $_GET['end_date'] : RC_Time::local_date(ecjia::config('date_format'));
+		$start_date = !empty($_GET['start_date']) 	? $_GET['start_date'] 	: RC_Time::local_date(ecjia::config('date_format'), strtotime('-1 month')-8*3600);
+		$end_date 	= !empty($_GET['end_date']) 	? $_GET['end_date'] 	: RC_Time::local_date(ecjia::config('date_format'));
 		
 		$filter['start_date'] 	= RC_Time::local_strtotime($start_date);
 		$filter['end_date'] 	= RC_Time::local_strtotime($end_date);
 		
-		$filter['sort_by'] 		= empty($_REQUEST['sort_by']) ? 'goods_num' : trim($_REQUEST['sort_by']);
-	    $filter['sort_order'] 	= empty($_REQUEST['sort_order']) ? 'DESC' : trim($_REQUEST['sort_order']);
+		$filter['sort_by'] 		= empty($_REQUEST['sort_by']) 		? 'goods_num' 	: trim($_REQUEST['sort_by']);
+	    $filter['sort_order'] 	= empty($_REQUEST['sort_order']) 	? 'DESC' 		: trim($_REQUEST['sort_order']);
 		
 		$goods_order_data = $this->get_sales_order(true, $filter);
 		
@@ -79,8 +76,8 @@ class admin_sale_order extends ecjia_admin {
 		/* 检查权限 */
 		$this->admin_priv('sale_order_stats');
 		/*时间参数*/
-		$start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date(ecjia::config('date_format'),strtotime('-1 month')-8*3600);
-		$end_date   = !empty($_GET['end_date']) ? $_GET['end_date'] : RC_Time::local_date(ecjia::config('date_format'),strtotime('today')-8*3600);
+		$start_date = !empty($_GET['start_date']) 	? $_GET['start_date'] 	: RC_Time::local_date(ecjia::config('date_format'), strtotime('-1 month')-8*3600);
+		$end_date   = !empty($_GET['end_date']) 	? $_GET['end_date'] 	: RC_Time::local_date(ecjia::config('date_format'), strtotime('today')-8*3600);
 		
 		$filter['start_date'] 	= RC_Time::local_strtotime($start_date);
 		$filter['end_date'] 	= RC_Time::local_strtotime($end_date);
@@ -88,7 +85,7 @@ class admin_sale_order extends ecjia_admin {
 	    $filter['sort_order'] 	= empty($_REQUEST['sort_order']) ? 'DESC' : trim($_REQUEST['sort_order']);
 		
 		$goods_order_data = $this->get_sales_order(false, $filter);
-		$filename = mb_convert_encoding(RC_Lang::get('orders::statistic.sale_order_statement'),"GBK","UTF-8");
+		$filename = mb_convert_encoding(RC_Lang::get('orders::statistic.sale_order_statement'), "GBK", "UTF-8");
 		
 		header("Content-type: application/vnd.ms-excel; charset=utf-8");
 		header("Content-Disposition: attachment; filename=$filename.xls");
@@ -119,13 +116,21 @@ class admin_sale_order extends ecjia_admin {
         if ($filter['end_date']) {
         	$where .= " AND oi.add_time <= '" . $filter['end_date'] . "'";
         }
-	    $count = $this->db_order_goods_view->where($where)->count('distinct(og.goods_id)');
-		$page = new ecjia_page($count, 10, 5);
-		$limit = null;
+	    $db_goods = RC_DB::table('goods as g')
+	    	->leftJoin('order_goods as og', RC_DB::raw('og.goods_id'), '=', RC_DB::raw('g.goods_id'))
+	    	->leftJoin('order_info as oi', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('og.order_id'))
+	    	->whereRaw($where);
+	    
+	    $count = $db_goods->count(RC_DB::raw('distinct(og.goods_id)'));
+		$page = new ecjia_page($count, 15, 5);
 		if ($is_pagination) {
-			$limit = $page->limit();
+			$db_goods->take(15)->skip($page->start_id-1);
 		}
-	    $sales_order_data = $this->db_order_goods_view->field('og.goods_id, og.goods_sn, og.goods_name, oi.order_status,SUM(og.goods_number) AS goods_num, SUM(og.goods_number * og.goods_price) AS turnover')->where($where)->group('og.goods_id')->order(array($filter['sort_by']=>$filter['sort_order']))->limit($limit)->select();
+	    $sales_order_data = $db_goods->select(RC_DB::raw('og.goods_id, og.goods_sn, og.goods_name, oi.order_status, SUM(og.goods_number) AS goods_num, SUM(og.goods_number * og.goods_price) AS turnover'))
+	    	->groupby(RC_DB::raw('og.goods_id'))
+	    	->orderby($filter['sort_by'], $filter['sort_order'])
+	    	->get();
+	    
 	    if (!empty($sales_order_data)) {
 	    	foreach ($sales_order_data as $key => $item) {
 	    		$sales_order_data[$key]['wvera_price'] = price_format($item['goods_num'] ? $item['turnover'] / $item['goods_num'] : 0);
@@ -134,8 +139,7 @@ class admin_sale_order extends ecjia_admin {
 	    		$sales_order_data[$key]['taxis']       = $key + 1;
 	    	}
 	    }
-	    $arr = array('item' => $sales_order_data, 'filter' => $filter, 'desc' => $page->page_desc(), 'page'=>$page->show(5));
-	    return $arr;
+	    return array('item' => $sales_order_data, 'filter' => $filter, 'desc' => $page->page_desc(), 'page'=>$page->show(5));
 	}
 }
 // end

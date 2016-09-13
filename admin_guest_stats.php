@@ -50,19 +50,16 @@ class admin_guest_stats extends ecjia_admin {
 		$total_fee = " SUM(" . order_amount_field() . ") AS turnover ";
 		
 		/* 有过订单的会员数 */
-// 		$have_order_usernum = $this->db_order_info->where('user_id > 0 ' . order_query_sql('finished'))->count('DISTINCT user_id');
 		$have_order_usernum = RC_DB::table('order_info')->whereRaw(RC_DB::raw('user_id > 0' . order_query_sql('finished')))->count(RC_DB::raw('DISTINCT user_id'));
 		
 		/* 会员订单总数和订单总购物额 */
 		$user_all_order = array();
-// 		$user_all_order = $this->db_order_info->field('COUNT(*) AS order_num , '.$total_fee.'')->find('user_id > 0 ' . order_query_sql('finished').'');
 		$user_all_order = RC_DB::table('order_info')->select(RC_DB::raw('COUNT(*) AS order_num , '.$total_fee.''))->whereRaw(RC_DB::raw('user_id > 0 ' . order_query_sql('finished').''))->first();
 		
 		$user_all_order['turnover'] = floatval($user_all_order['turnover']);
 		
  		/* 匿名会员订单总数和总购物额 */
 		$guest_all_order = array();
-// 		$guest_all_order = $this->db_order_info->field('COUNT(*) AS order_num , '.$total_fee.'')->find('user_id = 0 ' . order_query_sql('finished').'');
 		$guest_all_order = RC_DB::table('order_info')->select(RC_DB::raw('COUNT(*) AS order_num , '.$total_fee.''))->whereRaw(RC_DB::raw('user_id = 0 ' . order_query_sql('finished').''))->first();
  		
  		/* 匿名会员平均订单额: 购物总额/订单数 */
@@ -107,19 +104,16 @@ class admin_guest_stats extends ecjia_admin {
 		$total_fee = " SUM(" . order_amount_field() . ") AS turnover ";
 		
 		/* 有过订单的会员数 */
-// 		$have_order_usernum = $this->db_order_info->where('user_id > 0 ' . order_query_sql('finished'))->count('DISTINCT user_id');
 		$have_order_usernum = RC_DB::table('order_info')->whereRaw(RC_DB::raw('user_id > 0' . order_query_sql('finished')))->count(RC_DB::raw('DISTINCT user_id'));
 
 		/* 会员订单总数和订单总购物额 */
 		$user_all_order = array();
-// 		$user_all_order = $this->db_order_info->field('COUNT(*) AS order_num , '.$total_fee.'')->find('user_id > 0 ' . order_query_sql('finished').'');		
 		$user_all_order = RC_DB::table('order_info')->select(RC_DB::raw('COUNT(*) AS order_num , '.$total_fee.''))->whereRaw(RC_DB::raw('user_id > 0 ' . order_query_sql('finished').''))->first();
 		
 		$user_all_order['turnover'] = floatval($user_all_order['turnover']);
 		
 		/*匿名会员订单总数和总购物额 */
 		$guest_all_order = array();
-// 		$guest_all_order = $this->db_order_info->field('COUNT(*) AS order_num , '.$total_fee.'')->find('user_id = 0 ' . order_query_sql('finished').'');
 		$guest_all_order = RC_DB::table('order_info')->select(RC_DB::raw('COUNT(*) AS order_num , '.$total_fee.''))->whereRaw(RC_DB::raw('user_id = 0 ' . order_query_sql('finished').''))->first();
 		
 		/* 匿名会员平均订单额: 购物总额/订单数 */

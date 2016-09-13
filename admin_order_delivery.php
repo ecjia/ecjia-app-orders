@@ -7,33 +7,12 @@
 defined('IN_ECJIA') or exit('No permission resources.');
 
 class admin_order_delivery extends ecjia_admin {
-	private $db_delivery_order;
-	private $db_order_region;
-	private $db_delivery;
-	private $db_order_action;
-	private $db_goods;
-	private $db_products;
-	private $db_order_status_log;
-	
-// 	private $db_admin_user;
-	
 	public function __construct() {
 		parent::__construct();
 
 		RC_Loader::load_app_func('order','orders');
 		RC_Loader::load_app_func('common','goods');
 		RC_Loader::load_app_func('function');
-		
-		$this->db_delivery_order	= RC_Loader::load_app_model('delivery_order_model','orders');
-		$this->db_order_region		= RC_Loader::load_app_model('order_region_viewmodel');
-		$this->db_delivery			= RC_Loader::load_app_model('delivery_goods_model');
-		$this->db_order_action		= RC_Loader::load_app_model('order_action_model');
-		$this->db_goods				= RC_Loader::load_app_model('goods_model','goods');
-		$this->db_products			= RC_Loader::load_app_model('products_model','goods');
-		$this->db_order_status_log  = RC_Loader::load_app_model('order_status_log_model','orders');
-// 		$this->db_admin_user		= RC_Loader::load_model('admin_user_model');
-
-		// 增加操作对象
 		assign_adminlog_content();
 
 		/* 加载所有全局 js/css */
@@ -619,8 +598,12 @@ class admin_order_delivery extends ecjia_admin {
 		
 		$id = $_GET['delivery_id'];
 		if (!empty($id)) {
-			$field = "order_id, consignee, address, country, province, city, district, sign_building, email, zipcode, tel, mobile, best_time";
-			$row = $this->db_delivery_order->field($field)->where(array('delivery_id'=>$id))->find();
+// 			$field = "order_id, consignee, address, country, province, city, district, sign_building, email, zipcode, tel, mobile, best_time";
+// 			$row = $this->db_delivery_order->field($field)->where(array('delivery_id'=>$id))->find();
+
+			$row = RC_DB::table('delivery_order')->select(RC_DB::raw('order_id, consignee, address, country, province, city, district, sign_building, email, zipcode, tel, mobile, best_time'))
+				->where('delivery_id', $id)->first();
+			
 			if (!empty($row)) {
 // 				$field = array("concat(IFNULL(c.region_name, ''), '  ', IFNULL(p.region_name, ''),'  ', IFNULL(t.region_name, ''), '  ', IFNULL(d.region_name, '')) AS region");
 // 				$region = $this->db_order_region->field($field)->find('o.order_id = "'.$row['order_id'].'"');

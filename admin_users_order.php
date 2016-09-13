@@ -5,12 +5,9 @@
 defined('IN_ECJIA') or exit('No permission resources.');
 
 class admin_users_order extends ecjia_admin {
-	private $users_view;
 	public function __construct() {
 		parent::__construct();
-		
 		RC_Loader::load_app_func('global', 'orders');
-		$this->users_view = RC_Loader::load_app_model('users_viewmodel', 'orders');
 		
 		/* 加载所有全局 js/css */
 		RC_Script::enqueue_script('bootstrap-placeholder');
@@ -53,8 +50,8 @@ class admin_users_order extends ecjia_admin {
 		$this->assign('action_link', array('text' => RC_Lang::get('orders::statistic.download_amount_sort'), 'href' => RC_Uri::url('orders/admin_users_order/download')));
 		
 		/* 时间参数 */
-		$start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date(ecjia::config('date_format'),strtotime('-7 days')-8*3600);
-		$end_date = !empty($_GET['end_date']) ? $_GET['end_date'] : RC_Time::local_date(ecjia::config('date_format'));
+		$start_date = !empty($_GET['start_date']) 	? $_GET['start_date'] 	: RC_Time::local_date(ecjia::config('date_format'), strtotime('-7 days')-8*3600);
+		$end_date 	= !empty($_GET['end_date']) 	? $_GET['end_date'] 	: RC_Time::local_date(ecjia::config('date_format'));
 		
 		$filter['start_date'] 	= RC_Time::local_strtotime($start_date);
 		$filter['end_date'] 	= RC_Time::local_strtotime($end_date);
@@ -123,28 +120,29 @@ class admin_users_order extends ecjia_admin {
 	    if ($filter['end_date']) {
 	        $where .= " AND o.add_time <= '" . $filter['end_date'] . "'";
 	    }
-	    $count = $this->users_view->where($where)->count('distinct(u.user_id)');
-
-	    $page = new ecjia_page($count, 10, 5);
+	    $db_users = RC_DB::table('users as u')
+	    	->leftJoin('order_info as o', RC_DB::raw('o.user_id'), '=', RC_DB::raw('u.user_id'))
+	    	->whereRaw($where);
+	    
+	    $count = $db_users->count(RC_DB::raw('distinct(u.user_id)'));
+	    $page = new ecjia_page($count, 5, 5);
 	    if ($paging) {
 	    	$limit = $page->limit();
-	    } else {
-	    	$limit = '';
+	    	$db_users->take(5)->skip($page->start_id-1);
 	    }
 	    /* 计算订单各种费用之和的语句 */
-	    if (!empty($limit)) {
-	    	$users_order_data = $this->users_view->field('u.user_id, u.user_name, COUNT(*) AS order_num, SUM(o.goods_amount + o.tax + o.shipping_fee + o.insure_fee + o.pay_fee + o.pack_fee + o.card_fee) AS turnover ')->where($where)->order(array($filter['sort_by'] => $filter['sort_order']))->group('u.user_id')->limit($limit)->select();
-	    } else {
-	    	$users_order_data = $this->users_view->field('u.user_id, u.user_name, COUNT(*) AS order_num, SUM(o.goods_amount + o.tax + o.shipping_fee + o.insure_fee + o.pay_fee + o.pack_fee + o.card_fee) AS turnover ')->where($where)->order(array($filter['sort_by'] => $filter['sort_order']))->group('u.user_id')->select();
-	    }
+    	$users_order_data = $db_users
+    		->select(RC_DB::raw('u.user_id, u.user_name, COUNT(*) AS order_num, SUM(o.goods_amount + o.tax + o.shipping_fee + o.insure_fee + o.pay_fee + o.pack_fee + o.card_fee) AS turnover'))
+    		->orderby($filter['sort_by'], $filter['sort_order'])
+    		->groupby(RC_DB::raw('u.user_id'))
+    		->get();
+    	
 	    if (!empty($users_order_data)) {
 	    	foreach ($users_order_data as $key => $item) {
 	    		$users_order_data[$key]['turnover']  = price_format($users_order_data[$key]['turnover']);
 	    	}
 	    }
-
-	    $arr = array('item' => $users_order_data, 'filter' => $filter, 'desc' => $page->page_desc(), 'page'=>$page->show(5));
-	    return $arr;
+	    return array('item' => $users_order_data, 'filter' => $filter, 'desc' => $page->page_desc(), 'page' => $page->show(5));
 	}
 }
 

@@ -17,7 +17,6 @@ class shipping_viewmodel extends Component_Model_View {
 			'order_info' => array(
 				'type' => Component_Model_View::TYPE_LEFT_JOIN,
 				'alias'=> 'i',
-				'field'=> "",
 				'on'   => 'sp.shipping_id = i.shipping_id'
 			),	
 		);

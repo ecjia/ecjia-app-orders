@@ -17,7 +17,6 @@ class payment_viewmodel extends Component_Model_View {
 			'order_info' => array(
 				'type' => Component_Model_View::TYPE_LEFT_JOIN,
 				'alias'=> 'i',
-				'field'=> "",
 				'on'   => 'p.pay_id = i.pay_id'
 			),	
 		);

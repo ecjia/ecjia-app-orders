@@ -72,8 +72,8 @@ class admin_order_stats extends ecjia_admin {
 		$start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date(ecjia::config('date_format'),strtotime('-1 month')-8*3600);
 		$end_date   = !empty($_GET['end_date'])   ? $_GET['end_date']   : RC_Time::local_date(ecjia::config('date_format'));
 		
-		$this->assign('start_date',$start_date);
-		$this->assign('end_date',$end_date);
+		$this->assign('start_date', $start_date);
+		$this->assign('end_date', $end_date);
 		
 		$year_month = !empty($_GET['year_month']) ? $_GET['year_month'] : '';
 		if (!empty($year_month)) {
@@ -143,8 +143,8 @@ class admin_order_stats extends ecjia_admin {
 		$start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date(ecjia::config('date_format'),strtotime('-1 month')-8*3600);
 		$end_date   = !empty($_GET['end_date'])   ? $_GET['end_date']   : RC_Time::local_date(ecjia::config('date_format'));
 	
-		$this->assign('start_date',$start_date);
-		$this->assign('end_date',$end_date);
+		$this->assign('start_date', $start_date);
+		$this->assign('end_date', $end_date);
 		
 		$year_month = !empty($_GET['year_month']) ? $_GET['year_month'] : '';
 		
@@ -216,8 +216,8 @@ class admin_order_stats extends ecjia_admin {
 		$start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date(ecjia::config('date_format'),strtotime('-1 month')-8*3600);
 		$end_date   = !empty($_GET['end_date'])   ? $_GET['end_date']   : RC_Time::local_date(ecjia::config('date_format'));
 	
-		$this->assign('start_date',$start_date);
-		$this->assign('end_date',$end_date);
+		$this->assign('start_date', $start_date);
+		$this->assign('end_date', $end_date);
 	
 		$year_month = !empty($_GET['year_month']) ? $_GET['year_month'] : '';
 		
@@ -313,7 +313,7 @@ class admin_order_stats extends ecjia_admin {
 	public function get_order_status() {
 		
 		if (!empty($_GET['year_month'])) {
-			$filter	= explode('.',$_GET['year_month']);
+			$filter	= explode('.', $_GET['year_month']);
 			$arr 	= array_filter($filter);
 			$tmp 	= $arr;
 			for ($i = 0; $i < count($tmp); $i++) {
@@ -325,10 +325,10 @@ class admin_order_stats extends ecjia_admin {
 			}
 			$where = '';
 			foreach ($start_date_arr as $key=>$val)  {
-				$month = RC_Time::local_date('Y-m',$start_date_arr[$key]);
+				$month = RC_Time::local_date('Y-m', $start_date_arr[$key]);
 				$sta = $start_date_arr[$key];
 				$end = $end_date_arr[$key];
-				$order_info[$month] = $this->get_orderinfo($sta,$end);
+				$order_info[$month] = $this->get_orderinfo($sta, $end);
 			}
 			foreach ($order_info as $k=>$v) {
 				foreach ($v as $k1 => $v1) {
@@ -370,7 +370,15 @@ class admin_order_stats extends ecjia_admin {
 			$start_date = !empty($_GET['start_date']) ? RC_Time::local_strtotime($_GET['start_date']) : RC_Time::local_strtotime(RC_Time::local_date('Y-m-d'))-86400*6;
 			$end_date   = !empty($_GET['end_date'])   ? RC_Time::local_strtotime($_GET['end_date'])   : RC_Time::local_strtotime(RC_Time::local_date('Y-m-d'))+86400;
 			$where =  "i.add_time >= '$start_date' AND i.add_time <= '$end_date'".order_query_sql('finished');
-			$ship_info = $this->db_shipping_view->field('sp.shipping_name AS ship_name, COUNT(i.order_id) AS order_num')->where($where)->group('i.shipping_id')->order(array('order_num'=>'DESC'))->select();
+// 			$ship_info = $this->db_shipping_view->field('sp.shipping_name AS ship_name, COUNT(i.order_id) AS order_num')->where($where)->group('i.shipping_id')->order(array('order_num'=>'DESC'))->select();
+			
+			$ship_info = RC_DB::table('shipping as sp')
+				->leftJoin('order_info as i', RC_DB::raw('sp.shipping_id'), '=', RC_DB::raw('i.shipping_id'))
+				->select(RC_DB::raw('sp.shipping_name AS ship_name, COUNT(i.order_id) AS order_num'))
+				->whereRaw($where)
+				->groupby(RC_DB::raw('i.shipping_id'))
+				->orderby('order_num', 'desc')
+				->get();
 			
 			if (!empty($ship_info)) {
 				arsort($ship_info);
@@ -387,7 +395,7 @@ class admin_order_stats extends ecjia_admin {
 	 */
 	public function get_ship_stats() {
 		if (!empty($_GET['year_month'])) {
-			$filter	= explode('.',$_GET['year_month']);
+			$filter	= explode('.', $_GET['year_month']);
 			$arr 	= array_filter($filter);
 			$tmp 	= $arr;
 			
@@ -400,7 +408,16 @@ class admin_order_stats extends ecjia_admin {
 			}
 			foreach ($start_date_arr as $key=>$val) {
 				$where =  "i.add_time >= '$start_date_arr[$key]' AND i.add_time <= '$end_date_arr[$key]'".order_query_sql('finished');
-				$ship_info[] = $this->db_shipping_view->field('i.shipping_time,sp.shipping_name AS ship_name, COUNT(i.order_id) AS order_num')->where($where)->group('i.shipping_id')->order(array('order_num'=>'DESC'))->select();
+// 				$ship_info[] = $this->db_shipping_view->field('i.shipping_time, sp.shipping_name AS ship_name, COUNT(i.order_id) AS order_num')->where($where)->group('i.shipping_id')->order(array('order_num'=>'DESC'))->select();
+				
+				$ship_info[] = RC_DB::table('shipping as sp')
+				->leftJoin('order_info as i', RC_DB::raw('sp.shipping_id'), '=', RC_DB::raw('i.shipping_id'))
+				->select(RC_DB::raw('i.shipping_time, sp.shipping_name AS ship_name, COUNT(i.order_id) AS order_num'))
+				->whereRaw($where)
+				->groupby(RC_DB::raw('i.shipping_id'))
+				->orderby('order_num', 'desc')
+				->get();
+				
 			}
 			
 			$arr1 = array();
@@ -448,7 +465,15 @@ class admin_order_stats extends ecjia_admin {
 			$end_date   = !empty($_GET['end_date'])   ? RC_Time::local_strtotime($_GET['end_date'])   : RC_Time::local_strtotime(RC_Time::local_date('Y-m-d'))+86400;
 				
 			$where = "i.add_time >= '$start_date' AND i.add_time <= '$end_date'". order_query_sql('finished');
-			$pay_info = $this->db_payment_view->field('i.pay_id, p.pay_name, COUNT(i.order_id) AS order_num ')->where($where)->group('i.pay_id')->order(array('order_num'=>'DESC'))->select();
+// 			$pay_info = $this->db_payment_view->field('i.pay_id, p.pay_name, COUNT(i.order_id) AS order_num')->where($where)->group('i.pay_id')->order(array('order_num'=>'DESC'))->select();
+			
+			$pay_info = RC_DB::table('payment as p')
+				->leftJoin('order_info as i', RC_DB::raw('p.pay_id'), '=', RC_DB::raw('i.pay_id'))
+				->select(RC_DB::raw('i.pay_id, p.pay_name, COUNT(i.order_id) AS order_num'))
+				->whereRaw($where)
+				->groupby(RC_DB::raw('i.pay_id'))
+				->orderby('order_num', 'desc')
+				->get();
 			
 			if (!empty($pay_info)) {
 				foreach ($pay_info as $key => $val) {
@@ -468,7 +493,7 @@ class admin_order_stats extends ecjia_admin {
 	 */
 	public function get_pay_stats() {
 		if (!empty($_GET['year_month'])) {
-			$filter	= explode('.',$_GET['year_month']);
+			$filter	= explode('.', $_GET['year_month']);
 			$arr 	= array_filter($filter);
 			$tmp 	= $arr;
 				
@@ -480,8 +505,15 @@ class admin_order_stats extends ecjia_admin {
 				}
 			}
 			foreach ($start_date_arr as $key=>$val) {
-				$where =  "p.pay_id = i.pay_id AND i.order_status = '" .OS_CONFIRMED. "' AND i.pay_status > '" .PS_UNPAYED. "' AND i.shipping_status > '" .SS_UNSHIPPED. "' "."AND i.add_time >= '$start_date_arr[$key]' AND i.add_time <= '$end_date_arr[$key]'";
-				$pay_stats[] = $this->db_payment_view->field('i.pay_id, p.pay_name, i.pay_time, COUNT(i.order_id) AS order_num')->where($where)->group('i.pay_id ')->order(array('order_num'=>'DESC'))->select();
+				$where = "p.pay_id = i.pay_id AND i.order_status = '" .OS_CONFIRMED. "' AND i.pay_status > '" .PS_UNPAYED. "' AND i.shipping_status > '" .SS_UNSHIPPED. "' "."AND i.add_time >= '$start_date_arr[$key]' AND i.add_time <= '$end_date_arr[$key]'";
+// 				$pay_stats[] = $this->db_payment_view->field('i.pay_id, p.pay_name, i.pay_time, COUNT(i.order_id) AS order_num')->where($where)->group('i.pay_id')->order(array('order_num'=>'DESC'))->select();
+				$pay_stats[] = RC_DB::table('payment as p')
+					->leftJoin('order_info as i', RC_DB::raw('p.pay_id'), '=', RC_DB::raw('i.pay_id'))
+					->select(RC_DB::raw('i.pay_id, p.pay_name, i.pay_time, COUNT(i.order_id) AS order_num'))
+					->whereRaw($where)
+					->groupby(RC_DB::raw('i.pay_id'))
+					->orderby('order_num', 'desc')
+					->get();
 			}
 			
 			$arr1 = array();
@@ -493,7 +525,7 @@ class admin_order_stats extends ecjia_admin {
 				}
 				foreach ($pay_stats as $k=>$v) {
 					foreach ($v as $k1=>$v1) {
-						$arr1[$v1['pay_name']][RC_Time::local_date('Y-m',$v1['pay_time'])] = $v1['order_num'];
+						$arr1[$v1['pay_name']][RC_Time::local_date('Y-m', $v1['pay_time'])] = $v1['order_num'];
 					}
 				}
 				array_multisort($arr1);
@@ -532,7 +564,16 @@ class admin_order_stats extends ecjia_admin {
 		
 		/* 支付方式 */
 		$where = "i.add_time >= '$start_date' AND i.add_time <= '$end_date'".order_query_sql('finished');
-		$pay_res = $this->db_payment_view->field('i.pay_id, p.pay_name, COUNT(i.order_id) AS order_num')->where($where)->group('i.pay_id')->order(array('order_num'=>'DESC'))->select();
+// 		$pay_res = $this->db_payment_view->field('i.pay_id, p.pay_name, COUNT(i.order_id) AS order_num')->where($where)->group('i.pay_id')->order(array('order_num'=>'DESC'))->select();
+
+		$pay_res = RC_DB::table('payment as p')
+			->leftJoin('order_info as i', RC_DB::raw('p.pay_id'), '=', RC_DB::raw('i.pay_id'))
+			->select(RC_DB::raw('i.pay_id, p.pay_name, COUNT(i.order_id) AS order_num'))
+			->whereRaw($where)
+			->groupby(RC_DB::raw('i.pay_id'))
+			->orderby('order_num', 'desc')
+			->get();
+		
 		if (!empty($pay_res)) {
 			foreach ($pay_res AS $val) {
 				$data .= $val['pay_name'] . "\t";
@@ -546,7 +587,15 @@ class admin_order_stats extends ecjia_admin {
 		}
 		/* 配送方式 */
 		$where = 'i.add_time >= '.$start_date.' AND i.add_time <= '.$end_date.''.order_query_sql('finished') ;
-		$ship_res = $this->db_shipping_view->field('sp.shipping_id, sp.shipping_name AS ship_name, COUNT(i.order_id) AS order_num')->where($where)->group('i.shipping_id')->order(array('order_num'=>'DESC'))->select();
+// 		$ship_res = $this->db_shipping_view->field('sp.shipping_id, sp.shipping_name AS ship_name, COUNT(i.order_id) AS order_num')->where($where)->group('i.shipping_id')->order(array('order_num'=>'DESC'))->select();
+		
+		$ship_res = RC_DB::table('shipping as sp')
+			->leftJoin('order_info as i', RC_DB::raw('sp.shipping_id'), '=', RC_DB::raw('i.shipping_id'))
+			->select(RC_DB::raw('sp.shipping_id, sp.shipping_name AS ship_name, COUNT(i.order_id) AS order_num'))
+			->whereRaw($where)
+			->groupby(RC_DB::raw('i.shipping_id'))
+			->orderby('order_num', 'desc')
+			->get();
 		
 		$data .= "\n".RC_Lang::get('orders::statistic.shipping_method')."\n";
 		if (!empty($ship_res)) {
@@ -573,13 +622,29 @@ class admin_order_stats extends ecjia_admin {
 	 private function get_orderinfo($start_date, $end_date) {
 	 	$order_info = array();
 	    /* 未确认订单数 */
-	 	$order_info['unconfirmed_num'] = $this->db_order_info->field('COUNT(*) AS unconfirmed_num')->where("order_status = '" .OS_UNCONFIRMED. "' AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "' ")->count('*|unconfirmed_num');
+	 	$order_info['unconfirmed_num'] = RC_DB::table('order_info')
+	 		->select(RC_DB::raw('COUNT(*) AS unconfirmed_num'))
+	 		->whereRaw("order_status = '" .OS_UNCONFIRMED. "' AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "' ")
+	 		->count();
+	 	
 	 	/* 已确认订单数 */
-	 	$order_info['confirmed_num'] = $this->db_order_info->field('COUNT(*) AS confirmed_num')->where("order_status = '" .OS_CONFIRMED. "' AND shipping_status != ".SS_SHIPPED." && shipping_status != ".SS_RECEIVED." AND pay_status != ".PS_PAYED." && pay_status != ".PS_PAYING." AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "'")->count('*|confirmed_num');
+	 	$order_info['confirmed_num'] = RC_DB::table('order_info')
+		 	->select(RC_DB::raw('COUNT(*) AS confirmed_num'))
+		 	->whereRaw("order_status = '" .OS_CONFIRMED. "' AND shipping_status != ".SS_SHIPPED." && shipping_status != ".SS_RECEIVED." AND pay_status != ".PS_PAYED." && pay_status != ".PS_PAYING." AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "'")
+		 	->count();
+	 	
 	    /* 已成交订单数 */
-		$order_info['succeed_num'] = $this->db_order_info->field('COUNT(*) AS succeed_num')->where(" 1 AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "' ". order_query_sql('finished'))->count('*|succeed_num');
+		$order_info['succeed_num'] = RC_DB::table('order_info')
+			->select(RC_DB::raw('COUNT(*) AS succeed_num'))
+			->whereRaw(" 1 AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "' ". order_query_sql('finished'))
+			->count();
+		
 	    /* 无效或已取消订单数 */
-	    $order_info['invalid_num'] = $this->db_order_info->field('COUNT(*) AS invalid_num')->where("order_status > '" .OS_CONFIRMED. "' AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "' ")->count('*|invalid_num');
+	    $order_info['invalid_num'] = RC_DB::table('order_info')
+		    ->select(RC_DB::raw('COUNT(*) AS invalid_num'))
+		    ->whereRaw("order_status > '" .OS_CONFIRMED. "' AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "' ")
+		    ->count();
+
 	    return $order_info;
 	 }
 	 
@@ -596,11 +661,15 @@ class admin_order_stats extends ecjia_admin {
 	 	$total_fee = " SUM(" . order_amount_field() . ") AS total_turnover ";
 	 	
 	 	/* 取得订单转化率数据 */
-	 	$order_general = $this->db_order_info->field('COUNT(*) AS total_order_num , '.$total_fee.'')->find('1' . order_query_sql('finished').'');
+// 	 	$order_general = $this->db_order_info->field('COUNT(*) AS total_order_num , '.$total_fee.'')->find('1' . order_query_sql('finished'));
+	 	$order_general = RC_DB::table('order_info')->select(RC_DB::raw('COUNT(*) AS total_order_num , '.$total_fee.''))
+	 		->whereRaw('1' . order_query_sql('finished'))->first();
+	 	
 	 	$order_general['total_turnover'] = floatval($order_general['total_turnover']);
 	 	
 	 	/* 取得商品总点击数量 */
-	 	$click_count = $this->db_goods->where('is_delete = 0')->sum('click_count');
+// 	 	$click_count = $this->db_goods->where('is_delete = 0')->sum('click_count');
+	 	$click_count = RC_DB::table('goods')->where('is_delete', 0)->sum('click_count');
 	 	$click_count = floatval($click_count);
 	 	
 	 	/* 每千个点击的订单数 */

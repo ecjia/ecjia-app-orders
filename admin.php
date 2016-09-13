@@ -111,7 +111,7 @@ class admin extends ecjia_admin {
 		RC_Script::enqueue_script('order_delivery', RC_Uri::home_url('content/apps/orders/statics/js/order_delivery.js'));
 		RC_Script::enqueue_script('feedback', RC_Uri::home_url('content/apps/feedback/statics/js/feedback.js'));
 		
-		$order_query = RC_Loader::load_app_class('order_query','orders');
+		$order_query = RC_Loader::load_app_class('order_query', 'orders');
 		$order_list = $order_query->get_order_list();
 		
 		/* 模板赋值 */
@@ -182,6 +182,7 @@ class admin extends ecjia_admin {
 		
 		/* 取得上一个、下一个订单号 */
 		$composite_status = RC_Cookie::get('composite_status');
+
 		if (!empty($composite_status)) {
 			$filter['composite_status'] = $composite_status;
 			if (!empty($filter['composite_status'])) {
@@ -205,8 +206,10 @@ class admin extends ecjia_admin {
 				}
 			}
 		}
-		$getlast = $this->db_order_info->where(array_merge(array('order_id' => array('lt'=>$order_id)), $where))->max('order_id');	
-		$getnext = $this->db_order_info->where(array_merge(array('order_id' => array('gt'=>$order_id)),$where))->min('order_id');
+		//TODO
+		$getlast = $this->db_order_info->where(array_merge(array('order_id' => array('lt' => $order_id)), $where))->max('order_id');
+		$getnext = $this->db_order_info->where(array_merge(array('order_id' => array('gt' => $order_id)), $where))->min('order_id');
+		
 		$this->assign('prev_id', $getlast);
 		$this->assign('next_id', $getnext);
 		unset($where);
@@ -224,7 +227,7 @@ class admin extends ecjia_admin {
 // 		$this->assign('agency_list', $data);
 		
 		/* 取得区域名 */
-		$order['region']	= get_regions($order_id);
+		$order['region'] = get_regions($order_id);
 		
 		/* 格式化金额 */
 		if ($order['order_amount'] < 0) {
@@ -299,14 +302,14 @@ class admin extends ecjia_admin {
 				'alias'	=> 'b',
 				'on'	=> 'g.brand_id = b.brand_id ',
 			),
-            'region_warehouse' => array(
-                'type'  => Component_Model_View::TYPE_LEFT_JOIN,
-                'alias' => 'rw',
-                'field' => ',rw.region_name',
-                'on'    => 'rw.region_id = o.warehouse_id ',
-            ),
+//             'region_warehouse' => array(
+//                 'type'  => Component_Model_View::TYPE_LEFT_JOIN,
+//                 'alias' => 'rw',
+//                 'field' => ',rw.region_name',
+//                 'on'    => 'rw.region_id = o.warehouse_id ',
+//             ),
 		);	
-		$data = $this->db_order_goodview->join(array('products', 'goods', 'brand', 'region_warehouse'))->where(array('o.order_id' => $order_id))->select();
+		$data = $this->db_order_goodview->join(array('products', 'goods', 'brand'))->where(array('o.order_id' => $order_id))->select();
 
 		if (!empty($data)) {
 			foreach ($data as $key => $row) {

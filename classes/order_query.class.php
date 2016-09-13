@@ -186,40 +186,41 @@ class order_query extends order {
 	}
 	
     public function get_order_list($pagesize = '15') {
-    	$db_order 		= RC_Loader::load_app_model('order_info_model','orders');
-	    $dbview 		= RC_Loader::load_app_model('order_order_info_viewmodel','orders');
-	    //$db_admin 	= RC_Loader::load_model('admin_user_model');
-		$db_admin 		= RC_Model::model('admin_user_model');
-	    $args = $_GET;
-	    $db_viewmodel 	= RC_Loader::load_app_model('merchants_order_goods_viewmodel','orders');
+//     	$db_order 		= RC_Loader::load_app_model('order_info_model','orders');
+// 	    $dbview 		= RC_Loader::load_app_model('order_order_info_viewmodel','orders');
+// 		$db_admin 		= RC_Model::model('admin_user_model');
+	    $args 			= $_GET;
+// 	    $db_viewmodel 	= RC_Loader::load_app_model('merchants_order_goods_viewmodel','orders');
 	   
         /* 过滤信息 */
-        $filter['order_sn'] 			= empty($args['order_sn']) 			? '' : trim($args['order_sn']);
-        $filter['consignee'] 			= empty($args['consignee']) 		? '' : trim($args['consignee']);
-        $filter['keywords']				= empty($args['keywords'])			? '' : trim($args['keywords']);
-        $filter['email'] 				= empty($args['email']) 			? '' : trim($args['email']);
-        $filter['address'] 				= empty($args['address']) 			? '' : trim($args['address']);
-        $filter['zipcode'] 				= empty($args['zipcode']) 			? '' : trim($args['zipcode']);
-        $filter['tel'] 					= empty($args['tel']) 				? '' : trim($args['tel']);
-        $filter['mobile'] 				= empty($args['mobile']) 			? 0 : intval($args['mobile']);
-        $filter['country'] 				= empty($args['country']) 			? 0 : intval($args['country']);
-        $filter['province'] 			= empty($args['province']) 			? 0 : intval($args['province']);
-        $filter['city'] 				= empty($args['city']) 				? 0 : intval($args['city']);
-        $filter['district'] 			= empty($args['district']) 			? 0 : intval($args['district']);
-        $filter['shipping_id'] 			= empty($args['shipping_id']) 		? 0 : intval($args['shipping_id']);
-        $filter['pay_id'] 				= empty($args['pay_id']) 			? 0 : intval($args['pay_id']);
-        $filter['order_status'] 		= isset($args['order_status']) 		? intval($args['order_status']) : -1;
-        $filter['status'] 		        = isset($args['status']) 		    ? intval($args['status']) : -1;
-        $filter['shipping_status'] 		= isset($args['shipping_status']) 	? intval($args['shipping_status']) : -1;
-        $filter['pay_status'] 			= isset($args['pay_status']) 		? intval($args['pay_status']) : -1;
-        $filter['user_id'] 				= empty($args['user_id']) 			? 0 : intval($args['user_id']);
-        $filter['user_name'] 			= empty($args['user_name']) 		? '' : trim($args['user_name']);
-        $filter['composite_status'] 	= isset($args['composite_status']) 	? intval($args['composite_status']) : -1;
-        $filter['group_buy_id'] 		= isset($args['group_buy_id']) 		? intval($args['group_buy_id']) : 0;
-        $filter['sort_by'] 				= empty($args['sort_by']) 			? 'add_time' : trim($args['sort_by']);
-        $filter['sort_order'] 			= empty($args['sort_order']) 		? 'DESC' : trim($args['sort_order']);
-        $filter['start_time'] 			= empty($args['start_time']) 		? '' : (strpos($args['start_time'], '-') > 0 ?  RC_Time::local_strtotime($_GET['start_time']) : $_GET['start_time']);
-        $filter['end_time'] 			= empty($args['end_time']) 			? '' : (strpos($args['end_time'], '-') > 0 ?  RC_Time::local_strtotime($_GET['end_time']) : $_GET['end_time']);
+        $filter['order_sn'] 			= empty($args['order_sn']) 			? '' 	: trim($args['order_sn']);
+        $filter['consignee'] 			= empty($args['consignee']) 		? '' 	: trim($args['consignee']);
+        $filter['keywords']				= empty($args['keywords'])			? '' 	: trim($args['keywords']);
+        $filter['email'] 				= empty($args['email']) 			? '' 	: trim($args['email']);
+        $filter['address'] 				= empty($args['address']) 			? '' 	: trim($args['address']);
+        $filter['zipcode'] 				= empty($args['zipcode']) 			? '' 	: trim($args['zipcode']);
+        $filter['tel'] 					= empty($args['tel']) 				? '' 	: trim($args['tel']);
+        $filter['mobile'] 				= empty($args['mobile']) 			? 0 	: intval($args['mobile']);
+        $filter['country'] 				= empty($args['country']) 			? 0 	: intval($args['country']);
+        $filter['province'] 			= empty($args['province']) 			? 0 	: intval($args['province']);
+        $filter['city'] 				= empty($args['city']) 				? 0 	: intval($args['city']);
+        $filter['district'] 			= empty($args['district']) 			? 0 	: intval($args['district']);
+        $filter['shipping_id'] 			= empty($args['shipping_id']) 		? 0 	: intval($args['shipping_id']);
+        $filter['pay_id'] 				= empty($args['pay_id']) 			? 0 	: intval($args['pay_id']);
+        
+        $filter['order_status'] 		= isset($args['order_status']) 		? intval($args['order_status']) 		: -1;
+        $filter['status'] 		        = isset($args['status']) 		    ? intval($args['status']) 				: -1;
+        $filter['shipping_status'] 		= isset($args['shipping_status']) 	? intval($args['shipping_status']) 		: -1;
+        $filter['pay_status'] 			= isset($args['pay_status']) 		? intval($args['pay_status']) 			: -1;
+        $filter['user_id'] 				= empty($args['user_id']) 			? 0 									: intval($args['user_id']);
+        $filter['user_name'] 			= empty($args['user_name']) 		? '' 									: trim($args['user_name']);
+        $filter['composite_status'] 	= isset($args['composite_status']) 	? intval($args['composite_status']) 	: -1;
+        $filter['group_buy_id'] 		= isset($args['group_buy_id']) 		? intval($args['group_buy_id']) 		: 0;
+        $filter['sort_by'] 				= empty($args['sort_by']) 			? 'add_time' 							: trim($args['sort_by']);
+        $filter['sort_order'] 			= empty($args['sort_order']) 		? 'DESC' 								: trim($args['sort_order']);
+        
+        $filter['start_time'] 			= empty($args['start_time']) 		? '' : (strpos($args['start_time'], '-') > 0 	?  RC_Time::local_strtotime($_GET['start_time']) 	: $_GET['start_time']);
+        $filter['end_time'] 			= empty($args['end_time']) 			? '' : (strpos($args['end_time'], '-') > 0 		?  RC_Time::local_strtotime($_GET['end_time']) 		: $_GET['end_time']);
 		
         /* 团购订单 */
         if ($filter['group_buy_id']) {
@@ -276,40 +277,65 @@ class order_query extends order {
 //             $count = $dbview->join(null)->where($this->where)->count();
 //         }
 		
-        $count = $dbview->join('users')->where($this->where)->count();
-        //实例化分页
+//         $count = $dbview->join('users')->where($this->where)->count();
+        
+        $db_order_info = RC_DB::table('order_info as o')->leftJoin('users as u', RC_DB::raw('o.user_id'), '=', RC_DB::raw('u.user_id'));
+        
+        $db_order_goods = RC_DB::table('order_goods as og')->leftJoin('order_info as o', RC_DB::raw('o.order_id'), '=', RC_DB::raw('og.order_id'))
+    		->leftJoin('seller_shopinfo as ssi', RC_DB::raw('ssi.id'), '=', RC_DB::raw('o.seller_id'))
+    		->leftJoin('merchants_shop_information as ms', RC_DB::raw('ssi.shop_id'), '=', RC_DB::raw('ms.shop_id'))
+    		->leftJoin('users as u', RC_DB::raw('u.user_id'), '=', RC_DB::raw('o.user_id'));;
+    		
+        if (is_array($this->where)) {
+        	foreach ($this->where as $k => $v) {
+        		if (!is_numeric($k)) {
+        			if (is_array($v)) {
+        				foreach ($v as $key => $val) {
+        					if ($key == 'like') {
+        						$db_order_info->where(RC_DB::raw($k), 'like', $val);
+        						$db_order_goods->where(RC_DB::raw($k), 'like', $val);
+        					}
+        				}
+        			} else {
+        				$db_order_info->where(RC_DB::raw($k), $v);
+        				$db_order_goods->where(RC_DB::raw($k), $v);
+        			}
+        		} else {
+        			$db_order_info->whereRaw($v);
+        			$db_order_goods->whereRaw($v);
+        		}
+        	}
+        }
+        $count = $db_order_info->count();
+        
         $page = new ecjia_page($count, $pagesize, 6);
-
-        $filter['record_count']   = $count;
-//        $filter['page_count']     = $filter['record_count'] > 0 ? ceil($filter['record_count'] / $filter['page_size']) : 1;
-
-        /* 查询 */
-//         $dbview->view 	= array(
-//             'users' => array(
-//                 'type'  	=> Component_Model_View::TYPE_LEFT_JOIN,
-//                 'alias'		=> 'u',
-//                 'field' 	=> "o.order_id, o.user_id, o.order_sn, o.add_time, o.order_status, o.shipping_status, o.order_amount, o.money_paid,o.pay_status, o.consignee, o.address, o.email, o.tel, o.extension_code, o.extension_id ,(" . $this->order_amount_field('o.') . ") AS total_fee,IFNULL(u.user_name, '" .RC_Lang::lang(anonymous). "') AS buyer,u.email as user_mail,u.mobile_phone as user_phone",
-//                 'on'    	=> 'u.user_id = o.user_id ',
-//             )
-//         );
+        $filter['record_count'] = $count;
 
         $fields = "o.order_id, o.order_sn, o.add_time, o.order_status, o.shipping_status, o.order_amount, o.money_paid,o.pay_status, o.consignee, o.address, o.email, o.tel, o.mobile, o.extension_code, o.extension_id ,(" . $this->order_amount_field('o.') . ") AS total_fee, ssi.shop_name, u.user_name";
-        $row = $db_viewmodel->field($fields)->where($this->where)->order(array($filter['sort_by'] => $filter['sort_order']))->limit($page->limit())->group('o.order_id')->select();
+//         $row = $db_viewmodel->field($fields)->where($this->where)->order(array($filter['sort_by'] => $filter['sort_order']))->limit($page->limit())->group('o.order_id')->select();
+    	$row = $db_order_goods
+    		->selectRaw($fields)
+    		->orderby($filter['sort_by'], $filter['sort_order'])
+    		->take($pagesize)
+    		->skip($page->start_id-1)
+    		->groupby(RC_DB::raw('o.order_id'))
+    		->get();
+        
     	foreach (array('order_sn', 'consignee', 'email', 'address', 'zipcode', 'tel', 'user_name') AS $val) {
             $filter[$val] = stripslashes($filter[$val]);
         }
-		RC_Loader::load_app_func('common','goods');
+		RC_Loader::load_app_func('common', 'goods');
+		
 		$order = array();
         /* 格式话数据 */
 	    if (!empty($row)) {
 	        foreach ($row AS $key => $value) {
-
 	            $order[$value['order_id']]['formated_order_amount'] = price_format($value['order_amount']);
 				$order[$value['order_id']]['formated_money_paid'] 	= price_format($value['money_paid']);
 				$order[$value['order_id']]['formated_total_fee'] 	= price_format($value['total_fee']);
 	            $order[$value['order_id']]['short_order_time']		= RC_Time::local_date('Y-m-d H:i', $value['add_time']);
 	            $order[$value['order_id']]['shop_name'] 			= $value['shop_name'];
-                $order[$value['order_id']]['user_name']             = empty($value['user_name']) ? '匿名购物' : $value['user_name'];
+                $order[$value['order_id']]['user_name']             = empty($value['user_name']) ? RC_Lang::get('orders.order.anonymous') : $value['user_name'];
                 $order[$value['order_id']]['order_id']              = $value['order_id'];
                 $order[$value['order_id']]['main_order_id']         = $value['main_order_id'];
                 $order[$value['order_id']]['order_sn']              = $value['order_sn'];
@@ -334,8 +360,6 @@ class order_query extends order {
 	            } else {
 	                $order[$value['order_id']]['can_remove'] = 0;
 	            }
-                
-                
 	        }
 	    }
 	    

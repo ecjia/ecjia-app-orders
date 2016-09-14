@@ -12,13 +12,16 @@ class detail_module extends api_front implements api_interface {
 		RC_Loader::load_app_func('order', 'orders');
 		$order_id = $this->requestData('order_id', 0);
 		if (!$order_id) {
-			return new ecjia_error(101, '参数错误');
+			return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
 		}
 		
 		$user_id = $_SESSION['user_id'];
 		
 		/* 订单详情 */
 		$order = get_order_detail($order_id, $user_id);
+		if(is_ecjia_error($order)) {
+		    return $order;
+		}
 		/*返回数据处理*/
 		$order['order_id'] 			= intval($order['order_id']);
 		$order['main_order_id'] 	= intval($order['main_order_id']);
@@ -40,7 +43,7 @@ class detail_module extends api_front implements api_interface {
 		}
 		//收货人地址
 		$db_region = RC_Model::model('shipping/region_model');
-		$region_name = $db_region->where(array('region_id' => array('in'=>$order['country'],$order['province'],$order['city'],$order['district'])))->order('region_type')->select();
+		$region_name = $db_region->where(array('region_id' => array('in'=>$order['country'], $order['province'], $order['city'], $order['district'])))->order('region_type')->select();
 		$order['country']	= $region_name[0]['region_name'];
 		$order['province']	= $region_name[1]['region_name'];
 		$order['city']		= $region_name[2]['region_name'];

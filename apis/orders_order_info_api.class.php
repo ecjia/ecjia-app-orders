@@ -1,7 +1,7 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
 /**
- * 订单祥情接口
+ * 订单详情接口
  * @author royalwang
  *
  */
@@ -13,7 +13,7 @@ class orders_order_info_api extends Component_Event_Api {
      *
      * @return array
      */
-	public function call(&$options) {	
+	public function call(&$options) {
 	    if (!is_array($options) 
 	        || (!isset($options['order_id']) 
 	        && !isset($options['order_sn']))) {

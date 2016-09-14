@@ -280,11 +280,6 @@ class order_query extends order {
 //         $count = $dbview->join('users')->where($this->where)->count();
         
         $db_order_info = RC_DB::table('order_info as o')->leftJoin('users as u', RC_DB::raw('o.user_id'), '=', RC_DB::raw('u.user_id'));
-        
-        $db_order_goods = RC_DB::table('order_goods as og')->leftJoin('order_info as o', RC_DB::raw('o.order_id'), '=', RC_DB::raw('og.order_id'))
-    		->leftJoin('seller_shopinfo as ssi', RC_DB::raw('ssi.id'), '=', RC_DB::raw('o.seller_id'))
-    		->leftJoin('merchants_shop_information as ms', RC_DB::raw('ssi.shop_id'), '=', RC_DB::raw('ms.shop_id'))
-    		->leftJoin('users as u', RC_DB::raw('u.user_id'), '=', RC_DB::raw('o.user_id'));;
     		
         if (is_array($this->where)) {
         	foreach ($this->where as $k => $v) {
@@ -293,16 +288,13 @@ class order_query extends order {
         				foreach ($v as $key => $val) {
         					if ($key == 'like') {
         						$db_order_info->where(RC_DB::raw($k), 'like', $val);
-        						$db_order_goods->where(RC_DB::raw($k), 'like', $val);
         					}
         				}
         			} else {
         				$db_order_info->where(RC_DB::raw($k), $v);
-        				$db_order_goods->where(RC_DB::raw($k), $v);
         			}
         		} else {
         			$db_order_info->whereRaw($v);
-        			$db_order_goods->whereRaw($v);
         		}
         	}
         }
@@ -313,7 +305,11 @@ class order_query extends order {
 
         $fields = "o.order_id, o.order_sn, o.add_time, o.order_status, o.shipping_status, o.order_amount, o.money_paid,o.pay_status, o.consignee, o.address, o.email, o.tel, o.mobile, o.extension_code, o.extension_id ,(" . $this->order_amount_field('o.') . ") AS total_fee, ssi.shop_name, u.user_name";
 //         $row = $db_viewmodel->field($fields)->where($this->where)->order(array($filter['sort_by'] => $filter['sort_order']))->limit($page->limit())->group('o.order_id')->select();
-    	$row = $db_order_goods
+    	
+    	$row = $db_order_info
+    		->leftJoin('order_goods as og', RC_DB::raw('o.order_id'), '=', RC_DB::raw('og.order_id'))
+    		->leftJoin('seller_shopinfo as ssi', RC_DB::raw('ssi.id'), '=', RC_DB::raw('o.seller_id'))
+    		->leftJoin('merchants_shop_information as ms', RC_DB::raw('ssi.shop_id'), '=', RC_DB::raw('ms.shop_id'))
     		->selectRaw($fields)
     		->orderby($filter['sort_by'], $filter['sort_order'])
     		->take($pagesize)

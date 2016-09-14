@@ -108,19 +108,14 @@ function pay_fee($payment_id, $order_amount, $cod_fee=null) {
 * @return  array   订单信息（金额都有相应格式化的字段，前缀是formated_）
 */
 function order_info($order_id, $order_sn = '') {
-// 	RC_Loader::load_app_func('common', 'goods');
-// 	$db = RC_Loader::load_app_model('order_info_model', 'orders');
-	
 	$db_order_info = RC_DB::table('order_info');
 	/* 计算订单各种费用之和的语句 */
 	$total_fee = " (goods_amount - discount + tax + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee) AS total_fee ";
 	
 	$order_id = intval($order_id);
 	if ($order_id > 0) {
-// 		$order = $db->field('*,'.$total_fee)->find(array('order_id' => $order_id));
 		$db_order_info->where('order_id', $order_id);
 	} else {
-// 		$order = $db->field('*,'.$total_fee)->find(array('order_sn' => $order_sn));
 		$db_order_info->where('order_sn', $order_sn);
 	}
 	$order = $db_order_info->select('*', RC_DB::raw($total_fee))->first();
@@ -163,10 +158,15 @@ function order_finished($order) {
 * @return  array   订单商品数组
 */
 function order_goods($order_id) {
-	$db = RC_Loader::load_app_model('order_goods_model','orders');
-	$data = $db->field('rec_id, goods_id, goods_name, goods_sn,product_id, market_price, goods_number,goods_price, goods_attr, is_real, parent_id, is_gift,goods_price * goods_number|subtotal, extension_code')->where(array('order_id' => $order_id))->select();
+// 	$db = RC_Loader::load_app_model('order_goods_model','orders');
+// 	$data = $db->field('rec_id, goods_id, goods_name, goods_sn,product_id, market_price, goods_number,goods_price, goods_attr, is_real, parent_id, is_gift,goods_price * goods_number|subtotal, extension_code')->where(array('order_id' => $order_id))->select();
+
+	$data = RC_DB::table('order_goods')
+		->selectRaw('rec_id, goods_id, goods_name, goods_sn, product_id, market_price, goods_number, goods_price, goods_attr, is_real, parent_id, is_gift, goods_price * goods_number as subtotal, extension_code')
+		->where('order_id', $order_id)
+		->get();
 	$goods_list = array();
-	if(!empty($data)) {
+	if (!empty($data)) {
 		foreach ($data as $row) {
 			if ($row['extension_code'] == 'package_buy') {
 				$row['package_goods_list'] = get_package_goods($row['goods_id']);
@@ -203,16 +203,23 @@ function order_amount($order_id, $include_gift = true) {
 * @return  array   ('weight' => **, 'amount' => **, 'formated_weight' => **)
 */
 function order_weight_price($order_id) {
-	$dbview = RC_Loader::load_app_model('order_order_goods_viewmodel', 'orders');
-	$dbview->view = array(
-		'goods' => array(
-			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-			'alias'	=> 'g',
-			'field'	=> 'SUM(g.goods_weight * o.goods_number)|weight,SUM(o.goods_price * o.goods_number)|amount,SUM(o.goods_number)|number',
-			'on'	=> 'o.goods_id = g.goods_id ',
-		)
-	);
-	$row = $dbview->find(array('o.order_id' => $order_id));
+// 	$dbview = RC_Loader::load_app_model('order_order_goods_viewmodel', 'orders');
+// 	$dbview->view = array(
+// 		'goods' => array(
+// 			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+// 			'alias'	=> 'g',
+// 			'field'	=> 'SUM(g.goods_weight * o.goods_number)|weight,SUM(o.goods_price * o.goods_number)|amount,SUM(o.goods_number)|number',
+// 			'on'	=> 'o.goods_id = g.goods_id ',
+// 		)
+// 	);
+// 	$row = $dbview->find(array('o.order_id' => $order_id));
+	
+	$row = $db = RC_DB::table('order_goods as o')
+		->leftJoin('goods as g', RC_DB::raw('g.goods_id'), '=', RC_DB::raw('o.goods_id'))
+		->selectRaw('SUM(g.goods_weight * o.goods_number) as weight, SUM(o.goods_price * o.goods_number) as amount, SUM(o.goods_number) as number')
+		->where(RC_DB::raw('o.order_id'), $order_id)
+		->first();
+
 	$row['weight'] = floatval($row['weight']);
 	$row['amount'] = floatval($row['amount']);
 	$row['number'] = intval($row['number']);
@@ -581,8 +588,10 @@ function address_list($user_id) {
 //	 $sql = "SELECT * FROM " . $GLOBALS['ecs']->table('user_address') ." WHERE user_id = '$user_id'";
 //	 return $GLOBALS['db']->getAll($sql);
 
-	$db_users = RC_Loader::load_app_model("user_address_model","user");
-	return $db_users->where(array('user_id' => $user_id))->select();
+// 	$db_users = RC_Loader::load_app_model("user_address_model","user");
+// 	return $db_users->where(array('user_id' => $user_id))->select();
+	
+	return RC_DB::table('user_address')->where('user_id', $user_id)->get();
 }
 
 /**
@@ -635,11 +644,11 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
 //	die('anonymous, cannot return to account balance');
 //	die('invalid params');
 
-	$db = RC_Loader::load_app_model('user_account_model','user');
+// 	$db = RC_Loader::load_app_model('user_account_model', 'user');
 	/* 检查参数 */
 	$user_id = $order['user_id'];
 	if ($user_id == 0 && $refund_type == 1) {
-		ecjia_admin::$controller->showmessage(__('匿名用户不能返回退款到帐户余额！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.refund_error_notice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	$amount = $refund_amount > 0 ? $refund_amount : $order['money_paid'];
@@ -648,7 +657,7 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
 	}
 
 	if (!in_array($refund_type, array(1, 2, 3))) {
-		ecjia_admin::$controller->showmessage(__('操作有误！请重新操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.error_notice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	/* 备注信息 */
@@ -665,7 +674,7 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
 			'user_money'	=> $amount,
 			'change_desc'	=> $change_desc
 		);
-		RC_Api::api('user', 'account_change_log',$options);
+		RC_Api::api('user', 'account_change_log', $options);
 		return true;
 	} elseif (2 == $refund_type) {
 		/* 如果非匿名，退回余额 */
@@ -675,7 +684,7 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
 				'user_money'	=> $amount,
 				'change_desc'	=> $change_desc
 			);
-			RC_Api::api('user', 'account_change_log',$options);
+			RC_Api::api('user', 'account_change_log', $options);
 		}
 
 		/* user_account 表增加提款申请记录 */
@@ -689,7 +698,8 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
 			'admin_note'	=> sprintf(RC_Lang::lang('order_refund'), $order['order_sn']),
 			'is_paid'		=> 0
 		);
-		$db->insert($account);
+// 		$db->insert($account);
+		RC_DB::table('user_account')->insert($account);
 		return true;
 	} else {
 		return true;
@@ -712,18 +722,18 @@ function exist_real_goods($order_id = 0, $flow_type = CART_GENERAL_GOODS) {
 //	$sql = "SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('order_goods') .
 //	" WHERE order_id = '$order_id' AND is_real = 1";
 //	return $GLOBALS['db']->getOne($sql) > 0;
-
-	$db_cart	= RC_Loader::load_app_model('cart_model', 'cart');
-	$db_order	= RC_Loader::load_app_model('order_goods_model','orders');
+	
 	if ($order_id <= 0) {
-// 		$query	= $db_cart->where(array('session_id' => SESS_ID , 'is_real' => 1 , 'rec_type' => $flow_type))->count();
+		$db_cart = RC_DB::table('cart')->where('is_real', 1)->where('rec_type', $flow_type);
+		
 		if ($_SESSION['user_id']) {
-			$query 	= $db_cart->where(array('user_id' => $_SESSION['user_id'] , 'is_real' => 1 , 'rec_type' => $flow_type))->count();
+			$db_cart->where('user_id', $_SESSION['user_id']);
 		} else {
-			$query 	= $db_cart->where(array('session_id' => SESS_ID , 'is_real' => 1 , 'rec_type' => $flow_type))->count();
+			$db_cart->where('session_id', SESS_ID);
 		}
+		$query = $db_cart->count();
 	} else {
-		$query	= $db_order->where(array('order_id' => $order_id , 'is_real' => 1))->count();
+		$query = RC_DB::table('order_goods')->where('order_id', $order_id)->where('is_real', 1)->count();
 	}
 	return $query > 0; 
 }
@@ -2519,7 +2529,7 @@ function assign_adminlog_content() {
 // 		return " AND {$alias}order_status = '" . OS_CONFIRMED . "'" .
 // 		" AND {$alias}shipping_status " . db_create_in(array(SS_SHIPPED, SS_RECEIVED)) . " ";
 // 	} else {
-// 		ecjia_admin::$controller->showmessage(__('操作有误！请重新操作！') , ecjia_admin::MSGTYPE_HTML | ecjia_admin::MSGSTAT_ERROR);
+// 		ecjia_front::$controller->showmessage(__('操作有误！请重新操作！') , ecjia_admin::MSGTYPE_HTML | ecjia_admin::MSGSTAT_ERROR);
 // 	}
 // }
 

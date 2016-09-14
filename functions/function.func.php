@@ -94,13 +94,11 @@ function return_user_surplus_integral_bonus($order)
  * @param   int     $order_id   订单id
  * @return  bool
  */
-function update_order_amount($order_id)
-{
-	$db = RC_Loader::load_app_model('order_info_model', 'orders');
-	
-	$query = $db->dec('order_amount','order_id='.$order_id,'order_amount+'.order_due_field());
+function update_order_amount($order_id) {
+// 	$db = RC_Loader::load_app_model('order_info_model', 'orders');
+// 	$query = $db->dec('order_amount','order_id='.$order_id,'order_amount+'.order_due_field());
 
-	return $query;
+	return RC_DB::table('order_info')->where('order_id', $order_id)->decrement('order_amount', 'order_amount+'.order_due_field());
 }
 
 /**
@@ -131,7 +129,7 @@ function operable_list($order) {
 	}
 
 	/* 取得订单支付方式是否货到付款 */
-	$payment_method = RC_Loader::load_app_class('payment_method','payment');
+	$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
 	$payment = $payment_method->payment_info($order['pay_id']);
 
 	$is_cod  = $payment['is_cod'] == 1;
@@ -326,18 +324,25 @@ function update_pay_log($order_id) {
 	$db_pay		= RC_Loader::load_app_model('pay_log_model', 'orders');
 	
 	$order_id = intval($order_id);
+	
 	if ($order_id > 0) {
-		$order_amount = $db_order->field('order_amount')->find('order_id = "'.$order_id.'"');
-		$order_amount = $order_amount['order_amount'];
+// 		$order_amount = $db_order->field('order_amount')->find('order_id = "'.$order_id.'"');
+// 		$order_amount = $order_amount['order_amount'];
+		
+		$order_amount = RC_DB::table('order_info')->where('order_id', $order_id)->pluck('order_amount');
+		
 		if (!is_null($order_amount)) {
-			$query = $db_pay->field('log_id')->find('order_id = "'.$order_id.'" and order_type = "'.PAY_ORDER.'" and is_paid = 0');
-			$log_id = intval($query['log_id']);
+// 			$query = $db_pay->field('log_id')->find('order_id = "'.$order_id.'" and order_type = "'.PAY_ORDER.'" and is_paid = 0');
+// 			$log_id = intval($query['log_id']);
+			$log_id = RC_DB::table('pay_log')->whereRaw('order_id = "'.$order_id.'" and order_type = "'.PAY_ORDER.'" and is_paid = 0')->pluck('log_id');
+			
 			if ($log_id > 0) {
 				/* 未付款，更新支付金额 */
 				$data = array(
 					'order_amount' => $order_amount,
 				);
-				$db_pay->where(array('log_id' =>$log_id))->update($data);
+// 				$db_pay->where(array('log_id' => $log_id))->update($data);
+				RC_DB::table('pay_log')->where('log_id', $log_id)->update($data);
 			} else {
 				/* 已付款，生成新的pay_log */
 				$data = array(
@@ -346,7 +351,8 @@ function update_pay_log($order_id) {
 					'order_type'	=> PAY_ORDER,
 					'is_paid'		=> 0,
 				);
-				$db_pay->insert($data);
+// 				$db_pay->insert($data);
+				RC_DB::table('pay_log')->insert($data);
 			}
 		}
 	}
@@ -359,70 +365,83 @@ function update_pay_log($order_id) {
  * @return array
  */
 function get_order_goods($order) {
-	$dbview = RC_Loader::load_app_model('order_order_goods_viewmodel', 'orders');
-
 	$goods_list = array();
 	$goods_attr = array();
 
-	$dbview->view = array(
-		'products' => array(
-			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-			'alias'	=> 'p',
-			'field'	=> "o.*, g.suppliers_id AS suppliers_id,IF(o.product_id > 0, p.product_number, g.goods_number) AS storage, o.goods_attr, IFNULL(b.brand_name, '') AS brand_name, p.product_sn",
-			'on'	=> 'o.product_id = p.product_id ',
-		),
-		'goods' => array(
-			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-			'alias'	=> 'g',
-			'on'	=> 'o.goods_id = g.goods_id ',
-		),
-		'brand' => array(
-			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-			'alias'	=> 'b',
-			'on'	=> 'g.brand_id = b.brand_id ',
-		)
-	);
+// 	$dbview->view = array(
+// 		'products' => array(
+// 			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+// 			'alias'	=> 'p',
+// 			'field'	=> "o.*, g.suppliers_id AS suppliers_id,IF(o.product_id > 0, p.product_number, g.goods_number) AS storage, o.goods_attr, IFNULL(b.brand_name, '') AS brand_name, p.product_sn",
+// 			'on'	=> 'o.product_id = p.product_id ',
+// 		),
+// 		'goods' => array(
+// 			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+// 			'alias'	=> 'g',
+// 			'on'	=> 'o.goods_id = g.goods_id ',
+// 		),
+// 		'brand' => array(
+// 			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+// 			'alias'	=> 'b',
+// 			'on'	=> 'g.brand_id = b.brand_id ',
+// 		)
+// 	);
 
-	$data = $dbview->where(array('o.order_id' => $order['order_id']))->select();
-
-	foreach ($data as $key => $row) {
-		// 虚拟商品支持
-// 		TODO:虚拟商品语言项
-// 		if ($row['is_real'] == 0) {
-// 			/* 取得语言项 */
-// 			$filename = ROOT_PATH . 'plugins/' . $row['extension_code'] . '/languages/common_' . ecjia::config('lang') . '.php';
-// 			if (file_exists($filename)) {
-// 				include_once($filename);
-// 				if (!empty($GLOBALS['_LANG'][$row['extension_code'].'_link'])) {
-// 					$row['goods_name'] = $row['goods_name'] . sprintf(RC_Lang::lang($row['extension_code'].'_link'), $row['goods_id'], $order['order_sn']);
-// 				}
-// 			}
-// 		}
-
-		$row['formated_subtotal']		= price_format($row['goods_price'] * $row['goods_number']);
-		$row['formated_goods_price']	= price_format($row['goods_price']);
-
-		$goods_attr[] = explode(' ', trim($row['goods_attr'])); //将商品属性拆分为一个数组
-
-		if ($row['extension_code'] == 'package_buy') {
-			$row['storage'] = '';
-			$row['brand_name'] = '';
-			$row['package_goods_list'] = get_package_goods_list($row['goods_id']);
+// 	$data = $dbview->where(array('o.order_id' => $order['order_id']))->select();
+	
+	$data = RC_DB::table('order_goods as o')
+		->leftJoin('products as p', RC_DB::raw('p.product_id'), '=', RC_DB::raw('o.product_id'))
+		->leftJoin('goods as g', RC_DB::raw('o.goods_id'), '=', RC_DB::raw('g.goods_id'))
+		->leftJoin('brand as b', RC_DB::raw('g.brand_id'), '=', RC_DB::raw('b.brand_id'))
+		->selectRaw("o.*, g.suppliers_id AS suppliers_id, IF(o.product_id > 0, p.product_number, g.goods_number) AS storage, o.goods_attr, IFNULL(b.brand_name, '') AS brand_name, p.product_sn")
+		->where(RC_DB::raw('o.order_id'), $order['order_id'])
+		->get();
+		
+	$goods_list = array();
+	if (!empty($data)) {
+		foreach ($data as $key => $row) {
+			// 虚拟商品支持
+			// 		TODO:虚拟商品语言项
+			// 		if ($row['is_real'] == 0) {
+			// 			/* 取得语言项 */
+			// 			$filename = ROOT_PATH . 'plugins/' . $row['extension_code'] . '/languages/common_' . ecjia::config('lang') . '.php';
+			// 			if (file_exists($filename)) {
+			// 				include_once($filename);
+			// 				if (!empty($GLOBALS['_LANG'][$row['extension_code'].'_link'])) {
+			// 					$row['goods_name'] = $row['goods_name'] . sprintf(RC_Lang::lang($row['extension_code'].'_link'), $row['goods_id'], $order['order_sn']);
+			// 				}
+			// 			}
+			// 		}
+		
+			$row['formated_subtotal']		= price_format($row['goods_price'] * $row['goods_number']);
+			$row['formated_goods_price']	= price_format($row['goods_price']);
+		
+			$goods_attr[] = explode(' ', trim($row['goods_attr'])); //将商品属性拆分为一个数组
+		
+			if ($row['extension_code'] == 'package_buy') {
+				$row['storage'] = '';
+				$row['brand_name'] = '';
+				$row['package_goods_list'] = get_package_goods_list($row['goods_id']);
+			}
+		
+			//处理货品id
+			$row['product_id'] = empty($row['product_id']) ? 0 : $row['product_id'];
+			$goods_list[] = $row;
 		}
-
-		//处理货品id
-		$row['product_id'] = empty($row['product_id']) ? 0 : $row['product_id'];
-		$goods_list[] = $row;
 	}
+
 
 	$attr	= array();
 	$arr	= array();
-	foreach ($goods_attr AS $index => $array_val) {
-		foreach ($array_val AS $value) {
-			$arr = explode(':', $value);//以 : 号将属性拆开
-			$attr[$index][] =  @array('name' => $arr[0], 'value' => $arr[1]);
+	if (!empty($goods_attr)) {
+		foreach ($goods_attr AS $index => $array_val) {
+			foreach ($array_val AS $value) {
+				$arr = explode(':', $value);//以 : 号将属性拆开
+				$attr[$index][] =  @array('name' => $arr[0], 'value' => $arr[1]);
+			}
 		}
 	}
+
 	return array('goods_list' => $goods_list, 'attr' => $attr);
 }
 
@@ -857,7 +876,8 @@ function package_sended($package_id, $goods_id, $order_id, $extension_code, $pro
 		)
 	);
 
-	if($product_id > 0) {
+	//TODO wu
+	if ($product_id > 0) {
 		$send = $dbview->where('o.order_id = "'.$order_id.'" AND dg.parent_id = "'.$package_id.'" AND dg.goods_id = "'.$goods_id.'" AND dg.extension_code = "'.$extension_code.'" and dg.product_id = "'.$product_id.'"')->in(array('o.status'=>array(0,2)))->sum('dg.send_number');
 	} else {
 		$send = $dbview->where('o.order_id = "'.$order_id.'" AND dg.parent_id = "'.$package_id.'" AND dg.goods_id = "'.$goods_id.'" AND dg.extension_code = "'.$extension_code.'"')->in(array('o.status'=>array(0,2)))->sum('dg.send_number');
@@ -1484,25 +1504,24 @@ function get_all_delivery_finish($order_id) {
 }
 
 /**
-	 * 合并订单
-	 * @param   string  $from_order_sn  从订单号
-	 * @param   string  $to_order_sn    主订单号
-	 * @return  成功返回true，失败返回错误信息
-	 */
-function merge_order($from_order_sn, $to_order_sn) 
-{
+ * 合并订单
+ * @param   string  $from_order_sn  从订单号
+ * @param   string  $to_order_sn    主订单号
+ * @return  成功返回true，失败返回错误信息
+ */
+function merge_order($from_order_sn, $to_order_sn) {
 	$db_order_good 	= RC_Loader::load_app_model('order_goods_model', 'orders');
 	$db_order_info 	= RC_Loader::load_app_model('order_info_model', 'orders');
 	$db_pay_log 	= RC_Loader::load_app_model('pay_log_model', 'orders');
 
 	/* 订单号不能为空 */
 	if (trim($from_order_sn) == '' || trim($to_order_sn) == '') {
-		ecjia::$controller->showmessage(RC_Lang::lang('order_sn_not_null'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.order_sn_not_null'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	/* 订单号不能相同 */
 	if ($from_order_sn == $to_order_sn) {
-		ecjia::$controller->showmessage(RC_Lang::lang('two_order_sn_same'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.two_order_sn_same'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	/* 取得订单信息 */
@@ -1511,37 +1530,37 @@ function merge_order($from_order_sn, $to_order_sn)
 
 	/* 检查订单是否存在 */
 	if (!$from_order) {
-		ecjia::$controller->showmessage(sprintf(RC_Lang::lang('order_not_exist'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.order_not_exist'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	} elseif (!$to_order) {
-		ecjia::$controller->showmessage(sprintf(RC_Lang::lang('order_not_exist'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.order_not_exist'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	/* 检查合并的订单是否为普通订单，非普通订单不允许合并 */
 	if ($from_order['extension_code'] != '' || $to_order['extension_code'] != 0) {
-		ecjia::$controller->showmessage(RC_Lang::lang('merge_invalid_order'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.merge_invalid_order'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	/* 检查订单状态是否是已确认或未确认、未付款、未发货 */
 	if ($from_order['order_status'] != OS_UNCONFIRMED && $from_order['order_status'] != OS_CONFIRMED) {
-		ecjia::$controller->showmessage(sprintf(RC_Lang::lang('os_not_unconfirmed_or_confirmed'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.os_not_unconfirmed_or_confirmed'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		
 	} elseif ($from_order['pay_status'] != PS_UNPAYED) {
-		ecjia::$controller->showmessage(sprintf(RC_Lang::lang('ps_not_unpayed'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.ps_not_unpayed'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	} elseif ($from_order['shipping_status'] != SS_UNSHIPPED) {
-		ecjia::$controller->showmessage(sprintf(RC_Lang::lang('ss_not_unshipped'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.ss_not_unshipped'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	if ($to_order['order_status'] != OS_UNCONFIRMED && $to_order['order_status'] != OS_CONFIRMED) {
-		ecjia::$controller->showmessage(sprintf(RC_Lang::lang('os_not_unconfirmed_or_confirmed'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.os_not_unconfirmed_or_confirmed'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	} elseif ($to_order['pay_status'] != PS_UNPAYED) {
-		ecjia::$controller->showmessage(sprintf(RC_Lang::lang('ps_not_unpayed'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.ps_not_unpayed'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	} elseif ($to_order['shipping_status'] != SS_UNSHIPPED) {
-		ecjia::$controller->showmessage(sprintf(RC_Lang::lang('ss_not_unshipped'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.ss_not_unshipped'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	/* 检查订单用户是否相同 */
 	if ($from_order['user_id'] != $to_order['user_id']) {
-		ecjia::$controller->showmessage(RC_Lang::lang('order_user_not_same'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.order_user_not_same'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	/* 合并订单 */
@@ -1617,9 +1636,13 @@ function merge_order($from_order_sn, $to_order_sn)
 	
 	/* 插入订单表 */
 	$order['order_sn'] = get_order_sn(); 
-	$result = $db_order_info->insert(rc_addslashes($order));
-	if (!$result) {
-		ecjia_admin::$controller->showmessage(__('订单合并失败！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+
+	//TODO wu
+	$order_id = $db_order_info->insert(rc_addslashes($order));
+// 	$order_id = RC_DB::table('order_info')->insertGetId(rc_addslashes($order));
+	
+	if (!$order_id) {
+		ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.order_merge_invalid'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 //	do {
 //		$order['order_sn'] = get_order_sn();
@@ -1633,30 +1656,31 @@ function merge_order($from_order_sn, $to_order_sn)
 //	}
 //	while (true); // 防止订单号重复
 	
-	/* 订单号 */
-	$order_id = $db_order_info->last_insert_id();
-	
 	/* 更新订单商品 */
 	$data = array(
-			'order_id' => $order_id
+		'order_id' => $order_id
 	);
-	$db_order_good->in(array('order_id' => array($from_order['order_id'], $to_order['order_id'])))->update($data);
+// 	$db_order_good->in(array('order_id' => array($from_order['order_id'], $to_order['order_id'])))->update($data);
+	RC_DB::table('order_goods')->whereIn('order_id', array($from_order['order_id'], $to_order['order_id']))->update($data);
 	
 	$payment_method = RC_Loader::load_app_class('payment_method','payment');
 	/* 插入支付日志 */
 	$payment_method->insert_pay_log($order_id, $order['order_amount'], PAY_ORDER);
 	/* 删除原订单 */
-	$db_order_info->in(array('order_id' => array($from_order['order_id'], $to_order['order_id'])))->delete();
+// 	$db_order_info->in(array('order_id' => array($from_order['order_id'], $to_order['order_id'])))->delete();
+	RC_DB::table('order_info')->whereIn('order_id', array($from_order['order_id'], $to_order['order_id']))->delete();
 
 	/* 删除原订单支付日志 */
-	$db_pay_log->in(array('order_id' => array($from_order['order_id'], $to_order['order_id'])))->delete();
+// 	$db_pay_log->in(array('order_id' => array($from_order['order_id'], $to_order['order_id'])))->delete();
+	RC_DB::table('pay_log')->whereIn('order_id', array($from_order['order_id'], $to_order['order_id']))->delete();
+	
 	/* 返还 from_order 的红包，因为只使用 to_order 的红包 */
 	if ($from_order['bonus_id'] > 0) {
-		RC_Loader::load_app_func('bonus','bonus');
+		RC_Loader::load_app_func('bonus', 'bonus');
 		unuse_bonus($from_order['bonus_id']);
 	}
+	ecjia_admin::admin_log(sprintf(RC_Lang::get('orders::order.merge_success_notice'), $to_order['order_sn'], $from_order['order_sn'], $order['order_sn']), 'merge', 'order');
 	
-	ecjia_admin::admin_log($from_order['order_sn'].'与'.$to_order['order_sn'].'，合并成新订单，订单号为：'.$order['order_sn'], 'edit', 'order');
 	/* 返回成功 */
 	return true;
 }

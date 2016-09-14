@@ -10,7 +10,7 @@ class cancel_module extends api_front implements api_interface {
     	
     	$this->authSession();
 		$user_id = $_SESSION['user_id'];
-		$order_id = $this->requestdata('order_id', 0);
+		$order_id = $this->requestData('order_id', 0);
 		$result = cancel_order($order_id, $user_id);
 		if (!is_ecjia_error($result)) {
 			return array();

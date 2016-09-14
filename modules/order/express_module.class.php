@@ -11,8 +11,8 @@ class express_module extends api_front implements api_interface {
     	$this->authSession();
 		define('INIT_NO_USERS', true);
 		RC_Loader::load_app_func('order','orders');
-		$AppKey = $this->requestdata('app_key', '');
-		$order_id = $this->requestdata('order_id', 0);
+		$AppKey = $this->requestData('app_key', '');
+		$order_id = $this->requestData('order_id', 0);
 		
 		if (empty($order_id)) {
 			return new ecjia_error(101, '参数错误');

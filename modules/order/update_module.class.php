@@ -10,8 +10,8 @@ class update_module extends api_front implements api_interface {
     	
     	$this->authSession();
  		$user_id	= $_SESSION['user_id'];
- 		$order_id	= $this->requestdata('order_id', 0);
-		$pay_id		= $this->requestdata('pay_id',0);
+ 		$order_id	= $this->requestData('order_id', 0);
+		$pay_id		= $this->requestData('pay_id',0);
 		if (!$order_id || !$pay_id) {
 			return new ecjia_error(101, '参数错误');
 		}

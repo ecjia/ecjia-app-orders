@@ -10,7 +10,7 @@ class detail_module extends api_front implements api_interface {
     		
     	$this->authSession();
 		RC_Loader::load_app_func('order', 'orders');
-		$order_id = $this->requestdata('order_id', 0);
+		$order_id = $this->requestData('order_id', 0);
 		if (!$order_id) {
 			return new ecjia_error(101, '参数错误');
 		}

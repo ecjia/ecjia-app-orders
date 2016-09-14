@@ -11,7 +11,7 @@ class pay_module extends api_front implements api_interface {
     	
 		RC_Loader::load_app_func('order','orders');
 		
-		$order_id = $this->requestdata('order_id', 0);
+		$order_id = $this->requestData('order_id', 0);
 		
 		if (!$order_id) {
 			return new ecjia_error(101, '参数错误');

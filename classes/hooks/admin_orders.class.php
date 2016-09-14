@@ -53,7 +53,7 @@ class orders_admin_plugin {
 	    if (!$order) {
 	        $order_query = RC_Loader::load_app_class('order_query','orders');
 			$db	= RC_Loader::load_app_model('order_info_model','orders');
-			$db_good_booking = RC_Loader::load_app_model('goods_booking_model','goods');
+// 			$db_good_booking = RC_Loader::load_app_model('goods_booking_model','goods');
 			$db_user_account = RC_Loader::load_app_model('user_account_model','user');
 			/* 已完成的订单 */
 			$order['finished']		= $db->where($order_query->order_finished())->count();
@@ -66,7 +66,7 @@ class orders_admin_plugin {
 			/* “部分发货”的订单 */
 			$order['shipped_part']	= $db->where(array('shipping_status'=>SS_SHIPPED_PART))->count();
 			/* 缺货登记 */
-			$order['booking_goods_count'] = $db_good_booking->where(array('is_dispose' => '0'))->count();
+// 			$order['booking_goods_count'] = $db_good_booking->where(array('is_dispose' => '0'))->count();
 			/* 退款申请 */
 			$order['new_repay_count'] = $db_user_account->where(array('process_type' => SURPLUS_RETURN ,'is_paid' =>'0'))->count();
 	    	

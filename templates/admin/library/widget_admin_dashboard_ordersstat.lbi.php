@@ -25,14 +25,10 @@
 				<td><strong>{$order.finished}</strong></td>
 			</tr>
 			<tr>
-				<td><a href='{url path="goods/admin_goods_booking/init"}' title="{lang key='orders::order.booking'}">{lang key='orders::order.booking'}</a></td>
-				<td><strong>{$booking_goods}</strong></td>
+				<td><a href='{url path="orders/admin/init" args="composite_status={$status.shipped_part}"}' title="{lang key='orders::order.parts_delivery_order'}">{lang key='orders::order.parts_delivery_order'}</a></td>
+				<td><strong>{$order.shipped_part}</strong></td>
 				<td><a href='{url path="user/admin_account/init" args="process_type=1&is_paid=0"}' title="{lang key='orders::order.refund_application'}">{lang key='orders::order.refund_application'}</a></td>
 				<td><strong>{$new_repay}</strong></td>
-			</tr>
-			<tr>
-				<td><a href='{url path="orders/admin/init" args="composite_status={$status.shipped_part}"}' title="{lang key='orders::order.parts_delivery_order'}">{lang key='orders::order.parts_delivery_order'}</a></td>
-				<td colspan="3"><strong>{$order.shipped_part}</strong></td>
 			</tr>
 		</tbody>
 	</table>

@@ -14,14 +14,14 @@ class pay_module extends api_front implements api_interface {
 		$order_id = $this->requestData('order_id', 0);
 		
 		if (!$order_id) {
-			return new ecjia_error(101, '参数错误');
+			return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
 		}
 		
 		$user_id = $_SESSION['user_id'];
 		/* 订单详情 */
 		$order = get_order_detail($order_id, $user_id);
-		if ($order === false) {
-			return new ecjia_error(8, 'fail');
+		if (is_ecjia_error($order)) {
+			return $order;
 		}
 		//判断是否是管理员登录
 		if ($_SESSION['admin_id'] > 0) {

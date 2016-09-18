@@ -98,12 +98,14 @@ class orders_user_account_paid_api extends Component_Event_Api {
 				'pay_status'   => PS_PAYED,
 				'pay_time'     => RC_Time::gmtime(),
 			);
-			$db_order = RC_Loader::load_app_model('order_info_model', 'orders');
-			$db_order->where(array('main_order_id' => $order_info['order_id']))->update($data);
-			$db_order->inc('money_paid', "main_order_id=".$order_info['order_id'], '0, money_paid=order_amount, order_amount=0');
-		
-		
-			$order_res = $db_order->field('order_sn')->where(array('main_order_id' => $order_info['order_id']))->select();
+// 			$db_order = RC_Loader::load_app_model('order_info_model', 'orders');
+// 			$db_order->where(array('main_order_id' => $order_info['order_id']))->update($data);
+// 			$db_order->inc('money_paid', "main_order_id=".$order_info['order_id'], '0, money_paid=order_amount, order_amount=0');
+// 			$order_res = $db_order->field('order_sn')->where(array('main_order_id' => $order_info['order_id']))->select();
+			
+			RC_DB::table('order_info')->where('main_order_id', $order_info['order_id'])->update($data);
+			RC_DB::table('order_info')->where('main_order_id', $order_info['order_id'])->increment('money_paid', '0, money_paid=order_amount, order_amount=0');
+			$order_res = RC_DB::table('order_info')->select('order_sn')->where('main_order_id', $order_info['order_id'])->get();
 			 
 			foreach ($order_res AS $row) {
 				/* 记录订单操作记录 */
@@ -111,25 +113,40 @@ class orders_user_account_paid_api extends Component_Event_Api {
 			}
 		}
 		
-		RC_Model::model('orders/order_status_log_model')->insert(array(
-				'order_status'	=> RC_Lang::get('orders::order.ps.'.PS_PAYED),
-				'order_id'		=> $order_info['order_id'],
-				'message'		=> RC_Lang::get('orders::order.notice_merchant_message'),
-				'add_time'		=> RC_Time::gmtime(),
-		));
+// 		RC_Model::model('orders/order_status_log_model')->insert(array(
+// 			'order_status'	=> RC_Lang::get('orders::order.ps.'.PS_PAYED),
+// 			'order_id'		=> $order_info['order_id'],
+// 			'message'		=> RC_Lang::get('orders::order.notice_merchant_message'),
+// 			'add_time'		=> RC_Time::gmtime(),
+// 		));
+		
+		$data = array(
+			'order_status'	=> RC_Lang::get('orders::order.ps.'.PS_PAYED),
+			'order_id'		=> $order_info['order_id'],
+			'message'		=> RC_Lang::get('orders::order.notice_merchant_message'),
+			'add_time'		=> RC_Time::gmtime(),
+		);
+		RC_DB::table('order_status_log')->insert($data);
 		
 		$result = ecjia_app::validate_application('sms');
 		if (!is_ecjia_error($result)) {
 			/* 收货验证短信  */
 			if (ecjia::config('sms_receipt_verification') == '1' && ecjia::config('sms_shop_mobile') != '') {
 				
-				$db_term_meta = RC_Loader::load_model('term_meta_model');
-				$meta_where = array(
-					'object_type'	=> 'ecjia.order',
-					'object_group'	=> 'order',
-					'meta_key'		=> 'receipt_verification',
-				);
-				$max_code = $db_term_meta->where($meta_where)->max('meta_value');
+// 				$db_term_meta = RC_Loader::load_model('term_meta_model');
+// 				$meta_where = array(
+// 					'object_type'	=> 'ecjia.order',
+// 					'object_group'	=> 'order',
+// 					'meta_key'		=> 'receipt_verification',
+// 				);
+// 				$max_code = $db_term_meta->where($meta_where)->max('meta_value');
+				
+				$max_code = RC_DB::table('term_meta')
+					->where('object_type', 'ecjia.order')
+					->where('object_group', 'order')
+					->where('meta_key', 'receipt_verification')
+					->max('meta_value');
+				
 				$max_code = $max_code ? ceil($max_code/10000) : 1000000;
 				$code = $max_code . str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT);
 // 				$code = rand(100000, 999999);
@@ -157,10 +174,12 @@ class orders_user_account_paid_api extends Component_Event_Api {
 						'meta_key'		=> 'receipt_verification',
 						'meta_value'	=> $code,
 					);
-					$db_term_meta->insert($meta_data);
+// 					$db_term_meta->insert($meta_data);
+					RC_DB::table('term_meta')->insert($meta_data);
 				}
 				if ($main_order_id <= 0) {
-					$order_res = $db_order->field('order_id')->where(array('main_order_id' => $order_id))->select();
+// 					$order_res = $db_order->field('order_id')->where(array('main_order_id' => $order_id))->select();
+					$order_res = RC_DB::table('order_info')->select('order_id')->where('main_order_id', $order_id)->get();
 					foreach ($order_res AS $row) {
 						$meta_data = array(
 							'object_type'	=> 'ecjia.order',
@@ -169,7 +188,8 @@ class orders_user_account_paid_api extends Component_Event_Api {
 							'meta_key'		=> 'receipt_verification',
 							'meta_value'	=> $code,
 						);
-						$db_term_meta->insert($meta_data);
+// 						$db_term_meta->insert($meta_data);
+						RC_DB::table('term_meta')->insert($meta_data);
 					}
 				}
 			}
@@ -178,7 +198,7 @@ class orders_user_account_paid_api extends Component_Event_Api {
 			if (ecjia::config('sms_order_payed') == '1' && ecjia::config('sms_shop_mobile') != '') {
 				//发送短信
 				$tpl_name = 'order_payed_sms';
-				$tpl   = RC_Api::api('sms', 'sms_template', $tpl_name);
+				$tpl = RC_Api::api('sms', 'sms_template', $tpl_name);
 				if (!empty($tpl)) {
 					ecjia::$view_object->assign('order_sn', $order_info['order_sn']);
 					ecjia::$view_object->assign('consignee', $order_info['consignee']);

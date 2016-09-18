@@ -218,7 +218,7 @@ return array(
 	'sms_time_format'	=> 'j/m G o\'clock',
 	'order_shipped_sms'	=> 'Your order %s hss already shipped in %s. [%s]',
 	'order_splited_sms'	=> 'Your order%s,%sIs%s [%s]',
-	'order_removed'		=> 'Delete order successfully.',
+	'order_removed'		=> 'Delete order successfully',
 	'return_list'		=> 'Return to order list',
 	
 	/* The order processing hint*/

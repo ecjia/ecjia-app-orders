@@ -47,14 +47,16 @@ class orders_admin_plugin {
 	        return false;
 	    }
 	    
-	    $title = __('订单统计信息');
+	    $title = RC_Lang::get('orders.order.order_stats_info');
 	    
 		$order = RC_Cache::app_cache_get('admin_dashboard_order_stats', 'orders');
 	    if (!$order) {
 	        $order_query = RC_Loader::load_app_class('order_query','orders');
-			$db	= RC_Loader::load_app_model('order_info_model','orders');
+			$db	= RC_Model::model('orders/order_info_model');
+			
 // 			$db_good_booking = RC_Loader::load_app_model('goods_booking_model','goods');
-			$db_user_account = RC_Loader::load_app_model('user_account_model','user');
+// 			$db_user_account = RC_Loader::load_app_model('user_account_model', 'user');
+
 			/* 已完成的订单 */
 			$order['finished']		= $db->where($order_query->order_finished())->count();
 			/* 待发货的订单： */
@@ -68,7 +70,8 @@ class orders_admin_plugin {
 			/* 缺货登记 */
 // 			$order['booking_goods_count'] = $db_good_booking->where(array('is_dispose' => '0'))->count();
 			/* 退款申请 */
-			$order['new_repay_count'] = $db_user_account->where(array('process_type' => SURPLUS_RETURN ,'is_paid' =>'0'))->count();
+// 			$order['new_repay_count'] = $db_user_account->where(array('process_type' => SURPLUS_RETURN ,'is_paid' =>'0'))->count();
+			$order['new_repay_count'] = RC_DB::table('user_account')->where('process_type', SURPLUS_RETURN)->where('is_paid', 0)->count();
 	    	
 	        RC_Cache::app_cache_set('admin_dashboard_order_stats', $order, 'orders', 120);
 	    }

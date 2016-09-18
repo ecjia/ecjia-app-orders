@@ -22,7 +22,6 @@ class orders_order_info_api extends Component_Event_Api {
 		return $this->order_info($options['order_id'], $options['order_sn']);
 	}
 	
-	
 	/**
 	 * 取得订单信息
 	 * @param   int	 $order_id   订单id（如果order_id > 0 就按id查，否则按sn查）
@@ -30,16 +29,23 @@ class orders_order_info_api extends Component_Event_Api {
 	 * @return  array   订单信息（金额都有相应格式化的字段，前缀是formated_）
 	 */
 	private function order_info($order_id, $order_sn = '') {
-	    RC_Loader::load_app_func('common','goods');
-	    $db = RC_Loader::load_app_model('order_info_model','orders');
+// 	    RC_Loader::load_app_func('common', 'goods');
+// 	    $db = RC_Loader::load_app_model('order_info_model','orders');
+	    
+	    $db_order_info = RC_DB::table('order_info');
 	    /* 计算订单各种费用之和的语句 */
 	    $total_fee = " (goods_amount - discount + tax + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee) AS total_fee ";
 	    $order_id = intval($order_id);
+
+	    $db_order_info->selectRaw('*, '.$total_fee);
 	    if ($order_id > 0) {
-	        $order = $db->field('*,'.$total_fee)->find(array('order_id' => $order_id));
+// 	        $order = $db->field('*,'.$total_fee)->find(array('order_id' => $order_id));
+	        $db_order_info->where('order_id', $order_id);
 	    } else {
-	        $order = $db->field('*,'.$total_fee)->find(array('order_sn' => $order_sn));
+// 	        $order = $db->field('*,'.$total_fee)->find(array('order_sn' => $order_sn));
+	        $db_order_info->where('order_sn', $order_sn);
 	    }
+	    $order = $db_order_info->first();
 	
 	    /* 格式化金额字段 */
 	    if ($order) {
@@ -61,8 +67,6 @@ class orders_order_info_api extends Component_Event_Api {
 	    }
 	    return $order;
 	}
-	
 }
-
 
 // end

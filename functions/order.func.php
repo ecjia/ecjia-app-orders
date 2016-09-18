@@ -353,7 +353,7 @@ function order_fee($order, $goods, $consignee, $cart_id = array()) {
 //    }
     $total['card_fee_formated'] = price_format($total['card_fee'], false);
 
-	RC_Loader::load_app_func('bonus','bonus');
+	RC_Loader::load_app_func('bonus', 'bonus');
    	/* 红包 */
 	if (!empty($order['bonus_id'])) {
 		$bonus          = bonus_info($order['bonus_id']);
@@ -783,17 +783,28 @@ function get_agency_by_regions($regions) {
 * @param   bool	$storage	 减库存的时机，1，下订单时；0，发货时；
 */
 function change_order_goods_storage($order_id, $is_dec = true, $storage = 0) {
-	$db			= RC_Loader::load_app_model('order_goods_model','orders');
-	$db_package	= RC_Loader::load_app_model('package_goods_model','goods');
-	$db_goods	= RC_Loader::load_app_model('goods_model','goods');
+// 	$db			= RC_Loader::load_app_model('order_goods_model', 'orders');
+// 	$db_package	= RC_Loader::load_app_model('package_goods_model', 'goods');
+// 	$db_goods	= RC_Loader::load_app_model('goods_model', 'goods');
+	
 	/* 查询订单商品信息  */
 	switch ($storage) {
 		case 0 :
-		$data = $db->field('goods_id, SUM(send_number) as num, MAX(extension_code) as extension_code, product_id')->where(array('order_id' => $order_id , 'is_real' => 1))->group(array('goods_id', 'product_id'))->select();
+// 		$data = $db->field('goods_id, SUM(send_number) as num, MAX(extension_code) as extension_code, product_id')->where(array('order_id' => $order_id , 'is_real' => 1))->group(array('goods_id', 'product_id'))->select();
+		$data = RC_DB::table('order_goods')
+			->selectRaw('goods_id, SUM(send_number) as num, MAX(extension_code) as extension_code, product_id')
+			->where('order_id', $order_id)->where('is_real', 1)
+			->groupby('goods_id')->groupby('product_id')
+			->get();
 		break;
 
 		case 1 :
-		$data = $db->field('goods_id, SUM(goods_number) as num, MAX(extension_code) as extension_code, product_id')->where(array('order_id' => $order_id , 'is_real' => 1))->group(array('goods_id', 'product_id'))->select();
+// 		$data = $db->field('goods_id, SUM(goods_number) as num, MAX(extension_code) as extension_code, product_id')->where(array('order_id' => $order_id , 'is_real' => 1))->group(array('goods_id', 'product_id'))->select();
+		$data = RC_DB::table('order_goods')
+			->selectRaw('goods_id, SUM(goods_number) as num, MAX(extension_code) as extension_code, product_id')
+			->where('order_id', $order_id)->where('is_real', 1)
+			->groupby('goods_id')->groupby('product_id')
+			->get();
 		break;
 	}
 
@@ -806,10 +817,13 @@ function change_order_goods_storage($order_id, $is_dec = true, $storage = 0) {
 					$result = change_goods_storage($row['goods_id'], $row['product_id'], $row['num']);
 				} 
 			} else {
-				$data = $db_package->field('goods_id, goods_number')->where('package_id = "' . $row['goods_id'] . '"')->select();
+// 				$data = $db_package->field('goods_id, goods_number')->where('package_id = "' . $row['goods_id'] . '"')->select();
+				$data = RC_DB::table('package_goods')->select('goods_id', 'goods_number')->where('package_id', $row['goods_id'])->get();
+				
 				if (!empty($data)) {
 					foreach ($data as $row_goods) {
-						$is_goods = $db_goods->field('is_real')->find('goods_id = "'. $row_goods['goods_id'] .'"');
+// 						$is_goods = $db_goods->field('is_real')->find('goods_id = "'. $row_goods['goods_id'] .'"');
+						$is_goods = RC_DB::table('goods')->select('is_real')->where('goods_id', $row_goods['goods_id'])->first();
 
 						if ($is_dec) {
 							$result = change_goods_storage($row_goods['goods_id'], $row['product_id'], - ($row['num'] * $row_goods['goods_number']));
@@ -857,8 +871,8 @@ function change_order_goods_storage($order_id, $is_dec = true, $storage = 0) {
 * @return  bool			   true，成功；false，失败；
 */
 function change_goods_storage($goods_id, $product_id, $number = 0) {
-	$db_goods		= RC_Loader::load_app_model('goods_model','goods');
-	$db_products	= RC_Loader::load_app_model('products_model','goods');
+	$db_goods		= RC_Loader::load_app_model('goods_model', 'goods');
+	$db_products	= RC_Loader::load_app_model('products_model', 'goods');
 	if ($number == 0) {
 		return true; // 值为0即不做、增减操作，返回true
 	}
@@ -869,22 +883,29 @@ function change_goods_storage($goods_id, $product_id, $number = 0) {
 	$products_query = true;
 	if (!empty($product_id)) {
 		/* by will.chen start*/
-		$product_number = $db_products->where(array('goods_id' => $goods_id, 'product_id' => $product_id))->get_field('product_number');
+// 		$product_number = $db_products->where(array('goods_id' => $goods_id, 'product_id' => $product_id))->get_field('product_number');
+		$product_number = RC_DB::table('products')->where('goods_id', $goods_id)->where('product_id', $product_id)->pluck('product_number');
+		
 		if ($product_number < $number) {
-			return new ecjia_error('low_stocks', __('库存不足'));
+			return new ecjia_error('low_stocks', RC_Lang::get('orders::order.goods_num_err'));
 		}
 		/* end*/
-		$products_query = $db_products->inc('product_number', 'goods_id='.$goods_id.' and product_id='.$product_id, $number);
+// 		$products_query = $db_products->inc('product_number', 'goods_id='.$goods_id.' and product_id='.$product_id, $number);
+		$products_query = RC_DB::table('products')->where('goods_id', $goods_id)->where('product_id', $product_id)->increment('product_number', $number);
 	}
 	
 	/* by will.chen start*/
-	$goods_number = $db_goods->where(array('goods_id' => $goods_id))->get_field('goods_number');
+// 	$goods_number = $db_goods->where(array('goods_id' => $goods_id))->get_field('goods_number');
+	$goods_number = RC_DB::table('goods')->where('goods_id', $goods_id)->pluck('goods_number');
+	
 	if ($goods_number < $number) {
-		return new ecjia_error('low_stocks', __('库存不足'));
+		return new ecjia_error('low_stocks', RC_Lang::get('orders::order.goods_num_err'));
 	}
 	/* end*/
 	/* 处理商品库存 */
-	$query = $db_goods->inc('goods_number', 'goods_id='.$goods_id, $number);
+// 	$query = $db_goods->inc('goods_number', 'goods_id='.$goods_id, $number);
+	$query = RC_DB::table('goods')->where('goods_id', $goods_id)->increment('goods_number', $number);
+	
 	if ($query && $products_query) {
 		return true;
 	} else {
@@ -945,7 +966,7 @@ function integral_to_give($order) {
 	$order['extension_code'] = '';
     if ($order['extension_code'] == 'group_buy') {
 		RC_Loader::load_app_func('goods', 'goods');
-		//TODO
+		//TODO wu
         $group_buy = group_buy_info(intval($order['extension_id']));
         return array('custom_points' => $group_buy['gift_integral'], 'rank_points' => $order['goods_amount']);
     } else {
@@ -1069,7 +1090,7 @@ function return_order_bonus($order_id) {
 // 	$db	= RC_Loader::load_app_model('user_bonus_model', 'bonus');
 	/* 取得订单应该发放的红包 */
 	$bonus_list = order_bonus($order_id);
-
+	
 	/* 删除 */
 	if ($bonus_list) {
 		/* 取得订单信息 */
@@ -1889,37 +1910,39 @@ function judge_package_stock($package_id, $package_num = 1) {
  *
  * @return arr $order 订单所有信息的数组
  */
-function get_order_detail ($order_id, $user_id = 0)
-{
+function get_order_detail ($order_id, $user_id = 0) {
     $db = RC_Loader::load_app_model('shipping_model', 'shipping');
     $dbview = RC_Loader::load_app_model('package_goods_viewmodel', 'goods');
     $pay_method = RC_Loader::load_app_class('payment_method', 'payment');
 
     $order_id = intval($order_id);
     if ($order_id <= 0) {
-        return new ecjia_error('error_order_detail', '参数错误');
+        return new ecjia_error('error_order_detail', RC_Lang::get('orders.order.invalid_parameter'));
     }
     $order = order_info($order_id);
 
     // 检查订单是否属于该用户
     if ($user_id > 0 && $user_id != $order['user_id']) {
-        return new ecjia_error('error_order_detail ', '订单不属于该用户');
+        return new ecjia_error('error_order_detail', RC_Lang::get('orders.order.error_order_detail'));
     }
 
-    /* 入住商信息*/
+    /* 入驻商信息*/
     if ($order['seller_id'] > 0) {
-    	$seller_info = RC_Model::model('seller/seller_shopinfo_model')->find(array('id' => $order['seller_id']));
+//     	$seller_info = RC_Model::model('seller/seller_shopinfo_model')->find(array('id' => $order['seller_id']));
+    	$seller_info = RC_DB::table('seller_shopinfo')->where('id', $order['seller_id'])->first();
     	$order['seller_name']	= $seller_info['shop_name'];
     	$order['service_phone']	= $seller_info['kf_tel'];
     } else {
-    	$order['seller_name']	= '自营';
+    	$order['seller_name']	= RC_Lang::get('orders.order.self_support');
     	$order['service_phone']	= ecjia::config('service_phone');
     }
     
     /* 对发货号处理 */
     if (! empty($order['invoice_no'])) {
-        $shipping_code = $db->field('shipping_code')->find('shipping_id = ' . $order[shipping_id] . '');
-        $shipping_code = $shipping_code['shipping_code'];
+//         $shipping_code = $db->field('shipping_code')->find('shipping_id = ' . $order[shipping_id] . '');
+//         $shipping_code = $shipping_code['shipping_code'];
+        
+        $shipping_code = RC_DB::table('shipping')->where('shipping_id', $order['shipping_id'])->pluck('shipping_code');
     }
 
     /* 只有未确认才允许用户修改订单地址 */
@@ -1947,6 +1970,7 @@ function get_order_detail ($order_id, $user_id = 0)
     /* 虚拟商品付款后处理 */
     if ($order['pay_status'] != PS_UNPAYED) {
         /* 取得已发货的虚拟商品信息 */
+    	//TODO
         $virtual_goods = get_virtual_goods($order_id, true);
         $virtual_card = array();
         foreach ($virtual_goods as $code => $goods_list) {
@@ -1965,17 +1989,20 @@ function get_order_detail ($order_id, $user_id = 0)
             }
             /* 处理超值礼包里面的虚拟卡 */
             if ($code == 'package_buy') {
+            	$db_package_goods = RC_DB::table('package_goods as pg')->leftJoin('goods as g', RC_DB::table('pg.goods_id'), '=', RC_DB::table('g.goods_id'));
                 foreach ($goods_list as $goods) {
-                    $dbview->view = array(
-                        'goods' => array(
-                            'type' => Component_Model_View::TYPE_LEFT_JOIN,
-                            'alias' => 'g',
-                            'field' => 'g.goods_id',
-                            'on' => 'pg.goods_id = g.goods_id'
-                        )
-                    );
+//                     $dbview->view = array(
+//                         'goods' => array(
+//                             'type' 	=> Component_Model_View::TYPE_LEFT_JOIN,
+//                             'alias' => 'g',
+//                             'field' => 'g.goods_id',
+//                             'on' 	=> 'pg.goods_id = g.goods_id'
+//                         )
+//                     );
+//                     $vcard_arr = $dbview->where('pg.package_id = ' . $goods['goods_id'] . ' AND extension_code = "virtual_card" ')->select();
 
-                    $vcard_arr = $dbview->where('pg.package_id = ' . $goods['goods_id'] . ' AND extension_code = "virtual_card" ')->select();
+                   $vcard_arr = $db_package_goods->selectRaw('g.goods_id')->whereRaw('pg.package_id = '.$goods['goods_id'].' AND extension_code = "virtual_card"')->get();
+                    
                     if (! empty($vcard_arr)) {
                         foreach ($vcard_arr as $val) {
                             $info = virtual_card_result($order['order_sn'], $val);
@@ -2031,9 +2058,11 @@ function get_order_detail ($order_id, $user_id = 0)
  * @return void
  */
 function virtual_card_result($order_sn, $goods) {
-	$db = RC_Loader::load_app_model ( 'virtual_card_model', 'goods' );
+// 	$db = RC_Loader::load_app_model ( 'virtual_card_model', 'goods' );
 
-	$res = $db->field ('card_sn, card_password, end_date, crc32')->where(array('goods_id' => $goods [goods_id], 'order_sn' => $order_sn))->select ();
+// 	$res = $db->field ('card_sn, card_password, end_date, crc32')->where(array('goods_id' => $goods [goods_id], 'order_sn' => $order_sn))->select ();
+	$res = RC_DB::table('virtual_card')->selectRaw('card_sn, card_password, end_date, crc32')->where('goods_id', $goods['goods_id'])->where('order_sn', $order_sn)->get();
+	
 	$cards = array ();
 	if (! empty ( $res )) {
 		$auth_key = ecjia_config::instance()->read_config('auth_key');
@@ -2048,9 +2077,9 @@ function virtual_card_result($order_sn, $goods) {
 			}
 
 			$cards [] = array (
-					'card_sn' => $row ['card_sn'],
-					'card_password' => $row ['card_password'],
-					'end_date' => date ( ecjia::config('date_format'), $row ['end_date'] )
+				'card_sn' 		=> $row ['card_sn'],
+				'card_password' => $row ['card_password'],
+				'end_date' 		=> date ( ecjia::config('date_format'), $row ['end_date'] )
 			);
 		}
 	}
@@ -2473,13 +2502,13 @@ function sc_unserialize_config($cfg)
  *
  */
 function assign_adminlog_content() {
-    ecjia_admin_log::instance()->add_action('produce', '生成');
+    ecjia_admin_log::instance()->add_action('produce', RC_Lang::get('orders::order.produce'));
     
-    ecjia_admin_log::instance()->add_object('delivery_order', '发货单');
-    ecjia_admin_log::instance()->add_object('back_order', '退货单');
-    ecjia_admin_log::instance()->add_object('order_payment', '订单支付方式');
-    ecjia_admin_log::instance()->add_object('order_status', '订单状态');
-    ecjia_admin_log::instance()->add_object('order_consignee', '订单收货人');
+    ecjia_admin_log::instance()->add_object('delivery_order', RC_Lang::get('orders::order.delivery_sn'));
+    ecjia_admin_log::instance()->add_object('back_order', RC_Lang::get('orders::order.back_sn'));
+    ecjia_admin_log::instance()->add_object('order_payment', RC_Lang::get('orders::order.order_payment'));
+    ecjia_admin_log::instance()->add_object('order_status', RC_Lang::get('orders::order.order_status'));
+    ecjia_admin_log::instance()->add_object('order_consignee', RC_Lang::get('orders::order.order_consignee'));
 }
 
 //	TODO:下列方法已移到了相关class中

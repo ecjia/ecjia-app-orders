@@ -10,8 +10,8 @@ class admin_order_delivery extends ecjia_admin {
 	public function __construct() {
 		parent::__construct();
 
-		RC_Loader::load_app_func('order','orders');
-		RC_Loader::load_app_func('common','goods');
+		RC_Loader::load_app_func('order', 'orders');
+		RC_Loader::load_app_func('common', 'goods');
 		RC_Loader::load_app_func('function');
 		assign_adminlog_content();
 
@@ -277,8 +277,8 @@ class admin_order_delivery extends ecjia_admin {
 		/* 处理虚拟卡 商品（虚货） */
 		if (is_array($virtual_goods) && count($virtual_goods) > 0) {
 			foreach ($virtual_goods as $virtual_value) {
-				//TODO
-				virtual_card_shipping($virtual_value,$order['order_sn'], $msg, 'split');
+				//TODO 虚拟商品方法已删除
+// 				virtual_card_shipping($virtual_value, $order['order_sn'], $msg, 'split');
 			}
 		}
 	
@@ -315,8 +315,8 @@ class admin_order_delivery extends ecjia_admin {
 		
 		if ($result) {
 			$data = array(
-				'order_status'	=> RC_Lang::get('orders::orders.ss.'.SS_SHIPPED),
-				'message'       => RC_Lang::get('orders::orders.order_send_message'),
+				'order_status'	=> RC_Lang::get('orders::order.ss.'.SS_SHIPPED),
+				'message'       => RC_Lang::get('orders::order.order_send_message'),
 				'order_id'    	=> $order_id,
 				'add_time'    	=> RC_Time::gmtime(),
 			);

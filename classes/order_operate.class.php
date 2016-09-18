@@ -13,8 +13,7 @@ class order_operate {
 	}
 	
 	/* 订单确认*/
-	private function order_confirm($order, $note) 
-	{
+	private function order_confirm($order, $note) {
 		RC_Loader::load_app_func('order', 'orders');
 		RC_Loader::load_app_func('function', 'orders');
 		/* 标记订单为已确认 */
@@ -48,7 +47,6 @@ class order_operate {
 			}
 		}
 		return true;
-// 		$this->showmessage(RC_Lang::lang('act_ok'), ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_SUCCESS);
 		
 	}
 	
@@ -96,18 +94,11 @@ class order_operate {
 		/* 记录日志 */
 		ecjia_admin::admin_log('配货中，订单号是 '.$order['order_sn'], 'edit', 'order_status');
 		/* 记录log */
-		$this->order_action($order['order_sn'], OS_CONFIRMED, SS_PREPARING, $order['pay_status'], $action_note);
+		$this->order_action($order['order_sn'], OS_CONFIRMED, SS_PREPARING, $order['pay_status'], $note);
 	}
 	
 	/* 分单确认 */
 	private function order_split($order, $note) {
-		$db_virtual_card		= RC_Loader::load_app_model('virtual_card_model', 'goods');
-		$db_goods				= RC_Loader::load_app_model('goods_model', 'goods');
-		$db_products			= RC_Loader::load_app_model('products_model', 'goods');
-		$db_order_info			= RC_Loader::load_app_model('order_info_model', 'orders');
-		$db_delivery_order		= RC_Loader::load_app_model('delivery_order_model', 'orders');
-		$db_delivery			= RC_Loader::load_app_model('delivery_goods_model', 'orders');
-	
 		RC_Loader::load_app_func('function', 'orders');
 		RC_Loader::load_app_func('order', 'orders');
 	
@@ -268,7 +259,9 @@ class order_operate {
 				}
 			} elseif ($value['extension_code'] == 'virtual_card' || $value['is_real'] == 0) {
 				// 商品（虚货）
-				$num = $db_virtual_card->where(array('goods_id' => $value['goods_id'] , 'is_saled' => 0))->count();
+// 				$num = $db_virtual_card->where(array('goods_id' => $value['goods_id'] , 'is_saled' => 0))->count();
+				$num = RC_DB::table('virtual_card')->where('goods_id', $value['goods_id'])->where('is_saled', 0)->count();
+				
 				if (($num < $goods_no_package[$value['goods_id']]) && !(ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_PLACE)) {
 					return new ecjia_error('virtual_card_oos', '虚拟卡已缺货！');
 					// 					/* 操作失败 */
@@ -285,10 +278,13 @@ class order_operate {
 				$_key = empty($value['product_id']) ? $value['goods_id'] : ($value['goods_id'] . '_' . $value['product_id']);
 				/* （实货） */
 				if (empty($value['product_id'])) {
-					$num = $db_goods->where(array('goods_id' => $value['goods_id']))->get_field('goods_number');
+// 					$num = $db_goods->where(array('goods_id' => $value['goods_id']))->get_field('goods_number');
+					$num = RC_DB::table('goods')->where('goods_id', $value['goods_id'])->pluck('goods_number');
 				} else {
 					/* （货品） */
-					$num = $db_products->where(array('goods_id' => $value['goods_id'] , 'product_id' => $value['product_id']))->get_field('product_number');
+// 					$num = $db_products->where(array('goods_id' => $value['goods_id'] , 'product_id' => $value['product_id']))->get_field('product_number');
+					$num = RC_DB::table('products')->where('goods_id', $value['goods_id'])
+						->where('product_id', $value['product_id'])->pluck('product_number');
 				}
 				if (($num < $goods_no_package[$_key]) && ecjia::config('use_storage') == '1'  && ecjia::config('stock_dec_time') == SDT_SHIP) {
 					return new ecjia_error('act_good_vacancy', '商品已缺货！');
@@ -310,7 +306,8 @@ class order_operate {
 		$delivery['update_time']	= GMTIME_UTC;
 		$delivery_time = $delivery['update_time'];
 	
-		$delivery['add_time']		= $db_order_info->where(array('order_sn' => $delivery['order_sn']))->get_field('add_time');
+// 		$delivery['add_time']		= $db_order_info->where(array('order_sn' => $delivery['order_sn']))->get_field('add_time');
+		$delivery['add_time']		= RC_DB::table('order_info')->where('order_sn', $delivery['order_sn'])->pluck('add_time');
 			
 		/* 获取发货单所属供应商 */
 		$delivery['suppliers_id']	= $suppliers_id;
@@ -331,7 +328,8 @@ class order_operate {
 		}
 		/* 发货单入库 */
 	
-		$delivery_id = $db_delivery_order->insert($_delivery);
+// 		$delivery_id = $db_delivery_order->insert($_delivery);
+		$delivery_id = RC_DB::table('delivery_order')->insertGetId($_delivery);
 		/* 记录日志 */
 		ecjia_admin::admin_log($order_id, 'produce', 'delivery_order');
 		if ($delivery_id) {
@@ -359,7 +357,8 @@ class order_operate {
 						if (!empty($value['product_id'])) {
 							$delivery_goods['product_id'] = $value['product_id'];
 						}
-						$query = $db_delivery->insert($delivery_goods);
+// 						$query = $db_delivery->insert($delivery_goods);
+						$query = RC_DB::table('delivery_goods')->insertGetId($delivery_goods);
 					} elseif ($value['extension_code'] == 'package_buy') {
 						// 商品（超值礼包）
 						foreach ($value['package_goods_list'] as $pg_key => $pg_value) {
@@ -376,7 +375,8 @@ class order_operate {
 								'extension_code'	=> $value['extension_code'], // 礼包
 								'is_real'			=> $pg_value['is_real']
 							);
-							$query = $db_delivery->insert($delivery_pg_goods);
+// 							$query = $db_delivery->insert($delivery_pg_goods);
+							$query = RC_DB::table('delivery_goods')->insertGetId($delivery_pg_goods);
 						}
 					}
 				}
@@ -437,7 +437,7 @@ class order_operate {
 	private function order_receive($order, $note) {
 		/* 标记订单为“收货确认”，如果是货到付款，同时修改订单为已付款 */
 		$arr = array('shipping_status' => SS_RECEIVED);
-		$payment_method = RC_Loader::load_app_class('payment_method','payment');
+		$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
 		$payment = $payment_method->payment_info($order['pay_id']);
 		if ($payment['is_cod']) {
 			$arr['pay_status']		= PS_PAYED;
@@ -458,8 +458,10 @@ class order_operate {
 	 * @return  bool
 	 */
 	private function update_order($order_id, $order) {
-		$db = RC_Loader::load_app_model('order_info_model', 'orders');
-		return $db->where('order_id = '.$order_id.'')->update($order);
+// 		$db = RC_Loader::load_app_model('order_info_model', 'orders');
+// 		return $db->where('order_id = '.$order_id.'')->update($order);
+		
+		return RC_DB::table('order_info')->where('order_id', $order_id)->update($order);
 	}
 	
 	/**
@@ -482,13 +484,15 @@ class order_operate {
 	 */
 	private function order_action($order_sn, $order_status, $shipping_status, $pay_status, $note = '', $username = null, $place = 0) 
 	{
-		$db_action = RC_Loader::load_app_model ( 'order_action_model', 'orders' );
-		$db_info = RC_Loader::load_app_model ( 'order_info_model', 'orders' );
+// 		$db_action = RC_Loader::load_app_model ( 'order_action_model', 'orders' );
+// 		$db_info = RC_Loader::load_app_model ( 'order_info_model', 'orders' );
 		if (is_null ( $username )) {
 			$username = $_SESSION ['admin_name'];
 		}
 	
-		$row = $db_info->field('order_id')->find(array('order_sn' => $order_sn));
+// 		$row = $db_info->field('order_id')->find(array('order_sn' => $order_sn));
+		$row = RC_DB::table('order_info')->where('order_sn', $order_sn)->first();
+		
 		$data = array (
 			'order_id'           => $row ['order_id'],
 			'action_user'        => $username,
@@ -499,7 +503,8 @@ class order_operate {
 			'action_note'        => $note,
 			'log_time'           => RC_Time::gmtime()
 		);
-		$db_action->insert($data);
+// 		$db_action->insert($data);
+		RC_DB::table('order_action')->insert($data);
 		
 		// 	$sql = 'INSERT INTO ' . $GLOBALS['ecs']->table('order_action') .
 		// 	' (order_id, action_user, order_status, shipping_status, pay_status, action_place, action_note, log_time) ' .

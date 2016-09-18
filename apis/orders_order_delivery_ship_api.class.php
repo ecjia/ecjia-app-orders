@@ -22,9 +22,8 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 		return $this->order_info($options['order_id'], $options['order_sn']);
 	}
 	
-	
-	
 	private function delivery_ship() {
+		$db_delivery_goods = RC_DB::table('delivery_goods as dg');
 		/* 定义当前时间 */
 		define('GMTIME_UTC', RC_Time::gmtime()); // 获取 UTC 时间戳
 		/* 取得参数 */
@@ -48,10 +47,17 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 		
 		/* 检查此单发货商品库存缺货情况 */
 		$virtual_goods			= array();
-		$delivery_stock_result	= $db_delivery->join(array('goods', 'products'))->where(array('dg.delivery_id' => $delivery_id))->group('dg.product_id')->select();
-		
+// 		$delivery_stock_result	= $db_delivery->join(array('goods', 'products'))->where(array('dg.delivery_id' => $delivery_id))->group('dg.product_id')->select();
+		$delivery_stock_result = $db_delivery_goods
+			->leftJoin('goods as g', RC_DB::raw('dg.goods_id'), '=', RC_DB::raw('g.goods_id'))
+			->leftJoin('products as p', RC_DB::raw('dg.product_id'), '=', RC_DB::raw('p.product_id'))
+			->where(RC_DB::raw('dg.delivery_id'), $delivery_id)
+			->selectRaw('dg.goods_id, dg.is_real, dg.product_id, SUM(dg.send_number) AS sums, IF(dg.product_id > 0, p.product_number, g.goods_number) AS storage, g.goods_name, dg.send_number')
+			->groupby(RC_DB::raw('dg.product_id'))
+			->get();
+			
 		/* 如果商品存在规格就查询规格，如果不存在规格按商品库存查询 */
-		if(!empty($delivery_stock_result)) {
+		if (!empty($delivery_stock_result)) {
 			foreach ($delivery_stock_result as $value) {
 				if (($value['sums'] > $value['storage'] || $value['storage'] <= 0) &&
 				((ecjia::config('use_storage') == '1'  && ecjia::config('stock_dec_time') == SDT_SHIP) ||
@@ -72,16 +78,22 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 				}
 			}
 		} else {
-			$db_delivery->view = array(
-					'goods' => array(
-						'type'		=> Component_Model_View::TYPE_LEFT_JOIN,
-						'alias'		=> 'g',
-						'field'		=> 'dg.goods_id, dg.is_real, SUM(dg.send_number) AS sums, g.goods_number, g.goods_name, dg.send_number',
-						'on'		=> 'dg.goods_id = g.goods_id ',
-					)
-			);
-		
-			$delivery_stock_result = $db_delivery->where(array('dg.delivery_id' => $delivery_id))->group('dg.goods_id')->select();
+// 			$db_delivery->view = array(
+// 				'goods' => array(
+// 					'type'		=> Component_Model_View::TYPE_LEFT_JOIN,
+// 					'alias'		=> 'g',
+// 					'field'		=> 'dg.goods_id, dg.is_real, SUM(dg.send_number) AS sums, g.goods_number, g.goods_name, dg.send_number',
+// 					'on'		=> 'dg.goods_id = g.goods_id ',
+// 				)
+// 			);
+// 			$delivery_stock_result = $db_delivery->where(array('dg.delivery_id' => $delivery_id))->group('dg.goods_id')->select();
+			
+			$delivery_stock_result = $db_delivery_goods
+				->leftJoin('goods as g', RC_DB::raw('dg.goods_id'), '=', RC_DB::raw('g.goods_id'))
+				->where(RC_DB::raw('dg.delivery_id'), $delivery_id)
+				->selectRaw('dg.goods_id, dg.is_real, SUM(dg.send_number) AS sums, g.goods_number, g.goods_name, dg.send_number')
+				->groupby(RC_DB::raw('dg.product_id'))
+				->get();
 		
 			foreach ($delivery_stock_result as $value) {
 				if (($value['sums'] > $value['goods_number'] || $value['goods_number'] <= 0) &&
@@ -108,7 +120,8 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 		/* 处理虚拟卡 商品（虚货） */
 		if (is_array($virtual_goods) && count($virtual_goods) > 0) {
 			foreach ($virtual_goods as $virtual_value) {
-				virtual_card_shipping($virtual_value,$order['order_sn'], $msg, 'split');
+				//虚拟商品不支持
+// 				virtual_card_shipping($virtual_value,$order['order_sn'], $msg, 'split');
 			}
 		}
 		
@@ -122,12 +135,14 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 						$data = array(
 							'product_number' => $value['storage'] - $value['sums'],
 						);
-						$this->db_products->where(array('product_id' => $value['product_id']))->update($data);
+// 						$this->db_products->where(array('product_id' => $value['product_id']))->update($data);
+						RC_DB::table('products')->where('product_id', $value['product_id'])->update($data);
 					} else {
 						$data = array(
 							'goods_number' => $value['storage'] - $value['sums'],
 						);
-						$this->db_goods->where(array('goods_id' => $value['goods_id']))->update($data);
+// 						$this->db_goods->where(array('goods_id' => $value['goods_id']))->update($data);
+						RC_DB::table('goods')->where('goods_id', $value['goods_id'])->update($data);
 					}
 				}
 			}
@@ -138,7 +153,8 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 		$invoice_no = trim($invoice_no, '<br>');
 		$_delivery['invoice_no']	= $invoice_no;
 		$_delivery['status']		= 0;	/* 0，为已发货 */
-		$result = $this->db_delivery_order->where(array('delivery_id' => $delivery_id))-> update($_delivery);
+// 		$result = $this->db_delivery_order->where(array('delivery_id' => $delivery_id))-> update($_delivery);
+		$result = RC_DB::table('delivery_order')->where('delivery_id', $delivery_id)->update($_delivery);
 		
 		if (!$result) {
 			/* 操作失败 */
@@ -207,9 +223,9 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 					$tpl_name = 'order_shipped_sms';
 					$tpl   = RC_Api::api('sms', 'sms_template', $tpl_name);
 					if (!empty($tpl)) {
-						$this->assign('order_sn', $order['order_sn']);
-						$this->assign('shipped_time', RC_Time::local_date(RC_Lang::lang('sms_time_format')));
-						$this->assign('mobile', $order['mobile']);
+						$this->assign('order_sn', 		$order['order_sn']);
+						$this->assign('shipped_time', 	RC_Time::local_date(RC_Lang::lang('sms_time_format')));
+						$this->assign('mobile', 		$order['mobile']);
 		
 						$content = $this->fetch_string($tpl['template_content']);
 		

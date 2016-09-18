@@ -192,6 +192,7 @@ class orders_order_operable_list_api extends Component_Event_Api {
 			RC_Loader::load_app_func('function', 'orders');
 			if ($order['extension_code'] == 'group_buy') {
 				RC_Loader::load_app_func('goods', 'goods');
+				//TODO wu
 				$group_buy = group_buy_info(intval($order['extension_id']));
 				if ($group_buy['status'] != GBS_SUCCEED) {
 					unset($list['split']);

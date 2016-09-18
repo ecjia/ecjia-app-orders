@@ -218,7 +218,7 @@ return array(
 	'sms_time_format' 	=> 'm月j日G时',
 	'order_shipped_sms' => '您的订单%s已于%s发货 [%s',
 	'order_splited_sms' => '您的订单%s,%s正在%s [%s',
-	'order_removed' 	=> '订单删除成功。',
+	'order_removed' 	=> '订单删除成功',
 	'return_list' 		=> '返回订单列表',
 	
 	/* 订单处理提示 */
@@ -725,12 +725,17 @@ return array(
     'refund_application'	=> '退款申请',
     'parts_delivery_order'	=> '部分发货订单',
     
-    'yuan'					=>	'元',
-    'monad'					=>	'单',
-    'order_money'			=>	'本月订单总额',
-    'order_count'			=>	'本月订单数量',
-    'confirm_order'			=>	'今日待确认订单',
-    'today_order'			=>	'今日待发货订单',
+    'yuan'					=> '元',
+    'monad'					=> '单',
+    'order_money'			=> '本月订单总额',
+    'order_count'			=> '本月订单数量',
+    'confirm_order'			=> '今日待确认订单',
+    'today_order'			=> '今日待发货订单',
+    'produce'				=> '生成',
+    'back_sn'				=> '退货单',
+    'order_payment'			=> '订单支付方式',
+    'order_consignee'		=> '订单收货人',
+    'error_order_detail'	=> '订单不属于该用户',
 );
 
 // end

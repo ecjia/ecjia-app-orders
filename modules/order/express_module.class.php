@@ -9,9 +9,12 @@ class express_module extends api_front implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
     		
     	$this->authSession();
+    	
 		define('INIT_NO_USERS', true);
 		RC_Loader::load_app_func('order','orders');
+		
 		$AppKey = $this->requestData('app_key', '');
+		$AppKey = '3b9fdc7e57c597ab';
 		$order_id = $this->requestData('order_id', 0);
 		
 		if (empty($order_id)) {
@@ -25,9 +28,9 @@ class express_module extends api_front implements api_interface {
 		$typeCom = getComType($order_info['shipping_name']);//快递公司类型
 		
 		if (empty($typeCom)) {
-			return new ecjia_error(10009, '订单无发货信息');
+			return new ecjia_error(10009, '物流信息无法获取');
 		}
-		$AppKey = '3b9fdc7e57c597ab';
+		
 		$url = 'http://api.kuaidi100.com/api?id='.$AppKey.'&com='.$typeCom.'&nu='.$order_info['invoice_no'].'&valicode=[]&show=0&muti=1&order=asc';
 		$json =  file_get_contents($url);
 

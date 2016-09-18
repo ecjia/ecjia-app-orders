@@ -10,8 +10,15 @@ class affirmReceived_module extends api_front implements api_interface {
     		
     	$this->authSession();
 		$user_id = $_SESSION['user_id'];
+		if ($user_id < 1) {
+		    return new ecjia_error(100,'Invalid session');
+		}
 		$order_id = $this->requestData('order_id', 0);
-		$result = affirm_received($order_id, $user_id);	
+		if ($order_id < 1) {
+		    return new ecjia_error('invalid_parameter', RC_Lang::get('system::system.invalid_parameter'));
+		}
+		
+		$result = affirm_received(intval($order_id), $user_id);	
 		if (!is_ecjia_error($result)) {
 		    return array();
 		} else {
@@ -35,7 +42,7 @@ class affirmReceived_module extends api_front implements api_interface {
 function affirm_received($order_id, $user_id = 0) {
     $db = RC_Model::model('orders/order_info_model');
     /* 查询订单信息，检查状态 */
-    $order = $db->field('user_id, order_sn , order_status, shipping_status, pay_status')->find(array('order_id' => $order_id));
+    $order = $db->field('user_id, order_sn, order_status, shipping_status, pay_status')->find(array('order_id' => $order_id));
 
     // 如果用户ID大于 0 。检查订单是否属于该用户
     if ($user_id > 0 && $order['user_id'] != $user_id) {

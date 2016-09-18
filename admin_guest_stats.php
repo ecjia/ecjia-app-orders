@@ -25,7 +25,7 @@ class admin_guest_stats extends ecjia_admin {
 	 * 客户统计列表
 	 */
 	public function init() {
-		$this->admin_priv('guest_stats');
+		$this->admin_priv('guest_stats', ecjia::MSGTYPE_JSON);
 		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::statistic.guest_stats')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
@@ -94,7 +94,7 @@ class admin_guest_stats extends ecjia_admin {
 	 */
 	public function download() {
 		/* 权限判断 */ 
-		$this->admin_priv('guest_stats');
+		$this->admin_priv('guest_stats', ecjia::MSGTYPE_JSON);
 		
 		/* 取得会员总数 */
 		$res = RC_DB::table('users')->count();

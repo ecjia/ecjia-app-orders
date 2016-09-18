@@ -35,7 +35,7 @@ class admin_order_delivery extends ecjia_admin {
 	 */
 	public function init() {
 		/* 检查权限 */
-		$this->admin_priv('delivery_view');
+		$this->admin_priv('delivery_view', ecjia::MSGTYPE_JSON);
 		
 		ecjia_screen::get_current_screen()->remove_last_nav_here();
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.order_delivery_list')));
@@ -72,7 +72,8 @@ class admin_order_delivery extends ecjia_admin {
 	 */
 	public function delivery_info() {
 		/* 检查权限 */
-		$this->admin_priv('delivery_view');
+		$this->admin_priv('delivery_view', ecjia::MSGTYPE_JSON);
+		
 		$delivery_id = intval(trim($_GET['delivery_id']));
 		/* 根据发货单id查询发货单信息 */
 		if (!empty($delivery_id)) {

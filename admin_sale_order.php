@@ -29,7 +29,7 @@ class admin_sale_order extends ecjia_admin {
 	
 	public function init() {
 		/* 权限检查 */ 
-		$this->admin_priv('sale_order_stats');
+		$this->admin_priv('sale_order_stats', ecjia::MSGTYPE_JSON);
 		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('system::system.sell_stats')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
@@ -74,7 +74,7 @@ class admin_sale_order extends ecjia_admin {
 	 */
 	public function download() {
 		/* 检查权限 */
-		$this->admin_priv('sale_order_stats');
+		$this->admin_priv('sale_order_stats', ecjia::MSGTYPE_JSON);
 		/*时间参数*/
 		$start_date = !empty($_GET['start_date']) 	? $_GET['start_date'] 	: RC_Time::local_date(ecjia::config('date_format'), strtotime('-1 month')-8*3600);
 		$end_date   = !empty($_GET['end_date']) 	? $_GET['end_date'] 	: RC_Time::local_date(ecjia::config('date_format'), strtotime('today')-8*3600);

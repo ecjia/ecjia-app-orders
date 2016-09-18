@@ -33,7 +33,7 @@ class admin_order_back extends ecjia_admin {
 	 */
 	public function init() {
 		/* 检查权限 */
-		$this->admin_priv('back_view');
+		$this->admin_priv('back_view', ecjia::MSGTYPE_JSON);
 		
 		ecjia_screen::get_current_screen()->remove_last_nav_here();
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.order_back_list')));
@@ -70,7 +70,7 @@ class admin_order_back extends ecjia_admin {
 	 */
 	public function back_info() {
 		/* 检查权限 */
-		$this->admin_priv('back_view');
+		$this->admin_priv('back_view', ecjia::MSGTYPE_JSON);
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.return_look')));
 
 		$back_id = intval(trim($_GET['back_id']));

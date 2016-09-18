@@ -51,7 +51,7 @@ class admin extends ecjia_admin {
 	 */
 	public function init() {
 		/* 检查权限 */
-		$this->admin_priv('order_view');
+		$this->admin_priv('order_view', ecjia::MSGTYPE_JSON);
 		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('system::system.02_order_list')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
@@ -91,6 +91,8 @@ class admin extends ecjia_admin {
 	 * 订单详情页面
 	 */	
 	public function info() {		
+		$this->admin_priv('order_view', ecjia::MSGTYPE_JSON);
+		
 		/* 根据订单id或订单号查询订单信息 */
 		if (isset($_GET['order_id'])) {
 			$order_id	= intval($_GET['order_id']);
@@ -106,9 +108,9 @@ class admin extends ecjia_admin {
 		
 		/* 根据订单是否完成检查权限 */
 		if (order_finished($order)) {
-			$this->admin_priv('order_view_finished');
+			$this->admin_priv('order_view_finished', ecjia::MSGTYPE_JSON);
 		} else {
-			$this->admin_priv('order_view');
+			$this->admin_priv('order_view', ecjia::MSGTYPE_JSON);
 		}
 		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('system::system.02_order_list'), RC_Uri::url('orders/admin/init')));
@@ -533,7 +535,8 @@ class admin extends ecjia_admin {
 	 */
 	public function order_query() {
 		/* 检查权限 */
-		$this->admin_priv('order_view');
+		$this->admin_priv('order_view', ecjia::MSGTYPE_JSON);
+		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('system::system.02_order_list'), RC_Uri::url('orders/admin/init')));
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('system::system.03_order_query')));
 		
@@ -574,7 +577,7 @@ class admin extends ecjia_admin {
 	 * 合并订单
 	 */
 	public function merge() {
-		$this->admin_priv('order_os_edit');
+		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
 		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.merge_order')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
@@ -614,6 +617,7 @@ class admin extends ecjia_admin {
 	 */
 	public function ajax_merge_order() {
 		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
+		
 		$from_order_sn	= empty($_POST['from_order_sn'])	? '' : $_POST['from_order_sn'];
 		$to_order_sn	= empty($_POST['to_order_sn'])		? '' : $_POST['to_order_sn'];
 
@@ -685,7 +689,7 @@ class admin extends ecjia_admin {
 	 */
 	public function add() {
 		/* 检查权限 */
-		$this->admin_priv('order_edit');
+		$this->admin_priv('order_edit', ecjia::MSGTYPE_JSON);
 		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('system::system.08_add_order')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
@@ -976,7 +980,8 @@ class admin extends ecjia_admin {
 	 */
 	public function edit() {
 		/* 检查权限 */
-		$this->admin_priv('order_edit');
+		$this->admin_priv('order_edit', ecjia::MSGTYPE_JSON);
+		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.edit_order')));
 
 		/* 取得参数 order_id */
@@ -2047,7 +2052,7 @@ class admin extends ecjia_admin {
 	/*生成发货单*/
 	public function go_shipping() {
 		/* 查询：检查权限 */
-		$this->admin_priv('order_ss_edit');
+		$this->admin_priv('order_ss_edit', ecjia::MSGTYPE_JSON);
 		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.order_operating')));
 		$order_id = $_GET['order_id'];
@@ -2065,9 +2070,9 @@ class admin extends ecjia_admin {
 		
 		/* 查询：根据订单是否完成 检查权限 */
 		if (order_finished($order)) {
-			$this->admin_priv('order_view_finished');
+			$this->admin_priv('order_view_finished', ecjia::MSGTYPE_JSON);
 		} else {
-			$this->admin_priv('order_view');
+			$this->admin_priv('order_view', ecjia::MSGTYPE_JSON);
 		}
 		
 		/* 查询：如果管理员属于某个办事处，检查该订单是否也属于这个办事处 */
@@ -2300,14 +2305,14 @@ class admin extends ecjia_admin {
 			} elseif (isset($_GET['pay'])) {
 				/* 付款 */
 				/* 检查权限 */
-				$this->admin_priv('order_ps_edit');
+				$this->admin_priv('order_ps_edit', ecjia::MSGTYPE_JSON);
 				$require_note	= ecjia::config('order_pay_note') == 1;
 				$action			= RC_Lang::get('orders::order.op_pay');
 				$operation		= 'pay';
 			} elseif (isset($_GET['unpay'])) {
 				/* 未付款 */
 				/* 检查权限 */
-				$this->admin_priv('order_ps_edit');
+				$this->admin_priv('order_ps_edit', ecjia::MSGTYPE_JSON);
 			
 				$require_note	= ecjia::config('order_unpay_note') == 1;
 				$order			= order_info($order_id);
@@ -2334,7 +2339,7 @@ class admin extends ecjia_admin {
 			} elseif (isset($_GET['unship'])) {
 				/* 未发货 */
 				/* 检查权限 */
-				$this->admin_priv('order_ss_edit');
+				$this->admin_priv('order_ss_edit', ecjia::MSGTYPE_JSON);
 				$require_note	= ecjia::config('order_unship_note') == 1;
 				$action			= RC_Lang::get('orders::order.op_unship');
 				$operation		= 'unship';
@@ -2439,11 +2444,11 @@ class admin extends ecjia_admin {
 			
 					/* 根据订单是否完成检查权限 */
 					if (order_finished($order)) {
-						if (!$this->admin_priv('order_view_finished', '', false)) {
+						if (!$this->admin_priv('order_view_finished', ecjia::MSGTYPE_JSON, false)) {
 							continue;
 						}
 					} else {
-						if (!$this->admin_priv('order_view', '', false)) {
+						if (!$this->admin_priv('order_view', ecjia::MSGTYPE_JSON, false)) {
 							continue;
 						}
 					}
@@ -2873,7 +2878,7 @@ class admin extends ecjia_admin {
 		} elseif ('pay' == $operation) {
 			/* 付款 */
 			/* 检查权限 */
-			$this->admin_priv('order_ps_edit');
+			$this->admin_priv('order_ps_edit', ecjia::MSGTYPE_JSON);
 		
 			/* 标记订单为已确认、已付款，更新付款时间和已支付金额，如果是货到付款，同时修改订单为“收货确认” */
 			if ($order['order_status'] != OS_CONFIRMED) {
@@ -2898,7 +2903,7 @@ class admin extends ecjia_admin {
 		} elseif ('unpay' == $operation) {
 			/* 设为未付款 */
 			/* 检查权限 */
-			$this->admin_priv('order_ps_edit');
+			$this->admin_priv('order_ps_edit', ecjia::MSGTYPE_JSON);
 		
 			/* 标记订单为未付款，更新付款时间和已付款金额 */
 			$arr = array(
@@ -2933,7 +2938,7 @@ class admin extends ecjia_admin {
 		} elseif ('split' == $operation) {
 			/* 分单确认 */
 			/* 检查权限 */
-			$this->admin_priv('order_ss_edit');
+			$this->admin_priv('order_ss_edit', ecjia::MSGTYPE_JSON);
 			
 			/* 定义当前时间 */
 			define('GMTIME_UTC', RC_Time::gmtime()); // 获取 UTC 时间戳
@@ -3259,7 +3264,7 @@ class admin extends ecjia_admin {
 		} elseif ('unship' == $operation) {
 			/* 设为未发货 */
 			/* 检查权限 */
-			$this->admin_priv('order_ss_edit');
+			$this->admin_priv('order_ss_edit', ecjia::MSGTYPE_JSON);
 		
 			/* 标记订单为“未发货”，更新发货时间, 订单状态为“确认” */
 			update_order($order_id, array('shipping_status' => SS_UNSHIPPED, 'shipping_time' => 0, 'invoice_no' => '', 'order_status' => OS_CONFIRMED));
@@ -3790,7 +3795,7 @@ class admin extends ecjia_admin {
 	 */
 	public function user_info() {
 		/* 检查权限 */
-		$this->admin_priv('order_edit');
+		$this->admin_priv('order_edit', ecjia::MSGTYPE_JSON);
 		$id = $_POST['user_id'];
 		
 // 		$db_user = RC_Loader::load_app_model('users_model','user');

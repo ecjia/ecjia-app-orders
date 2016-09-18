@@ -12,10 +12,9 @@ class bonus_type_user_viewmodel extends Component_Model_View {
 		
 		 $this->view = array(
     		'user_bonus' => array(
-    				'type'  => Component_Model_View::TYPE_LEFT_JOIN,
-    				'alias' => 'ub',
-    				'field' => '',
-    				'on'    => 'bt.type_id = ub.bonus_type_id ',
+    			'type'  => Component_Model_View::TYPE_LEFT_JOIN,
+    			'alias' => 'ub',
+    			'on'    => 'bt.type_id = ub.bonus_type_id ',
     		)
     );	
 		parent::__construct();

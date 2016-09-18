@@ -257,6 +257,7 @@ return array(
 	'order_merge_invalid'				=> 'Order merge invalid',
 	'and'								=> 'and',
 	'new_order_is'						=> ', Into a new order, order number is:',
+	'merge_success_notice'				=> '%s and  %s merge to new order, the new order sn is：%s',
 	
 	'from_order_sn'		=> 'Master order:',
 	'to_order_sn'		=> 'Slave order:',

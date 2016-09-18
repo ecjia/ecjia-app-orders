@@ -257,6 +257,7 @@ return array(
 	'order_merge_invalid'				=> '订单合并失败',
 	'and'								=> '与',
 	'new_order_is'						=> '，合并成新订单，订单号为：',
+	'merge_success_notice'				=> '%s 与  %s 合并成新订单，订单号为：%s',
 	
 	'from_order_sn' 	=> '从订单：',
 	'to_order_sn' 		=> '主订单：',

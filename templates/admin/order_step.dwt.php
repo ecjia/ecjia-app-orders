@@ -700,7 +700,7 @@
 									<td><div align="right"><strong>{lang key='orders::order.label_surplus'}</strong></div></td>
 									<td>
 										{if $order.user_id gt 0}
-										<input class="span8" name="surplus" type="text" value="{$order.surplus}">
+										<input class="span8" name="surplus" type="text" value="{$order.surplus}"><br/>
 										{/if}{lang key='orders::order.available_surplus'}{$available_user_money|default:0}
 									</td>
 								</tr>
@@ -710,7 +710,7 @@
 									<td><div align="right"><strong>{lang key='orders::order.label_integral'}</strong></div></td>
 									<td>
 										{if $order.user_id gt 0}
-										<input class="span8" name="integral" type="text" value="{$order.integral}" >
+										<input class="span8" name="integral" type="text" value="{$order.integral}"><br/>
 										{/if} {lang key='orders::order.available_integral'}{$available_pay_points|default:0}
 									</td>
 								</tr>

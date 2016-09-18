@@ -11,11 +11,14 @@ class cancel_module extends api_front implements api_interface {
     	$this->authSession();
 		$user_id = $_SESSION['user_id'];
 		$order_id = $this->requestData('order_id', 0);
+		if($user_id < 1 || $order_id <1) {
+		    return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
+		}
 		$result = cancel_order($order_id, $user_id);
 		if (!is_ecjia_error($result)) {
 			return array();
 		} else {
-			return new ecjia_error(8, 'fail');
+			return $result;
 		}
 	}
 }
@@ -45,15 +48,16 @@ function cancel_order ($order_id, $user_id = 0) {
         return new ecjia_error('no_priv', RC_Lang::lang('no_priv'));
     }
 
+    //TODO:未付款前都可取消，付款后取消暂不考虑
     // 订单状态只能是“未确认”或“已确认”
-    if ($order['order_status'] != OS_UNCONFIRMED && $order['order_status'] != OS_CONFIRMED) {
-        return new ecjia_error('current_os_not_unconfirmed', RC_Lang::lang('current_os_not_unconfirmed'));
-    }
+//     if ($order['order_status'] != OS_UNCONFIRMED && $order['order_status'] != OS_CONFIRMED) {
+//         return new ecjia_error('current_os_not_unconfirmed', RC_Lang::lang('current_os_not_unconfirmed'));
+//     }
 
     // 订单一旦确认，不允许用户取消
-    if ($order['order_status'] == OS_CONFIRMED) {
-        return new ecjia_error('current_os_already_confirmed', RC_Lang::lang('current_os_already_confirmed'));
-    }
+//     if ($order['order_status'] == OS_CONFIRMED) {
+//         return new ecjia_error('current_os_already_confirmed', RC_Lang::lang('current_os_already_confirmed'));
+//     }
 
     // 发货状态只能是“未发货”
     if ($order['shipping_status'] != SS_UNSHIPPED) {
@@ -91,7 +95,7 @@ function cancel_order ($order_id, $user_id = 0) {
             		'pay_points'	=> $order['integral'],
             		'change_desc'	=> sprintf(RC_Lang::lang('return_integral_on_cancel'), $order['order_sn'])
             );
-            $result = RC_Api::api('user', 'account_change_log',$options);
+            $result = RC_Api::api('user', 'account_change_log', $options);
             if (is_ecjia_error($result)) {
             	return $result;
             }

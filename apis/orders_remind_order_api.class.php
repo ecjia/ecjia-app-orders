@@ -11,7 +11,7 @@ class orders_remind_order_api extends Component_Event_Api {
 		
 // 		$db_orders = RC_Loader::load_app_model('order_info_model', 'orders');
 		if (empty($_SESSION['last_check'])) {
-			RC_Session::set('last_check', RC_Time::gmtime());
+			$_SESSION['last_check'] = RC_Time::gmtime();
 			return array('new_orders' => 0, 'new_paid' => 0);
 		}
 		/* 新订单 */
@@ -22,7 +22,7 @@ class orders_remind_order_api extends Component_Event_Api {
 		$arr['new_orders'] = RC_DB::table('order_info')->where('add_time', '<=', $_SESSION['last_check'])->count();
 		$arr['new_paid'] = RC_DB::table('order_info')->where('pay_time', '<=', $_SESSION['last_check'])->count();
 		
-		RC_Session::set('last_check', RC_Time::gmtime());
+		$_SESSION['last_check'] = RC_Time::gmtime();
 		if (!(is_numeric($arr['new_orders']) && is_numeric($arr['new_paid']))) {
 			return array('new_orders' => 0, 'new_paid' => 0);
 		} else {

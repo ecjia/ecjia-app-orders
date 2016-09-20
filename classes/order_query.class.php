@@ -221,7 +221,8 @@ class order_query extends order {
         
         $filter['start_time'] 			= empty($args['start_time']) 		? '' : (strpos($args['start_time'], '-') > 0 	?  RC_Time::local_strtotime($_GET['start_time']) 	: $_GET['start_time']);
         $filter['end_time'] 			= empty($args['end_time']) 			? '' : (strpos($args['end_time'], '-') > 0 		?  RC_Time::local_strtotime($_GET['end_time']) 		: $_GET['end_time']);
-		
+		$filter['type']					= empty($args['type']) 				? '' : $args['type']; 
+        
         /* 团购订单 */
         if ($filter['group_buy_id']) {
         	$this->where = array('o.extension_code' => 'group_buy', 'o.extension_id' => $filter['group_buy_id']);
@@ -294,29 +295,37 @@ class order_query extends order {
         				$db_order_info->where(RC_DB::raw($k), $v);
         			}
         		} else {
-        			$db_order_info->whereRaw($v);
+        			$db_order_info->whereRaw('('.$v.')');
         		}
         	}
         }
-        $count = $db_order_info->count();
         
+        $filter_count = $db_order_info
+	        ->select(RC_DB::raw('count(*) as count'), RC_DB::raw('SUM(IF(o.store_id > 0, 1, 0)) as merchant'))
+	        ->first();
+        
+        if (!empty($filter['type'])) {
+        	$db_order_info->where(RC_DB::raw('o.store_id'), '>', 0);
+        }
+        
+        $count = $db_order_info->count();
         $page = new ecjia_page($count, $pagesize, 6);
         $filter['record_count'] = $count;
 
-        $fields = "o.order_id, o.order_sn, o.add_time, o.order_status, o.shipping_status, o.order_amount, o.money_paid,o.pay_status, o.consignee, o.address, o.email, o.tel, o.mobile, o.extension_code, o.extension_id ,(" . $this->order_amount_field('o.') . ") AS total_fee, ssi.shop_name, u.user_name";
+        $fields = "o.order_id, o.store_id, o.order_sn, o.add_time, o.order_status, o.shipping_status, o.order_amount, o.money_paid, o.pay_status, o.consignee, o.address, o.email, o.tel, o.mobile, o.extension_code, o.extension_id ,(" . $this->order_amount_field('o.') . ") AS total_fee, s.merchants_name, u.user_name";
 //         $row = $db_viewmodel->field($fields)->where($this->where)->order(array($filter['sort_by'] => $filter['sort_order']))->limit($page->limit())->group('o.order_id')->select();
     	
     	$row = $db_order_info
     		->leftJoin('order_goods as og', RC_DB::raw('o.order_id'), '=', RC_DB::raw('og.order_id'))
-    		->leftJoin('seller_shopinfo as ssi', RC_DB::raw('ssi.id'), '=', RC_DB::raw('o.seller_id'))
-    		->leftJoin('merchants_shop_information as ms', RC_DB::raw('ssi.shop_id'), '=', RC_DB::raw('ms.shop_id'))
+//     		->leftJoin('seller_shopinfo as ssi', RC_DB::raw('ssi.id'), '=', RC_DB::raw('o.seller_id'))
+    		->leftJoin('store_franchisee as s', RC_DB::raw('o.store_id'), '=', RC_DB::raw('s.store_id'))
     		->selectRaw($fields)
     		->orderby($filter['sort_by'], $filter['sort_order'])
     		->take($pagesize)
     		->skip($page->start_id-1)
     		->groupby(RC_DB::raw('o.order_id'))
     		->get();
-        
+    	
     	foreach (array('order_sn', 'consignee', 'email', 'address', 'zipcode', 'tel', 'user_name') AS $val) {
             $filter[$val] = stripslashes($filter[$val]);
         }
@@ -349,6 +358,7 @@ class order_query extends order {
                 $order[$value['order_id']]['extension_code']        = $value['extension_code'];
                 $order[$value['order_id']]['extension_id']         	= $value['extension_id'];
                 $order[$value['order_id']]['total_fee']         	= $value['total_fee'];
+                $order[$value['order_id']]['merchants_name']        = $value['merchants_name'];
              
 	            if ($value['order_status'] == OS_INVALID || $value['order_status'] == OS_CANCELED) {
 	                /* 如果该订单为无效或取消则显示删除链接 */
@@ -359,7 +369,7 @@ class order_query extends order {
 	        }
 	    }
 	    
-	   	return array('orders' => $order, 'filter' => $filter, 'page' => $page->show($pagesize), 'desc' => $page->page_desc());
+	   	return array('orders' => $order, 'filter' => $filter, 'page' => $page->show($pagesize), 'desc' => $page->page_desc(), 'count' => $filter_count);
     }
 	
 	/**

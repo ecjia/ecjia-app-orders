@@ -71,12 +71,15 @@ class admin extends ecjia_admin {
 		
 		$order_query = RC_Loader::load_app_class('order_query', 'orders');
 		$order_list = $order_query->get_order_list();
-		
+
 		/* 模板赋值 */
 		$this->assign('ur_here', 		RC_Lang::get('system::system.02_order_list'));
 		$this->assign('action_link', 	array('href' => RC_Uri::url('orders/admin/order_query'), 'text' => RC_Lang::get('system::system.03_order_query')));
 		$this->assign('status_list', 	RC_Lang::get('orders::order.cs'));
 		$this->assign('order_list', 	$order_list);
+		$this->assign('filter',			$order_list['filter']);
+		$this->assign('count', 			$order_list['count']);
+		
 		$this->assign('form_action', 	RC_Uri::url('orders/admin/operate', array('batch' => 1)));
 		$this->assign('search_action', 	RC_Uri::url('orders/admin/init'));
 		

@@ -17,8 +17,22 @@
 	</h3>
 </div>
 <!-- #BeginLibraryItem "/library/order_operate.lbi" --><!-- #EndLibraryItem -->
+
+<ul class="nav nav-pills">
+	<li class="{if $filter.type eq ''}active{/if}">
+		<a class="data-pjax" href='{url path="orders/admin/init" args="{if $filter.composite_status}&composite_status={$filter.composite_status}{/if}{if $filter.keywords}&keywords={$filter.keywords}{/if}"}'>{lang key='orders::order.all'} 
+			<span class="badge badge-info">{if $count.count}{$count.count}{else}0{/if}</span> 
+		</a>
+	</li>
+	<li class="{if $filter.type eq 'merchant'}active{/if}">
+		<a class="data-pjax" href='{url path="orders/admin/init" args="type=merchant{if $filter.composite_status}&composite_status={$filter.composite_status}{/if}{if $filter.keywords}&keywords={$filter.keywords}{/if}"}'>{lang key='orders::order.merchant'}
+			<span class="badge badge-info">{if $count.merchant}{$count.merchant}{else}0{/if}</span> 
+		</a>
+	</li>
+</ul>
+
 <div class="row-fluid batch" >
-	<form action="{$search_action}" name="searchForm" method="post" >
+	<form action="{$search_action}{if $filter.type}&type={$filter.type}{/if}" name="searchForm" method="post" >
 		<div class="btn-group f_l m_r5">
 			<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 				<i class="fontello-icon-cog"></i>{lang key='orders::order.bulk_operations'}
@@ -45,6 +59,7 @@
 		</div>
 	</form>
 </div>
+
 <div class="row-fluid">
 	<div class="span12">
 		<form action="{$form_action}" name="orderpostForm" id="listForm" data-pjax-url="{$search_action}" method="post">
@@ -77,12 +92,8 @@
 									{/if}
 								</div>
 							</td>
-							<td>
-								<!-- {if $order.shop_name} -->
-								<font style="color:#F00;">{$order.shop_name}</font>
-								<!-- {else} -->
-								<font style="color:#0e92d0;">{lang key='orders::order.self_support'}</font>
-								<!-- {/if} -->
+							<td class="ecjiafc-red">
+								{$order.merchants_name}
 							</td>
 							<td>
 								{$order.user_name}<br/>{$order.short_order_time}

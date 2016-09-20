@@ -736,6 +736,8 @@ return array(
     'order_payment'			=> '订单支付方式',
     'order_consignee'		=> '订单收货人',
     'error_order_detail'	=> '订单不属于该用户',
+    'all'					=> '全部',
+    'merchant'				=> '商家',
 );
 
 // end

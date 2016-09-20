@@ -577,7 +577,7 @@ return array(
 	'operation_record'				=>	'操作记录',
 	'order_operate_list' 			=> 	'订单操作',
 	'self_support'					=>  '自营',
-	'merchant_name'					=>  '商家名称',
+	'merchants_name'				=>  '商家名称',
 	'main_order'					=>  '（主订单）',
 	'child_order'					=>  '（子订单）',
 	
@@ -737,7 +737,7 @@ return array(
     'order_consignee'		=> '订单收货人',
     'error_order_detail'	=> '订单不属于该用户',
     'all'					=> '全部',
-    'merchant'				=> '商家',
+    'merchants'				=> '商家',
 );
 
 // end

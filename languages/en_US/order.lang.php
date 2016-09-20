@@ -577,7 +577,7 @@ return array(
 	'operation_record'				=>	'Operation record',
 	'order_operate_list' 			=> 	'Order operation',
 	'self_support'					=>  'Self-support',
-	'merchant_name'					=>  'Merchant name',
+	'merchants_name'				=>  'Merchants name',
 	'main_order'					=>  '(Main order)',
 	'child_order'					=>  '(Child order)',
 	

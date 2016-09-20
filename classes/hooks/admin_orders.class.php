@@ -131,7 +131,7 @@ class orders_admin_plugin {
 }
 RC_Hook::add_action( 'admin_dashboard_left', array('orders_admin_plugin', 'widget_admin_dashboard_ordersstat') );
 RC_Hook::add_action( 'admin_dashboard_left', array('orders_admin_plugin', 'widget_admin_dashboard_orderslist') );
-RC_Hook::add_action( 'ecjia_admin_finish_launching', array('orders_admin_plugin', 'admin_remind_order') );
+// RC_Hook::add_action( 'ecjia_admin_finish_launching', array('orders_admin_plugin', 'admin_remind_order') );
 RC_Hook::add_filter( 'stats_admin_menu_api', array('orders_admin_plugin', 'orders_stats_admin_menu_api') );
 
 // end

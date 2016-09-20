@@ -25,7 +25,7 @@
 		</a>
 	</li>
 	<li class="{if $filter.type eq 'merchant'}active{/if}">
-		<a class="data-pjax" href='{url path="orders/admin/init" args="type=merchant{if $filter.composite_status}&composite_status={$filter.composite_status}{/if}{if $filter.keywords}&keywords={$filter.keywords}{/if}"}'>{lang key='orders::order.merchant'}
+		<a class="data-pjax" href='{url path="orders/admin/init" args="type=merchant{if $filter.composite_status}&composite_status={$filter.composite_status}{/if}{if $filter.keywords}&keywords={$filter.keywords}{/if}"}'>{lang key='orders::order.merchants'}
 			<span class="badge badge-info">{if $count.merchant}{$count.merchant}{else}0{/if}</span> 
 		</a>
 	</li>
@@ -69,7 +69,7 @@
 						<tr>
 							<th class="table_checkbox"><input type="checkbox" data-toggle="selectall" data-children=".checkbox" /></th>
 							<th class="w100">{lang key='orders::order.order_sn'}</th>
-							<th class="w100">{lang key='orders::order.merchant_name'}</th>
+							<th class="w100">{lang key='orders::order.merchants_name'}</th>
 							<th class="w120">{lang key='orders::order.order_time'}</th>
 							<th>{lang key='orders::order.user_purchase_information'}</th>
 							<th class="w120">{lang key='orders::order.total_fee'}</th>

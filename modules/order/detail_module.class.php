@@ -95,7 +95,7 @@ class detail_module extends api_front implements api_interface {
 		}
 		$order['goods_list'] = $goods_list;
 		
-		$db_term_meta = RC_Loader::load_model('term_meta_model');
+		$db_term_meta = RC_Model::model('goods/goods_term_meta_model');
 		$meta_data_where = array(
 				'object_type'	=> 'ecjia.order',
 				'object_group'	=> 'order',

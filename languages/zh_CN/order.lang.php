@@ -738,6 +738,7 @@ return array(
     'error_order_detail'	=> '订单不属于该用户',
     'all'					=> '全部',
     'merchants'				=> '商家',
+    'enter_merchant_keywords' => '请输入商家名称关键字'
 );
 
 // end

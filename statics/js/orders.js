@@ -25,7 +25,11 @@
 			//筛选功能
 			$(".screen-btn").on('click', function(e){
 				e.preventDefault();
-				var url = $("form[name='searchForm']").attr('action') + '&composite_status=' + $("#select-rank option:selected").val();
+				var url = $("form[name='searchForm']").attr('action');
+				var composite_status = $("#select-rank option:selected").val();
+				if (composite_status != -1) {
+					url += '&composite_status=' + composite_status;
+				}
 				ecjia.pjax(url);
 			});
 		},
@@ -34,7 +38,16 @@
 			//搜索功能
 			$("form[name='searchForm']").on('submit', function(e){
 				e.preventDefault();
-				var url = $(this).attr('action') + '&keywords=' +$("input[name='keywords']").val();
+				var url = $(this).attr('action');
+				var keywords = $("input[name='keywords']").val();
+				var merchant_keywords = $("input[name='merchant_keywords']").val();
+				
+				if (keywords != '') {
+					url += '&keywords=' + keywords;
+				}
+				if (merchant_keywords != '') {
+					url += '&merchant_keywords=' + merchant_keywords;
+				}
 				ecjia.pjax(url);
 			});
 		},

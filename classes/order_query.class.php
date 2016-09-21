@@ -120,6 +120,10 @@ class order_query extends order {
 	        }
 		}
 		
+		if ($filter['merchant_keywords']) {
+			$this->where['s.merchants_name'] = array('like' => '%'.mysql_like_quote($filter['merchant_keywords']).'%');
+		}
+		
         if ($filter['email']) {
         	$this->where['o.email'] = array('like' => '%'.mysql_like_quote($filter['email']).'%');
         }
@@ -196,6 +200,7 @@ class order_query extends order {
         $filter['order_sn'] 			= empty($args['order_sn']) 			? '' 	: trim($args['order_sn']);
         $filter['consignee'] 			= empty($args['consignee']) 		? '' 	: trim($args['consignee']);
         $filter['keywords']				= empty($args['keywords'])			? '' 	: trim($args['keywords']);
+        $filter['merchant_keywords']	= empty($args['merchant_keywords'])	? '' 	: trim($args['merchant_keywords']);
         $filter['email'] 				= empty($args['email']) 			? '' 	: trim($args['email']);
         $filter['address'] 				= empty($args['address']) 			? '' 	: trim($args['address']);
         $filter['zipcode'] 				= empty($args['zipcode']) 			? '' 	: trim($args['zipcode']);
@@ -231,7 +236,7 @@ class order_query extends order {
         
 // 		$this->where = array('o.extension_code' => '', 'o.extension_id' => 0);
 		$this->where = array_merge($this->where, $this->order_where($filter));
-		
+
         //综合状态
         switch($filter['composite_status']) {
             case CS_AWAIT_PAY :
@@ -280,8 +285,10 @@ class order_query extends order {
 		
 //         $count = $dbview->join('users')->where($this->where)->count();
         
-        $db_order_info = RC_DB::table('order_info as o')->leftJoin('users as u', RC_DB::raw('o.user_id'), '=', RC_DB::raw('u.user_id'));
-    		
+        $db_order_info = RC_DB::table('order_info as o')
+        	->leftJoin('users as u', RC_DB::raw('o.user_id'), '=', RC_DB::raw('u.user_id'))
+        	->leftJoin('store_franchisee as s', RC_DB::raw('o.store_id'), '=', RC_DB::raw('s.store_id'));
+    	
         if (is_array($this->where)) {
         	foreach ($this->where as $k => $v) {
         		if (!is_numeric($k)) {
@@ -317,8 +324,6 @@ class order_query extends order {
     	
     	$row = $db_order_info
     		->leftJoin('order_goods as og', RC_DB::raw('o.order_id'), '=', RC_DB::raw('og.order_id'))
-//     		->leftJoin('seller_shopinfo as ssi', RC_DB::raw('ssi.id'), '=', RC_DB::raw('o.seller_id'))
-    		->leftJoin('store_franchisee as s', RC_DB::raw('o.store_id'), '=', RC_DB::raw('s.store_id'))
     		->selectRaw($fields)
     		->orderby($filter['sort_by'], $filter['sort_order'])
     		->take($pagesize)

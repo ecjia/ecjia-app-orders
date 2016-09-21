@@ -20,12 +20,12 @@
 
 <ul class="nav nav-pills">
 	<li class="{if $filter.type eq ''}active{/if}">
-		<a class="data-pjax" href='{url path="orders/admin/init" args="{if $filter.composite_status}&composite_status={$filter.composite_status}{/if}{if $filter.keywords}&keywords={$filter.keywords}{/if}"}'>{lang key='orders::order.all'} 
+		<a class="data-pjax" href='{url path="orders/admin/init" args="{if $filter.composite_status && $filter.composite_status != -1}&composite_status={$filter.composite_status}{/if}{if $filter.keywords}&keywords={$filter.keywords}{/if}{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}"}'>{lang key='orders::order.all'} 
 			<span class="badge badge-info">{if $count.count}{$count.count}{else}0{/if}</span> 
 		</a>
 	</li>
 	<li class="{if $filter.type eq 'merchant'}active{/if}">
-		<a class="data-pjax" href='{url path="orders/admin/init" args="type=merchant{if $filter.composite_status}&composite_status={$filter.composite_status}{/if}{if $filter.keywords}&keywords={$filter.keywords}{/if}"}'>{lang key='orders::order.merchants'}
+		<a class="data-pjax" href='{url path="orders/admin/init" args="type=merchant{if $filter.composite_status && $filter.composite_status != -1}&composite_status={$filter.composite_status}{/if}{if $filter.keywords}&keywords={$filter.keywords}{/if}{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}"}'>{lang key='orders::order.merchants'}
 			<span class="badge badge-info">{if $count.merchant}{$count.merchant}{else}0{/if}</span> 
 		</a>
 	</li>
@@ -54,6 +54,7 @@
 		</select>
 		<a class="btn m_l5 screen-btn">{t}筛选{/t}</a>
 		<div class="choose_list f_r" >
+			<input type="text" name="merchant_keywords" value="{$order_list.filter.merchant_keywords}" placeholder="{lang key='orders::order.enter_merchant_keywords'}"/> 
 			<input type="text" name="keywords" value="{$order_list.filter.keywords}" placeholder="{lang key='orders::order.pls_consignee'}"/> 
 			<button class="btn" type="submit">{lang key='orders::order.search_order'}</button>
 		</div>

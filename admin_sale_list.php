@@ -76,7 +76,7 @@ class admin_sale_list extends ecjia_admin {
 
 		/*文件名*/
 		$file_name = mb_convert_encoding(RC_Lang::get('orders::statistic.sales_list_statement'), "GBK", "UTF-8");
-		$goods_sales_list = $this->db_goods_view->get_sale_list(false);
+		$goods_sales_list = $this->get_sale_list(false);
 		
 		/*强制下载,下载类型EXCEL*/
 		header("Content-type: application/vnd.ms-excel; charset=utf-8");

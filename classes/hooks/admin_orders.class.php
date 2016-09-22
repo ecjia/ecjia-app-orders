@@ -47,9 +47,9 @@ class orders_admin_plugin {
 	        return false;
 	    }
 	    
-	    $title = RC_Lang::get('orders.order.order_stats_info');
-	    
-		$order = RC_Cache::app_cache_get('admin_dashboard_order_stats', 'orders');
+	    $title = RC_Lang::get('orders::order.order_stats_info');
+
+	    $order = RC_Cache::app_cache_get('admin_dashboard_order_stats', 'orders');
 	    if (!$order) {
 	        $order_query = RC_Loader::load_app_class('order_query','orders');
 			$db	= RC_Model::model('orders/order_info_model');

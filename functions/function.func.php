@@ -1368,8 +1368,9 @@ function get_delivery_list() {
 // 	$field = 'do.delivery_id, do.order_id, do.delivery_sn, do.order_sn, do.order_id, do.add_time, do.action_user, do.consignee, do.country,do.province, do.city, do.district, do.tel, do.status, do.update_time, do.email, do.suppliers_id, s.suppliers_name';
 // 	$row = $delivery_order_viewmodel->field($field)->where($where)->order(array($filter['sort_by'] => $filter['sort_order']))->limit($page->limit())->select();
 	
-	$row = $db_delivery_order->leftJoin('suppliers as s', RC_DB::raw('do.suppliers_id'), '=', RC_DB::raw('s.suppliers_id'))
-		->select(RC_DB::raw('do.delivery_id, do.order_id, do.delivery_sn, do.order_sn, do.order_id, do.add_time, do.action_user, do.consignee, do.country, do.province, do.city, do.district, do.tel, do.status, do.update_time, do.email, do.suppliers_id, s.suppliers_name'))
+	$row = $db_delivery_order
+// 		->leftJoin('suppliers as s', RC_DB::raw('do.suppliers_id'), '=', RC_DB::raw('s.suppliers_id'))
+		->select(RC_DB::raw('do.delivery_id, do.order_id, do.delivery_sn, do.order_sn, do.order_id, do.add_time, do.action_user, do.consignee, do.country, do.province, do.city, do.district, do.tel, do.status, do.update_time, do.email, do.suppliers_id'))
 		->orderby($filter['sort_by'], $filter['sort_order'])->take(15)->skip($page->start_id-1)->get();
 	
 // 	TODO:暂不用供货商
@@ -1697,7 +1698,7 @@ function merge_order($from_order_sn, $to_order_sn) {
 	$order['order_sn'] = get_order_sn(); 
 
 	//TODO wu
-	$order_id = $db_order_info->insert(rc_addslashes($order));
+	$order_id = RC_Model::model('orders/order_info_model')->insert(rc_addslashes($order));
 // 	$order_id = RC_DB::table('order_info')->insertGetId(rc_addslashes($order));
 	
 	if (!$order_id) {

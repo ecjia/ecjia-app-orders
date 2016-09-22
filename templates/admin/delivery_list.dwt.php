@@ -52,7 +52,7 @@
 							<th class="w130">{lang key='orders::order.label_add_time'}</th>
 							<th>{lang key='orders::order.consignee'}</th>
 							<th class="w130">{lang key='orders::order.label_update_time'}</th>
-							<th class="w80">{lang key='orders::order.suppliers_name'}</th>
+<!-- 							<th class="w80">{lang key='orders::order.suppliers_name'}</th> -->
 							<th class="w80">{lang key='orders::order.label_delivery_status'}</th>
 							<th class="w80">{lang key='system::system.operator'}</th>
 						</tr>
@@ -72,7 +72,7 @@
 							<td>{$delivery.add_time}</td>
 							<td><a class="cursor_pointer consignee_info" data-url='{url path="orders/admin_order_delivery/consignee_info" args="delivery_id={$delivery.delivery_id}"}' title="{lang key='orders::order.display_consignee_info'}"><span class="ecjiaf-pre ecjiaf-wsn">{$delivery.consignee|escape}</span></a></td>
 							<td>{$delivery.update_time}</td>
-							<td>{$delivery.suppliers_name}</td>
+<!-- 							<td>{$delivery.suppliers_name}</td> -->
 							<td>{$delivery.status_name}</td>
 							<td>{$delivery.action_user}</td>
 						</tr>

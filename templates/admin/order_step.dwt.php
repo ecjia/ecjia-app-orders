@@ -530,7 +530,7 @@
 			<div class="accordion" id="accordion2">
 				<div class="accordion-group">
 					<div class="accordion-heading">
-						<a class="accordion-toggle acc-in" data-target="#collapseThree" data-toggle="collapse" data-parent="#accordion2"><strong>{lang key='orders::order.invoice_related'}</strong></a>
+						<a class="accordion-toggle acc-in" data-target="#collapseThree" data-toggle="collapse" data-parent="#collapseThree"><strong>{lang key='orders::order.invoice_related'}</strong></a>
 					</div>
 					<div class="accordion-body in collapse" id="collapseThree">
 						<div class="accordion-inner">
@@ -554,7 +554,7 @@
 			<div class="accordion" id="accordion2">
 				<div class="accordion-group">
 					<div class="accordion-heading">
-						<a class="accordion-toggle acc-in" data-target="#collapseFour" data-toggle="collapse" data-parent="#accordion2"><strong>{lang key='orders::order.message_remarks'}</strong></a>
+						<a class="accordion-toggle acc-in" data-target="#collapseFour" data-toggle="collapse" data-parent="#collapseFour"><strong>{lang key='orders::order.message_remarks'}</strong></a>
 					</div>
 					<div class="accordion-body in collapse" id="collapseFour">
 						<div class="accordion-inner">
@@ -581,7 +581,7 @@
 			<div id="accordion2" class="accordion">
 				<div class="accordion-group">
 					<div class="accordion-heading">
-						<div class="accordion-toggle acc-in" data-parent="#accordion2" data-toggle="collapse" data-target="#collapseOne"><strong>{lang key='orders::order.select_pack'}</strong></div>
+						<div class="accordion-toggle acc-in" data-parent="#collapseOne" data-toggle="collapse" data-target="#collapseOne"><strong>{lang key='orders::order.select_pack'}</strong></div>
 					</div>
 					<div class="accordion-body in collapse" id="collapseOne">
 						<table class="table m_b0">
@@ -617,7 +617,7 @@
 			<div id="accordion2" class="accordion">
 				<div class="accordion-group">
 					<div class="accordion-heading">
-						<div class="accordion-toggle acc-in" data-parent="#accordion2" data-toggle="collapse" data-target="#collapseTwo"><strong>{lang key='orders::order.select_card'}</strong></div>
+						<div class="accordion-toggle acc-in" data-parent="#collapseTwo" data-toggle="collapse" data-target="#collapseTwo"><strong>{lang key='orders::order.select_card'}</strong></div>
 					</div>
 					<div class="accordion-body in collapse" id="collapseTwo">
 						<table class="table m_b0">

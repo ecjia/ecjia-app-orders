@@ -108,7 +108,7 @@ function pay_fee($payment_id, $order_amount, $cod_fee=null) {
 * @return  array   订单信息（金额都有相应格式化的字段，前缀是formated_）
 */
 function order_info($order_id, $order_sn = '') {
-	$db_order_info = RC_DB::table('order_info');
+	$db_order_info = RC_DB::table('order_info as o')->leftJoin('store_franchisee as s', RC_DB::raw('o.store_id'), '=', RC_DB::raw('s.store_id'));
 	/* 计算订单各种费用之和的语句 */
 	$total_fee = " (goods_amount - discount + tax + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee) AS total_fee ";
 	
@@ -118,8 +118,8 @@ function order_info($order_id, $order_sn = '') {
 	} else {
 		$db_order_info->where('order_sn', $order_sn);
 	}
-	$order = $db_order_info->select('*', RC_DB::raw($total_fee))->first();
-	
+	$order = $db_order_info->select('*', RC_DB::raw($total_fee), RC_DB::raw('s.*'))->first();
+
 	/* 格式化金额字段 */
 	if ($order) {
 		$order['formated_goods_amount']		= price_format($order['goods_amount'], false);

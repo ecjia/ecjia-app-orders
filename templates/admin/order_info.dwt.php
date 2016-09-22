@@ -217,6 +217,41 @@
 						</table>
 					</div>	
 				</div>
+				
+				<!-- 店铺信息 start -->
+				<!-- {if $order.store_id gt 0} -->
+				<div class="accordion-group">
+					<div class="accordion-heading accordion-heading-url">
+						<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseStore">
+							<strong>{lang key='orders::order.store_info'}</strong>
+						</div>
+					</div>
+					<div class="accordion-body in collapse" id="collapseStore">
+						<table class="table table-oddtd m_b0">
+							<tbody class="first-td-no-leftbd">
+								<tr>
+									<td><div align="right"><strong>{lang key='orders::order.label_merchants_name'}</strong></div></td>
+									<td class="ecjiafc-red">{$order.merchants_name}</td>
+									<td><div align="right"><strong>{lang key='orders::order.label_responsible_person'}</strong></div></td>
+									<td>{$order.responsible_person}</td>
+								</tr>
+								<tr>
+									<td><div align="right"><strong>{lang key='orders::order.label_contact_mobile'}</strong></div></td>
+									<td>{$order.contact_mobile}</td>
+									<td><div align="right"><strong>{lang key='orders::order.label_email'}</strong></div></td>
+									<td>{$order.email}</td>
+								</tr>
+								<tr>
+									<td><div align="right"><strong>{lang key='orders::order.label_company_name'}</strong></div></td>
+									<td colspan="3">{$order.company_name}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!-- {/if} -->
+				<!-- 店铺信息 end -->
+				
 				<div class="accordion-group">
 					<div class="accordion-heading accordion-heading-url">
 						<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseThree">

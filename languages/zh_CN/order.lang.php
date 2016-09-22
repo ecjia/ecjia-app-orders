@@ -738,7 +738,13 @@ return array(
     'error_order_detail'	=> '订单不属于该用户',
     'all'					=> '全部',
     'merchants'				=> '商家',
-    'enter_merchant_keywords' => '请输入商家名称关键字'
+    
+    'enter_merchant_keywords' 	=> '请输入商家名称关键字',
+    'store_info'				=> '店铺信息',
+    'label_merchants_name'		=> '店铺名称：',
+    'label_responsible_person' 	=> '负责人：',
+    'label_contact_mobile'		=> '联系方式：',
+    'label_company_name'		=> '公司名称：',
 );
 
 // end

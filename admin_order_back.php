@@ -152,12 +152,9 @@ class admin_order_back extends ecjia_admin {
 		/* 检查权限 */
 		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
 		
-		if (empty($_SESSION['ru_id'])) {
-			$back_id = !empty($_GET['back_id']) ? intval($_GET['back_id']) : 0;
-			
-			/* 删除退货单 */
-			RC_DB::table('back_order')->where('back_id', $back_id)->delete();
-		}
+		$back_id = explode(',', $_REQUEST['back_id']);
+		/* 删除退货单 */
+		RC_DB::table('back_order')->whereIn('back_id', $back_id)->delete();
 
 		/* 记录日志 */
 		ecjia_admin::admin_log($back_id, 'remove', 'back_order');

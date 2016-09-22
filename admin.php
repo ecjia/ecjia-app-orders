@@ -2284,8 +2284,7 @@ class admin extends ecjia_admin {
 		/* 检查权限 */
 		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
 		$order_id = '';
-		if (empty($_SESSION['seller_id'])) {
-		
+// 		if (empty($_SESSION['seller_id'])) {
 			/* 取得订单id（可能是多个，多个sn）和操作备注（可能没有） */
 			if (isset($_POST['order_id'])) {
 				/* 判断是一个还是多个 */
@@ -2575,12 +2574,11 @@ class admin extends ecjia_admin {
 				} else {
 					/* 多个订单 */
 					$this->batch_operate_post();
-	
 				}
 			}
-		} else {
+// 		} else {
 			$this->showmessage(RC_Lang::get('orders::order.act_ok'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
-		}
+// 		}
 	}
 	
 	/**

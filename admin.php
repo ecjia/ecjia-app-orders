@@ -728,13 +728,14 @@ class admin extends ecjia_admin {
 			
 			if ($order['user_id'] > 0) {
 				$user_info = RC_Api::api('user', 'user_info', array('user_id' => $order['user_id']));
-				
+
 				$this->assign('user_name', $user_info['user_name']);
 			} else {
 				$this->assign('user_name', RC_Lang::get('orders::order.anonymous'));
 			}
 			$this->assign('order', $order);
 		} 
+		
 		if ($step == 'user_select') {
 			$ur_here = RC_Lang::get('orders::order.pls_add_orders_user_type');
 		}
@@ -1235,7 +1236,7 @@ class admin extends ecjia_admin {
 		/* 插入订单信息 */
 		if ('user' == $step || ('user_select'==$step && $_GET['user']=='0')) {
 			/* 取得参数：user_id */
-			$user_id = (!empty($_POST['anonymous']) && $_POST['anonymous'] == 1) ? 0 : intval(isset($_POST['user']));
+			$user_id = (!empty($_POST['anonymous']) && $_POST['anonymous'] == 1) ? 0 : intval($_POST['user']);
 			
 			/* 插入新订单，状态为无效 */
 			$order = array(
@@ -1249,6 +1250,7 @@ class admin extends ecjia_admin {
 			);
 			$order['order_sn'] = get_order_sn();
 // 			$order_id = $this->db_order_info->insert($order);
+			
 			$order_id = RC_DB::table('order_info')->insertGetId($order);
 
 			if (!$order_id) {

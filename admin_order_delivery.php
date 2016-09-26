@@ -310,8 +310,10 @@ class admin_order_delivery extends ecjia_admin {
 		$invoice_no = str_replace(',', '<br>', $delivery['invoice_no']);
 		$invoice_no = trim($invoice_no, '<br>');
 		$_delivery['invoice_no'] = $invoice_no;
+		
 		$_delivery['status'] = 0;	/* 0，为已发货 */
 // 		$result = $this->db_delivery_order->where(array('delivery_id' => $delivery_id))-> update($_delivery);
+
 		$result = RC_DB::table('delivery_order')->where('delivery_id', $delivery_id)->update($_delivery);
 		
 		if ($result) {
@@ -334,6 +336,7 @@ class admin_order_delivery extends ecjia_admin {
 		/* 标记订单为已确认 “已发货” */
 		/* 更新发货时间 */
 		$order_finish				= get_all_delivery_finish($order_id);
+		
 		$shipping_status			= ($order_finish == 1) ? SS_SHIPPED : SS_SHIPPED_PART;
 		$arr['shipping_status']		= $shipping_status;
 		$arr['shipping_time']		= GMTIME_UTC; // 发货时间

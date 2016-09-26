@@ -1505,13 +1505,13 @@ class admin extends ecjia_admin {
 			}
 // 			TODO:获取配送区域办事处，暂注释
 // 			$order['agency_id'] = isset($order['country']) ? get_agency_by_regions(array($order['country'], $order['province'], $order['city'], $order['district'])) : 0;
-			
+
 			//如果是会员订单则读取会员地址信息
-			if (isset($order['user_address']) && $old_order['user_id']>0) {
-// 				$db_address = RC_Loader::load_app_model('user_address_model','user');
+			if ($order['user_address'] > 0 && $old_order['user_id'] > 0) {
+// 				$db_address = RC_Loader::load_app_model('user_address_model', 'user');
 // 				$field = "consignee, email, country,province, city,district, address, zipcode, tel, mobile, sign_building, best_time";
 // 				$orders = $db_address->field($field)->find(array('user_id' => $old_order['user_id'],'address_id' => $order['user_address']));
-
+				
 				$orders = RC_DB::table('user_address')
 					->selectRaw('consignee, email, country, province, city, district, address, zipcode, tel, mobile, sign_building, best_time')
 					->where('user_id', $old_order['user_id'])
@@ -1519,6 +1519,9 @@ class admin extends ecjia_admin {
 					->first();
 				update_order($order_id, $orders);
 			} else {
+				if (isset($order['user_address'])) {
+					unset($order['user_address']);
+				}
 				update_order($order_id, $order);
 			}
 
@@ -3046,7 +3049,7 @@ class admin extends ecjia_admin {
 					}
 				}
 			}
-			
+
 			/* 对上一步处理结果进行判断 兼容 上一步判断为假情况的处理 */
 			if (empty($send_number) || empty($goods_list)) {
 				/* 操作失败 */

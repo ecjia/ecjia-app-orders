@@ -490,9 +490,13 @@
 				var $this = $(this);
 				$('.nav-list-ready li').removeClass('selected');
 				var user_id = $this.attr('data-id');
+				if (user_id == undefined) {
+					return false;
+				}
 				$("input[name='user']").val(user_id);
 				$this.addClass('selected');
 				var url = $("#userslist").attr("data-change-url");
+
 				$.ajax({
 					type : "post",
 					url  : url,

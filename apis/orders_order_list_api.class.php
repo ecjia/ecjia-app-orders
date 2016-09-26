@@ -2,7 +2,7 @@
 defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * 订单列表接口
- * @author 
+ * @author
  *
  */
 class orders_order_list_api extends Component_Event_Api {
@@ -15,19 +15,19 @@ class orders_order_list_api extends Component_Event_Api {
 		if (!is_array($options) || !isset($options['type'])) {
 			return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
 		}
-		
+
 		$user_id	= $_SESSION['user_id'];
 		$type		= !empty($options['type']) ? $options['type'] : '';
-		
+
 		$size = $options['size'];
 		$page = $options['page'];
-		
-		
+
+
 		$orders = $this->user_orders_list($user_id, $type, $page, $size);
-		
+
 		return $orders;
 	}
-	
+
 	/**
 	 *  获取用户指定范围的订单列表
 	 *
@@ -67,45 +67,44 @@ class orders_order_list_api extends Component_Event_Api {
 				'alias' 	=> 'tr',
 				'on' 		=> 'tr.object_id = og.rec_id'
 			),
-			'seller_shopinfo' => array(
+			'store_franchisee' => array(
 				'type' 		=> Component_Model_View::TYPE_LEFT_JOIN,
 				'alias' 	=> 'ssi',
-				'on' 		=> 'oi.seller_id = ssi.id'
+				'on' 		=> 'oi.store_id = ssi.store_id'
 			),
 		);
-		
+
 		RC_Loader::load_app_class('order_list', 'orders', false);
 // 		$where = array('oi.user_id' => $user_id, 'oii.order_id is null');
 		$where = array('oi.user_id' => $user_id);
-		
+
 		if (!empty($type)) {
 			$order_type = 'order_'.$type;
-			$where = array($where, order_list::$order_type('oi.'));
+			$where = array_merge($where, order_list::$order_type('oi.'));
 		}
-		
+
 // 		$record_count = $dbview_order_info->join(array('order_info'))->where($where)->count('*');
 		$record_count = $dbview_order_info->join(null)->where($where)->count('*');
 		//实例化分页
 		$page_row = new ecjia_page($record_count, $size, 6, '', $page);
-		
+
 // 		$order_group = $dbview_order_info->join(array('order_info'))->field('oi.order_id')->where($where)->order(array('oi.add_time' => 'desc'))->limit($page_row->limit())->select();
 		$order_group = $dbview_order_info->join(null)->field('oi.order_id')->where($where)->order(array('oi.add_time' => 'desc'))->limit($page_row->limit())->select();
-		
 		if (empty($order_group)) {
 			return array('order_list' => array(), 'page' => $page_row);
 		} else {
 			foreach ($order_group as $val) {
 				$where['oi.order_id'][] = $val['order_id'];
 			}
-			
+
 		}
+
 		$field = 'oi.order_id, oi.order_sn, oi.order_status, oi.shipping_status, oi.pay_status, oi.add_time, (oi.goods_amount + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee + oi.tax - oi.integral_money - oi.bonus - oi.discount) AS total_fee, oi.discount, oi.integral_money, oi.bonus, oi.shipping_fee, oi.pay_id, oi.order_amount'.
-		', og.goods_id, og.goods_name, og.goods_attr, og.goods_price, og.goods_number, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, tr.relation_id, ssi.id as seller_id, ssi.shop_name as seller_name';
+		', og.goods_id, og.goods_name, og.goods_attr, og.goods_price, og.goods_number, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, tr.relation_id, ssi.store_id, ssi.merchants_name';
 // 		array('order_info', 'order_goods', 'goods', 'term_relationship')
-		$res = $dbview_order_info->join(array('order_goods', 'goods', 'term_relationship', 'seller_shopinfo'))->field($field)->where($where)->order(array('oi.order_id' => 'desc'))->select();
-		
+		$res = $dbview_order_info->join(array('order_goods', 'goods', 'term_relationship', 'store_franchisee'))->field($field)->where($where)->order(array('oi.order_id' => 'desc'))->select();
 		RC_Lang::load('orders/order');
-		
+
 		/* 取得订单列表 */
 		$orders = array();
 		if (!empty($res)) {
@@ -133,15 +132,15 @@ class orders_order_list_api extends Component_Event_Api {
 					$goods_type_number ++;
 					$subject = $row['goods_name'].RC_Lang::get('orders::order.etc').$goods_type_number.RC_Lang::get('orders::order.kind_of_goods');
 					$goods_number += isset($row['goods_number']) ? $row['goods_number'] : 0;
-					
-					
-					if (in_array($row['order_status'], array(OS_CONFIRMED, OS_SPLITED)) && 
-						in_array($row['shipping_status'], array(SS_RECEIVED)) && 
-						in_array($row['pay_status'], array(PS_PAYED, PS_PAYING))) 
+
+
+					if (in_array($row['order_status'], array(OS_CONFIRMED, OS_SPLITED)) &&
+						in_array($row['shipping_status'], array(SS_RECEIVED)) &&
+						in_array($row['pay_status'], array(PS_PAYED, PS_PAYING)))
 					{
 						$label_order_status = RC_Lang::get('orders::order.cs.'.CS_FINISHED);
 						$status_code = 'finished';
-					} 
+					}
 					elseif (in_array($row['shipping_status'], array(SS_SHIPPED)))
 					{
 						$label_order_status = RC_Lang::get('orders::order.label_await_confirm');
@@ -154,18 +153,18 @@ class orders_order_list_api extends Component_Event_Api {
 						$label_order_status = RC_Lang::get('orders::order.label_await_pay');
 						$status_code = 'await_pay';
 					}
-					elseif (in_array($row['order_status'], array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) && 
+					elseif (in_array($row['order_status'], array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
 						in_array($row['shipping_status'], array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING)) &&
 						(in_array($row['pay_status'], array(PS_PAYED, PS_PAYING)) || $payment['is_cod']))
 					{
 						$label_order_status = RC_Lang::get('orders::order.label_await_ship');
 						$status_code = 'await_ship';
-					} 
+					}
 					elseif (in_array($row['order_status'], array(OS_CANCELED))) {
 						$label_order_status = RC_Lang::get('orders::order.label_canceled');
 						$status_code = 'canceled';
 					}
-					
+
 // 					if ($row['ru_id'] > 0) {
 // 						$field ='msi.user_id, ssi.*, CONCAT(shoprz_brandName,shopNameSuffix) as seller_name';
 // 						$seller_info = $msi_dbview->join(array('seller_shopinfo'))
@@ -173,10 +172,10 @@ class orders_order_list_api extends Component_Event_Api {
 // 											->where(array('msi.user_id' => $row['ru_id']))
 // 											->find();
 // 					}
-					
+
 					$orders[$row['order_id']] = array(
-						'seller_id'					=> !empty($row['seller_id']) ? intval($row['seller_id']) : 0,
-						'seller_name'				=> !empty($row['seller_name']) ? $row['seller_name'] : RC_Lang::get('orders::order.self_support'),
+						'store_id'					=> !empty($row['store_id']) ? intval($row['store_id']) : 0,
+						'merchants_name'			=> !empty($row['merchants_name']) ? $row['merchants_name'] : RC_Lang::get('orders::order.self_support'),
 						'order_id'					=> $row['order_id'],
 						'order_sn'					=> $row['order_sn'],
 						'order_status'				=> $row['order_status'],
@@ -204,7 +203,7 @@ class orders_order_list_api extends Component_Event_Api {
 						),
 						'goods_list' => array()
 					);
-					
+
 					if (!empty($row['goods_id'])) {
 						$orders[$row['order_id']]['goods_list']	= array(
 							array(
@@ -223,8 +222,8 @@ class orders_order_list_api extends Component_Event_Api {
 							)
 						);
 					}
-					
-					
+
+
 					$order_id = $row['order_id'];
 				} else {
 					$goods_number += isset($row['goods_number']) ? $row['goods_number'] : 0;
@@ -247,12 +246,12 @@ class orders_order_list_api extends Component_Event_Api {
 						),
 						'is_commented'	=> empty($row['relation_id']) ? 0 : 1,
 					);
-					
+
 				}
 			}
 		}
 		$orders = array_merge($orders);
-		
+
 		return array('order_list' => $orders, 'page' => $page_row);
 	}
 }

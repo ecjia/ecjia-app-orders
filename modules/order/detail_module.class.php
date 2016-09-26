@@ -7,18 +7,19 @@ defined('IN_ECJIA') or exit('No permission resources.');
  */
 class detail_module extends api_front implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
-    		
+
     	$this->authSession();
 		RC_Loader::load_app_func('order', 'orders');
 		$order_id = $this->requestData('order_id', 0);
 		if (!$order_id) {
 			return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
 		}
-		
+
 		$user_id = $_SESSION['user_id'];
-		
+
 		/* 订单详情 */
 		$order = get_order_detail($order_id, $user_id);
+
 		if(is_ecjia_error($order)) {
 		    return $order;
 		}
@@ -34,17 +35,17 @@ class detail_module extends api_front implements api_interface {
 		$order['pack_id'] 			= intval($order['pack_id']);
 		$order['card_id'] 			= intval($order['card_id']);
 		$order['bonus_id'] 			= intval($order['bonus_id']);
-		$order['agency_id'] 		= intval($order['agency_id']); 
+		$order['agency_id'] 		= intval($order['agency_id']);
 		$order['extension_id'] 		= intval($order['extension_id']);
 		$order['parent_id'] 		= intval($order['parent_id']);
-		
+
 		if ($order === false) {
 			return new ecjia_error(8, 'fail');
 		}
 		//收货人地址
 		$db_region = RC_Model::model('shipping/region_model');
-		$region_name = $db_region->where(array('region_id' => array('in'=>$order['country'], $order['province'], $order['city'], $order['district'])))->order('region_type')->select();
-		$order['country']	= $region_name[0]['region_name'];
+		$region_name = $db_region->in(array('region_id' => array($order['country'], $order['province'], $order['city'], $order['district'])))->order('region_type')->select();
+        $order['country']	= $region_name[0]['region_name'];
 		$order['province']	= $region_name[1]['region_name'];
 		$order['city']		= $region_name[2]['region_name'];
 		$order['district']	= $region_name[3]['region_name'];
@@ -58,9 +59,9 @@ class detail_module extends api_front implements api_interface {
 // 												->field($field)
 // 												->where(array('msi.user_id' => $v['ru_id']))
 // 												->find();
-					
+
 // 				}
-				
+
 // 				$order['seller_id']					= isset($v['ru_id']) ? intval($v['ru_id']) : 0;
 // 				$order['seller_name']				= isset($seller_info['seller_name']) ? $seller_info['seller_name'] : '自营';
 // 				$order['service_phone']				= $seller_info['kf_tel'];
@@ -76,7 +77,7 @@ class detail_module extends api_front implements api_interface {
 					}
 				}
 			}
-			
+
 			$goods_list[$k] = array(
 					'goods_id'	=> $v['goods_id'],
 					'name'		=> $v['goods_name'],
@@ -91,10 +92,10 @@ class detail_module extends api_front implements api_interface {
 							'url' 	=> !empty($v['original_img']) ? RC_Upload::upload_url($v['original_img']) : '',
 					)
 			);
-			
+
 		}
 		$order['goods_list'] = $goods_list;
-		
+
 		$db_term_meta = RC_Model::model('goods/goods_term_meta_model');
 		$meta_data_where = array(
 				'object_type'	=> 'ecjia.order',
@@ -106,7 +107,7 @@ class detail_module extends api_front implements api_interface {
 		if (!empty($receipt_code)) {
 			$order['receipt_verification'] = $receipt_code;
 		}
-		
+
 		$order_status_log = RC_Model::model('orders/order_status_log_model')->where(array('order_id' => $order_id))->order(array('log_id' => 'desc'))->select();
 		$order['order_status_log'] = array();
 		if (!empty($order_status_log)) {
@@ -118,25 +119,25 @@ class detail_module extends api_front implements api_interface {
 				);
 			}
 		}
-		
-		
+
+
 		//支付方式信息
 		$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
 		$payment_info = array();
 		$payment_info = $payment_method->payment_info_by_id($order['pay_id']);
-		
+
 		if ($payment_info['pay_code'] == 'upmp') {
 		    RC_Log::write('upmp get code ' . $payment_info['pay_code'], RC_Log::DEBUG);
 		    if (RC_Loader::load_app_module($payment_info['pay_code'], 'payment', false)) {
 		        $payment = get_payment($payment['pay_code']);
 		        $pay_obj = new $payment_info['pay_code']();
 		        list($resp, $validResp) = $pay_obj->get_tn($order, $payment);
-		        
+
 		        // 商户的业务逻辑
 		        if ($validResp){
 		            // 服务器应答签名验证成功
 		            RC_Log::write('upmp get code trade success', RC_Log::DEBUG);
-		        
+
 		            if ($resp['respCode'] == '00') {
 		                $order['pay_upmp_tn'] = $resp['tn'];
 		            }
@@ -151,7 +152,7 @@ class detail_module extends api_front implements api_interface {
 		        }
 		    }
 		}
-		
+
 		return array('data' => $order);
 	}
 }

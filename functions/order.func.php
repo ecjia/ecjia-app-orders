@@ -107,8 +107,13 @@ function pay_fee($payment_id, $order_amount, $cod_fee=null) {
 * @param   string  $order_sn   订单号
 * @return  array   订单信息（金额都有相应格式化的字段，前缀是formated_）
 */
-function order_info($order_id, $order_sn = '') {
-	$db_order_info = RC_DB::table('order_info as o')->leftJoin('store_franchisee as s', RC_DB::raw('o.store_id'), '=', RC_DB::raw('s.store_id'));
+function order_info($order_id, $order_sn = '', $type) {
+	
+	if (!empty($type) && $type == 'front') {/*接口订单详情*/
+		$db_order_info = RC_DB::table('order_info as o');
+	} else {
+		$db_order_info = RC_DB::table('order_info as o')->leftJoin('store_franchisee as s', RC_DB::raw('o.store_id'), '=', RC_DB::raw('s.store_id'));
+	}
 	/* 计算订单各种费用之和的语句 */
 	$total_fee = " (goods_amount - discount + tax + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee) AS total_fee ";
 
@@ -118,7 +123,12 @@ function order_info($order_id, $order_sn = '') {
 	} else {
 		$db_order_info->where('order_sn', $order_sn);
 	}
-	$order = $db_order_info->select('*', RC_DB::raw($total_fee), RC_DB::raw('s.*'))->first();
+	
+	if (!empty($type) && $type == 'front') {/*接口订单详情*/
+		$order = $db_order_info->select('*', RC_DB::raw($total_fee))->first();
+	} else {
+		$order = $db_order_info->select('*', RC_DB::raw($total_fee), RC_DB::raw('s.*'))->first();
+	}
     $order['store_id'] = intval($order['store_id']);
     $order['invoice_no'] = empty($order['invoice_no'])? '' : $order['invoice_no'];
 	/* 格式化金额字段 */
@@ -1911,16 +1921,16 @@ function judge_package_stock($package_id, $package_num = 1) {
  *
  * @return arr $order 订单所有信息的数组
  */
-function get_order_detail ($order_id, $user_id = 0) {
-    $db = RC_Loader::load_app_model('shipping_model', 'shipping');
-    $dbview = RC_Loader::load_app_model('package_goods_viewmodel', 'goods');
+function get_order_detail ($order_id, $user_id = 0, $type) {
+    //$db = RC_Loader::load_app_model('shipping_model', 'shipping');
+    //$dbview = RC_Loader::load_app_model('package_goods_viewmodel', 'goods');
     $pay_method = RC_Loader::load_app_class('payment_method', 'payment');
 
     $order_id = intval($order_id);
     if ($order_id <= 0) {
         return new ecjia_error('error_order_detail', RC_Lang::get('orders.order.invalid_parameter'));
     }
-    $order = order_info($order_id);
+    $order = order_info($order_id, '', $type);
 
     // 检查订单是否属于该用户
     if ($user_id > 0 && $user_id != $order['user_id']) {
@@ -1928,13 +1938,13 @@ function get_order_detail ($order_id, $user_id = 0) {
     }
 
     /* 入驻商信息*/
-    if ($order['seller_id'] > 0) {
+    if ($order['store_id'] > 0) {
 //     	$seller_info = RC_Model::model('seller/seller_shopinfo_model')->find(array('id' => $order['seller_id']));
-    	$seller_info = RC_DB::table('seller_shopinfo')->where('id', $order['seller_id'])->first();
-    	$order['seller_name']	= $seller_info['shop_name'];
-    	$order['service_phone']	= $seller_info['kf_tel'];
+    	$merchant_info = RC_DB::table('store_franchisee')->where('store_id', $order['store_id'])->first();
+    	$order['merchants_name']= $merchant_info['merchants_name'];
+    	$order['service_phone']	= RC_DB::table('merchants_config')->where(RC_DB::raw('store_id'), $order['store_id'])->where(RC_DB::raw('code'), 'shop_kf_mobile')->pluck('value');
     } else {
-    	$order['seller_name']	= RC_Lang::get('orders.order.self_support');
+    	$order['merchants_name']= RC_Lang::get('orders.order.self_support');
     	$order['service_phone']	= ecjia::config('service_phone');
     }
 
@@ -2131,7 +2141,8 @@ function deleteRepeat ($array)
  */
 function EM_order_goods($order_id , $page=1 , $pagesize = 10)
 {
-	$dbview = RC_Loader::load_app_model('order_goods_comment_viewmodel', 'orders');
+	//$dbview = RC_Loader::load_app_model('order_goods_comment_viewmodel', 'orders');
+	$dbview = RC_Model::model('orders/order_goods_comment_viewmodel');
 	$dbview->view = array(
 		'goods' => array(
 			'type' 		=> Component_Model_View::TYPE_LEFT_JOIN,
@@ -2144,7 +2155,7 @@ function EM_order_goods($order_id , $page=1 , $pagesize = 10)
 			'on' 		=> 'tr.object_id = og.rec_id and object_type = "ecjia.comment"'
 		),
 	);
-	$field = 'og.*, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, tr.relation_id';
+	$field = 'og.*, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, g.store_id, tr.relation_id';
 
 	$res = $dbview->field($field)
 				  ->where(array('og.order_id' => $order_id))

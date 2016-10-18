@@ -18,8 +18,8 @@ class detail_module extends api_front implements api_interface {
 		$user_id = $_SESSION['user_id'];
 
 		/* 订单详情 */
-		$order = get_order_detail($order_id, $user_id);
-
+		$order = get_order_detail($order_id, $user_id, 'front');
+		
 		if(is_ecjia_error($order)) {
 		    return $order;
 		}
@@ -45,27 +45,29 @@ class detail_module extends api_front implements api_interface {
 		//收货人地址
 		$db_region = RC_Model::model('shipping/region_model');
 		$region_name = $db_region->in(array('region_id' => array($order['country'], $order['province'], $order['city'], $order['district'])))->order('region_type')->select();
-        $order['country']	= $region_name[0]['region_name'];
+		
+		$order['country']	= $region_name[0]['region_name'];
 		$order['province']	= $region_name[1]['region_name'];
 		$order['city']		= $region_name[2]['region_name'];
 		$order['district']	= $region_name[3]['region_name'];
 		$goods_list = EM_order_goods($order_id);
 // 		$msi_dbview = RC_Loader::load_app_model('merchants_shop_information_viewmodel', 'seller');
 		foreach ($goods_list as $k => $v) {
-// 			if ($k == 0) {
-// 				if ($v['ru_id'] > 0) {
-// 					$field ='msi.user_id, ssi.*, CONCAT(shoprz_brandName,shopNameSuffix) as seller_name';
-// 					$seller_info = $msi_dbview->join(array('seller_shopinfo'))
-// 												->field($field)
-// 												->where(array('msi.user_id' => $v['ru_id']))
-// 												->find();
+			if ($k == 0) {
+				if ($v['store_id'] > 0) {
+					//$field ='msi.user_id, ssi.*, CONCAT(shoprz_brandName,shopNameSuffix) as seller_name';
+					//$seller_info = $msi_dbview->join(array('seller_shopinfo'))
+					//							->field($field)
+					//							->where(array('msi.user_id' => $v['ru_id']))
+					//							->find();
+					$seller_info = RC_DB::	table('store_franchisee')->where(RC_DB::raw('store_id'), $v['store_id'])->pluck('merchants_name');
 
-// 				}
+				}
 
-// 				$order['seller_id']					= isset($v['ru_id']) ? intval($v['ru_id']) : 0;
-// 				$order['seller_name']				= isset($seller_info['seller_name']) ? $seller_info['seller_name'] : '自营';
-// 				$order['service_phone']				= $seller_info['kf_tel'];
-// 			}
+				$order['store_id']			= isset($v['store_id']) ? intval($v['store_id']) : 0;
+				$order['merchants_name']	= isset($seller_info['merchants_name']) ? $seller_info['merchants_name'] : '自营';
+				$order['service_phone']		= RC_DB::table('merchants_config')->where(RC_DB::raw('store_id'), $v['store_id'])->where(RC_DB::raw('code'), 'shop_kf_mobile')->pluck('value');
+			}
 			$attr = array();
 			if (!empty($v['goods_attr'])) {
 				$goods_attr = explode("\n", $v['goods_attr']);
@@ -156,5 +158,4 @@ class detail_module extends api_front implements api_interface {
 		return array('data' => $order);
 	}
 }
-
 // end

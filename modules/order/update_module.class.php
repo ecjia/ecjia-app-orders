@@ -22,7 +22,7 @@ class update_module extends api_front implements api_interface {
 			return new ecjia_error(8, 'fail');
 		} else {
 			RC_Loader::load_app_func('order', 'orders');
-			$order_info = get_order_detail($order_id, $user_id);
+			$order_info = get_order_detail($order_id, $user_id, 'front');
 			if (is_ecjia_error($order_info)) {
 			    return $order_info;
 			}

@@ -19,7 +19,7 @@ class pay_module extends api_front implements api_interface {
 		
 		$user_id = $_SESSION['user_id'];
 		/* 订单详情 */
-		$order = get_order_detail($order_id, $user_id);
+		$order = get_order_detail($order_id, $user_id, 'front');
 		if (is_ecjia_error($order)) {
 			return $order;
 		}

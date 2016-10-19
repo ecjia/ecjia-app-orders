@@ -306,7 +306,6 @@
 							<thead>
 								<tr class="table-list">
 									<th class="w80">{lang key='orders::order.product_thumbnail'}</th>
-									<th class="w80">{lang key='orders::order.warehouse_name'}</th>
 									<th>{lang key='orders::order.goods_name_brand'}</th>
 									<th class="w80">{lang key='orders::order.goods_sn'}</th>
 									<th class="w70">{lang key='orders::order.product_sn'}</th>
@@ -321,7 +320,6 @@
 								<!-- {foreach from=$goods_list item=goods} -->
 								<tr class="table-list">
 									<td><img src="{$goods.goods_img}" width='50'/></td>
-									<td>{$goods.region_name}</td>
 									<td>
 										{if $goods.goods_id gt 0 and $goods.extension_code neq 'package_buy'}
 										<a href='{url path="goods/admin/preview" args="id={$goods.goods_id}"}' target="_blank">{$goods.goods_name} {if $goods.brand_name}[ {$goods.brand_name} ]{/if}{if $goods.is_gift}{if $goods.goods_price gt 0}{lang key='orders::order.remark_favourable'}{else}{lang key='orders::order.remark_gift'}{/if}{/if}{if $goods.parent_id gt 0}{lang key='orders::order.remark_fittings'}{/if}</a>
@@ -349,7 +347,7 @@
 								</tr>
 								<!-- {/foreach} -->
 								<tr>
-									<td colspan="6">{if $order.total_weight}<div align="right"><strong>{lang key='orders::order.label_total_weight'}
+									<td colspan="5">{if $order.total_weight}<div align="right"><strong>{lang key='orders::order.label_total_weight'}
 									</strong></div>{/if}</td>
 									<td colspan="2">{if $order.total_weight}<div align="right">{$order.total_weight}
 									</div>{/if}</td>

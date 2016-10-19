@@ -20,6 +20,8 @@ class affirmReceived_module extends api_front implements api_interface {
 		
 		$result = affirm_received(intval($order_id), $user_id);	
 		if (!is_ecjia_error($result)) {
+		    //update commission_bill
+		    RC_Api::api('commission', 'add_bill_detail', array('order_type' => 2, 'order_id' => $order_id));
 		    return array();
 		} else {
 			return new ecjia_error(8, 'fail');

@@ -64,8 +64,10 @@ class detail_module extends api_front implements api_interface {
 
 				}
 
-				$order['store_id']			= isset($v['store_id']) ? intval($v['store_id']) : 0;
-				$order['merchants_name']	= isset($seller_info['merchants_name']) ? $seller_info['merchants_name'] : '自营';
+				$order['seller_id']		= isset($v['store_id']) ? intval($v['store_id']) : 0;
+				$order['seller_name']	= isset($seller_info['merchants_name']) ? $seller_info['merchants_name'] : '自营';
+				//$order['store_id']		= isset($v['store_id']) ? intval($v['store_id']) : 0;//后期增加
+				//$order['merchants_name']	= isset($seller_info['merchants_name']) ? $seller_info['merchants_name'] : '自营';  //后期增加
 				$order['service_phone']		= RC_DB::table('merchants_config')->where(RC_DB::raw('store_id'), $v['store_id'])->where(RC_DB::raw('code'), 'shop_kf_mobile')->pluck('value');
 			}
 			$attr = array();

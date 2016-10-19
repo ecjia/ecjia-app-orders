@@ -1941,10 +1941,12 @@ function get_order_detail ($order_id, $user_id = 0, $type) {
     if ($order['store_id'] > 0) {
 //     	$seller_info = RC_Model::model('seller/seller_shopinfo_model')->find(array('id' => $order['seller_id']));
     	$merchant_info = RC_DB::table('store_franchisee')->where('store_id', $order['store_id'])->first();
-    	$order['merchants_name']= $merchant_info['merchants_name'];
+    	$order['seller_name']= $merchant_info['merchants_name'];
+    	//$order['merchants_name']= $merchant_info['merchants_name'];后期增加
     	$order['service_phone']	= RC_DB::table('merchants_config')->where(RC_DB::raw('store_id'), $order['store_id'])->where(RC_DB::raw('code'), 'shop_kf_mobile')->pluck('value');
     } else {
-    	$order['merchants_name']= RC_Lang::get('orders.order.self_support');
+    	//$order['merchants_name']= RC_Lang::get('orders.order.self_support');后期增加
+    	$order['seller_name']= RC_Lang::get('orders.order.self_support');
     	$order['service_phone']	= ecjia::config('service_phone');
     }
 

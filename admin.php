@@ -93,7 +93,7 @@ class admin extends ecjia_admin {
 	/**
 	 * 订单详情页面
 	 */	
-	public function info() {		
+	public function info() {
 		$this->admin_priv('order_view', ecjia::MSGTYPE_JSON);
 		
 		/* 根据订单id或订单号查询订单信息 */
@@ -3333,7 +3333,10 @@ class admin extends ecjia_admin {
 				);
 // 				$this->db_order_status_log->insert($data);
 				RC_DB::table('order_status_log')->insert($data);
+				//update commission_bill
+				RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => 1, 'order_id' => $order_id, 'order_amount' => $order['order_amount']));
 			}
+			
 			/* 记录log */
 			order_action($order['order_sn'], $order['order_status'], SS_RECEIVED, $order['pay_status'], $action_note);
 		} elseif ('cancel' == $operation) {
@@ -3568,6 +3571,8 @@ class admin extends ecjia_admin {
 // 			$this->db_order_good->where(array('order_id' => $order_id))->update($data);
 			RC_DB::table('order_goods')->where('order_id', $order_id)->update($data);
 			
+			//update commission_bill
+			RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => 2, 'order_id' => $order_id, 'order_amount' => $order['order_amount']));
 				
 		} elseif ('after_service' == $operation) {
 			/* 记录log */

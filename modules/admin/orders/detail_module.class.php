@@ -7,10 +7,9 @@ defined('IN_ECJIA') or exit('No permission resources.');
  */
 class detail_module extends api_admin implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
-    		
+
 		$this->authadminSession();
- 		$ecjia = RC_Loader::load_app_class('api_admin', 'api');
-		$result = $ecjia->admin_priv('order_view');
+		$result = $this->admin_priv('order_view');
  		if (is_ecjia_error($result)) {
  			return $result;
  		}
@@ -21,17 +20,17 @@ class detail_module extends api_admin implements api_interface {
  			return new ecjia_error(101, '参数错误');
 		}
 		RC_Loader::load_app_func('order', 'orders');
-		
+
 		/* 订单详情 */
 // 		$order = order_info($order_id);
 		$order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => $order_sn));
-		
+
 		if ($order === false) {
 			return new ecjia_error(8, 'fail');
 		}
 		$db_user = RC_Model::model('user/users_model');
 		$user_name = $db_user->where(array('user_id' => $order['user_id']))->get_field('user_name');
-		
+
 		$order['user_name'] = empty($user_name) ? __('匿名用户') : $user_name;
 		//收货人地址
 		$db_region = RC_Model::model('shipping/region_model');
@@ -40,12 +39,12 @@ class detail_module extends api_admin implements api_interface {
 		$order['province']	= $region_name[1]['region_name'];
 		$order['city']		= $region_name[2]['region_name'];
 		$order['district']	= $region_name[3]['region_name'];
-		
+
 		RC_Lang::load('orders/order');
 		$order_status = ($order['order_status'] != '2' || $order['order_status'] != '3') ? RC_Lang::lang('os/'.$order['order_status']) : '';
 		$order_status = $order['order_status'] == '2' ? __('已取消') : $order_status;
 		$order_status = $order['order_status'] == '3' ? __('无效') : $order_status;
-		
+
 		$order['status'] =strip_tags($order_status.','.RC_Lang::lang('ps/'.$order['pay_status']).','.RC_Lang::lang('ss/'.$order['shipping_status']));
 		$order['sub_orders'] = array();
 		$db_orderinfo_view = RC_Model::model('orders/order_info_viewmodel');
@@ -59,24 +58,24 @@ class detail_module extends api_admin implements api_interface {
 				foreach ($sub_orders_result as $val) {
 					$seller_name = RC_Model::model('seller/seller_shopinfo_model')->where(array('id' => $val['seller_id']))->get_field('shop_name');
 					$order_goods = $db_order_goods->where(array('order_id' => $val['order_id']))->select();
-					
+
 					$order_status = ($val['order_status'] != '2' || $val['order_status'] != '3') ? RC_Lang::lang('os/'.$val['order_status']) : '';
 					$order_status = $val['order_status'] == '2' ? __('已取消') : $order_status;
 					$order_status = $val['order_status'] == '3' ? __('无效') : $order_status;
-					
+
 					$goods_lists = array();
 					if (!empty($order_goods)) {
 						foreach ($order_goods as $v) {
 // 							if ($v['ru_id'] > 0) {
 // 								$db_msi = RC_Loader::load_app_model('merchants_shop_information_model', 'seller');
 // 								$info = $db_msi->field('CONCAT(shoprz_brandName,shopNameSuffix) as seller_name')->where(array('user_id' => $v['ru_id']))->find();
-// 								$seller_name = $info['seller_name']; 
+// 								$seller_name = $info['seller_name'];
 // 							} else {
 // 								$seller_name = '自营';
 // 							}
-							
+
 							$goods_info = $goods_db->find(array('goods_id' => $v['goods_id']));
-							
+
 							$goods_lists[] = array(
 									'id'	=> $v['goods_id'],
 									'name'	=> $v['goods_name'],
@@ -92,8 +91,8 @@ class detail_module extends api_admin implements api_interface {
 							);
 						}
 					}
-					
-					
+
+
 					$order['sub_orders'][] = array(
 							'order_id'	=> $val['order_id'],
 							'order_sn'	=> $val['order_sn'],
@@ -134,10 +133,10 @@ class detail_module extends api_admin implements api_interface {
 				);
 			}
 		}
-		
+
 		$order['goods_items'] = $goods_list;
-		
-		
+
+
 		/* 取得订单操作记录 */
 		$act_list = array();
 		$db_order_action = RC_Model::model('orders/order_action_model');
@@ -151,17 +150,17 @@ class detail_module extends api_admin implements api_interface {
 				$row['action_time']		= RC_Time::local_date(ecjia::config('time_format'), $row['log_time']);
 				$act_list[]				= array(
 												'action_time'		=> $row['action_time'],
-												'log_description'	=> $row['action_user'].' 操作此订单，变更状态为：'.$row['order_status'].'、'.$row['pay_status'].'、'.$row['shipping_status'].(!empty($row['action_note']) ? '，理由是'.$row['action_note'] : '。'), 
+												'log_description'	=> $row['action_user'].' 操作此订单，变更状态为：'.$row['order_status'].'、'.$row['pay_status'].'、'.$row['shipping_status'].(!empty($row['action_note']) ? '，理由是'.$row['action_note'] : '。'),
 										   );
 			}
 		}
-		
-		
+
+
 		$order['action_logs']   = $act_list;
 		return $order;
 	}
-	
-	
+
+
 }
 
 

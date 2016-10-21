@@ -141,21 +141,22 @@ class detail_module extends api_admin implements api_interface {
 		$act_list = array();
 		$db_order_action = RC_Model::model('orders/order_action_model');
 		$data = $db_order_action->where(array('order_id' => $order['order_id']))->order(array('log_time' => 'asc' ,'action_id' => 'asc'))->select();
-		if(!empty($data)) {
+        if(!empty($data)) {
 			foreach ($data as $key => $row) {
-				$row['order_status']	= RC_Lang::lang('os/'.$row['order_status']);
+				// $row['order_status']	= RC_Lang::lang('os/'.$row['order_status']);
+				// $row['pay_status']		= RC_Lang::lang('ps/'.$row['pay_status']);
+				// $row['shipping_status']	= RC_Lang::lang('ss/'.$row['shipping_status']);
 				$row['order_status']	= strip_tags($row['order_status']);//处理html标签
-				$row['pay_status']		= RC_Lang::lang('ps/'.$row['pay_status']);
-				$row['shipping_status']	= RC_Lang::lang('ss/'.$row['shipping_status']);
 				$row['action_time']		= RC_Time::local_date(ecjia::config('time_format'), $row['log_time']);
-				$act_list[]				= array(
-												'action_time'		=> $row['action_time'],
-												'log_description'	=> $row['action_user'].' 操作此订单，变更状态为：'.$row['order_status'].'、'.$row['pay_status'].'、'.$row['shipping_status'].(!empty($row['action_note']) ? '，理由是'.$row['action_note'] : '。'),
-										   );
+                $act_list[]				= array(
+					'action_time'		=> $row['action_time'],
+					'log_description'	=> $row['action_user'].' 操作此订单，变更状态为：'.$row['order_status'].'、'.$row['pay_status'].'、'.$row['shipping_status'].(!empty($row['action_note']) ? '，理由是'.$row['action_note'] : '。'),
+                    'order_status'      => RC_Lang::lang('os/'.$row['order_status']),
+    				'pay_status'		=> RC_Lang::lang('ps/'.$row['pay_status']),
+    				'shipping_status'	=> RC_Lang::lang('ss/'.$row['shipping_status']),
+			   );
 			}
 		}
-
-
 		$order['action_logs']   = $act_list;
 		return $order;
 	}

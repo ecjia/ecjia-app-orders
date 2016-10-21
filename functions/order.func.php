@@ -108,7 +108,7 @@ function pay_fee($payment_id, $order_amount, $cod_fee=null) {
 * @return  array   订单信息（金额都有相应格式化的字段，前缀是formated_）
 */
 function order_info($order_id, $order_sn = '', $type) {
-	
+
 	if (!empty($type) && $type == 'front') {/*接口订单详情*/
 		$db_order_info = RC_DB::table('order_info as o');
 	} else {
@@ -123,7 +123,7 @@ function order_info($order_id, $order_sn = '', $type) {
 	} else {
 		$db_order_info->where('order_sn', $order_sn);
 	}
-	
+
 	if (!empty($type) && $type == 'front') {/*接口订单详情*/
 		$order = $db_order_info->select('*', RC_DB::raw($total_fee))->first();
 	} else {
@@ -544,8 +544,12 @@ function order_fee($order, $goods, $consignee, $cart_id = array()) {
 function update_order($order_id, $order) {
 // 	$db = RC_Loader::load_app_model('order_info_model', 'orders');
 // 	return $db->where('order_id = '.$order_id.'')->update($order);
-
-	return RC_DB::table('order_info')->where('order_id', $order_id)->update($order);
+    $db_order_info = RC_DB::table('order_info');
+    $db_order_info->where('order_id', $order_id);
+    if(!empty($_SESSION['store_id'])){
+        $db_order_info->where('store_id', $_SESSION['store_id']);
+    }
+	return $db_order_info->update($order);
 }
 
 /**
@@ -1242,8 +1246,8 @@ function order_action($order_sn, $order_status, $shipping_status, $pay_status, $
 
 // 	$db_action = RC_Loader::load_app_model ( 'order_action_model', 'orders' );
 // 	$db_info = RC_Loader::load_app_model ( 'order_info_model', 'orders' );
-	if (is_null ( $username )) {
-		$username = $_SESSION ['admin_name'];
+	if (empty($username)) {
+		$username = empty($_SESSION['admin_name'])? $_SESSION['staff_name'] : $_SESSION['admin_name'];
 	}
 
 // 	$row = $db_info->field('order_id')->find(array('order_sn' => $order_sn));

@@ -23,7 +23,7 @@ class orders_module extends api_admin implements api_interface {
 		if (empty($start_date) || empty($end_date)) {
 			return new ecjia_error(101, '参数错误');
 		}
-		$cache_key = 'admin_stats_orders_'.md5($start_date.$end_date);
+		$cache_key = 'admin_stats_orders_'.$_SESSION['store_id'].'_'.md5($start_date.$end_date);
 		$data = RC_Cache::app_cache_get($cache_key, 'api');
 		if (empty($data)) {
 			$response = orders_module($start_date, $end_date);
@@ -39,29 +39,13 @@ class orders_module extends api_admin implements api_interface {
 function orders_module($start_date, $end_date)
 {
 	$db_orderinfo_view = RC_Model::model('orders/order_info_viewmodel');
-	$result = ecjia_app::validate_application('seller');
-	if (!is_ecjia_error($result)) {
-		$db_orderinfo_view->view = array(
-				'order_info' => array(
-						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-						'alias'	=> 'oii',
-						'on'	=> 'oi.order_id = oii.main_order_id'
-				),
-				'order_goods' => array(
-						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-						'alias'	=> 'og',
-						'on'	=> 'oi.order_id = og.order_id'
-				)
-		);
-	} else {
-		$db_orderinfo_view->view = array(
-				'order_goods' => array(
-						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-						'alias'	=> 'og',
-						'on'	=> 'oi.order_id = og.order_id'
-				)
-		);
-	}
+	$db_orderinfo_view->view = array(
+			'order_goods' => array(
+					'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+					'alias'	=> 'og',
+					'on'	=> 'oi.order_id = og.order_id'
+			)
+	);
 
 	$type = $start_date == $end_date ? 'time' : 'day';
 	$start_date = RC_Time::local_strtotime($start_date. ' 00:00:00');
@@ -74,28 +58,21 @@ function orders_module($start_date, $end_date)
 	$day = round(($end_date - $start_date)/(24*60*60));
 	
 	$where = array();
-	if (isset($_SESSION['ru_id']) && $_SESSION['ru_id'] > 0) {
+	if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
 		/*入驻商*/
-		$where['ru_id'] = $_SESSION['ru_id'];
-		$where[] = 'oii.order_id is null';
-	} else {
-		if (!is_ecjia_error($result)) {
-			/*自营*/
-			$where['oi.main_order_id'] = 0;
-		}
+		$where['store_id'] = $_SESSION['store_id'];
 	}
 	$where['oi.pay_status'] = 2;
 	$member_orders = 0;//会员数量
 	$anonymity_orders = 0;//非会员数量
 // 	$where[] = 'oi.pay_time >="' .$start_date. '" and oi.pay_time<="' .$end_date. '"';
 	
-
 	$field = 'oi.order_id, oi.pay_time, oi.user_id';
 	
 	
 	/* 判断是否是入驻商*/
-	if (isset($_SESSION['ru_id']) && $_SESSION['ru_id'] > 0 ) {
-		$join = array('order_info', 'order_goods');
+	if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0 ) {
+		$join = array('order_goods');
 	} else {
 		$join = null;
 	}

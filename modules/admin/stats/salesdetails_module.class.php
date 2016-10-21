@@ -25,51 +25,27 @@ class salesdetails_module extends api_admin implements api_interface {
 		}
 		
 		$db_orderinfo_view = RC_Model::model('orders/order_info_viewmodel');
-		$result = ecjia_app::validate_application('seller');
-		if (!is_ecjia_error($result)) {
-			$db_orderinfo_view->view = array(
-					'order_info' => array(
-							'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-							'alias'	=> 'oii',
-							'on'	=> 'oi.order_id = oii.main_order_id'
-					),
-					'order_goods' => array(
-							'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-							'alias'	=> 'og',
-							'on'	=> 'oi.order_id = og.order_id'
-					)
-			);
-		} else {
-			$db_orderinfo_view->view = array(
-					'order_goods' => array(
-							'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-							'alias'	=> 'og',
-							'on'	=> 'oi.order_id = og.order_id'
-					)
-			);
-		}
+		$db_orderinfo_view->view = array(
+				'order_goods' => array(
+						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+						'alias'	=> 'og',
+						'on'	=> 'oi.order_id = og.order_id'
+				)
+		);
 	
 		$type = $start_date == $end_date ? 'time' : 'day';
 		$start_date = RC_Time::local_strtotime($start_date. ' 00:00:00');
 		$end_date	= RC_Time::local_strtotime($end_date. ' 23:59:59');
 		/* 判断是否是入驻商*/
-		if ($_SESSION['ru_id'] > 0 ) {
-			$join = array('order_info', 'order_goods');
-		} else {
-			$join = null;
+		if ($_SESSION['store_id'] > 0 ) {
+			$join = array('order_goods');
 		}
 		$where = array();
 		$where[] = 'oi.pay_time >="' .$start_date. '" and oi.pay_time<="' .$end_date. '"';
 		$where[] = 'oi.pay_status = 2';
-		if (isset($_SESSION['ru_id']) && $_SESSION['ru_id'] > 0) {
+		if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
 			/*入驻商*/
-			$where['ru_id'] = $_SESSION['ru_id'];
-			$where[] = 'oii.order_id is null';
-		} else {
-			if (!is_ecjia_error($result)) {
-				/*自营*/
-				$where['oi.main_order_id'] = 0;
-			}
+			$where['store_id'] = $_SESSION['store_id'];
 		}
 		$count = $db_orderinfo_view->join($join)->where($where)->count('oi.order_id');
 
@@ -100,8 +76,8 @@ class salesdetails_module extends api_admin implements api_interface {
 									->select();
 		$stats = array();
 		if (!empty($result)) {
-			foreach ($result as $k => $v){
-				if($v['total_fee']!=0){
+			foreach ($result as $k => $v) {
+				if($v['total_fee']!=0) {
 					$stats[] = array(
 							'time'				=> $v['pay_time'],
 							'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s',$v['pay_time']),

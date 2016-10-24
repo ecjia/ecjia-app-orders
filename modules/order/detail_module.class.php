@@ -13,7 +13,7 @@ class detail_module extends api_front implements api_interface {
     	if ($user_id < 1 ) {
     	    return new ecjia_error(100, 'Invalid session');
     	}
-    	
+
 		RC_Loader::load_app_func('order', 'orders');
 		$order_id = $this->requestData('order_id', 0);
 		if (!$order_id) {
@@ -22,7 +22,7 @@ class detail_module extends api_front implements api_interface {
 
 		/* 订单详情 */
 		$order = get_order_detail($order_id, $user_id, 'front');
-		
+
 		if(is_ecjia_error($order)) {
 		    return $order;
 		}
@@ -48,7 +48,7 @@ class detail_module extends api_front implements api_interface {
 		//收货人地址
 		$db_region = RC_Model::model('shipping/region_model');
 		$region_name = $db_region->in(array('region_id' => array($order['country'], $order['province'], $order['city'], $order['district'])))->order('region_type')->select();
-		
+
 		$order['country']	= $region_name[0]['region_name'];
 		$order['province']	= $region_name[1]['region_name'];
 		$order['city']		= $region_name[2]['region_name'];
@@ -64,11 +64,12 @@ class detail_module extends api_front implements api_interface {
 					//							->where(array('msi.user_id' => $v['ru_id']))
 					//							->find();
 					$seller_info = RC_DB::	table('store_franchisee')->where(RC_DB::raw('store_id'), $v['store_id'])->pluck('merchants_name');
-
+                    _dump($seller_info,1);
 				}
 
+
 				$order['seller_id']		= isset($v['store_id']) ? intval($v['store_id']) : 0;
-				$order['seller_name']	= isset($seller_info['merchants_name']) ? $seller_info['merchants_name'] : '自营';
+				$order['seller_name']	= isset($seller_info) ? $seller_info : '自营';
 				//$order['store_id']		= isset($v['store_id']) ? intval($v['store_id']) : 0;//后期增加
 				//$order['merchants_name']	= isset($seller_info['merchants_name']) ? $seller_info['merchants_name'] : '自营';  //后期增加
 				$order['service_phone']		= RC_DB::table('merchants_config')->where(RC_DB::raw('store_id'), $v['store_id'])->where(RC_DB::raw('code'), 'shop_kf_mobile')->pluck('value');

@@ -64,7 +64,6 @@ class detail_module extends api_front implements api_interface {
 					//							->where(array('msi.user_id' => $v['ru_id']))
 					//							->find();
 					$seller_info = RC_DB::	table('store_franchisee')->where(RC_DB::raw('store_id'), $v['store_id'])->pluck('merchants_name');
-                    _dump($seller_info,1);
 				}
 
 

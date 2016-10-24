@@ -10,11 +10,15 @@ class update_module extends api_front implements api_interface {
     	
     	$this->authSession();
  		$user_id	= $_SESSION['user_id'];
+ 		if ($user_id < 1 ) {
+ 		    return new ecjia_error(100, 'Invalid session');
+ 		}
  		$order_id	= $this->requestData('order_id', 0);
 		$pay_id		= $this->requestData('pay_id',0);
 		if (!$order_id || !$pay_id) {
 			return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
 		}
+		
 		$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
 		$payment_info = $payment_method->payment_info($pay_id);
 		

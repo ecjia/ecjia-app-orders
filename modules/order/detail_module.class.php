@@ -9,13 +9,16 @@ class detail_module extends api_front implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
 
     	$this->authSession();
+    	$user_id = $_SESSION['user_id'];
+    	if ($user_id < 1 ) {
+    	    return new ecjia_error(100, 'Invalid session');
+    	}
+    	
 		RC_Loader::load_app_func('order', 'orders');
 		$order_id = $this->requestData('order_id', 0);
 		if (!$order_id) {
 			return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
 		}
-
-		$user_id = $_SESSION['user_id'];
 
 		/* 订单详情 */
 		$order = get_order_detail($order_id, $user_id, 'front');

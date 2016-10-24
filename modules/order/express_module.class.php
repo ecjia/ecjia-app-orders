@@ -9,6 +9,10 @@ class express_module extends api_front implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
     		
     	$this->authSession();
+    	$user_id = $_SESSION['user_id'];
+    	if ($user_id < 1 ) {
+    	    return new ecjia_error(100, 'Invalid session');
+    	}
     	
 		define('INIT_NO_USERS', true);
 		RC_Loader::load_app_func('order','orders');

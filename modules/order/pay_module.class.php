@@ -8,6 +8,10 @@ defined('IN_ECJIA') or exit('No permission resources.');
 class pay_module extends api_front implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {	
     	$this->authSession();
+    	$user_id = $_SESSION['user_id'];
+    	if ($user_id < 1 ) {
+    	    return new ecjia_error(100, 'Invalid session');
+    	}
     	
 		RC_Loader::load_app_func('order','orders');
 		
@@ -17,7 +21,6 @@ class pay_module extends api_front implements api_interface {
 			return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
 		}
 		
-		$user_id = $_SESSION['user_id'];
 		/* 订单详情 */
 		$order = get_order_detail($order_id, $user_id, 'front');
 		if (is_ecjia_error($order)) {

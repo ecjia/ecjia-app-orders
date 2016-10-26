@@ -3229,9 +3229,9 @@ class admin extends ecjia_admin {
 			}
 			unset($filter_fileds, $delivery, $_delivery, $order_finish);
 		
-			/* 定单信息更新处理 */
+			/* 订单信息更新处理 */
 			if (true) {
-				/* 定单信息 */
+				/* 订单信息 */
 				$_sended = & $send_number;
 				foreach ($_goods['goods_list'] as $key => $value) {
 					if ($value['extension_code'] != 'package_buy') {

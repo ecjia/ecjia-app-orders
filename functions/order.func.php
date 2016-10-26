@@ -1932,13 +1932,13 @@ function get_order_detail ($order_id, $user_id = 0, $type) {
 
     $order_id = intval($order_id);
     if ($order_id <= 0) {
-        return new ecjia_error('error_order_detail', RC_Lang::get('orders.order.invalid_parameter'));
+        return new ecjia_error('error_order_detail', RC_Lang::get('orders::order.invalid_parameter'));
     }
     $order = order_info($order_id, '', $type);
 
     // 检查订单是否属于该用户
     if ($user_id > 0 && $user_id != $order['user_id']) {
-        return new ecjia_error('error_order_detail', RC_Lang::get('orders.order.error_order_detail'));
+        return new ecjia_error('error_order_detail', RC_Lang::get('orders::order.error_order_detail'));
     }
 
     /* 入驻商信息*/
@@ -1949,8 +1949,8 @@ function get_order_detail ($order_id, $user_id = 0, $type) {
     	//$order['merchants_name']= $merchant_info['merchants_name'];后期增加
     	$order['service_phone']	= RC_DB::table('merchants_config')->where(RC_DB::raw('store_id'), $order['store_id'])->where(RC_DB::raw('code'), 'shop_kf_mobile')->pluck('value');
     } else {
-    	//$order['merchants_name']= RC_Lang::get('orders.order.self_support');后期增加
-    	$order['seller_name']= RC_Lang::get('orders.order.self_support');
+    	//$order['merchants_name']= RC_Lang::get('orders::order.self_support');后期增加
+    	$order['seller_name']= RC_Lang::get('orders::order.self_support');
     	$order['service_phone']	= ecjia::config('service_phone');
     }
 

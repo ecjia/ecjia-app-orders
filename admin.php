@@ -1505,6 +1505,9 @@ class admin extends ecjia_admin {
 			if (isset($order['next'])) {
 				unset($order['next']);
 			}
+			if (isset($order['finish'])) {
+				unset($order['finish']);
+			}
 // 			TODO:获取配送区域办事处，暂注释
 // 			$order['agency_id'] = isset($order['country']) ? get_agency_by_regions(array($order['country'], $order['province'], $order['city'], $order['district'])) : 0;
 

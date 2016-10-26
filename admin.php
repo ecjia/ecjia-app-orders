@@ -2056,7 +2056,7 @@ class admin extends ecjia_admin {
 			$refund['ur_here']					= RC_Lang::get('orders::order.refund');
 			die(json_encode($refund));
 		} else {
-			$this->showmessage(RC_Lang::get('orders.order.invalid_parameter'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			$this->showmessage(RC_Lang::get('orders::order.invalid_parameter'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 	}
 	

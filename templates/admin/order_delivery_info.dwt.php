@@ -66,10 +66,10 @@
 								<td>{$order.insure_fee|default:0.00}</td>
 							</tr>
 							<!-- {if $exist_real_goods}-->
-						  	<tr>
-								<td><div align="right"><strong>{lang key='orders::order.label_invoice_no'}</strong></div></td>
-								<td colspan="3"><input name="delivery[invoice_no]" type="text" id="invoice_no" value="" size="20"/><input name="delivery_hidden" type="hidden" value="{$exist_real_goods}" /></td>
-						  	</tr>
+<!-- 						  	<tr> -->
+<!-- 								<td><div align="right"><strong>{lang key='orders::order.label_invoice_no'}</strong></div></td> -->
+<!-- 								<td colspan="3"><input name="delivery[invoice_no]" type="text" id="invoice_no" value="" size="20"/><input name="delivery_hidden" type="hidden" value="{$exist_real_goods}" /></td> -->
+<!-- 						  	</tr> -->
 						  	<!-- {/if} -->
 						</table>
 					</div>
@@ -182,7 +182,7 @@
 									<td><div>{$goods.storage}</div></td>
 									<td><div>{$goods.goods_number}</div></td>
 									<td><div>{$goods.sended}</div></td>
-									<td><div><input name="send_number[{$goods.rec_id}]" type="text" id="send_number_{$goods.rec_id}" value="{$goods.send}" class="w50" {$goods.readonly}/></div></td>
+									<td><div><input name="send_number[{$goods.rec_id}]" type="text" id="send_number_{$goods.rec_id}" value="{$goods.send}" class="w70" {$goods.readonly}/></div></td>
 								</tr>
 								<!-- {/if} -->
 								<!-- {/foreach} -->

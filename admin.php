@@ -2849,7 +2849,7 @@ class admin extends ecjia_admin {
 		if (!isset($operable_list[$operation])) {
 			$this->showmessage(RC_Lang::get('orders::order.unable_operation_order'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
-		
+
 		/* 确认 */
 		if ('confirm' == $operation) {
 			/* 标记订单为已确认 */
@@ -3059,7 +3059,7 @@ class admin extends ecjia_admin {
 			if (empty($send_number) || empty($goods_list)) {
 				/* 操作失败 */
 				$links[] = array('text' => RC_Lang::get('orders::order.order_info'), 'href' => RC_Uri::url('orders/admin/info', 'order_id=' . $order_id));
-				$this->showmessage(RC_Lang::get('orders::order.act_false'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
+				$this->showmessage('发货数量或商品不能为空', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
 			}
 		
 			/* 检查此单发货商品库存缺货情况 */

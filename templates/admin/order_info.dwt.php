@@ -105,7 +105,6 @@
 										{$order.user_name|default:{lang key='orders::order.anonymous'}}
 										{if $order.user_id gt 0}
 										[ <a class="userInfo cursor_pointer" data-toggle="modal" href="#consigneeinfo" title="{$lang.display_buyer}">{lang key='orders::order.display_buyer'}</a> ]
-										[ <a href='{url path="feedback/admin/add" args="order_id={$order.order_id}&user_id={$order.user_id}"}' target="_blank">{lang key='orders::order.send_message'}</a> ]
 										{/if}
 									</td>
 									<td><div align="right"><strong>{lang key='orders::order.label_order_time'}</strong></div></td>

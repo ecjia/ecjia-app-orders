@@ -712,7 +712,7 @@ function get_order_finish($order_id) {
 	$db_order_goods = RC_DB::table('order_goods');
 	
 	$return_res = 0;
-
+    
 	if (empty($order_id)) {
 		return $return_res;
 	}
@@ -721,7 +721,7 @@ function get_order_finish($order_id) {
 // 	$where[] = "goods_number > send_number";
 // 	$sum = $db->where($where)->count('rec_id');
 	
-	$sum = $db_order_goods->where('order_id', $order_id)->where('goods_number', '>', 'send_number')->count('rec_id');
+	$sum = $db_order_goods->where('order_id', $order_id)->whereRaw('goods_number > send_number')->count('rec_id');
 
 	if (empty($sum)) {
 		$return_res = 1;

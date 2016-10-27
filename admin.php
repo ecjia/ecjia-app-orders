@@ -71,7 +71,7 @@ class admin extends ecjia_admin {
 		
 		$order_query = RC_Loader::load_app_class('order_query', 'orders');
 		$order_list = $order_query->get_order_list();
-
+    
 		/* 模板赋值 */
 		$this->assign('ur_here', 		RC_Lang::get('system::system.02_order_list'));
 		$this->assign('action_link', 	array('href' => RC_Uri::url('orders/admin/order_query'), 'text' => RC_Lang::get('system::system.03_order_query')));
@@ -339,7 +339,7 @@ class admin extends ecjia_admin {
 		/* 取得能执行的操作列表 */
 		$operable_list = operable_list($order);
 		$this->assign('operable_list', $operable_list);
-		
+
 		/* 取得订单操作记录 */
 		$act_list = array();
 // 		$data = $this->db_order_action ->where(array('order_id' => $order['order_id']))->order(array('log_time' => 'asc', 'action_id' => 'asc'))->select();
@@ -2982,7 +2982,7 @@ class admin extends ecjia_admin {
 			/* 取得订单商品 */
 			$_goods = get_order_goods(array('order_id' => $order_id, 'order_sn' => $delivery['order_sn']));
 			$goods_list = $_goods['goods_list'];
-		
+		    
 			/* 检查此单发货数量填写是否正确 合并计算相同商品和货品 */
 			if (!empty($send_number) && !empty($goods_list)) {
 				$goods_no_package = array();
@@ -3155,6 +3155,8 @@ class admin extends ecjia_admin {
 			foreach ($filter_fileds as $value) {
 				$_delivery[$value] = $delivery[$value];
 			}
+			$_delivery['store_id'] = $order['store_id'];
+			
 			/* 发货单入库 */
 // 			$delivery_id = $this->db_delivery_order->insert($_delivery);
 			$delivery_id = RC_DB::table('delivery_order')->insertGetId($_delivery);
@@ -3261,7 +3263,7 @@ class admin extends ecjia_admin {
 					$arr['order_status']	= OS_CONFIRMED;
 					$arr['confirm_time']	= GMTIME_UTC;
 				}
-				
+		
 				$arr['order_status']		= $order_finish ? OS_SPLITED : OS_SPLITING_PART; // 全部分单、部分分单
 				$arr['shipping_status']		= $shipping_status;
 				update_order($order_id, $arr);
@@ -3501,7 +3503,7 @@ class admin extends ecjia_admin {
 			$delivery_list = array();
 // 			$delivery_list = $this->db_delivery_order->where(array('order_id' => $order['order_id']))->in(array('status' => array(0,2)))->select();
 			$delivery_list = RC_DB::table('delivery_order')->where('order_id', $order['order_id'])->whereIn('status', array(0, 2))->get();
-			
+	
 			if ($delivery_list) {
 				foreach ($delivery_list as $list) {
 					$data = array(
@@ -3532,6 +3534,7 @@ class admin extends ecjia_admin {
 						'suppliers_id'	=> $list['suppliers_id'],
 						'return_time'	=> GMTIME_UTC,
 						'agency_id'		=> $list['agency_id'],
+					    'store_id'      => $list['store_id'],
 						'invoice_no'	=> $list['invoice_no'],
 					);					
 // 					$back_id = $this->db_back_order->insert($data);

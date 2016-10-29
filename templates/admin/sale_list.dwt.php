@@ -37,6 +37,7 @@
 		<thead>
 			<tr>
 				<th>{lang key='orders::statistic.goods_name'}</th>
+				<th class="w200">{lang key='orders::order.merchants_name'}</th>
 				<th class="w200">{lang key='orders::statistic.order_sn'}</th>
 				<th class="w70">{lang key='orders::statistic.amount'}</th>
 				<th class="w120">{lang key='orders::statistic.sell_price'}</th>
@@ -49,6 +50,7 @@
 				<td>
 					<a href='{RC_Uri::url("goods/admin/preview", "id={$list.goods_id}")}' target="_blank">{$list.goods_name}</a>
 				</td>
+				<td><a href='{RC_Uri::url("orders/admin_sale_list/init", "store_id={$list.store_id}")}'>{$list.merchants_name}</a></td>
 				<td>{$list.order_sn}</td>
 				<td>{$list.goods_num}</td>
 				<td>{$list.sales_price}</td>

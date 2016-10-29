@@ -374,7 +374,7 @@ class order_query extends order {
 	        }
 	    }
 	    
-	   	return array('orders' => $order, 'filter' => $filter, 'page' => $page->show($pagesize), 'desc' => $page->page_desc(), 'count' => $filter_count);
+	   	return array('orders' => $order, 'filter' => $filter, 'page' => $page->show(2), 'desc' => $page->page_desc(), 'count' => $filter_count);
     }
 	
 	/**

@@ -1229,7 +1229,7 @@ function get_back_list() {
 			}
 		}	
 	}
-	return array('back' => $row, 'filter' => $filter, 'page' => $page->show(15), 'desc' => $page->page_desc());
+	return array('back' => $row, 'filter' => $filter, 'page' => $page->show(2), 'desc' => $page->page_desc());
 }
 
 
@@ -1401,7 +1401,7 @@ function get_delivery_list() {
 		}
 	}
 	
-	return array('delivery' => $row, 'filter' => $filter, 'page' => $page->show(15), 'desc' => $page->page_desc());		
+	return array('delivery' => $row, 'filter' => $filter, 'page' => $page->show(2), 'desc' => $page->page_desc());		
 }
 
 /**

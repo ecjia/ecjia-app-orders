@@ -57,7 +57,7 @@
 				<td>{$list.sales_time}</td>
 			</tr>
 			<!-- {foreachelse} -->
-	    	<tr><td class="dataTables_empty" colspan="5">{lang key='system::system.no_records'}</td></tr>
+	    	<tr><td class="dataTables_empty" colspan="6">{lang key='system::system.no_records'}</td></tr>
 	  		<!-- {/foreach} -->
 		</tbody>
 	</table>

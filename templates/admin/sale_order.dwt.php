@@ -63,7 +63,7 @@
 				<td>{$list.wvera_price}</td>
 			</tr>
 			<!-- {foreachelse} -->
-	    	<tr><td class="dataTables_empty" colspan="6">{lang key='system::system.no_records'}</td></tr>
+	    	<tr><td class="dataTables_empty" colspan="7">{lang key='system::system.no_records'}</td></tr>
 	  		<!-- {/foreach} -->
 		</tbody>
 	</table>

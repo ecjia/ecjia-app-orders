@@ -63,57 +63,55 @@
 
 <div class="row-fluid">
 	<div class="span12">
-		<form action="{$form_action}" name="orderpostForm" id="listForm" data-pjax-url="{$search_action}" method="post">
-			<div class="row-fluid">
-				<table class="table table-striped table-hide-edit">
-					<thead>
-						<tr>
-							<th class="table_checkbox"><input type="checkbox" data-toggle="selectall" data-children=".checkbox" /></th>
-							<th class="w100">{lang key='orders::order.order_sn'}</th>
-							<th class="w100">{lang key='orders::order.merchants_name'}</th>
-							<th class="w120">{lang key='orders::order.order_time'}</th>
-							<th>{lang key='orders::order.user_purchase_information'}</th>
-							<th class="w120">{lang key='orders::order.total_fee'}</th>
-							<th class="w110">{lang key='orders::order.order_amount'}</th>
-							<th class="w150">{lang key='orders::order.all_status'}</th>
-						</tr>
-					</thead>
-					<tbody>
-						<!-- {foreach from=$order_list.orders item=order key=okey} -->
-						<tr>
-							<td><input type="checkbox" class="checkbox" name="order_id[]"  value="{$order.order_id}" /></td>
-							<td class="hide-edit-area">
-								{$order.order_sn}{if $order.extension_code eq "group_buy"}{lang key='orders::order.group_buy'}{elseif $order.extension_code eq "exchange_goods"}{lang key='orders::order.exchange_goods'}{/if}
-								{if $order.stet eq 1}<font style="color:#0e92d0;">{lang key='orders::order.child_order'}</font>{elseif $order.stet eq 2}<font style="color:#F00;"><span data-original-title="{foreach from=$order.children_order item=val}{$val};{/foreach}" data-toggle="tooltip">{lang key='orders::order.main_order'}</span></font>{/if}
-								<div class="edit-list">
-									<a href='{url path="orders/admin/info" args="order_id={$order.order_id}"}' class="data-pjax" title="{lang key='orders::order.detail'}">{lang key='orders::order.detail'}</a>
-									{if $order.can_remove}
-									&nbsp;|&nbsp;
-									<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg='{lang key='orders::order.confirm_delete_order'}' href='{url path="orders/admin/remove_order" args="order_id={$order.order_id}"}' title="{lang key='orders::order.op_remove'}">{lang key='orders::order.op_remove'}</a>
-									{/if}
-								</div>
-							</td>
-							<td class="ecjiafc-red">
-								{$order.merchants_name}
-							</td>
-							<td>
-								{$order.user_name}<br/>{$order.short_order_time}
-							</td>
-							<td align="left">
-								{$order.consignee} [TEL：{$order.mobile}]<br/>{$order.address}
-							</td>
-							<td align="right" valign="top" nowrap="nowrap">{$order.formated_total_fee}</td>
-							<td align="right" valign="top" nowrap="nowrap">{$order.formated_order_amount}</td>
-							<td align="center" valign="top" nowrap="nowrap">{$os[$order.order_status]},{$ps[$order.pay_status]},{$ss[$order.shipping_status]}</td>
-						</tr>
-						<!-- {foreachelse}-->
-						<tr><td class="no-records" colspan="8">{lang key='system::system.no_records'}</td></tr>
-						<!-- {/foreach} -->
-					</tbody>
-				</table>
-				<!-- {$order_list.page} -->	
-			</div>
-		</form>
+		<div class="row-fluid">
+			<table class="table table-striped table-hide-edit">
+				<thead>
+					<tr>
+						<th class="table_checkbox"><input type="checkbox" data-toggle="selectall" data-children=".checkbox" /></th>
+						<th class="w100">{lang key='orders::order.order_sn'}</th>
+						<th class="w100">{lang key='orders::order.merchants_name'}</th>
+						<th class="w120">{lang key='orders::order.order_time'}</th>
+						<th>{lang key='orders::order.user_purchase_information'}</th>
+						<th class="w120">{lang key='orders::order.total_fee'}</th>
+						<th class="w110">{lang key='orders::order.order_amount'}</th>
+						<th class="w150">{lang key='orders::order.all_status'}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- {foreach from=$order_list.orders item=order key=okey} -->
+					<tr>
+						<td><input type="checkbox" class="checkbox" name="order_id[]"  value="{$order.order_id}" /></td>
+						<td class="hide-edit-area">
+							{$order.order_sn}{if $order.extension_code eq "group_buy"}{lang key='orders::order.group_buy'}{elseif $order.extension_code eq "exchange_goods"}{lang key='orders::order.exchange_goods'}{/if}
+							{if $order.stet eq 1}<font style="color:#0e92d0;">{lang key='orders::order.child_order'}</font>{elseif $order.stet eq 2}<font style="color:#F00;"><span data-original-title="{foreach from=$order.children_order item=val}{$val};{/foreach}" data-toggle="tooltip">{lang key='orders::order.main_order'}</span></font>{/if}
+							<div class="edit-list">
+								<a href='{url path="orders/admin/info" args="order_id={$order.order_id}"}' class="data-pjax" title="{lang key='orders::order.detail'}">{lang key='orders::order.detail'}</a>
+								{if $order.can_remove}
+								&nbsp;|&nbsp;
+								<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg='{lang key='orders::order.confirm_delete_order'}' href='{url path="orders/admin/remove_order" args="order_id={$order.order_id}"}' title="{lang key='orders::order.op_remove'}">{lang key='orders::order.op_remove'}</a>
+								{/if}
+							</div>
+						</td>
+						<td class="ecjiafc-red">
+							{$order.merchants_name}
+						</td>
+						<td>
+							{$order.user_name}<br/>{$order.short_order_time}
+						</td>
+						<td align="left">
+							{$order.consignee} [TEL：{$order.mobile}]<br/>{$order.address}
+						</td>
+						<td align="right" valign="top" nowrap="nowrap">{$order.formated_total_fee}</td>
+						<td align="right" valign="top" nowrap="nowrap">{$order.formated_order_amount}</td>
+						<td align="center" valign="top" nowrap="nowrap">{$os[$order.order_status]},{$ps[$order.pay_status]},{$ss[$order.shipping_status]}</td>
+					</tr>
+					<!-- {foreachelse}-->
+					<tr><td class="no-records" colspan="8">{lang key='system::system.no_records'}</td></tr>
+					<!-- {/foreach} -->
+				</tbody>
+			</table>
+			<!-- {$order_list.page} -->	
+		</div>
 	</div>
 </div>
 <!-- {/block} -->

@@ -41,49 +41,47 @@
 </div>	
 <div class="row-fluid">
 	<div class="span12">
-		<form method="post" action="{$form_action}" name="listForm">
-			<div class="row-fluid">
-				<table class="table table-striped table-hide-edit" style="table-layout:fixed;">
-					<thead>
-						<tr>
-							<th class="table_checkbox"><input type="checkbox" data-toggle="selectall" data-children=".checkbox"/></th>
-							<th class="w130">{lang key='orders::order.label_delivery_sn'}</th>
-							<th class="w110">{lang key='orders::order.order_sn'}</th>
-							<th class="w130">{lang key='orders::order.label_add_time'}</th>
-							<th>{lang key='orders::order.consignee'}</th>
-							<th class="w130">{lang key='orders::order.label_update_time'}</th>
+		<div class="row-fluid">
+			<table class="table table-striped table-hide-edit" style="table-layout:fixed;">
+				<thead>
+					<tr>
+						<th class="table_checkbox"><input type="checkbox" data-toggle="selectall" data-children=".checkbox"/></th>
+						<th class="w130">{lang key='orders::order.label_delivery_sn'}</th>
+						<th class="w110">{lang key='orders::order.order_sn'}</th>
+						<th class="w130">{lang key='orders::order.label_add_time'}</th>
+						<th>{lang key='orders::order.consignee'}</th>
+						<th class="w130">{lang key='orders::order.label_update_time'}</th>
 <!-- 							<th class="w80">{lang key='orders::order.suppliers_name'}</th> -->
-							<th class="w80">{lang key='orders::order.label_delivery_status'}</th>
-							<th class="w80">{lang key='system::system.operator'}</th>
-						</tr>
-					</thead>
-					<tbody>
-						<!-- {foreach from=$delivery_list.delivery item=delivery key=dkey} -->
-						<tr>
-							<td valign="top" nowrap="nowrap"><input type="checkbox" class="checkbox" name="delivery_id[]"  value="{$delivery.delivery_id}" /></td>
-							<td class="hide-edit-area">
-								{$delivery.delivery_sn}
-								<div class="edit-list">
-									<a class="data-pjax" href='{url path="orders/admin_order_delivery/delivery_info" args="delivery_id={$delivery.delivery_id}"}' title="{lang key='orders::order.detail'}">{lang key='orders::order.detail'}</a>&nbsp;|&nbsp; 
-									<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg="{lang key='orders::order.confirm_delete_one'}" href='{url path="orders/admin_order_delivery/remove" args="delivery_id={$delivery.delivery_id}"}' title="{lang key='orders::order.op_remove'}">{lang key='orders::order.op_remove'}</a>
-								</div>
-							</td>
-							<td><a href='{url path="orders/admin/info" args="order_id={$delivery.order_id}"}' target="_blank" title="{lang key='orders::order.look_order'}">{$delivery.order_sn}</a></td>
-							<td>{$delivery.add_time}</td>
-							<td><a class="cursor_pointer consignee_info" data-url='{url path="orders/admin_order_delivery/consignee_info" args="delivery_id={$delivery.delivery_id}"}' title="{lang key='orders::order.display_consignee_info'}"><span class="ecjiaf-pre ecjiaf-wsn">{$delivery.consignee|escape}</span></a></td>
-							<td>{$delivery.update_time}</td>
+						<th class="w80">{lang key='orders::order.label_delivery_status'}</th>
+						<th class="w80">{lang key='system::system.operator'}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- {foreach from=$delivery_list.delivery item=delivery key=dkey} -->
+					<tr>
+						<td valign="top" nowrap="nowrap"><input type="checkbox" class="checkbox" name="delivery_id[]"  value="{$delivery.delivery_id}" /></td>
+						<td class="hide-edit-area">
+							{$delivery.delivery_sn}
+							<div class="edit-list">
+								<a class="data-pjax" href='{url path="orders/admin_order_delivery/delivery_info" args="delivery_id={$delivery.delivery_id}"}' title="{lang key='orders::order.detail'}">{lang key='orders::order.detail'}</a>&nbsp;|&nbsp; 
+								<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg="{lang key='orders::order.confirm_delete_one'}" href='{url path="orders/admin_order_delivery/remove" args="delivery_id={$delivery.delivery_id}"}' title="{lang key='orders::order.op_remove'}">{lang key='orders::order.op_remove'}</a>
+							</div>
+						</td>
+						<td><a href='{url path="orders/admin/info" args="order_id={$delivery.order_id}"}' target="_blank" title="{lang key='orders::order.look_order'}">{$delivery.order_sn}</a></td>
+						<td>{$delivery.add_time}</td>
+						<td><a class="cursor_pointer consignee_info" data-url='{url path="orders/admin_order_delivery/consignee_info" args="delivery_id={$delivery.delivery_id}"}' title="{lang key='orders::order.display_consignee_info'}"><span class="ecjiaf-pre ecjiaf-wsn">{$delivery.consignee|escape}</span></a></td>
+						<td>{$delivery.update_time}</td>
 <!-- 							<td>{$delivery.suppliers_name}</td> -->
-							<td>{$delivery.status_name}</td>
-							<td>{$delivery.action_user}</td>
-						</tr>
-						<!-- {foreachelse}-->
-						<tr><td class="no-records" colspan="8">{lang key='system::system.no_records'}</td></tr>
-						<!-- {/foreach} -->
-					</tbody>
-				</table> 
-				<!-- {$delivery_list.page} -->
-			</div>
-		</form>
+						<td>{$delivery.status_name}</td>
+						<td>{$delivery.action_user}</td>
+					</tr>
+					<!-- {foreachelse}-->
+					<tr><td class="no-records" colspan="8">{lang key='system::system.no_records'}</td></tr>
+					<!-- {/foreach} -->
+				</tbody>
+			</table> 
+			<!-- {$delivery_list.page} -->
+		</div>
 	</div>
 </div>
 <!-- {/block} -->

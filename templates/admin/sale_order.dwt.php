@@ -40,6 +40,7 @@
 			<tr data-sorthref='{url path="orders/admin_sale_order/init" args="start_date={$start_date}&end_date={$end_date}"}'>
 				<th class="w100">{lang key='orders::statistic.order_by'}</th>
 				<th>{lang key='orders::statistic.goods_name'}</th>
+				<th>{lang key='orders::order.merchants_name'}</th>
 				<th class="w100">{lang key='orders::statistic.goods_sn'}</th>
 				<th class="w80 sorting" data-toggle="sortby" data-sortby="goods_num">{lang key='orders::statistic.sell_amount'}</th>
 				<th class="w120">{lang key='orders::statistic.sell_sum'}</th>
@@ -52,6 +53,9 @@
 				<td>{$key+1}</td>
 				<td>
 					<a href='{RC_Uri::url("goods/admin/preview", "id={$list.goods_id}")}' target="_blank">{$list.goods_name}</a>
+				</td>
+				<td>
+					<a href='{RC_Uri::url("orders/admin_sale_order/init", "store_id={$list.store_id}")}' >{$list.merchants_name}</a>
 				</td>
 				<td>{$list.goods_sn}</td>
 				<td>{$list.goods_num}</td>

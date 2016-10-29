@@ -10,7 +10,7 @@ class list_module extends api_front implements api_interface {
     	$this->authSession();
     	
     	if ($_SESSION['user_id'] < 1 ) {
-    	    return new ecjia_error(100,'Invalid session');
+    	    return new ecjia_error(100, 'Invalid session');
     	}
 		
 		$type = $this->requestData('type');

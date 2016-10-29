@@ -604,7 +604,7 @@ function order_deliveryed($order_id) {
 /**
  * 更新订单商品信息
  * @param   int     $order_id       订单 id
- * @param   array   $_sended        Array(‘商品id’ => ‘此单发货数量’)
+ * @param   array   $_sended        Array('商品id' => '此单发货数量')
  * @param   array   $goods_list
  * @return  Bool
  */
@@ -660,7 +660,9 @@ function update_order_goods($order_id, $_sended, $goods_list = array()) {
 // 					$db->inc('send_number','order_id='.$order_id. ' and rec_id='.$key,$value);
 // 					$db->inc('send_number','order_id='.$order_id. ' and rec_id='.$key,'0,send_number=goods_number');
 					
-					RC_DB::table('order_goods')->where('order_id', $order_id)->where('rec_id', $key)->increment('send_number', '0, send_number=goods_number');
+// 					RC_DB::table('order_goods')->where('order_id', $order_id)->where('rec_id', $key)->increment('send_number', '0, send_number=goods_number');
+
+					RC_DB::table('order_goods')->where('order_id', $order_id)->where('rec_id', $key)->increment('send_number', $value);
 					break;
 				}
 			}

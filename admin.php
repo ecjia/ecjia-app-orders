@@ -2814,7 +2814,7 @@ class admin extends ecjia_admin {
 			$data = RC_DB::table('order_info')->whereIn('order_id', $sn_not_list)->get();
 
 			foreach ($data as $key => $row) {
-				$sn_str .= "<br>".RC_Lang::get('orders::order.label_order_sn').$row['order_sn'] ."；&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				$sn_str .= "<br>".RC_Lang::get('orders::order.label_order_sn').$row['order_sn'] .";&nbsp;&nbsp;&nbsp;";
 
 				$order_list_fail = '';
 				foreach (operable_list($row) as $key => $value) {

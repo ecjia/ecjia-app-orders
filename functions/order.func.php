@@ -129,10 +129,11 @@ function order_info($order_id, $order_sn = '', $type) {
 	} else {
 		$order = $db_order_info->select('*', RC_DB::raw($total_fee), RC_DB::raw('s.*'))->first();
 	}
-    $order['store_id'] = intval($order['store_id']);
-    $order['invoice_no'] = empty($order['invoice_no'])? '' : $order['invoice_no'];
-	/* 格式化金额字段 */
 	if ($order) {
+    	$order['store_id'] = intval($order['store_id']);
+    	$order['invoice_no'] = empty($order['invoice_no']) ? '' : $order['invoice_no'];
+		
+		/* 格式化金额字段 */
 		$order['formated_goods_amount']		= price_format($order['goods_amount'], false);
 		$order['formated_discount']			= price_format($order['discount'], false);
 		$order['formated_tax']				= price_format($order['tax'], false);

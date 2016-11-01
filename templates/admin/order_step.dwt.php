@@ -264,7 +264,7 @@
 				<li class="ms-elem-selectable disabled"><span>{lang key='orders::order.no_content_yet'}</span></li>
 			</ul>
 		</div>
-		<form class="form-horizontal" name="goodsForm" action='{url path="orders/admin/step_post" args="step=add_goods&order_id={$order_id}&step_act={$step_act}"}' method="post"  data-search-url='{url path="orders/admin/search_goods"}' data-goods-url='{url path="orders/admin/add" args="step=goods&order_id={$order_id}"}'>
+		<form class="form-horizontal" name="goodsForm" action='{url path="orders/admin/step_post" args="step=add_goods&order_id={$order_id}&step_act={$step_act}"}' method="post"  data-search-url='{url path="orders/admin/search_goods" args="step=goods&order_id={$order_id}"}' data-goods-url='{url path="orders/admin/add" args="step=goods&order_id={$order_id}"}'>
 			<fieldset class="edit-page">
 				<div class="ms-selection order-goods-select">
 					<div class="custom-header custom-header-align"><span>{lang key='orders::order.goods_info'}</span>

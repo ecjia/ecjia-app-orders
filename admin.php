@@ -3719,20 +3719,20 @@ class admin extends ecjia_admin {
 		/* 检查权限 */
 		$this->admin_priv('order_edit', ecjia::MSGTYPE_JSON);
 		$keyword = empty($_POST['keyword']) ? '' : trim($_POST['keyword']);
-		
+		$order_id = !empty($_GET['order_id']) ? trim($_GET['order_id']) : '';
+		$store_id = RC_DB::table('order_info')->select('store_id')->where('order_id', $order_id)->pluck();
+
 		$result = array();
 		if (!empty($keyword)) {
 // 			$data = $this->db_goods->field('goods_id, goods_name, goods_sn')->where('is_delete = 0 and is_on_sale = 1 and is_alone_sale = 1 and ( goods_id like "%'.mysql_like_quote($keyword).'%" or goods_name like "%'.mysql_like_quote($keyword).'%" or goods_sn like "%'.mysql_like_quote($keyword).'%" )')->limit(20)->select();
 			
-			$data = RC_DB::table('goods')
-				->select('goods_id', 'goods_name', 'goods_sn')
-				->where('is_delete', 0)->where('is_on_sale', 1)->where('is_alone_sale', 1)
-				->where('goods_id', 'like', '%'.mysql_like_quote($keyword).'%')
-				->orWhere('goods_name', 'like', '%'.mysql_like_quote($keyword).'%')
-				->orWhere('goods_sn', 'like', '%'.mysql_like_quote($keyword).'%')
-				->limit(50)
-				->get();
-				
+		    $data = RC_DB::table('goods')
+		              ->select('goods_id', 'goods_name', 'goods_sn')
+		              ->where('is_delete', 0)->where('is_on_sale', 1)->where('is_alone_sale', 1)->where('store_id', $store_id)
+		              ->whereRaw('(goods_id like "%'.mysql_like_quote($keyword).'%" or goods_name like "%'.mysql_like_quote($keyword).'%" or goods_sn like "%'.mysql_like_quote($keyword).'%")')
+		              ->limit(50)
+		              ->get();
+
 			if (!empty($data)) {
 				foreach ($data as $key => $row) {
 					array_push($result, array('value' => $row['goods_id'], 'text' => $row['goods_name'] . '  ' . $row['goods_sn']));

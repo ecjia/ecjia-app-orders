@@ -142,7 +142,7 @@ class admin_users_order extends ecjia_admin {
 	    		$users_order_data[$key]['turnover']  = price_format($users_order_data[$key]['turnover']);
 	    	}
 	    }
-	    return array('item' => $users_order_data, 'filter' => $filter, 'desc' => $page->page_desc(), 'page' => $page->show(5));
+	    return array('item' => $users_order_data, 'filter' => $filter, 'desc' => $page->page_desc(), 'page' => $page->show(2));
 	}
 }
 

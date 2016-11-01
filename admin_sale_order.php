@@ -143,7 +143,7 @@ class admin_sale_order extends ecjia_admin {
 	    		$sales_order_data[$key]['taxis']       = $key + 1;
 	    	}
 	    }
-	    return array('item' => $sales_order_data, 'filter' => $filter, 'desc' => $page->page_desc(), 'page'=>$page->show(5));
+	    return array('item' => $sales_order_data, 'filter' => $filter, 'desc' => $page->page_desc(), 'page'=>$page->show(2));
 	}
 }
 // end

@@ -124,7 +124,7 @@ class admin_sale_list extends ecjia_admin {
 	    		$sale_list_data[$key]['sales_time']  = RC_Time::local_date(ecjia::config('date_format'), $sale_list_data[$key]['sales_time']);
 	    	}
 	    }
-	    return array('item' => $sale_list_data, 'filter' => $filter, 'desc' => $page->page_desc(), 'page' => $page->show(5));
+	    return array('item' => $sale_list_data, 'filter' => $filter, 'desc' => $page->page_desc(), 'page' => $page->show(2));
 	}
 }
 

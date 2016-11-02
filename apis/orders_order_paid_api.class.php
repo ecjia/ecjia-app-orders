@@ -112,7 +112,7 @@ class orders_order_paid_api extends Component_Event_Api {
 	
 	                /* 支付流水记录*/
 	                $db = RC_DB::table('payment_record');
-	                $db->where('order_sn', $order['order_sn'])->where('pay_status', 'buy')->update(array('pay_time' => RC_Time::gmtime(), 'pay_status' => 1));
+	                $db->where('order_sn', $order['order_sn'])->where('trade_type', 'buy')->update(array('pay_time' => RC_Time::gmtime(), 'pay_status' => 1));
 	                
 	                RC_DB::table('order_status_log')->insert(array(
 		                'order_status'	=> RC_Lang::get('orders::order.ps.'.PS_PAYED),
@@ -189,7 +189,7 @@ class orders_order_paid_api extends Component_Event_Api {
                         RC_DB::table('user_account')->where('id', $pay_log['order_id'])->update($data);
                         
                         /* 取得添加预付款的用户以及金额 */
-                        $arr = RC_DB::table('user_account')->select('user_id', 'amount')->where('id', $pay_log['order_id'])->first();
+                        $arr = RC_DB::table('user_account')->select('user_id', 'order_sn', 'amount')->where('id', $pay_log['order_id'])->first();
                         
                         /* 修改会员帐户金额 */
                         $options = array(
@@ -202,7 +202,7 @@ class orders_order_paid_api extends Component_Event_Api {
                         
                         /* 支付流水记录*/
                         $db = RC_DB::table('payment_record');
-                        $db->where('order_sn', $order['order_sn'])->where('pay_status', 'deposit')->update(array('pay_time' => RC_Time::gmtime(), 'pay_status' => 1));
+                        $db->where('order_sn', $arr['order_sn'])->where('trade_type', 'deposit')->update(array('pay_time' => RC_Time::gmtime(), 'pay_status' => 1));
                          
                     }
                 }

@@ -1074,13 +1074,13 @@ function send_order_bonus($order_id) {
 			$tpl_name = 'send_bonus';
 			$tpl = RC_Api::api('mail', 'mail_template', $tpl_name);
 
-			ecjia::$view_object->assign('user_name', $user['user_name']);
-			ecjia::$view_object->assign('count', $count);
-			ecjia::$view_object->assign('money', $money);
-			ecjia::$view_object->assign('shop_name', ecjia::config('shop_name'));
-			ecjia::$view_object->assign('send_date', RC_Time::local_date(ecjia::config('date_format')));
+			ecjia_front::$controller->assign('user_name', $user['user_name']);
+			ecjia_front::$controller->assign('count', $count);
+			ecjia_front::$controller->assign('money', $money);
+			ecjia_front::$controller->assign('shop_name', ecjia::config('shop_name'));
+			ecjia_front::$controller->assign('send_date', RC_Time::local_date(ecjia::config('date_format')));
 
-			$content = ecjia::$controller->fetch_string($tpl['template_content']);
+			$content = ecjia_front::$controller->fetch_string($tpl['template_content']);
 			RC_Mail::send_mail($user['user_name'], $user['email'] , $tpl['template_subject'], $content, $tpl['is_html']);
 		}
 	}

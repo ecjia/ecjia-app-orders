@@ -8,7 +8,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 class update_module extends api_front implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {	
     	
-    	$this->authSession();
  		$user_id	= $_SESSION['user_id'];
  		if ($user_id < 1 ) {
  		    return new ecjia_error(100, 'Invalid session');
@@ -23,16 +22,17 @@ class update_module extends api_front implements api_interface {
 		$payment_info = $payment_method->payment_info($pay_id);
 		
 		if (empty($payment_info) || $payment_info['is_online'] == 0) {
-			return new ecjia_error(8, 'fail');
+			return new ecjia_error('payment_error', '无法使用该支付方式，请选择其他支付方式！');
 		} else {
 			RC_Loader::load_app_func('order', 'orders');
+			
 			$order_info = get_order_detail($order_id, $user_id, 'front');
 			if (is_ecjia_error($order_info)) {
 			    return $order_info;
 			}
 			/*重新处理订单的配送费用*/
-			$payfee_change = $payment_info['pay_fee'] - $order_info['pay_fee'];
-			$order_amount = $order_info['order_amount'] + $payfee_change > 0 ? $order_info['order_amount'] + $payfee_change : 0;
+			$payfee_change	= $payment_info['pay_fee'] - $order_info['pay_fee'];
+			$order_amount	= ($order_info['order_amount'] + $payfee_change) > 0 ? $order_info['order_amount'] + $payfee_change : 0;
 			$data = array(
 				'pay_id'	=> $payment_info['pay_id'],
 				'pay_name'	=> $payment_info['pay_name'],
@@ -50,7 +50,7 @@ class update_module extends api_front implements api_interface {
 			if ($result) {
 				return array();
 			} else {
-				return new ecjia_error(8, 'fail');
+				return new ecjia_error('fail_error', '处理失败！');
 			}
 		}
 	}

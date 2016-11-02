@@ -43,10 +43,14 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		RC_Loader::load_app_func('order', 'orders');
 		
 		/* 订单详情 */
-		$order_info = get_order_detail($order_id, $user_id);
-		
+		$order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));
+	//get_order_detail($order_id, $user_id);
+		if ($user_id != $order_info['user_id']) {
+			return new ecjia_error('error_order_detail', RC_Lang::get('orders::order.error_order_detail'));
+		}
 		/* 会员详情*/
-		$user_info = user_info($user_id);
+		$user_info = RC_Api::api('user', 'user_info', array('user_id' => $user_id));
+		//user_info($user_id);
 		/* 检查订单是否已经付款 */
 		if ($order_info['pay_status'] == PS_PAYED && $order_info['pay_time']) {
 			return new ecjia_error('order_paid', RC_Lang::get('orders::order.pay_repeat_message'));
@@ -76,6 +80,7 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		/*更新订单状态及信息*/
 		update_order($order_info['order_id'], $data);
 		
+		
 		/* 处理余额变动信息 */
 		if ($order_info['user_id'] > 0 && $data['surplus'] > 0) {
 			$options = array(
@@ -89,36 +94,12 @@ class orders_user_account_paid_api extends Component_Event_Api {
 			$payment_method->insert_pay_log($order_info['order_id'], $order_info['order_amount'], PAY_SURPLUS);
 		}
 		
-		/* 判断是否是主订单 */
-		$main_order_id = $order_info['main_order_id'];
-		if ($main_order_id <= 0) {
-			$data = array(
-				'order_status' => OS_CONFIRMED,
-				'confirm_time' => RC_Time::gmtime(),
-				'pay_status'   => PS_PAYED,
-				'pay_time'     => RC_Time::gmtime(),
-			);
-// 			$db_order = RC_Loader::load_app_model('order_info_model', 'orders');
-// 			$db_order->where(array('main_order_id' => $order_info['order_id']))->update($data);
-// 			$db_order->inc('money_paid', "main_order_id=".$order_info['order_id'], '0, money_paid=order_amount, order_amount=0');
-// 			$order_res = $db_order->field('order_sn')->where(array('main_order_id' => $order_info['order_id']))->select();
-			
-			RC_DB::table('order_info')->where('main_order_id', $order_info['order_id'])->update($data);
-			RC_DB::table('order_info')->where('main_order_id', $order_info['order_id'])->increment('money_paid', '0, money_paid=order_amount, order_amount=0');
-			$order_res = RC_DB::table('order_info')->select('order_sn')->where('main_order_id', $order_info['order_id'])->get();
-			 
-			foreach ($order_res AS $row) {
-				/* 记录订单操作记录 */
-				order_action($row['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_PAYED, '', RC_Lang::get('orders::order.buyers'));
-			}
-		}
+		order_action($order_info['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_PAYED, '', RC_Lang::get('orders::order.buyers'));
 		
-// 		RC_Model::model('orders/order_status_log_model')->insert(array(
-// 			'order_status'	=> RC_Lang::get('orders::order.ps.'.PS_PAYED),
-// 			'order_id'		=> $order_info['order_id'],
-// 			'message'		=> RC_Lang::get('orders::order.notice_merchant_message'),
-// 			'add_time'		=> RC_Time::gmtime(),
-// 		));
+		$db = RC_DB::table('payment_record');
+		$db->where('order_sn', $order_info['order_sn'])->update(array('pay_time' => RC_Time::gmtime(), 'pay_status' => 1));
+		
+		RC_Api::api('affiliate', 'invite_reward', array('user_id' => $order_info['user_id'], 'invite_type' => 'orderpay'));
 		
 		$data = array(
 			'order_status'	=> RC_Lang::get('orders::order.ps.'.PS_PAYED),
@@ -130,70 +111,6 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		
 		$result = ecjia_app::validate_application('sms');
 		if (!is_ecjia_error($result)) {
-			/* 收货验证短信  */
-			if (ecjia::config('sms_receipt_verification') == '1' && ecjia::config('sms_shop_mobile') != '') {
-				
-// 				$db_term_meta = RC_Loader::load_model('term_meta_model');
-// 				$meta_where = array(
-// 					'object_type'	=> 'ecjia.order',
-// 					'object_group'	=> 'order',
-// 					'meta_key'		=> 'receipt_verification',
-// 				);
-// 				$max_code = $db_term_meta->where($meta_where)->max('meta_value');
-				
-				$max_code = RC_DB::table('term_meta')
-					->where('object_type', 'ecjia.order')
-					->where('object_group', 'order')
-					->where('meta_key', 'receipt_verification')
-					->max('meta_value');
-				
-				$max_code = $max_code ? ceil($max_code/10000) : 1000000;
-				$code = $max_code . str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT);
-// 				$code = rand(100000, 999999);
-				$tpl_name = 'sms_receipt_verification';
-				$tpl   = RC_Api::api('sms', 'sms_template', $tpl_name);
-				if (!empty($tpl)) {
-					ecjia_front::$controller->assign('order_sn', $order_info['order_sn']);
-					ecjia_front::$controller->assign('user_name', $order_info['consignee']);
-					ecjia_front::$controller->assign('code', $code);
-					
-					$content = ecjia_front::$controller->fetch_string($tpl['template_content']);
-						
-					$options = array(
-						'mobile' 		=> $order_info['mobile'],
-						'msg'			=> $content,
-						'template_id' 	=> $tpl['template_id'],
-					);
-					$response = RC_Api::api('sms', 'sms_send', $options);
-					
-// 					$db_term_meta = RC_Loader::load_model('term_meta_model');
-					$meta_data = array(
-						'object_type'	=> 'ecjia.order',
-						'object_group'	=> 'order',
-						'object_id'		=> $order_id,
-						'meta_key'		=> 'receipt_verification',
-						'meta_value'	=> $code,
-					);
-// 					$db_term_meta->insert($meta_data);
-					RC_DB::table('term_meta')->insert($meta_data);
-				}
-				if ($main_order_id <= 0) {
-// 					$order_res = $db_order->field('order_id')->where(array('main_order_id' => $order_id))->select();
-					$order_res = RC_DB::table('order_info')->select('order_id')->where('main_order_id', $order_id)->get();
-					foreach ($order_res AS $row) {
-						$meta_data = array(
-							'object_type'	=> 'ecjia.order',
-							'object_group'	=> 'order',
-							'object_id'		=> $row['order_id'],
-							'meta_key'		=> 'receipt_verification',
-							'meta_value'	=> $code,
-						);
-// 						$db_term_meta->insert($meta_data);
-						RC_DB::table('term_meta')->insert($meta_data);
-					}
-				}
-			}
-		
 			/* 客户付款短信提醒 */
 			if (ecjia::config('sms_order_payed') == '1' && ecjia::config('sms_shop_mobile') != '') {
 				//发送短信

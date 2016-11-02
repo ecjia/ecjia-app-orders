@@ -13,8 +13,6 @@ class pay_module extends api_front implements api_interface {
     	    return new ecjia_error(100, 'Invalid session');
     	}
     	
-		RC_Loader::load_app_func('order','orders');
-		
 		$order_id = $this->requestData('order_id', 0);
 		
 		if (!$order_id) {
@@ -22,10 +20,16 @@ class pay_module extends api_front implements api_interface {
 		}
 		
 		/* 订单详情 */
-		$order = get_order_detail($order_id, $user_id, 'front');
+// 		$order = get_order_detail($order_id, $user_id, 'front');
+		$order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));
 		if (is_ecjia_error($order)) {
 			return $order;
 		}
+		
+		if ($_SESSION['user_id'] != $order['user_id']) {
+			return new ecjia_error('error_order_detail', RC_Lang::get('orders::order.error_order_detail'));
+		}
+		
 		//判断是否是管理员登录
 		if ($_SESSION['admin_id'] > 0) {
 			$_SESSION['user_id'] = $order['user_id'];
@@ -47,7 +51,26 @@ class pay_module extends api_front implements api_interface {
         } else {
             $order['payment'] = $result;
         }
-		
+        
+        /* 插入支付流水记录*/
+        $db = RC_DB::table('payment_record');
+        $payment_record = $db->where('order_sn', $order['order_sn'])->first();
+        $payment_data = array(
+        		'order_sn'		=> $order['order_sn'],
+        		'trade_type'	=> 'buy',
+        		'pay_code'		=> $payment_info['pay_code'],
+        		'pay_name'		=> $payment_info['pay_name'],
+        		'total_fee'		=> $order['order_amount'],
+        		'pay_status'	=> 0,
+        );
+        if (empty($payment_record)) {
+        	$payment_data['create_time']	= RC_Time::gmtime();
+        	$db->insertGetId($payment_data);
+        } elseif($payment_record['pay_status'] == 0 && $payment_record['pay_code'] != $payment_info['pay_code'] && $order['order_amount'] != $payment_record['total_fee']) {
+        	$payment_data['update_time']	= RC_Time::gmtime();
+        	$db->where('order_sn', $order['order_sn'])->update($payment_data);
+        }
+        
         return array('payment' => $order['payment']);
 	}
 }

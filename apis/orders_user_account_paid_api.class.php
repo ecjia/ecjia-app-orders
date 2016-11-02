@@ -97,7 +97,7 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		order_action($order_info['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_PAYED, '', RC_Lang::get('orders::order.buyers'));
 		
 		$db = RC_DB::table('payment_record');
-		$db->where('order_sn', $order_info['order_sn'])->update(array('pay_time' => RC_Time::gmtime(), 'pay_status' => 1));
+		$db->where('order_sn', $order_info['order_sn'])->where('pay_status', 'buy')->update(array('pay_time' => RC_Time::gmtime(), 'pay_status' => 1));
 		
 		RC_Api::api('affiliate', 'invite_reward', array('user_id' => $order_info['user_id'], 'invite_type' => 'orderpay'));
 		

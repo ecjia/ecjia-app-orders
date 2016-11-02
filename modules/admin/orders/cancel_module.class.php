@@ -64,10 +64,10 @@ class cancel_module extends api_admin implements api_interface {
 			$tpl_name = 'order_cancel';
 			$tpl = RC_Api::api('mail', 'mail_template', $tpl_name);
 
-			ecjia::$view_object->assign('order'		, $order);
-			ecjia::$view_object->assign('shop_name'	, ecjia::config('shop_name'));
-			ecjia::$view_object->assign('send_date'	, RC_Time::local_date(ecjia::config('date_format')));
-			$content = $api->fetch_string($tpl['template_content']);
+			ecjia_admin::$controller->assign('order'		, $order);
+			ecjia_admin::$controller->assign('shop_name'	, ecjia::config('shop_name'));
+			ecjia_admin::$controller->assign('send_date'	, RC_Time::local_date(ecjia::config('date_format')));
+			$content = ecjia_admin::$controller->fetch_string($tpl['template_content']);
 
 			if (!RC_Mail::send_mail($order['consignee'], $order['email'] , $tpl['template_subject'], $content, $tpl['is_html'])) {
 

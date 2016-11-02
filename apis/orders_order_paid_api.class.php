@@ -168,11 +168,11 @@ class orders_order_paid_api extends Component_Event_Api {
 			                $tpl_name = 'sms_receipt_verification';
 			                $tpl   = RC_Api::api('sms', 'sms_template', $tpl_name);
 			                if (!empty($tpl)) {
-			                	ecjia::$view_object->assign('order_sn', $order['order_sn']);
-			                	ecjia::$view_object->assign('user_name', $order['consignee']);
-			                	ecjia::$view_object->assign('code', $code);
+			                	ecjia_front::$controller->assign('order_sn', $order['order_sn']);
+			                	ecjia_front::$controller->assign('user_name', $order['consignee']);
+			                	ecjia_front::$controller->assign('code', $code);
 			                	
-			                	$content = ecjia::$controller->fetch_string($tpl['template_content']);
+			                	$content = ecjia_front::$controller->fetch_string($tpl['template_content']);
 			                	 
 			                	$options = array(
 		                			'mobile' 		=> $order['mobile'],
@@ -215,11 +215,11 @@ class orders_order_paid_api extends Component_Event_Api {
 		                	$tpl_name = 'order_payed_sms';
 		                	$tpl = RC_Api::api('sms', 'sms_template', $tpl_name);
 		                	if (!empty($tpl)) {
-			                	ecjia::$view_object->assign('order_sn', $order['order_sn']);
-			                	ecjia::$view_object->assign('consignee', $order['consignee']);
-			                	ecjia::$view_object->assign('mobile', $order['mobile']);
-			                	ecjia::$view_object->assign('order_amount', $order['order_amount']);
-			                	$content = ecjia::$controller->fetch_string($tpl['template_content']);
+			                	ecjia_front::$controller->assign('order_sn', $order['order_sn']);
+			                	ecjia_front::$controller->assign('consignee', $order['consignee']);
+			                	ecjia_front::$controller->assign('mobile', $order['mobile']);
+			                	ecjia_front::$controller->assign('order_amount', $order['order_amount']);
+			                	$content = ecjia_front::$controller->fetch_string($tpl['template_content']);
 			                	 
 			                	$options = array(
 		                			'mobile' 		=> ecjia::config('sms_shop_mobile'),

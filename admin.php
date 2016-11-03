@@ -1706,7 +1706,7 @@ class admin extends ecjia_admin {
 
 				/* 显示提示信息 */
 				if (!empty($msgs)) {
-					$this->showmessage(join(chr(13), $msgs), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
+					$this->showmessage(join(chr(13), $msgs), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 				} else {
 					/* 完成 */
 					$url=RC_Uri::url('orders/admin/info',"order_id=" . $order_id . "");

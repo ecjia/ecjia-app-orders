@@ -67,7 +67,157 @@ class orders_order_info_api extends Component_Event_Api {
 	        $order['formated_surplus']			= price_format($order['surplus'], false);
 	        $order['formated_order_amount']		= price_format(abs($order['order_amount']), false);
 	        $order['formated_add_time']			= RC_Time::local_date(ecjia::config('time_format'), $order['add_time']);
+	        
+	        $user_id = $_SESSION['user_id'];
+	        // 检查订单是否属于该用户
+	        if ($user_id > 0 && $user_id != $order['user_id']) {
+	        	return new ecjia_error('orders_error', '未找到相应订单！');
+	        }
+	        
+	        $payment_method = RC_Loader::load_app_class('payment_method', 'payment');
+	        if ($order['pay_id'] > 0) {
+	        	$payment = $payment_method->payment_info_by_id($order['pay_id']);
+	        }
+	        
+	        if (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED)) &&
+	        in_array($order['shipping_status'], array(SS_RECEIVED)) &&
+	        in_array($order['pay_status'], array(PS_PAYED, PS_PAYING)))
+	        {
+	        	$order['label_order_status'] = '已完成';
+	        	$order['status_code'] = 'finished';
+	        }
+	        elseif (in_array($order['shipping_status'], array(SS_SHIPPED)))
+	        {
+	        	$order['label_order_status'] = '待收货';
+	        	$order['status_code'] = 'shipped';
+	        }
+	        elseif (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) &&
+	        		in_array($order['pay_status'], array(PS_UNPAYED)) &&
+	        		(in_array($order['shipping_status'], array(SS_SHIPPED, SS_RECEIVED)) || !$payment['is_cod']))
+	        {
+	        	$order['label_order_status'] = '待付款';
+	        	$order['status_code'] = 'await_pay';
+	        }
+	        elseif (in_array($order['order_status'], array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
+	        		in_array($order['shipping_status'], array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING)) &&
+	        		(in_array($order['pay_status'], array(PS_PAYED, PS_PAYING)) || $payment['is_cod']))
+	        {
+	        	$order['label_order_status'] = '待发货';
+	        	$order['status_code'] = 'await_ship';
+	        }
+	        elseif (in_array($order['order_status'], array(OS_CANCELED))) {
+	        	$order['label_order_status'] = '已取消';
+	        	$order['status_code'] = 'canceled';
+	        }
+	        
+	        /* 对发货号处理 */
+	        if (! empty($order['invoice_no'])) {
+	        	$shipping_code = RC_Model::model('shipping/shipping_model')->field('shipping_code')->find('shipping_id = ' . $order['shipping_id']);
+	        	$shipping_code = $shipping_code['shipping_code'];
+	        }
+	        
+	        /* 只有未确认才允许用户修改订单地址 */
+	        if ($order['order_status'] == OS_UNCONFIRMED) {
+	        	$order['allow_update_address'] = 1; // 允许修改收货地址
+	        } else {
+	        	$order['allow_update_address'] = 0;
+	        }
+	        
+	        /* 获取订单中实体商品数量 */
+// 	        $order['exist_real_goods'] = exist_real_goods($order_id);
+	        $order['exist_real_goods'] = RC_DB::table('order_goods')->where('order_id', $order_id)->where('is_real', 1)->count();
+	        
+	        $pay_method = RC_Loader::load_app_class('payment_method', 'payment');
+	        // 获取需要支付的log_id
+	        $order['log_id'] = $pay_method->get_paylog_id($order['order_id'], $pay_type = PAY_ORDER);
+	        
+	        $order['user_name'] = $_SESSION['user_name'];
+	        
+	        /* 无配送时的处理 */
+	        $order['shipping_id'] == - 1 and $order['shipping_name'] = RC_Lang::get('orders::order.shipping_not_need');
+	        
+	        /* 其他信息初始化 */
+	        $order['how_oos_name'] = $order['how_oos'];
+	        $order['how_surplus_name'] = $order['how_surplus'];
+	        
+// 	        /* 虚拟商品付款后处理 */
+// 	        if ($order['pay_status'] != PS_UNPAYED) {
+// 	        	/* 取得已发货的虚拟商品信息 */
+// 	        	$virtual_goods = get_virtual_goods($order_id, true);
+// 	        	$virtual_card = array();
+// 	        	foreach ($virtual_goods as $code => $goods_list) {
+// 	        		/* 只处理虚拟卡 */
+// 	        		if ($code == 'virtual_card') {
+// 	        			foreach ($goods_list as $goods) {
+// 	        				$info = virtual_card_result($order['order_sn'], $goods);
+// 	        				if ($info) {
+// 	        					$virtual_card[] = array(
+// 	        							'goods_id' => $goods['goods_id'],
+// 	        							'goods_name' => $goods['goods_name'],
+// 	        							'info' => $info
+// 	        					);
+// 	        				}
+// 	        			}
+// 	        		}
+// 	        		/* 处理超值礼包里面的虚拟卡 */
+// 	        		if ($code == 'package_buy') {
+// 	        			foreach ($goods_list as $goods) {
+// 	        				// $sql = 'SELECT g.goods_id FROM ' . $GLOBALS['ecs']->table('package_goods') . ' AS pg, ' . $GLOBALS['ecs']->table('goods') . ' AS g ' .
+// 	        				// "WHERE pg.goods_id = g.goods_id AND pg.package_id = '" . $goods['goods_id'] . "' AND extension_code = 'virtual_card'";
+// 	        				// $vcard_arr = $GLOBALS['db']->getAll($sql);
+	        
+// 	        				// $dbview->view = array(
+// 	        				//     'goods' => array(
+// 	        				//         'type' => Component_Model_View::TYPE_LEFT_JOIN,
+// 	        				//         'alias' => 'g',
+// 	        				//         'field' => 'g.goods_id',
+// 	        				//         'on' => 'pg.goods_id = g.goods_id'
+// 	        				//     )
+// 	        				// );
+	        
+// 	        				$vcard_arr = $dbview->join('goods')->field('g.goods_id')->where('pg.package_id = ' . $goods['goods_id'] . ' AND extension_code = "virtual_card" ')->select();
+// 	        				if (! empty($vcard_arr)) {
+// 	        					foreach ($vcard_arr as $val) {
+// 	        						$info = virtual_card_result($order['order_sn'], $val);
+// 	        						if ($info) {
+// 	        							$virtual_card[] = array(
+// 	        									'goods_id' => $goods['goods_id'],
+// 	        									'goods_name' => $goods['goods_name'],
+// 	        									'info' => $info
+// 	        							);
+// 	        						}
+// 	        					}
+// 	        				}
+// 	        			}
+// 	        		}
+// 	        	}
+// 	        	$var_card = deleteRepeat($virtual_card);
+// 	        	ecjia_front::$controller->assign('virtual_card', $var_card);
+// 	        }
+	        
+	        /* 确认时间 支付时间 发货时间 */
+	        if ($order['confirm_time'] > 0 && ($order['order_status'] == OS_CONFIRMED || $order['order_status'] == OS_SPLITED || $order['order_status'] == OS_SPLITING_PART)) {
+	        	$order['confirm_time'] =  RC_Time::local_date(ecjia::config('time_format'), $order['confirm_time']);
+	        } else {
+	        	$order['confirm_time'] = '';
+	        }
+	        if ($order['pay_time'] > 0 && $order['pay_status'] != PS_UNPAYED) {
+	        	$order['pay_time'] =  RC_Time::local_date(ecjia::config('time_format'), $order['pay_time']);
+	        } else {
+	        	$order['pay_time'] = '';
+	        }
+	        if ($order['shipping_time'] > 0 && in_array($order['shipping_status'], array(
+	        		SS_SHIPPED,
+	        		SS_RECEIVED
+	        ))) {
+	        	$order['shipping_time'] = RC_Time::local_date(ecjia::config('time_format'), $order['shipping_time']);
+	        } else {
+	        	$order['shipping_time'] = '';
+	        }
 	    }
+	    
+	    
+	    
         $order = empty($order)? false : $order;
 	    return $order;
 	}

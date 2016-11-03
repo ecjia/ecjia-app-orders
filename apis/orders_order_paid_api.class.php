@@ -108,7 +108,7 @@ class orders_order_paid_api extends Component_Event_Api {
 	                RC_DB::table('order_info')->where('order_id', $order_id)->update($data);
 	                
 	                /* 记录订单操作记录 */
-	                order_action($order_sn, OS_CONFIRMED, SS_UNSHIPPED, $pay_status, $note, RC_Lang::get('orders::order.buyers'));
+	                order_action($order_sn, OS_CONFIRMED, SS_UNSHIPPED, $pay_status, '', RC_Lang::get('orders::order.buyers'));
 	
 	                /* 支付流水记录*/
 	                $db = RC_DB::table('payment_record');

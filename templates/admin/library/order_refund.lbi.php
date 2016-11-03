@@ -7,7 +7,7 @@
 	<div class="modal-body">
 		<div class="row-fluid">
 			<div class="span12">
-			<form class="form-horizontal" method="post" name="refundForm" action='{url path="orders/admin/process"}'>
+			<form class="form-horizontal" method="post" name="refundForm" action='{url path="orders/admin/process" args="&func=refund"}'>
 				<fieldset>
 					<div class="control-group formSep control-group-small">
 						<label class="control-label">{lang key='orders::order.label_refund_amount'}</label>

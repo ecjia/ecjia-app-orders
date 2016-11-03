@@ -664,7 +664,7 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
 	/* 检查参数 */
 	$user_id = $order['user_id'];
 	if ($user_id == 0 && $refund_type == 1) {
-		ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.refund_error_notice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		ecjia_admin::$controller->showmessage(RC_Lang::get('orders::order.refund_error_notice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	$amount = $refund_amount > 0 ? $refund_amount : $order['money_paid'];
@@ -673,7 +673,7 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
 	}
 
 	if (!in_array($refund_type, array(1, 2, 3))) {
-		ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.error_notice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		ecjia_admin::$controller->showmessage(RC_Lang::get('orders::order.error_notice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	/* 备注信息 */

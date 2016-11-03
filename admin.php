@@ -1099,7 +1099,7 @@ class admin extends ecjia_admin {
 						$order['country'], $order['province'], $order['city'], $order['district']
 				);
 				$shipping_method = RC_Loader::load_app_class('shipping_method','shipping');
-				$shipping_list = $shipping_method->available_shipping_list($region_id_list);
+				$shipping_list = $shipping_method->available_shipping_list($region_id_list, $order['store_id']);
 				
 				if (empty($shipping_list)) {
 					$this->assign('shipping_list_error', 1);
@@ -1588,9 +1588,10 @@ class admin extends ecjia_admin {
 			$order_info = order_info($order_id);
 			$region_id_list = array($order_info['country'], $order_info['province'], $order_info['city'], $order_info['district']);
 			/* 保存订单 */
+		      
 			$shipping_id	= $_POST['shipping'];
 			$shipping_method = RC_Loader::load_app_class('shipping_method','shipping');
-			$shipping		= $shipping_method->shipping_area_info($shipping_id, $region_id_list);
+			$shipping		= $shipping_method->shipping_area_info($shipping_id, $region_id_list, $order_info['store_id']);
 			$weight_amount	= order_weight_price($order_id);
 			$shipping_fee	= $shipping_method->shipping_fee($shipping['shipping_code'], $shipping['configure'], $weight_amount['weight'], $weight_amount['amount'], $weight_amount['number']);
 			$order = array(
@@ -1598,7 +1599,6 @@ class admin extends ecjia_admin {
 				'shipping_name'	=> addslashes($shipping['shipping_name']),
 				'shipping_fee'	=> $shipping_fee
 			);
-			
 			if (isset($_POST['insure'])) {
 				/* 计算保价费 */
 				$order['insure_fee'] = shipping_insure_fee($shipping['shipping_code'], order_amount($order_id), $shipping['insure']);
@@ -1977,7 +1977,7 @@ class admin extends ecjia_admin {
 	public function process() {
 		/* 取得参数 func */
 		$func = isset($_GET['func']) ? $_GET['func'] : '';
-
+	
 		/* 删除订单商品 */
 		if ('drop_order_goods' == $func) {
 			/* 检查权限 */
@@ -2037,7 +2037,7 @@ class admin extends ecjia_admin {
 			$refund_amount	= $_POST['refund_amount'];
 			$order			= order_info($order_id);
 			order_refund($order, $refund_type, $refund_note, $refund_amount);
-		
+
 			/* 修改应付款金额为0，已付款金额减少 $refund_amount */
 			update_order($order_id, array('order_amount' => 0, 'money_paid' => $order['money_paid'] - $refund_amount));
 		

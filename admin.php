@@ -1332,9 +1332,34 @@ class admin extends ecjia_admin {
 				}
 				$sn .= RC_Lang::get('orders::order.order_is').$old_order['order_sn'];
 				ecjia_admin::admin_log($sn, 'edit', 'order');
+				$order = order_info($order_id);
+                order_action($order['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_UNPAYED, $sn);		
 			}
 			/* 跳回订单商品 */
-			$this->showmessage(RC_Lang::get('orders::order.update_order_ok'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('url' => RC_Uri::url('orders/admin/'.$step_act, "step=goods&order_id=".$order_id)));
+// 			$this->showmessage(RC_Lang::get('orders::order.update_order_ok'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('url' => RC_Uri::url('orders/admin/'.$step_act, "step=goods&order_id=".$order_id)));
+		    
+			/* 商品 */
+			/* 下一步 */
+			if (isset($_POST['next'])) {
+			    $url=RC_Uri::url('orders/admin/'.$step_act,"order_id=" . $order_id . "&step=consignee");
+			    $this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('url' => $url));
+			} elseif (isset($_POST['finish'])) {
+			    /* 完成 */
+			    /* 初始化提示信息和链接 */
+			    $msgs	= array();
+			    $links	= array();
+			    /* 如果已付款，检查金额是否变动，并执行相应操作 */
+			    $order = order_info($order_id);
+			    handle_order_money_change($order, $msgs, $links);
+			    /* 显示提示信息 */
+			    if (!empty($msgs)) {
+			        $this->showmessage(join(chr(13), $msgs), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			    } else {
+			        /* 跳转到订单详情 */
+			        $url=RC_Uri::url('orders/admin/info', "order_id=" . $order_id . "");
+			        $this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('url' => $url));
+			    }
+			}
 		} elseif ('add_goods' == $step) {
 			/* 添加商品 */
 			/* 取得参数 */

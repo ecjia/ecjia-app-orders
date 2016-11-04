@@ -236,9 +236,14 @@
 				<td colspan="1" class="right-td"><strong>{lang key='orders::order.label_total'}</strong>{$goods_amount}</td>
 <!-- 				<td>{$goods_amount}</td> -->
 				<td colspan="2" class="right-td">
-					{if $smarty.foreach.goods.total gt 0}
-					<button class="btn" type="submit" name="edit_goods">{lang key='orders::order.update_goods'}</button>
-					{/if}
+<!-- 					{if $smarty.foreach.goods.total gt 0} -->
+<!-- 					<button class="btn" type="submit" name="edit_goods">{lang key='orders::order.update_goods'}</button> -->
+<!-- 					{/if} -->
+            			<p class="ecjiaf-tac m_t15">
+            				<button class="btn btn-gebo" type="submit" name="{if $step_act eq 'add'}next{else}finish{/if}">{if $step_act eq 'add'}{lang key='orders::order.button_next'}{else}{lang key='orders::order.update_goods'}{/if}</button>&nbsp;&nbsp;&nbsp;
+            				<input name="{if $step_act eq 'add'}next{else}finish{/if}" type="hidden" value="{if $step_act eq 'add'}{lang key='orders::order.button_next'}{else}{lang key='system::system.button_submit'}{/if}" />
+            				<a class="cancel_order" data-href='{url path="orders/admin/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn" type="button">{lang key='orders::order.button_cancel'}</button></a>
+            			</p>
 					<input name="goods_count" type="hidden" value="{$smarty.foreach.goods.total}" />
 				</td>
 			</tr>
@@ -313,13 +318,6 @@
 				</div>
 			</fieldset>
 			<input name="goodslist" type="hidden" />
-		</form>
-		<form class="form-horizontal" action='{url path="orders/admin/step_post" args="step=goods&order_id={$order_id}&step_act={$step_act}"}' method="post" name="submitgoodsForm">
-			<p class="ecjiaf-tac m_t15">
-				<button class="btn btn-gebo" type="submit" name="{if $step_act eq 'add'}next{else}finish{/if}">{if $step_act eq 'add'}{lang key='orders::order.button_next'}{else}{lang key='system::system.button_submit'}{/if}</button>&nbsp;&nbsp;&nbsp;
-				<input name="{if $step_act eq 'add'}next{else}finish{/if}" type="hidden" value="{if $step_act eq 'add'}{lang key='orders::order.button_next'}{else}{lang key='system::system.button_submit'}{/if}" />
-				<a class="cancel_order" data-href='{url path="orders/admin/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn" type="button">{lang key='orders::order.button_cancel'}</button></a>
-			</p>
 		</form>
 	</div>
 </div>

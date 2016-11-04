@@ -323,6 +323,7 @@
 				$(this).ajaxSubmit({
 					dataType:"json",
 					success:function(data){
+						$('#refund').modal('hide');
 						ecjia.admin.showmessage(data);
 					}
 				});

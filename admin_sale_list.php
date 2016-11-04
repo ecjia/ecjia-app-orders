@@ -47,11 +47,27 @@ class admin_sale_list extends ecjia_admin {
 		);
 
 		$this->assign('ur_here', RC_Lang::get('orders::statistic.sales_list'));
-		$this->assign('action_link', array('text' => RC_Lang::get('orders::statistic.download_sale_sort'), 'href' => RC_Uri::url('orders/admin_sale_list/download')));
+		$this->assign('action_link', array('text' => '下载销售明细报表', 'href' => RC_Uri::url('orders/admin_sale_list/download')));
 
 		/* 时间参数 */
 		$start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date(ecjia::config('date_format'), strtotime('-1 month')-8*3600);
 		$end_date = !empty($_GET['end_date']) ? $_GET['end_date'] : RC_Time::local_date(ecjia::config('date_format'));
+		
+		
+		function get_url_args($get_or_post, $args=array()) {
+		    $url_string = '';
+		    if ($get_or_post && $args) {
+		        foreach ($get_or_post as $key => $value) {
+		            if ($value != '' && in_array($key, $args)) {
+		                $url_string .= "&".$key."=".$value;
+		            }
+		        }
+		    }
+		    return $url_string;
+		}
+		$url_args = get_url_args($_GET, array('start_date', 'end_date'));
+		$this->assign('url_args', $url_args);
+		
 
 		$sale_list_data = $this->get_sale_list();
 		$this->assign('sale_list_data', $sale_list_data);

@@ -16,7 +16,8 @@
 <div>
 	<h3 class="heading">
 		<!-- {if $ur_here}{$ur_here}{/if} -->
-		<!-- {if $action_link} --><a class="btn plus_or_reply"  id="sticky_a" href="{$action_link.href}&start_date={$start_date}&end_date={$end_date}"><i class="fontello-icon-download"></i>{t}{$action_link.text}{/t}</a><!-- {/if} -->
+		<!-- {if $action_link} --><a class="btn plus_or_reply" href="{$action_link.href}{$url_args}"><i class="fontello-icon-download"></i>{t}{$action_link.text}{/t}</a><!-- {/if} -->
+		<!-- {if $smarty.get.store_id} --><a class="btn plus_or_reply" href='{RC_Uri::url("orders/admin_sale_list/init", "{$url_args}")}'><i class="fontello-icon-reply"></i>{t}返回全部{/t}</a><!-- {/if} -->
 	</h3>
 </div>
 
@@ -50,8 +51,8 @@
 				<td>
 					<a href='{RC_Uri::url("goods/admin/preview", "id={$list.goods_id}")}' target="_blank">{$list.goods_name}</a>
 				</td>
-				<td><a href='{RC_Uri::url("orders/admin_sale_list/init", "store_id={$list.store_id}")}'>{$list.merchants_name}</a></td>
-				<td>{$list.order_sn}</td>
+				<td><a href='{RC_Uri::url("orders/admin_sale_list/init", "store_id={$list.store_id}{$url_args}")}' title="查看此店铺明细">{$list.merchants_name}</a><a href='{RC_Uri::url("store/admin/preview", "store_id={$list.store_id}")}' title="查看店铺资料" target="_blank"><i class="fontello-icon-info-circled"></i></a></td>
+				<td><a href='{RC_Uri::url("orders/admin/info", "order_sn={$list.order_sn}")}' target="_blank">{$list.order_sn}</a></td>
 				<td>{$list.goods_num}</td>
 				<td>{$list.sales_price}</td>
 				<td>{$list.sales_time}</td>

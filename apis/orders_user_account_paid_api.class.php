@@ -61,12 +61,6 @@ class orders_user_account_paid_api extends Component_Event_Api {
 			return new ecjia_error('balance_less', RC_Lang::get('orders::order.not_enough_balance'));
 		}
 		
-		/* 余额支付里如果输入了一个金额 */
-		if($order_info['surplus'] > 0) {
-			$order_info['order_amount'] = $order_info['order_amount'] + $order_info['surplus'];
-			$order_info['surplus'] = 0;
-		}
-		
 		/* 更新订单表支付后信息 */
 		$data = array(
 			'order_status'    => OS_CONFIRMED,

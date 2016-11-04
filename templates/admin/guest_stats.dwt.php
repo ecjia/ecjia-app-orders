@@ -67,6 +67,7 @@
 	</div>
 </div>
 
+{if 0}
 <div class="foldable-list move-mod-group m_t20" id="goods_info_sort_submit">
 	<div class="accordion-group">
 		<div class="accordion-heading">
@@ -92,4 +93,5 @@
 		</div>
 	</div>
 </div>
+{/if}
 <!-- {/block} -->

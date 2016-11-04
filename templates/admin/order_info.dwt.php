@@ -230,7 +230,7 @@
 							<tbody class="first-td-no-leftbd">
 								<tr>
 									<td><div align="right"><strong>{lang key='orders::order.label_merchants_name'}</strong></div></td>
-									<td class="ecjiafc-red">{$order.merchants_name}</td>
+									<td><a href='{url path="store/admin/preview" args="store_id={$order.store_id}"}' target="__blank">{$order.merchants_name}</a></td>
 									<td><div align="right"><strong>{lang key='orders::order.label_responsible_person'}</strong></div></td>
 									<td>{$order.responsible_person}</td>
 								</tr>
@@ -238,7 +238,7 @@
 									<td><div align="right"><strong>{lang key='orders::order.label_contact_mobile'}</strong></div></td>
 									<td>{$order.contact_mobile}</td>
 									<td><div align="right"><strong>{lang key='orders::order.label_email'}</strong></div></td>
-									<td>{$order.email}</td>
+									<td>{$order.merchants_email}</td>
 								</tr>
 								<tr>
 									<td><div align="right"><strong>{lang key='orders::order.label_company_name'}</strong></div></td>

@@ -127,8 +127,11 @@ function order_info($order_id, $order_sn = '', $type) {
 	if (!empty($type) && $type == 'front') {/*接口订单详情*/
 		$order = $db_order_info->select('*', RC_DB::raw($total_fee))->first();
 	} else {
-		$order = $db_order_info->select('*', RC_DB::raw($total_fee), RC_DB::raw('s.*'))->first();
+		$order = $db_order_info
+		->selectRaw('o.*, s.merchants_name, s.responsible_person, s.contact_mobile, s.email as merchants_email, s.company_name, '. $total_fee)
+		->first();
 	}
+	
 	if ($order) {
     	$order['store_id'] = intval($order['store_id']);
     	$order['invoice_no'] = empty($order['invoice_no']) ? '' : $order['invoice_no'];

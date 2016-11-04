@@ -207,7 +207,7 @@ class admin_sale_general extends ecjia_admin {
 			->get();
 		
 		/* 文件名 */
-		$filename = mb_convert_encoding(RC_Lang::get('orders::statistic.sales_statistics'), "GBK", "UTF-8");
+		$filename = mb_convert_encoding(RC_Lang::get('orders::statistic.sales_statistics').'_'.$_GET['start_time'].'-'.$_GET['end_time'], "GBK", "UTF-8");
 		
 		header("Content-type: application/vnd.ms-excel; charset=utf-8");
 		header("Content-Disposition: attachment; filename=$filename.xls");

@@ -47,7 +47,7 @@ class admin_users_order extends ecjia_admin {
 		);
 		
 		$this->assign('ur_here', RC_Lang::get('system::system.report_users'));
-		$this->assign('action_link', array('text' => RC_Lang::get('orders::statistic.download_amount_sort'), 'href' => RC_Uri::url('orders/admin_users_order/download')));
+		$this->assign('action_link', array('text' => '下载会员排行报表', 'href' => RC_Uri::url('orders/admin_users_order/download')));
 		
 		/* 时间参数 */
 		$start_date = !empty($_GET['start_date']) 	? $_GET['start_date'] 	: RC_Time::local_date(ecjia::config('date_format'), strtotime('-7 days')-8*3600);
@@ -87,7 +87,7 @@ class admin_users_order extends ecjia_admin {
 		$filter['sort_order'] 	= empty($_GET['sort_order']) 	? 'DESC' 		: trim($_GET['sort_order']);
 		
 		/*文件名*/
-		$file_name = mb_convert_encoding(RC_Lang::get('orders::statistic.users_order_statement'),"GBK","UTF-8");
+		$file_name = mb_convert_encoding('会员排行报表_'.$_GET['start_date'].'-'.$_GET['end_date'],"GBK","UTF-8");
 		$users_order_data = $this->get_users_order($filter, false);
 		
 		/*强制下载,下载类型EXCEL*/
@@ -125,10 +125,10 @@ class admin_users_order extends ecjia_admin {
 	    	->whereRaw($where);
 	    
 	    $count = $db_users->count(RC_DB::raw('distinct(u.user_id)'));
-	    $page = new ecjia_page($count, 5, 5);
+	    $page = new ecjia_page($count, 20, 5);
 	    if ($paging) {
 	    	$limit = $page->limit();
-	    	$db_users->take(5)->skip($page->start_id-1);
+	    	$db_users->take($page->page_size)->skip($page->start_id-1);
 	    }
 	    /* 计算订单各种费用之和的语句 */
     	$users_order_data = $db_users

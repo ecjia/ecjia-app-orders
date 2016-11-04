@@ -37,7 +37,7 @@
 				<th class="w100">{lang key='orders::statistic.order_by'}</th>
 				<th class="w200">{lang key='orders::statistic.member_name'}</th>
 				<th class="w200 sorting" data-toggle="sortby" data-sortby="order_num">{lang key='orders::statistic.order_amount'}</th>
-				<th class="w110">{lang key='orders::statistic.buy_sum'}</th>
+				<th class="w110" data-toggle="sortby" data-sortby="turnover">{lang key='orders::statistic.buy_sum'}</th>
 			</tr>
 		</thead>
 		<tbody>

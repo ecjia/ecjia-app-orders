@@ -16,7 +16,7 @@
 <div>
 	<h3 class="heading">
 		<!-- {if $ur_here}{$ur_here}{/if} -->
-		<!-- {if $action_link} --><a class="btn plus_or_reply" href="{$action_link.href}{$url_args}"><i class="fontello-icon-download"></i>{t}{$action_link.text}{/t}</a><!-- {/if} -->
+		<!-- {if $action_link} --><a class="btn plus_or_reply" href="{$action_link.href}{$url_args}{if $smarty.get.store_id}&store_id={$smarty.get.store_id}{/if}"><i class="fontello-icon-download"></i>{t}{$action_link.text}{/t}</a><!-- {/if} -->
 		<!-- {if $smarty.get.store_id} --><a class="btn plus_or_reply" href='{RC_Uri::url("orders/admin_sale_list/init", "{$url_args}")}'><i class="fontello-icon-reply"></i>{t}返回全部{/t}</a><!-- {/if} -->
 	</h3>
 </div>
@@ -24,6 +24,7 @@
 <div class="row-fluid">
 	<div class="choose_list f_r">
 		<form class="f_r" action="{$search_action}"  method="post" name="theForm">
+			<input type="text" name="merchant_keywords" value="{$smarty.get.merchant_keywords}" placeholder="{lang key='goods::goods.enter_merchant_keywords'}" size="15" />
 			<span>{lang key='orders::statistic.select_date_lable'}</span>
 			<input class="start_date f_l w110" name="start_date" type="text" placeholder="{lang key='orders::statistic.start_date'}" value="{$start_date}">
 			<span class="f_l">-</span>

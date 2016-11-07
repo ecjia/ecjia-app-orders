@@ -45,14 +45,12 @@ class admin_sale_list extends ecjia_admin {
 			'<p><strong>' . RC_Lang::get('orders::statistic.more_info') . '</strong></p>' .
 			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:销售明细" target="_blank">'. RC_Lang::get('orders::statistic.about_sale_list') .'</a>') . '</p>'
 		);
-
 		$this->assign('ur_here', RC_Lang::get('orders::statistic.sales_list'));
 		$this->assign('action_link', array('text' => '下载销售明细报表', 'href' => RC_Uri::url('orders/admin_sale_list/download')));
 
 		/* 时间参数 */
 		$start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date(ecjia::config('date_format'), strtotime('-1 month')-8*3600);
 		$end_date = !empty($_GET['end_date']) ? $_GET['end_date'] : RC_Time::local_date(ecjia::config('date_format'));
-		
 		
 		function get_url_args($get_or_post, $args=array()) {
 		    $url_string = '';
@@ -68,12 +66,16 @@ class admin_sale_list extends ecjia_admin {
 		$url_args = get_url_args($_GET, array('start_date', 'end_date'));
 		$this->assign('url_args', $url_args);
 		
+		if(!empty($_GET['store_id'])) {
+		    $store_info = RC_DB::table('store_franchisee')->where('store_id', $_GET['store_id'])->first();
+		    $this->assign('ur_here', $store_info['merchants_name'] . ' - ' . RC_Lang::get('orders::statistic.sales_list'));
+		}
 
 		$sale_list_data = $this->get_sale_list();
 		$this->assign('sale_list_data', $sale_list_data);
 		$this->assign('start_date', $start_date);
 		$this->assign('end_date', $end_date);
-		$this->assign('search_action',RC_Uri::url('orders/admin_sale_list/init'));
+		$this->assign('search_action', RC_Uri::url('orders/admin_sale_list/init'));
 
 		$this->display('sale_list.dwt');
 	}
@@ -88,19 +90,24 @@ class admin_sale_list extends ecjia_admin {
 		/* 时间参数 */
 		$start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date(ecjia::config('date_format'),RC_Time::local_strtotime('-7 days'));
 		$end_date = !empty($_GET['end_date']) ? $_GET['end_date'] : RC_Time::local_date(ecjia::config('date_format'),RC_Time::local_strtotime('today'));
-
+		if(!empty($_GET['store_id'])) {
+		    $store_info = RC_DB::table('store_franchisee')->where('store_id', $_GET['store_id'])->first();
+		    $file_name = mb_convert_encoding(RC_Lang::get('orders::statistic.sales_list_statement').'_'.$store_info['merchants_name'].'_'.$_GET['start_date'].'-'.$_GET['end_date'], "GBK", "UTF-8");
+		} else {
+		    $file_name = mb_convert_encoding(RC_Lang::get('orders::statistic.sales_list_statement').'_'.$_GET['start_date'].'-'.$_GET['end_date'], "GBK", "UTF-8");
+		}
+		
 		/*文件名*/
-		$file_name = mb_convert_encoding(RC_Lang::get('orders::statistic.sales_list_statement'), "GBK", "UTF-8");
 		$goods_sales_list = $this->get_sale_list(false);
 
 		/*强制下载,下载类型EXCEL*/
 		header("Content-type: application/vnd.ms-excel; charset=utf-8");
 		header("Content-Disposition: attachment; filename=$file_name.xls");
 
-		$data = RC_Lang::get('orders::statistic.goods_name')."\t".RC_Lang::get('orders::statistic.order_sn')."\t".RC_Lang::get('orders::statistic.amount')."\t".RC_Lang::get('orders::statistic.sell_price')."\t".RC_Lang::get('orders::statistic.sell_date')."\n";
+		$data = RC_Lang::get('orders::statistic.goods_name')."\t商家名称\t".RC_Lang::get('orders::statistic.order_sn')."\t".RC_Lang::get('orders::statistic.amount')."\t".RC_Lang::get('orders::statistic.sell_price')."\t".RC_Lang::get('orders::statistic.sell_date')."\n";
 		if (!empty($goods_sales_list['item'])) {
 			foreach ($goods_sales_list['item'] as $v) {
-				$data .= mb_convert_encoding("$v[goods_name]\t$v[order_sn]\t$v[goods_num]\t$v[sales_price]\t$v[sales_time]\n",'UTF-8','auto');
+				$data .= mb_convert_encoding($v['goods_name']."\t".$v['merchants_name']."\t".$v['order_sn']."\t".$v['goods_num']."\t".$v['sales_price']."\t".$v['sales_time']."\n",'UTF-8','auto');
 			}
 		}
 		echo mb_convert_encoding($data."\t","GBK","UTF-8");
@@ -116,9 +123,14 @@ class admin_sale_list extends ecjia_admin {
 		/* 时间参数 */
 	    $filter['start_date'] = empty($_REQUEST['start_date']) ? RC_Time::local_strtotime('-7 days') : RC_Time::local_strtotime($_REQUEST['start_date']);
 	    $filter['end_date'] = empty($_REQUEST['end_date']) ? RC_Time::local_strtotime('today') : RC_Time::local_strtotime($_REQUEST['end_date']);
+	    $filter['merchant_keywords'] = empty ($_GET['merchant_keywords']) ? '' : trim($_GET['merchant_keywords']);
 	    $where = "1" .order_query_sql('finished', 'oi.') ." AND oi.add_time >= '".$filter['start_date']."' AND oi.add_time < '" . ($filter['end_date'] + 86400) . "'";
-        if($_REQUEST['store_id']){
-            $where .= ' AND sf.store_id = '.$_REQUEST['store_id'];
+        if($_GET['store_id']){
+            $where .= ' AND sf.store_id = '.$_GET['store_id'];
+        } else {
+            if($filter['merchant_keywords']) {
+                $where .= " AND sf.merchants_name like '%".$filter['merchant_keywords']."%'";
+            }
         }
 	    $db_goods = RC_DB::table('goods as g')
 	    	->leftJoin('order_goods as og', RC_DB::raw('og.goods_id'), '=', RC_DB::raw('g.goods_id'))

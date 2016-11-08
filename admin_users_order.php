@@ -120,6 +120,8 @@ class admin_users_order extends ecjia_admin {
 	    if ($filter['end_date']) {
 	        $where .= " AND o.add_time <= '" . $filter['end_date'] . "'";
 	    }
+	    $where .= " AND o.is_delete = 0";
+	    
 	    $db_users = RC_DB::table('users as u')
 	    	->leftJoin('order_info as o', RC_DB::raw('o.user_id'), '=', RC_DB::raw('u.user_id'))
 	    	->whereRaw($where);

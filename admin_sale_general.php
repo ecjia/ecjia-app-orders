@@ -156,6 +156,7 @@ class admin_sale_general extends ecjia_admin {
 		}
 		$format = ($query_type == 'year') ? '%Y' : '%Y-%m';
 		$where =  "(order_status = '" . OS_CONFIRMED . "' OR order_status >= '" . OS_SPLITED . "' ) AND ( pay_status = '" . PS_PAYED . "' OR pay_status = '" . PS_PAYING . "') AND (shipping_status = '" . SS_SHIPPED . "' OR shipping_status = '" . SS_RECEIVED . "' ) AND (shipping_time >= ' ". $start_time ."' AND shipping_time <= '" .$end_time. "')";
+		$where .= " AND is_delete = 0";
 		
 		$templateCount = RC_DB::table('order_info')
 			->select(RC_DB::raw("DATE_FORMAT(FROM_UNIXTIME(shipping_time), '". $format ."') AS period, COUNT(*) AS order_count, SUM(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee - discount) AS order_amount"))
@@ -199,6 +200,7 @@ class admin_sale_general extends ecjia_admin {
 		/* 分组统计订单数和销售额：已发货时间为准 */	
 		$format = ($query_type == 'year') ? '%Y' : '%Y-%m';
 		$where =  " (order_status = '" . OS_CONFIRMED . "' OR order_status >= '" . OS_SPLITED . "' ) AND ( pay_status = '" . PS_PAYED . "' OR pay_status = '" . PS_PAYING . "') AND (shipping_status = '" . SS_SHIPPED . "' OR shipping_status = '" . SS_RECEIVED . "' ) AND (shipping_time >= ' ". $start_time ."' AND shipping_time <= '" .$end_time. "'  )";
+		$where .= " AND is_delete = 0";
 		
 		$data_list = RC_DB::table('order_info')
 			->select(RC_DB::raw("DATE_FORMAT(FROM_UNIXTIME(shipping_time), '". $format ."') AS period, COUNT(*) AS order_count, SUM(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee - discount) AS order_amount"))

@@ -132,6 +132,8 @@ class admin_sale_list extends ecjia_admin {
                 $where .= " AND sf.merchants_name like '%".$filter['merchant_keywords']."%'";
             }
         }
+        $where .= " AND oi.is_delete = 0";
+        
 	    $db_goods = RC_DB::table('goods as g')
 	    	->leftJoin('order_goods as og', RC_DB::raw('og.goods_id'), '=', RC_DB::raw('g.goods_id'))
 	    	->leftJoin('order_info as oi', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('og.order_id'))

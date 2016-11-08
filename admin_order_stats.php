@@ -609,25 +609,29 @@ class admin_order_stats extends ecjia_admin {
 	 	$order_info['unconfirmed_num'] = RC_DB::table('order_info')
 	 		->select(RC_DB::raw('COUNT(*) AS unconfirmed_num'))
 	 		->whereRaw("order_status = '" .OS_UNCONFIRMED. "' AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "' ")
+	 		->where('is_delete', 0)
 	 		->count();
 	 	
 	 	/* 已确认订单数 */
 	 	$order_info['confirmed_num'] = RC_DB::table('order_info')
 		 	->select(RC_DB::raw('COUNT(*) AS confirmed_num'))
 		 	->whereRaw("order_status = '" .OS_CONFIRMED. "' AND shipping_status != ".SS_SHIPPED." && shipping_status != ".SS_RECEIVED." AND pay_status != ".PS_PAYED." && pay_status != ".PS_PAYING." AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "'")
-		 	->count();
+		 	->where('is_delete', 0)
+	 		->count();
 	 	
 	    /* 已成交订单数 */
 		$order_info['succeed_num'] = RC_DB::table('order_info')
 			->select(RC_DB::raw('COUNT(*) AS succeed_num'))
 			->whereRaw(" 1 AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "' ". order_query_sql('finished'))
+			->where('is_delete', 0)
 			->count();
 		
 	    /* 无效或已取消订单数 */
 	    $order_info['invalid_num'] = RC_DB::table('order_info')
 		    ->select(RC_DB::raw('COUNT(*) AS invalid_num'))
 		    ->whereRaw("order_status IN ('" .OS_CANCELED.  "','" .OS_INVALID.  "','" .OS_RETURNED.  "') AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "' ")
-		    ->count();
+		    ->where('is_delete', 0)
+	    	->count();
 
 	    return $order_info;
 	 }
@@ -646,7 +650,7 @@ class admin_order_stats extends ecjia_admin {
 	 	
 	 	/* 取得订单转化率数据 */
 	 	$order_general = RC_DB::table('order_info')->select(RC_DB::raw('COUNT(*) AS total_order_num , '.$total_fee.''))
-	 		->whereRaw('1' . order_query_sql('finished'))->first();
+	 		->whereRaw('1' . order_query_sql('finished'). ' AND is_delete = 0')->first();
 	 	
 	 	$order_general['total_turnover'] = floatval($order_general['total_turnover']);
 	 	

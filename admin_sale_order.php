@@ -119,6 +119,8 @@ class admin_sale_order extends ecjia_admin {
         if($_REQUEST['store_id']){
             $where .= ' AND sf.store_id = '.$_REQUEST['store_id'];
         }
+        $where .= " AND oi.is_delete = 0";
+        
 	    $db_goods = RC_DB::table('goods as g')
 	    	->leftJoin('order_goods as og', RC_DB::raw('og.goods_id'), '=', RC_DB::raw('g.goods_id'))
 	    	->leftJoin('order_info as oi', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('og.order_id'))

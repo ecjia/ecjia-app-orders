@@ -240,10 +240,12 @@
 									<td><div align="right"><strong>{lang key='orders::order.label_email'}</strong></div></td>
 									<td>{$order.merchants_email}</td>
 								</tr>
+								{if $order.validate_type eq 2}
 								<tr>
 									<td><div align="right"><strong>{lang key='orders::order.label_company_name'}</strong></div></td>
 									<td colspan="3">{$order.company_name}</td>
 								</tr>
+								{/if}
 							</tbody>
 						</table>
 					</div>

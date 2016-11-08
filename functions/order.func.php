@@ -107,7 +107,7 @@ function pay_fee($payment_id, $order_amount, $cod_fee=null) {
 * @param   string  $order_sn   订单号
 * @return  array   订单信息（金额都有相应格式化的字段，前缀是formated_）
 */
-function order_info($order_id, $order_sn = '', $type) {
+function order_info($order_id, $order_sn = '', $type = '') {
 
 	if (!empty($type) && $type == 'front') {/*接口订单详情*/
 		$db_order_info = RC_DB::table('order_info as o');
@@ -1121,7 +1121,7 @@ function return_order_bonus($order_id) {
 				->where('bonus_type_id', $bonus['type_id'])
 				->where('user_id', $user_id)
 				->where('order_id', 0)
-				->limit($bonus['limit'])
+				->limit($bonus['number'])
 				->delete();
 		}
 	}

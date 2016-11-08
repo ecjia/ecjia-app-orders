@@ -626,7 +626,7 @@ class admin_order_stats extends ecjia_admin {
 	    /* 无效或已取消订单数 */
 	    $order_info['invalid_num'] = RC_DB::table('order_info')
 		    ->select(RC_DB::raw('COUNT(*) AS invalid_num'))
-		    ->whereRaw("order_status > '" .OS_CONFIRMED. "' AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "' ")
+		    ->whereRaw("order_status IN ('" .OS_CANCELED.  "','" .OS_INVALID.  "','" .OS_RETURNED.  "') AND add_time >= '$start_date' AND add_time < '" . ($end_date + 86400) . "' ")
 		    ->count();
 
 	    return $order_info;

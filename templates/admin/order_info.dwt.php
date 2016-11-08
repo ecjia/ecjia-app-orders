@@ -55,18 +55,18 @@
 			<div class="ecjiaf-fl"><h3>{lang key='orders::order.label_order_sn'}{$order.order_sn}</h3></div>
 			<span class="choose_list"><input type="text" name="keywords" class="ecjiaf-fn" placeholder="{lang key='orders::order.pls_order_id'}" /><button class="btn ecjiaf-fn" type="submit">{lang key='orders::order.search'}</button></span>
 			<div class="f_r">
+		      	{if $next_id}
+				<a class="data-pjax ecjiaf-tdn" href='{url path="orders/admin/info" args="order_id={$next_id}"}'>
+				{/if}
+					<button class="btn btn-small" type="button" {if !$next_id}disabled="disabled"{/if}>{lang key='orders::order.prev'}</button>
+				{if $next_id}
+				</a>
+				{/if}
 				{if $prev_id}
 				<a class="data-pjax ecjiaf-tdn" href='{url path="orders/admin/info" args="order_id={$prev_id}"}' >
 				{/if}
-					<button class="btn btn-small" type="button" {if !$prev_id}disabled="disabled"{/if}>{lang key='orders::order.prev'}</button>
+					<button class="btn btn-small" type="button" {if !$prev_id}disabled="disabled"{/if}>{lang key='orders::order.next'}</button>
 				{if $prev_id}
-				</a>
-				{/if}
-				{if $next_id}
-				<a class="data-pjax ecjiaf-tdn" href='{url path="orders/admin/info" args="order_id={$next_id}"}'>
-				{/if}
-					<button class="btn btn-small" type="button" {if !$next_id}disabled="disabled"{/if}>{lang key='orders::order.next'}</button>
-				{if $next_id}
 				</a>
 				{/if}
 				<button class="btn btn-small" type="button" onclick="window.open('{url path="orders/admin/info" args="order_id={$order.order_id}&print=1"}')">{lang key='orders::order.print_order'}</button>

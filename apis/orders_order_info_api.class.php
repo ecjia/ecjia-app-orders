@@ -48,6 +48,7 @@ class orders_order_info_api extends Component_Event_Api {
         if(!empty($_SESSION['store_id'])){
             $db_order_info->where('store_id', $_SESSION['store_id']);
         }
+        $db_order_info->where('is_delete', 0);
 	    $order = $db_order_info->first();
 
 	    /* 格式化金额字段 */

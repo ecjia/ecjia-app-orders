@@ -19,6 +19,7 @@ class order_query extends order {
     	$where[$alias.'order_status'] = array(OS_CONFIRMED, OS_SPLITED);
 		$where[$alias.'shipping_status'] = array(SS_SHIPPED, SS_RECEIVED);
 		$where[$alias.'pay_status'] = array(PS_PAYED, PS_PAYING);
+		$where[$alias.'is_delete'] = 0;
 		return $where;
 	}
 	
@@ -35,6 +36,7 @@ class order_query extends order {
     	$where[$alias.'order_status'] = array(OS_UNCONFIRMED, OS_CONFIRMED,OS_SPLITED);
         $where[$alias.'pay_status'] = PS_UNPAYED;
         $where[]= "( {$alias}shipping_status in (". SS_SHIPPED .",". SS_RECEIVED .") OR {$alias}pay_id in (" . $payment_id . ") )";
+        $where[$alias.'is_delete'] = 0;
         return $where;
 	}
 	
@@ -51,6 +53,7 @@ class order_query extends order {
     	$where[$alias.'order_status'] = array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART);
 		$where[$alias.'shipping_status'] = array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING);
 		$where[] = "( {$alias}pay_status in (" . PS_PAYED .",". PS_PAYING.") OR {$alias}pay_id in (" . $payment_id . "))";
+		$where[$alias.'is_delete'] = 0;
 		return $where;
 	}
 	
@@ -58,6 +61,7 @@ class order_query extends order {
 	public function order_unconfirmed($alias = '') {
 		$where = array();
 		$where[$alias.'order_status'] = OS_UNCONFIRMED;
+		$where[$alias.'is_delete'] = 0;
 		return $where;
 	}
 	
@@ -67,6 +71,7 @@ class order_query extends order {
     	$where[$alias.'order_status'] =  array(OS_UNCONFIRMED, OS_CONFIRMED);
         $where[$alias.'shipping_status'] = SS_UNSHIPPED;
         $where[$alias.'pay_status'] = PS_UNPAYED;
+        $where[$alias.'is_delete'] = 0;
 		return $where;
 	}
 	
@@ -76,6 +81,7 @@ class order_query extends order {
     	$where[$alias.'order_status'] = array(OS_UNCONFIRMED, OS_CONFIRMED);
         $where[$alias.'shipping_status'] = array(SS_UNSHIPPED, SS_PREPARING);
         $where[$alias.'pay_status'] = PS_UNPAYED;
+        $where[$alias.'is_delete'] = 0;
         return $where;
 	}
 	
@@ -84,6 +90,7 @@ class order_query extends order {
 		$where = array();
         $where[$alias.'order_status'] = array(OS_CONFIRMED, OS_SPLITED);
         $where[$alias.'shipping_status'] = array(SS_SHIPPED);
+        $where[$alias.'is_delete'] = 0;
         return $where;
 	}
 
@@ -91,6 +98,7 @@ class order_query extends order {
     public function order_refund($alias = '') {
     	$where = array();
         $where[$alias.'order_status'] = OS_RETURNED;
+        $where[$alias.'is_delete'] = 0;
         return $where;
     }
     
@@ -98,6 +106,7 @@ class order_query extends order {
     public function order_invalid($alias = '') {
     	$where = array();
         $where[$alias.'order_status'] = OS_INVALID;
+        $where[$alias.'is_delete'] = 0;
         return $where;
     }
     
@@ -105,6 +114,7 @@ class order_query extends order {
     public function order_canceled($alias = '') {
     	$where = array();
     	$where[$alias.'order_status'] = OS_CANCELED;
+    	$where[$alias.'is_delete'] = 0;
     	return $where;
     }
 
@@ -306,6 +316,9 @@ class order_query extends order {
         		}
         	}
         }
+        
+        //is_delete 为0的为没删除的
+        $db_order_info->where(RC_DB::raw('o.is_delete'), 0);
         
         $filter_count = $db_order_info
 	        ->select(RC_DB::raw('count(*) as count'), RC_DB::raw('SUM(IF(o.store_id > 0, 1, 0)) as merchant'))

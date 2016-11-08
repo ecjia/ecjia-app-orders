@@ -123,6 +123,7 @@ function order_info($order_id, $order_sn = '', $type = '') {
 	} else {
 		$db_order_info->where('order_sn', $order_sn);
 	}
+	$db_order_info->where('is_delete', 0);
 
 	if (!empty($type) && $type == 'front') {/*接口订单详情*/
 		$order = $db_order_info->select('*', RC_DB::raw($total_fee))->first();

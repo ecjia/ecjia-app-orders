@@ -20,12 +20,12 @@
 
 <ul class="nav nav-pills">
 	<li class="{if $filter.type eq ''}active{/if}">
-		<a class="data-pjax" href='{url path="orders/admin/init" args="{if $filter.composite_status && $filter.composite_status != -1}&composite_status={$filter.composite_status}{/if}{if $filter.keywords}&keywords={$filter.keywords}{/if}{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}"}'>{lang key='orders::order.all'} 
+		<a class="data-pjax" href='{url path="orders/admin/init" args="{if $filter.composite_status !== '' && $filter.composite_status != -1}&composite_status={$filter.composite_status}{/if}{if $filter.keywords}&keywords={$filter.keywords}{/if}{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}"}'>{lang key='orders::order.all'} 
 			<span class="badge badge-info">{if $count.count}{$count.count}{else}0{/if}</span> 
 		</a>
 	</li>
 	<li class="{if $filter.type eq 'merchant'}active{/if}">
-		<a class="data-pjax" href='{url path="orders/admin/init" args="type=merchant{if $filter.composite_status && $filter.composite_status != -1}&composite_status={$filter.composite_status}{/if}{if $filter.keywords}&keywords={$filter.keywords}{/if}{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}"}'>{lang key='orders::order.merchants'}
+		<a class="data-pjax" href='{url path="orders/admin/init" args="type=merchant{if $filter.composite_status !== '' && $filter.composite_status != -1}&composite_status={$filter.composite_status}{/if}{if $filter.keywords}&keywords={$filter.keywords}{/if}{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}"}'>{lang key='orders::order.merchants'}
 			<span class="badge badge-info">{if $count.merchant}{$count.merchant}{else}0{/if}</span> 
 		</a>
 	</li>

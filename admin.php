@@ -2794,6 +2794,10 @@ class admin extends ecjia_admin {
 			$sn_str = RC_Lang::get('orders::order.cancel_order');
 			$success_str =  RC_Lang::get('orders::order.cancel_ok_order');
 		} elseif ('remove' == $operation) {
+			$data = array(
+				'is_delete' 	=> 1,
+				'delete_time' 	=> RC_Time::local_date(ecjia::config('time_format'), RC_Time::gmtime())
+			);
 			/* 删除 */
 			foreach ($order_id_list as $id_order) {
 				/* 检查能否操作 */
@@ -2806,13 +2810,10 @@ class admin extends ecjia_admin {
 				}
 				
 				/* 删除订单 */
-// 				$this->db_order_info->where(array('order_id' => $order['order_id']))->delete();
-// 				$this->db_order_good->where(array('order_id' => $order['order_id']))->delete();
-// 				$this->db_order_action->where(array('order_id' => $order['order_id']))->delete();
-				
-				RC_DB::table('order_info')->where('order_id', $order['order_id'])->delete();
-				RC_DB::table('order_goods')->where('order_id', $order['order_id'])->delete();
-				RC_DB::table('order_action')->where('order_id', $order['order_id'])->delete();
+// 				RC_DB::table('order_info')->where('order_id', $order['order_id'])->delete();
+// 				RC_DB::table('order_goods')->where('order_id', $order['order_id'])->delete();
+// 				RC_DB::table('order_action')->where('order_id', $order['order_id'])->delete();
+				RC_DB::table('order_info')->where('order_id', $order['order_id'])->update($data);
 				
 				$action_array = array('delivery', 'back');
 				del_delivery($order['order_id'], $action_array);
@@ -3689,13 +3690,15 @@ class admin extends ecjia_admin {
 			$this->showmessage(RC_Lang::get('orders::order.unable_operation_order'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		
-// 		$this->db_order_info->where(array('order_id' => $order_id))->delete();
-// 		$this->db_order_good->where(array('order_id' => $order_id))->delete();
-// 		$this->db_order_action->where(array('order_id' => $order_id))->delete();
-		
-		RC_DB::table('order_info')->where('order_id', $order_id)->delete();
-		RC_DB::table('order_goods')->where('order_id', $order_id)->delete();
-		RC_DB::table('order_action')->where('order_id', $order_id)->delete();
+// 		RC_DB::table('order_info')->where('order_id', $order_id)->delete();
+// 		RC_DB::table('order_goods')->where('order_id', $order_id)->delete();
+// 		RC_DB::table('order_action')->where('order_id', $order_id)->delete();
+
+		$data = array(
+			'is_delete' 	=> 1,
+			'delete_time' 	=> RC_Time::local_date(ecjia::config('time_format'), RC_Time::gmtime())
+		);
+		RC_DB::table('order_info')->where('order_id', $order_id)->update($data);
 		
 		$action_array = array('delivery', 'back');
 		del_delivery($order_id, $action_array);

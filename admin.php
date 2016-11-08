@@ -184,6 +184,9 @@ class admin extends ecjia_admin {
 			}
 		}
 		
+		/* 取得该店铺属于个人还是企业 */
+		$order['validate_type'] = RC_DB::table('store_franchisee')->select('validate_type')->where('store_id', $order['store_id'])->pluck();
+	
 		/* 取得所有办事处 */  
 //		TODO:忽略model调用错误
 // 		$data = $this->db_agency->field('agency_id, agency_name')->select();

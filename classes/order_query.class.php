@@ -303,10 +303,14 @@ class order_query extends order {
         	foreach ($this->where as $k => $v) {
         		if (!is_numeric($k)) {
         			if (is_array($v)) {
-        				foreach ($v as $key => $val) {
-        					if ($key == 'like') {
-        						$db_order_info->where(RC_DB::raw($k), 'like', $val);
+        				if (array_get($v, 'like')) {
+        					foreach ($v as $key => $val) {
+        						if ($key == 'like') {
+        							$db_order_info->where(RC_DB::raw($k), 'like', $val);
+        						}
         					}
+        				} else {
+        					$db_order_info->whereIn(RC_DB::raw($k), $v);
         				}
         			} else {
         				$db_order_info->where(RC_DB::raw($k), $v);

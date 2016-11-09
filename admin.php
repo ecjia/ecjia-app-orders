@@ -350,9 +350,9 @@ class admin extends ecjia_admin {
 		
 		if (!empty($data)) {
 			foreach ($data as $key => $row) {
-				$row['order_status']	= RC_Lang::get('orders::order.os.'.$order['order_status']);
-				$row['pay_status']		= RC_Lang::get('orders::order.ps.'.$order['pay_status']);
-				$row['shipping_status']	= RC_Lang::get('orders::order.ss.'.$order['shipping_status']);
+				$row['order_status']	= RC_Lang::get('orders::order.os.'.$row['order_status']);
+				$row['pay_status']		= RC_Lang::get('orders::order.ps.'.$row['pay_status']);
+				$row['shipping_status']	= RC_Lang::get('orders::order.ss.'.$row['shipping_status']);
 				$row['action_time']		= RC_Time::local_date(ecjia::config('time_format'), $row['log_time']);
 				$act_list[]				= $row;
 			}

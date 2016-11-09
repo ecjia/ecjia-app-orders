@@ -25,6 +25,7 @@ class admin_sale_order extends ecjia_admin {
 		RC_Script::enqueue_script('bootstrap-datepicker', RC_Uri::admin_url('statics/lib/datepicker/bootstrap-datepicker.min.js'));
 
 		RC_Script::enqueue_script('sale_order', RC_App::apps_url('statics/js/sale_order.js',__FILE__));
+		RC_Script::localize_script('sale_order', 'js_lang', RC_Lang::get('orders::statistic.js_lang'));
 	}
 
 	public function init() {
@@ -54,8 +55,28 @@ class admin_sale_order extends ecjia_admin {
 		$filter['start_date'] 	= RC_Time::local_strtotime($start_date);
 		$filter['end_date'] 	= RC_Time::local_strtotime($end_date);
 
-		$filter['sort_by'] 		= empty($_REQUEST['sort_by']) 		? 'goods_num' 	: trim($_REQUEST['sort_by']);
-	    $filter['sort_order'] 	= empty($_REQUEST['sort_order']) 	? 'DESC' 		: trim($_REQUEST['sort_order']);
+		$filter['sort_by'] 				= empty($_REQUEST['sort_by']) 			? 'goods_num' 	: trim($_REQUEST['sort_by']);
+	    $filter['sort_order'] 			= empty($_REQUEST['sort_order']) 		? 'DESC' 		: trim($_REQUEST['sort_order']);
+	    $filter['merchant_keywords'] 	= empty($_REQUEST['merchant_keywords'])	? '' 			: trim($_REQUEST['merchant_keywords']);
+
+		function get_url_args($get_or_post, $args=array()) {
+		    $url_string = '';
+		    if ($get_or_post && $args) {
+		        foreach ($get_or_post as $key => $value) {
+		            if ($value != '' && in_array($key, $args)) {
+		                $url_string .= "&".$key."=".$value;
+		            }
+		        }
+		    }
+		    return $url_string;
+		}
+		$url_args = get_url_args($_GET, array('start_date', 'end_date'));
+		$this->assign('url_args', $url_args);
+
+		if($_REQUEST['store_id']){
+			$store_info = RC_DB::table('store_franchisee')->where('store_id', $_GET['store_id'])->first();
+		    $this->assign('ur_here', $store_info['merchants_name'] . ' - ' . RC_Lang::get('system::system.sell_stats'));
+        }
 
 		$goods_order_data = $this->get_sales_order(true, $filter);
 
@@ -119,8 +140,12 @@ class admin_sale_order extends ecjia_admin {
         if($_REQUEST['store_id']){
             $where .= ' AND sf.store_id = '.$_REQUEST['store_id'];
         }
+
+		if ($filter['merchant_keywords']) {
+        	$where .= " AND sf.merchants_name like '%".$filter['merchant_keywords']."%'";
+        }
+
         $where .= " AND oi.is_delete = 0";
-        
 	    $db_goods = RC_DB::table('goods as g')
 	    	->leftJoin('order_goods as og', RC_DB::raw('og.goods_id'), '=', RC_DB::raw('g.goods_id'))
 	    	->leftJoin('order_info as oi', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('og.order_id'))

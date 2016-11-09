@@ -19,12 +19,16 @@
 		<!-- {if $action_link} -->
 			<a class="btn plus_or_reply"  id="sticky_a" href="{$action_link.href}&start_date={$start_date}&end_date={$end_date}&sort_by={$filter.sort_by}&sort_order={$filter.sort_order}"><i class="fontello-icon-download"></i>{t}{$action_link.text}{/t}</a>
 		<!-- {/if} -->
+		<!-- {if $smarty.get.store_id} -->
+			<a class="btn plus_or_reply" href='{RC_Uri::url("orders/admin_sale_order/init", "{$url_args}")}'><i class="fontello-icon-reply"></i>{t}返回全部{/t}</a>
+		<!-- {/if} -->
 	</h3>
 </div>
 
 <div class="row-fluid">
 	<div class="choose_list f_r">
 		<form class="f_r" action="{$search_action}"  method="post" name="theForm">
+			<input type="text" name="merchant_keywords" value="{$smarty.get.merchant_keywords}" placeholder="{lang key='goods::goods.enter_merchant_keywords'}" size="15" />
 			<span>{lang key='orders::statistic.select_date_lable'}</span>
 			<input class="start_date f_l w110" name="start_date" type="text" placeholder="{lang key='orders::statistic.start_date'}" value="{$start_date}">
 			<span class="f_l">-</span>
@@ -55,7 +59,7 @@
 					<a href='{RC_Uri::url("goods/admin/preview", "id={$list.goods_id}")}' target="_blank">{$list.goods_name}</a>
 				</td>
 				<td>
-					<a href='{RC_Uri::url("orders/admin_sale_order/init", "store_id={$list.store_id}")}' >{$list.merchants_name}</a>
+					<a href='{RC_Uri::url("orders/admin_sale_order/init", "store_id={$list.store_id}{$url_args}")}' >{$list.merchants_name}<a href='{RC_Uri::url("store/admin/preview", "store_id={$list.store_id}")}' title="查看商家资料" target="_blank"><i class="fontello-icon-info-circled"></i></a></a>
 				</td>
 				<td>{$list.goods_sn}</td>
 				<td>{$list.goods_num}</td>

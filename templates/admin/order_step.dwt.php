@@ -479,7 +479,9 @@
 				<td><div>{$shipping.free_money}</div></td>
 				<td><div>{$shipping.insure}</div></td>
 			</tr>
-			<!-- {/foreach} -->
+			<!-- {foreachelse}-->
+    		<tr><td class="no-records" colspan="6">没有找到任何记录</td></tr>
+    		<!-- {/foreach} -->
 		</tbody>
 	</table>	
 	<p align="right">
@@ -510,7 +512,9 @@
 				<td>{$payment.pay_desc}</td>
 				<td align="right">{$payment.pay_fee}</td>
 			</tr>
-			<!-- {/foreach} -->
+			<!-- {foreachelse}-->
+    		<tr><td class="no-records" colspan="4">没有找到任何记录</td></tr>
+    		<!-- {/foreach} -->
 		</table>
 	</div>
 	<p align="center">
@@ -778,7 +782,9 @@
 					<td>{$shipping.shipping_name}</td>
 					<td>{$shipping.shipping_desc}</td>
 				</tr>
-				<!--{/foreach}-->
+				<!-- {foreachelse}-->
+	    		<tr><td class="no-records" colspan="3">没有找到任何记录</td></tr>
+	    		<!-- {/foreach} -->
 			</tbody>
 		</table>
 	</div>

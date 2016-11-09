@@ -1476,6 +1476,7 @@ function delivery_return_goods($delivery_id, $delivery_order) {
 			RC_DB::table('order_goods')
 				->where('order_id', $delivery_order['order_id'])
              	->where('goods_id', $goods_list[$key]['goods_id'])
+             	->limit(1)
              	->decrement('send_number', '"'.$goods_list[$key]['send_number'].'"');
 		}
 	}
@@ -1484,7 +1485,7 @@ function delivery_return_goods($delivery_id, $delivery_order) {
 		'order_status'		=> 1
 	);
 // 	$db_order_info->where(array('order_id' => $delivery_order['order_id']))->update($data);
-	RC_DB::table('order_info')->where('order_id', $delivery_order['order_id'])->update($data);
+	RC_DB::table('order_info')->where('order_id', $delivery_order['order_id'])->limit(1)->update($data);
 }
 
 /**

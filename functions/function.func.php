@@ -1473,11 +1473,10 @@ function delivery_return_goods($delivery_id, $delivery_order) {
 	/* 更新： */
 	if (!empty($goods_list)) {
 		foreach ($goods_list as $key => $val) {
-// 			$db_order_goods->dec('send_number', 'order_id='.$delivery_order['order_id']. ' and goods_id='.$val['goods_id'], $val['send_number']);
 			RC_DB::table('order_goods')
 				->where('order_id', $delivery_order['order_id'])
-				->where('goods_id', $val['goods_id'])
-				->decrement('send_number', $val['send_number']);
+             	->where('goods_id', $goods_list[$key]['goods_id'])
+             	->decrement('send_number', '"'.$goods_list[$key]['send_number'].'"');
 		}
 	}
 	$data = array(

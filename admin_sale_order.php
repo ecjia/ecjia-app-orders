@@ -97,26 +97,33 @@ class admin_sale_order extends ecjia_admin {
 		/* 检查权限 */
 		$this->admin_priv('sale_order_stats', ecjia::MSGTYPE_JSON);
 		/*时间参数*/
-		$start_date = !empty($_GET['start_date']) 	? $_GET['start_date'] 	: RC_Time::local_date(ecjia::config('date_format'), strtotime('-1 month')-8*3600);
-		$end_date   = !empty($_GET['end_date']) 	? $_GET['end_date'] 	: RC_Time::local_date(ecjia::config('date_format'), strtotime('today')-8*3600);
-
-		$filter['start_date'] 	= RC_Time::local_strtotime($start_date);
-		$filter['end_date'] 	= RC_Time::local_strtotime($end_date);
-		$filter['sort_by'] 		= empty($_REQUEST['sort_by']) ? 'goods_num' : trim($_REQUEST['sort_by']);
-	    $filter['sort_order'] 	= empty($_REQUEST['sort_order']) ? 'DESC' : trim($_REQUEST['sort_order']);
-
+		$start_date           = !empty($_GET['start_date']) 	     ? $_GET['start_date'] 	: RC_Time::local_date(ecjia::config('date_format'), strtotime('-1 month')-8*3600);
+		$end_date             = !empty($_GET['end_date']) 	     ? $_GET['end_date'] 	: RC_Time::local_date(ecjia::config('date_format'), strtotime('today')-8*3600);
+		$merchant_keywords    = !empty($_GET['merchant_keywords']) ? $_GET['merchant_keywords'] 	: '';
+        $file = '';
+        if(!empty($_REQUEST['store_id'])){
+            $merchants_name = RC_DB::table('store_franchisee')->where('store_id', intval($_REQUEST['store_id']))->pluck('merchants_name');
+            $file .= $merchants_name.'-';
+        }
+		$filter['start_date'] 	        = RC_Time::local_strtotime($start_date);
+		$filter['end_date'] 	        = RC_Time::local_strtotime($end_date);
+		$filter['sort_by'] 		        = empty($_REQUEST['sort_by']) ? 'goods_num' : trim($_REQUEST['sort_by']);
+	    $filter['sort_order'] 	        = empty($_REQUEST['sort_order']) ? 'DESC' : trim($_REQUEST['sort_order']);
+	    $filter['merchant_keywords'] 	= $merchant_keywords;
+        $file .= RC_Lang::get('orders::statistic.sale_order_statement').'_'.$start_date.'至'.$end_date;
 		$goods_order_data = $this->get_sales_order(false, $filter);
-		$filename = mb_convert_encoding(RC_Lang::get('orders::statistic.sale_order_statement'), "GBK", "UTF-8");
+
+		$filename = mb_convert_encoding($file, "GBK", "UTF-8");
 
 		header("Content-type: application/vnd.ms-excel; charset=utf-8");
 		header("Content-Disposition: attachment; filename=$filename.xls");
 
-		$data = RC_Lang::get('orders::statistic.order_by')."\t".RC_Lang::get('orders::statistic.goods_name')."\t".RC_Lang::get('orders::statistic.goods_sn')."\t".RC_Lang::get('orders::statistic.sell_amount')."\t".RC_Lang::get('orders::statistic.sell_sum')."\t".RC_Lang::get('orders::statistic.percent_count')."\n";
+		$data = RC_Lang::get('orders::statistic.order_by')."\t".RC_Lang::get('orders::statistic.goods_name')."\t".'商家名称'."\t".RC_Lang::get('orders::statistic.goods_sn')."\t".RC_Lang::get('orders::statistic.sell_amount')."\t".RC_Lang::get('orders::statistic.sell_sum')."\t".RC_Lang::get('orders::statistic.percent_count')."\n";
 
 		if (!empty($goods_order_data['item'])) {
 			foreach ($goods_order_data['item'] as $k => $v) {
 				$order_by = $k + 1;
-				$data .= "$order_by\t$v[goods_name]\t$v[goods_sn]\t$v[goods_num]\t$v[turnover]\t$v[wvera_price]\n";
+				$data .= "$order_by\t$v[goods_name]\t$v[merchants_name]\t$v[goods_sn]\t$v[goods_num]\t$v[turnover]\t$v[wvera_price]\n";
 			}
 		}
 

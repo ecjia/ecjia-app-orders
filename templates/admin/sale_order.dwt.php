@@ -17,7 +17,7 @@
 	<h3 class="heading">
 		<!-- {if $ur_here}{$ur_here}{/if} -->
 		<!-- {if $action_link} -->
-			<a class="btn plus_or_reply"  id="sticky_a" href="{$action_link.href}&start_date={$start_date}&end_date={$end_date}&sort_by={$filter.sort_by}&sort_order={$filter.sort_order}"><i class="fontello-icon-download"></i>{t}{$action_link.text}{/t}</a>
+			<a class="btn plus_or_reply"  id="sticky_a" href="{$action_link.href}&start_date={$start_date}&end_date={$end_date}&sort_by={$filter.sort_by}&sort_order={$filter.sort_order}{if $smarty.get.merchant_keywords}&merchant_keywords={$smarty.get.merchant_keywords}{/if}{if $smarty.get.store_id}&store_id={$smarty.get.store_id}{/if}"><i class="fontello-icon-download"></i>{t}{$action_link.text}{/t}</a>
 		<!-- {/if} -->
 		<!-- {if $smarty.get.store_id} -->
 			<a class="btn plus_or_reply" href='{RC_Uri::url("orders/admin_sale_order/init", "{$url_args}")}'><i class="fontello-icon-reply"></i>{t}返回全部{/t}</a>

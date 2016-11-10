@@ -2242,6 +2242,7 @@ class admin extends ecjia_admin {
 				$order_id = $_GET['order_id'];
 			}
 		}
+		
 		/* 确认 */
 		if (isset($_GET['confirm'])) {
 			$require_note	= false;
@@ -2344,6 +2345,10 @@ class admin extends ecjia_admin {
 				}
 			}	
 			
+			/*判断备注是否填写*/
+			if (empty($_POST['action_note'])) {
+			    $this->showmessage(__('请填写备注信息！') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			}
 			$batch			= isset($_GET['batch']);		// 是否批处理
 			$action_note	= isset($_POST['action_note']) 	? trim($_POST['action_note']) 	: '';
 			$operation		= isset($_POST['operation']) 	? $_POST['operation'] 			: '';			// 订单操作

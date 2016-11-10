@@ -194,7 +194,7 @@
 								</tr>
 								<!-- {if $delivery_order.status neq 1} -->
 								<tr>
-									<td><div align="right"><strong>{lang key='orders::order.label_action_note'}</strong></div></td>
+									<td><div align="right"><span class='input_must'>* </span><strong>{lang key='orders::order.label_action_note'}</strong></div></td>
 									<td><textarea name="action_note" cols="80" rows="5" class="span10"></textarea></td>
 								</tr>
 								<tr>

@@ -516,10 +516,8 @@ class admin_order_delivery extends ecjia_admin {
 					if (!empty($value['product_id'])) {
 // 						$this->db_products->inc('product_number', 'product_id='.$value['product_id'], $value['sums']);
 						RC_DB::table('products')->where('product_id', $value['product_id'])->increment('product_number', $value['sums']);
-					} else {
-// 						$this->db_goods->inc('goods_number', 'goods_id='.$value['goods_id'], $value['sums']);
-						RC_DB::table('goods')->where('goods_id', $value['goods_id'])->increment('goods_number', $value['sums']);
-					}
+					} 
+					RC_DB::table('goods')->where('goods_id', $value['goods_id'])->increment('goods_number', $value['sums']);
 				}
 			}
 		}

@@ -188,7 +188,6 @@ class admin_order_delivery extends ecjia_admin {
 		$delivery_id			= intval(trim($_POST['delivery_id']));		// 发货单id
 		$delivery['invoice_no']	= isset($_POST['invoice_no']) ? trim($_POST['invoice_no']) : '';
 		$action_note			= isset($_POST['action_note']) ? trim($_POST['action_note']) : '';
-	
 		/* 根据发货单id查询发货单信息 */
 		if (!empty($delivery_id)) {
 			$delivery_order = delivery_order_info($delivery_id);
@@ -276,13 +275,13 @@ class admin_order_delivery extends ecjia_admin {
 	
 		/* 发货 */
 		/* 处理虚拟卡 商品（虚货） */
-		if (is_array($virtual_goods) && count($virtual_goods) > 0) {
-			foreach ($virtual_goods as $virtual_value) {
+// 		if (is_array($virtual_goods) && count($virtual_goods) > 0) {
+// 			foreach ($virtual_goods as $virtual_value) {
 				//TODO 虚拟商品方法已删除
 // 				virtual_card_shipping($virtual_value, $order['order_sn'], $msg, 'split');
-			}
-		}
-	
+// 			}
+// 		}
+	   
 		/* 如果使用库存，且发货时减库存，则修改库存 */
 		if (ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) {
 			foreach ($delivery_stock_result as $value) {
@@ -319,7 +318,7 @@ class admin_order_delivery extends ecjia_admin {
 		if ($result) {
 			$data = array(
 				'order_status'	=> RC_Lang::get('orders::order.ss.'.SS_SHIPPED),
-				'message'       => RC_Lang::get('orders::order.order_send_message'),
+			    'message'       => sprintf(RC_Lang::get('orders::order.order_send_message'), $order['order_sn']),
 				'order_id'    	=> $order_id,
 				'add_time'    	=> RC_Time::gmtime(),
 			);

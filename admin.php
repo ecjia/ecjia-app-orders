@@ -2031,11 +2031,9 @@ class admin extends ecjia_admin {
 // 				$goods = $this->db_order_good->field('goods_id, goods_number')->find(array('rec_id' => $rec_id));
 				$goods = RC_DB::table('order_goods')->where('rec_id', $rec_id)->selectRaw('goods_id, goods_number')->first();
 
-				$data = array(
-					'goods_number' => goods_number + $goods['goods_number'],
-				);	
-// 				$this->db_goods->where(array('goods_id' => $goods['goods_id']))->update($data);	
-				RC_DB::table('goods')->where('goods_id', $goods['goods_id'])->update($data);
+				RC_DB::table('goods')
+					->where('goods_id', $goods['goods_id'])
+					->increment('goods_number', '"'.$goods['goods_number'].'"');
 			}
 			/* 删除 */
 // 			$this->db_order_good->where(array('rec_id' => $rec_id))->delete();

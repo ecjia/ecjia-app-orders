@@ -1480,19 +1480,24 @@ class admin extends ecjia_admin {
 				/* 如果使用库存，且下订单时减库存，则修改库存 */
 				if (ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_PLACE) {
 					//（货品）
-					if (!empty($product_info['product_id'])) {
-						$data = array(
-							'product_number' => $product_info['product_number'] - $goods_number,
-						);
-// 						$this->db_products->where(array('product_id' => $product_info['product_id']))->update($data);
-						RC_DB::table('products')->where('product_id', $product_info['product_id'])->update($data);
-					} else {
-						$data = array(
-							'goods_number' => $goods_info['goods_number'] - $goods_number,
-						);
-// 						$this->db_goods->where(array('goods_id' => $goods_id))->update($data);
-						RC_DB::table('goods')->where('goods_id', $goods_id)->update($data);
+					if (!empty($product_info['product_id']))
+					{
+// 						$sql = "UPDATE " . $ecs->table('products') . "
+//                                     SET product_number = product_number - " . $goods_number . "
+//                                     WHERE product_id = " . $product_info['product_id'];
+// 						$db->query($sql);
+						RC_DB::table('products')
+							->where('product_id', $product_info['product_id'])
+							->decrement('product_number', '"'.$goods_number.'"');
 					}
+// 					$sql = "UPDATE " . $ecs->table('goods') .
+// 					" SET `goods_number` = goods_number - '" . $goods_number . "' " .
+// 					" WHERE `goods_id` = '" . $goods_id . "' LIMIT 1";
+// 					$db->query($sql);
+					RC_DB::table('goods')
+						->where('goods_id', $goods_id)
+						->limit(1)
+						->decrement('goods_number', '"'.$goods_number.'"');
 				}
 
 				/* 更新商品总金额和订单总金额 */

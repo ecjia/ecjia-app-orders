@@ -1476,6 +1476,7 @@ function delivery_return_goods($delivery_id, $delivery_order) {
 			RC_DB::table('order_goods')
 				->where('order_id', $delivery_order['order_id'])
              	->where('goods_id', $goods_list[$key]['goods_id'])
+             	->where('product_id', $goods_list[$key]['product_id'])
              	->limit(1)
              	->decrement('send_number', '"'.$goods_list[$key]['send_number'].'"');
 		}

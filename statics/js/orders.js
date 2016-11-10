@@ -624,7 +624,7 @@
 					$("#goods_cat").text(goods.cat_name);
 					$("#goods_number").html(goods.goods_number);
 					goods.brand_name = goods.brand_name == null ? js_lang.no_brand_name : goods.brand_name.trim()=='' ? js_lang.no_brand_name : goods.brand_name;
-					$("#goods_brand").text(goods.brand_name);
+//					$("#goods_brand").text(goods.brand_name);
 					var img = '<img src="'+ goods.goods_img + '" class="w130"/>'
 					$("#goods_img").html(img);
 					// 显示价格：包括市场价、本店价（促销价）、会员价
@@ -652,17 +652,17 @@
 							selattrHtml += "<div class='control-group control-group-small'><label class='control-label'>"+goods.attr_list[i][0].attr_name + '：</label><div class="goods_attr_sel controls">';
 							for (var j = 0; j < valueCnt; j++) {
 								switch (goods.attr_list[i][j].attr_type) {
-									case '0' :
-									case '1' :
+									case 0 :
+									case 1 :
 										attrType = 'radio';
 										attrTypeArray = '';
 										break;
-									case '2' :
+									case 2 :
 									attrType = 'checkbox';
 									attrTypeArray = '[]';
 									break;
 								}
-								selattrHtml += '<input type="' + attrType + '" name="spec_' + specCnt + attrTypeArray + '" value="' + goods.attr_list[i][j].goods_attr_id + '"';
+								selattrHtml += '<div><input type="' + attrType + '" name="spec_' + specCnt + attrTypeArray + '" value="' + goods.attr_list[i][j].goods_attr_id + '"';
 								if (j == 0) {
 									selattrHtml += ' checked';
 								}
@@ -672,6 +672,7 @@
 								} else if (goods.attr_list[i][j].attr_price < 0) {
 									selattrHtml += ' [-' + Math.abs(goods.attr_list[i][j].attr_price) + ']';
 								}
+								selattrHtml += '</div>';
 							}
 							selattrHtml += '</div></div>';
 							specCnt++;

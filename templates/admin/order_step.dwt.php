@@ -276,15 +276,15 @@
 					</div>
 					<div class="add-goods"><a class="goods_info ecjiaf-dn" href="javascript:;">{lang key='orders::order.add_to_order'}</a></div>
 					<div class="ms-list nav-list-content ">
-						<div class="ecjiaf-dn goods_info h140">
-							<div class="ecjiaf-fl span5 ecjiaf-tac">
+						<div class="ecjiaf-dn goods_info h100 m_t10">
+							<div class="ecjiaf-fl span5 ecjiaf-tac m_t5">
 								<span id="goods_img"></span>
 							</div>
 							<div class="ecjiaf-fl m_t15 span7">
 								<dl>
 									<dd><span id="goods_name"></span></dd>
 									<dd>{lang key='orders::order.goods_sn_lable'}<span id="goods_sn"></span></dd>
-									<dd>{lang key='orders::order.brand'}：<span id="goods_brand"></span></dd>
+<!-- 									<dd>{lang key='orders::order.brand'}：<span id="goods_brand"></span></dd> -->
 									<dd>{lang key='orders::order.category'}：<span id="goods_cat"></span></dd>
 									<!-- {if $use_storage} -->
 									<dd>{lang key='orders::order.commodity_stocks_lable'}<span id="goods_number"></span></dd>

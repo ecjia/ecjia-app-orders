@@ -1397,12 +1397,13 @@ class admin extends ecjia_admin {
 				$res = array();
 				if (!empty($goods_attr)) {
 // 					$res = $this->db_goods_attr->field('attr_value')->in(array('goods_attr_id' => $goods_attr ))->select();
-					$res = RC_DB::table('goods_attr')->select('attr_value')->whereIn('goods_attr_id', $goods_attr)->get();
+					$res = RC_DB::table('goods_attr')->select('attr_value', 'attr_price')->whereIn('goods_attr_id', $goods_attr)->get();
 				}
 
 				if (!empty($res)) {
 					foreach ($res as $row) {
 						$attr_value[] = $row['attr_value'];
+						$goods_price += $row['attr_price'];
 					}
 				}
 				if (!empty($attr_value) && is_array($attr_value)) {
@@ -1427,7 +1428,16 @@ class admin extends ecjia_admin {
 						$this->showmessage(RC_Lang::get('orders::order.goods_num_err'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 					}
 				}
-// 				$row = $this->db_goods->field(' goods_id, goods_name, goods_sn, market_price, is_real, extension_code')->find(array('goods_id' => $goods_id));
+				//判断该商品或货品是否在该订单中
+				if (!isset($product_info['product_id'])) {
+					$product_info['product_id'] = 0;
+				}
+				$db_order_goods = RC_DB::table('order_goods')->where('order_id', $order_id)->where('product_id', $product_info['product_id'])->where('goods_id', $goods_id);
+				$count = $db_order_goods->count();
+				if ($count != 0) {
+					$this->showmessage('该商品或货品已存在该订单中，请编辑商品数量', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+				}
+				
 				$row = RC_DB::table('goods')->selectRaw('goods_id, goods_name, goods_sn, market_price, is_real, extension_code')
 					->where('goods_id', $goods_id)->first();
 

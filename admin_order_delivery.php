@@ -320,6 +320,7 @@ class admin_order_delivery extends ecjia_admin {
 
 		$result = RC_DB::table('delivery_order')->where('delivery_id', $delivery_id)->update($_delivery);
 		
+		/*操作成功*/
 		if ($result) {
 			$data = array(
 				'order_status'	=> RC_Lang::get('orders::order.ss.'.SS_SHIPPED),
@@ -327,14 +328,10 @@ class admin_order_delivery extends ecjia_admin {
 				'order_id'    	=> $order_id,
 				'add_time'    	=> RC_Time::gmtime(),
 			);
-// 			$this->db_order_status_log->insert($data);
 			RC_DB::table('order_status_log')->insert($data);
-		}
-		
-		if (!$result) {
-			/* 操作失败 */
-			$links[] = array('text' => RC_Lang::get('orders::order.delivery_sn') . RC_Lang::get('orders::order.detail'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info', array('delivery_id' => $delivery_id)));
-			$this->showmessage(RC_Lang::get('orders::order.act_false'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
+		} else {
+		    $links[] = array('text' => RC_Lang::get('orders::order.delivery_sn') . RC_Lang::get('orders::order.detail'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info', array('delivery_id' => $delivery_id)));
+		    $this->showmessage(RC_Lang::get('orders::order.act_false'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
 		}
 	
 		/* 标记订单为已确认 “已发货” */

@@ -31,6 +31,10 @@ class detail_module extends api_admin implements api_interface {
 		if ($order === false) {
 			return new ecjia_error(8, 'fail');
 		}
+		if (is_ecjia_error($order)) {
+ 			return $order;
+		}
+		
 		$db_user = RC_Model::model('user/users_model');
 		$user_name = $db_user->where(array('user_id' => $order['user_id']))->get_field('user_name');
 

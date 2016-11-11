@@ -14,9 +14,7 @@ class orders_order_info_api extends Component_Event_Api {
      * @return array
      */
 	public function call(&$options) {
-	    if (!is_array($options)
-	        || (!isset($options['order_id'])
-	        && !isset($options['order_sn']))) {
+	    if (!is_array($options) || (!isset($options['order_id']) && !isset($options['order_sn']))) {
 	        return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
 	    }
 		return $this->order_info($options['order_id'], $options['order_sn']);
@@ -217,9 +215,7 @@ class orders_order_info_api extends Component_Event_Api {
 	        }
 	    }
 	    
-	    
-	    
-        $order = empty($order)? false : $order;
+//         $order = empty($order) ? false : $order;
 	    return $order;
 	}
 }

@@ -17,7 +17,7 @@ class orders_order_info_api extends Component_Event_Api {
 	    if (!is_array($options) || (!isset($options['order_id']) && !isset($options['order_sn']))) {
 	        return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
 	    }
-		return $this->order_info($options['order_id'], $options['order_sn']);
+		return $this->order_info($options['order_id'], $options['order_sn'], $options['store_id'], $options['user_id']);
 	}
 
 	/**
@@ -26,7 +26,7 @@ class orders_order_info_api extends Component_Event_Api {
 	 * @param   string  $order_sn   订单号
 	 * @return  array   订单信息（金额都有相应格式化的字段，前缀是formated_）
 	 */
-	private function order_info($order_id, $order_sn = '') {
+	private function order_info($order_id, $order_sn = '', $store_id = 0, $user_id = 0) {
 // 	    RC_Loader::load_app_func('common', 'goods');
 // 	    $db = RC_Loader::load_app_model('order_info_model','orders');
 
@@ -43,8 +43,8 @@ class orders_order_info_api extends Component_Event_Api {
 // 	        $order = $db->field('*,'.$total_fee)->find(array('order_sn' => $order_sn));
 	        $db_order_info->where('order_sn', $order_sn);
 	    }
-        if(!empty($_SESSION['store_id'])){
-            $db_order_info->where('store_id', $_SESSION['store_id']);
+        if(!empty($store_id)){
+            $db_order_info->where('store_id', $store_id);
         }
         $db_order_info->where('is_delete', 0);
 	    $order = $db_order_info->first();
@@ -67,7 +67,6 @@ class orders_order_info_api extends Component_Event_Api {
 	        $order['formated_order_amount']		= price_format(abs($order['order_amount']), false);
 	        $order['formated_add_time']			= RC_Time::local_date(ecjia::config('time_format'), $order['add_time']);
 	        
-	        $user_id = $_SESSION['user_id'];
 	        // 检查订单是否属于该用户
 	        if ($user_id > 0 && $user_id != $order['user_id']) {
 	        	return new ecjia_error('orders_error', '未找到相应订单！');

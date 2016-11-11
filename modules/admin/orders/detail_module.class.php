@@ -26,7 +26,7 @@ class detail_module extends api_admin implements api_interface {
 
 		/* 订单详情 */
 // 		$order = order_info($order_id);
-		$order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => $order_sn));
+		$order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => $order_sn, 'store_id' => $_SESSION['store_id']));
 
 		if ($order === false) {
 			return new ecjia_error(8, 'fail');

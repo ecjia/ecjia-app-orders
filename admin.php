@@ -508,6 +508,14 @@ class admin extends ecjia_admin {
 			$this->assign('action_link', 	array('href' => RC_Uri::url('orders/admin/init'), 'text' => RC_Lang::get('system::system.02_order_list')));
 			$this->assign('form_action', 	RC_Uri::url('orders/admin/operate'));
 			$this->assign('remove_action', 	RC_Uri::url('orders/admin/remove_order'));
+			
+			//无效订单 只能查看和删除 不能进行其他操作
+			$invalid_order = false;
+			if ($order['order_status'] == OS_INVALID) {
+				$invalid_order = true;
+			}
+			$this->assign('invalid_order', $invalid_order);
+			
 			/* 参数赋值：订单 */
 			$this->assign('order', $order);
 			$this->assign('order_id', $order_id);
@@ -1026,6 +1034,7 @@ class admin extends ecjia_admin {
 		if ('user' == $step) {
 			// 无操作
 		} elseif ('goods' == $step) {
+			return false; //去除编辑订单商品
 			/* 增删改商品 */
 			$ur_here = RC_Lang::get('orders::order.edit_goods');
 			/* 取得订单商品 */
@@ -3481,6 +3490,9 @@ class admin extends ecjia_admin {
 			/* 退货用户余额、积分、红包 */
 			return_user_surplus_integral_bonus($order);
 		} elseif ('return' == $operation) {
+			//暂不支持退货
+			return false;
+			
 			/* 退货 */
 			/* 定义当前时间 */
 			define('GMTIME_UTC', RC_Time::gmtime()); // 获取 UTC 时间戳
@@ -3777,7 +3789,8 @@ class admin extends ecjia_admin {
 			
 		    $data = RC_DB::table('goods')
 		              ->select('goods_id', 'goods_name', 'goods_sn')
-		              ->where('is_delete', 0)->where('is_on_sale', 1)->where('is_alone_sale', 1)->where('store_id', $store_id)
+		              ->where('is_delete', 0)->where('is_on_sale', 1)->where('is_alone_sale', 1)
+		              ->where('store_id', $store_id)
 		              ->whereRaw('(goods_id like "%'.mysql_like_quote($keyword).'%" or goods_name like "%'.mysql_like_quote($keyword).'%" or goods_sn like "%'.mysql_like_quote($keyword).'%")')
 		              ->limit(50)
 		              ->get();

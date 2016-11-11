@@ -114,10 +114,9 @@
 									<td><div align="right"><strong>{lang key='orders::order.label_payment'}</strong></div></td>
 									<td>
 										{$order.pay_name}
-										{if $order.shipping_status neq 1}
+										{if $order.shipping_status neq 1 && !$invalid_order}
 										<a class="data-pjax" href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=shipping"}'>{lang key='system::system.edit'}</a>
 										{/if}
-										&nbsp;&nbsp;&nbsp;
 										({lang key='orders::order.action_note'}<span>{if $order.pay_note}{$order.pay_note}{else}N/A{/if}</span>)
 									</td>
 									<td><div align="right"><strong>{lang key='orders::order.label_pay_time'}</strong></div></td>
@@ -132,8 +131,9 @@
 										{else}
 										<span>{$lang.require_field}</span>
 										{/if}
+										{if !$invalid_order}
 										<a class="data-pjax" href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=shipping"}'>{lang key='system::system.edit'}</a>
-										&nbsp;&nbsp;
+										{/if}
 										<input type="button" class="btn" onclick="window.open('{url path="orders/admin/info" args="order_id={$order.order_id}&shipping_print=1"}')" value="{lang key='orders::order.print_shipping'}"> 
 										{if $order.insure_fee gt 0}{lang key='orders::order.label_insure_fee'}{$order.formated_insure_fee}{/if}
 										{/if}
@@ -157,7 +157,7 @@
 						<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseTwo-a">
 							<strong>{lang key='orders::order.invoice_information'}</strong>
 						</div>
-						{if $order.shipping_status neq 1}
+						{if $order.shipping_status neq 1 && !$invalid_order}
 							<a class="data-pjax accordion-url" href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=other"}'>{lang key='system::system.edit'}</a>
 						{/if}
 					</div>
@@ -183,7 +183,7 @@
 						<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseTwo">
 							<strong>{lang key='orders::order.other_info'}</strong>
 						</div>
-						{if $order.shipping_status neq 1}
+						{if $order.shipping_status neq 1 && !$invalid_order}
 							<a class="data-pjax accordion-url" href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=other"}'>{lang key='system::system.edit'}</a>
 						{/if}
 					</div>
@@ -258,7 +258,7 @@
 						<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseThree">
 							<strong>{lang key='orders::order.consignee_info'}</strong>
 						</div>
-						{if $order.shipping_status neq 1}
+						{if $order.shipping_status neq 1 && !$invalid_order}
 							<a class="data-pjax accordion-url" href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=consignee"}'>{lang key='system::system.edit'}</a>
 						{/if}
 					</div>
@@ -298,8 +298,8 @@
 						<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseFour">
 							<strong>{lang key='orders::order.goods_info'}</strong>
 						</div>
-						{if $order.shipping_status neq 1}
-							<a class="data-pjax accordion-url" href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=goods"}'>{lang key='system::system.edit'}</a>
+						{if $order.shipping_status neq 1 && !$invalid_order}
+<!-- 							<a class="data-pjax accordion-url" href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=goods"}'>{lang key='system::system.edit'}</a> -->
 						{/if}
 					</div>
 					<div class="accordion-body in collapse" id="collapseFour">
@@ -364,7 +364,7 @@
 						<div class="accordion-toggle acc-in" data-toggle="collapse"  data-target="#collapseFive">
 							<strong>{lang key='orders::order.fee_info'}</strong>
 						</div>
-						{if $order.shipping_status neq 1}
+						{if $order.shipping_status neq 1 && !$invalid_order}
 							<a class="data-pjax accordion-url" href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=money"}'>{lang key='system::system.edit'}</a>
 						{/if}
 					</div>
@@ -449,6 +449,7 @@
 						</table>
 					</div>
 				</div>
+				{if !$invalid_order}
 				<div class="accordion-group">
 					<div class="accordion-heading">
 						<a class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseSeven"><strong>{lang key='orders::order.order_operate_list'}</strong></a>
@@ -487,7 +488,7 @@
 										{/if} {if $operable_list.invalid}
 										<button class="btn operatesubmit" type="submit" name="invalid">{lang key='orders::order.op_invalid'}</button>
 										{/if} {if $operable_list.return}
-										<button class="btn operatesubmit" type="submit" name="return">{lang key='orders::order.op_return'}</button>
+<!-- 										<button class="btn operatesubmit" type="submit" name="return">{lang key='orders::order.op_return'}</button> -->
 										{/if} {if $operable_list.to_delivery}
 										<button class="btn operatesubmit" type="submit" name="to_delivery">{lang key='orders::order.op_to_delivery'}</button>
 										<input name="order_sn" type="hidden" value="{$order.order_sn}" />
@@ -512,6 +513,7 @@
 						</table>
 					</div>
 				</div>
+				{/if}
 			</div>
 		</form>
 	</div>

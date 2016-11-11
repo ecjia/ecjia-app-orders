@@ -61,7 +61,7 @@ class admin_order_delivery extends ecjia_admin {
 		$this->assign('delivery_list', 	$result);
 		$this->assign('filter', 		$result['filter']);
 		$this->assign('search_action', 	RC_Uri::url('orders/admin_order_delivery/init'));
-		$this->assign('form_action', 	RC_Uri::url('orders/admin_order_delivery/remove'));
+		$this->assign('form_action', 	RC_Uri::url('orders/admin_order_delivery/remove&type=batch'));
 		$this->assign('lang_delivery_status', RC_Lang::get('orders::order.delivery_status'));
 		
 		$this->display('delivery_list.dwt');
@@ -558,12 +558,10 @@ class admin_order_delivery extends ecjia_admin {
 	public function remove() {
 		/* 检查权限 */
 		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
-		
-// 		if (!empty($_SESSION['ru_id'])) {
-// 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-// 		}
 
-		$delivery_id = $_REQUEST['delivery_id'];
+		$delivery_id	= !empty($_GET['delivery_id']) 	? $_GET['delivery_id'] 	: $_POST['delivery_id'];
+		$type 			= isset($_GET['type']) 			? trim($_GET['type'])	: '';
+		
 		if (!is_array($delivery_id)) {
 			if (strpos($delivery_id , ',') === false) {
 				$delivery_id = array($delivery_id);
@@ -577,25 +575,33 @@ class admin_order_delivery extends ecjia_admin {
 			/* 查询：发货单信息 */
 			$delivery_order = delivery_order_info($value_is);
 
-			/* 如果status不是退货 */
-			if ($delivery_order['status'] != 1) {
-				/* 处理退货 */
-				delivery_return_goods($delivery_id, $delivery_order);
-			}
-	
-			/* 如果status是已发货并且发货单号不为空 */
-			if ($delivery_order['status'] == 0 && $delivery_order['invoice_no'] != '') {
-				/* 更新：删除订单中的发货单号 */
-				del_order_invoice_no($delivery_order['order_id'], $delivery_order['invoice_no']);
+			if (!empty($delivery_order)) {
+				/* 如果status不是退货 */
+				if ($delivery_order['status'] != 1) {
+					/* 处理退货 */
+					delivery_return_goods($delivery_id, $delivery_order);
+				}
+				
+				/* 如果status是已发货并且发货单号不为空 */
+				if ($delivery_order['status'] == 0 && $delivery_order['invoice_no'] != '') {
+					/* 更新：删除订单中的发货单号 */
+					del_order_invoice_no($delivery_order['order_id'], $delivery_order['invoice_no']);
+				}
+					
+				/* 记录日志 */
+				ecjia_admin_log::instance()->add_object('delivery_order', '发货单');
+				if ($type == 'batch') {
+					ecjia_admin::admin_log($delivery_order['delivery_sn'], 'batch_remove', 'delivery_order');
+				} else {
+					ecjia_admin::admin_log($delivery_order['delivery_sn'], 'remove', 'delivery_order');
+				}
 			}
 		}
 		/* 更新：删除发货单 */
-// 		$this->db_delivery_order->in($delivery_id)->delete();
 		RC_DB::table('delivery_order')->whereIn('delivery_id', $delivery_id)->delete();
+		//删除发货单商品
+		RC_DB::table('delivery_goods')->whereIn('delivery_id', $delivery_id)->delete();
 		
-		/* 记录日志 */
-		ecjia_admin::admin_log($_REQUEST['delivery_id'], 'remove', 'delivery_order');
-
 		$this->showmessage(RC_Lang::get('orders::order.tips_delivery_del'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('orders/admin_order_delivery/init')));
 	}
 	

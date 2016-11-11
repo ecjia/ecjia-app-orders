@@ -62,11 +62,7 @@ class orders_order_list_api extends Component_Event_Api {
                 'alias'     => 'g',
                 'on'         => 'og.goods_id = g.goods_id'
             ),
-            'term_relationship' => array(
-                'type'         => Component_Model_View::TYPE_LEFT_JOIN,
-                'alias'     => 'tr',
-                'on'         => 'tr.object_id = og.rec_id'
-            ),
+            
             'store_franchisee' => array(
                 'type'         => Component_Model_View::TYPE_LEFT_JOIN,
                 'alias'     => 'ssi',
@@ -100,9 +96,9 @@ class orders_order_list_api extends Component_Event_Api {
         }
 
         $field = 'oi.order_id, oi.order_sn, oi.order_status, oi.shipping_status, oi.pay_status, oi.add_time, (oi.goods_amount + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee + oi.tax - oi.integral_money - oi.bonus - oi.discount) AS total_fee, oi.discount, oi.integral_money, oi.bonus, oi.shipping_fee, oi.pay_id, oi.order_amount'.
-        ', og.goods_id, og.goods_name, og.goods_attr, og.goods_price, og.goods_number, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, tr.relation_id, ssi.store_id, ssi.merchants_name';
+        ', og.goods_id, og.goods_name, og.goods_attr, og.goods_price, og.goods_number, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, ssi.store_id, ssi.merchants_name';
 //         array('order_info', 'order_goods', 'goods', 'term_relationship')
-        $res = $dbview_order_info->join(array('order_goods', 'goods', 'term_relationship', 'store_franchisee'))->field($field)->where($where)->order(array('oi.order_id' => 'desc'))->select();
+        $res = $dbview_order_info->join(array('order_goods', 'goods', 'store_franchisee'))->field($field)->where($where)->order(array('oi.order_id' => 'desc'))->select();
         RC_Lang::load('orders/order');
 
         /* 取得订单列表 */
@@ -159,6 +155,12 @@ class orders_order_list_api extends Component_Event_Api {
                     {
                         $label_order_status = RC_Lang::get('orders::order.label_await_ship');
                         $status_code = 'await_ship';
+                    }
+               		elseif (in_array($row['order_status'], array(OS_SPLITING_PART)) &&
+                        in_array($row['shipping_status'], array(SS_SHIPPED_PART)))
+                    {
+                        $label_order_status = RC_Lang::get('orders::order.label_shipped_part');
+                        $status_code = 'shipped_part';
                     }
                     elseif (in_array($row['order_status'], array(OS_CANCELED))) {
                         $label_order_status = RC_Lang::get('orders::order.label_canceled');
@@ -218,7 +220,7 @@ class orders_order_list_api extends Component_Event_Api {
                                     'thumb' => (isset($row['goods_img']) && !empty($row['goods_img']))           ? RC_Upload::upload_url($row['goods_img'])         : '',
                                     'url'   => (isset($row['original_img']) && !empty($row['original_img']))     ? RC_Upload::upload_url($row['original_img'])     : '',
                                 ),
-                                'is_commented'    => empty($row['relation_id']) ? 0 : 1,
+                                'is_commented'    => 0,
                             )
                         );
                     }

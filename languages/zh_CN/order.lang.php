@@ -494,6 +494,7 @@ return array(
 	'label_await_pay'				=> '待付款',
 	'label_await_confirm'			=> '待收货',
 	'label_canceled'				=> '已取消',
+	'label_shipped_part'			=> '部分发货',
 	
 	'order_back_list'				=>	'退货单列表',
 	'return_look'					=>	'退货单操作：查看',

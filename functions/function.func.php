@@ -1700,9 +1700,7 @@ function merge_order($from_order_sn, $to_order_sn) {
 	/* 插入订单表 */
 	$order['order_sn'] = get_order_sn(); 
 
-	//TODO wu
 	$order_id = RC_Model::model('orders/order_info_model')->insert(rc_addslashes($order));
-// 	$order_id = RC_DB::table('order_info')->insertGetId(rc_addslashes($order));
 	
 	if (!$order_id) {
 		ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.order_merge_invalid'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
@@ -1725,6 +1723,22 @@ function merge_order($from_order_sn, $to_order_sn) {
 	);
 // 	$db_order_good->in(array('order_id' => array($from_order['order_id'], $to_order['order_id'])))->update($data);
 	RC_DB::table('order_goods')->whereIn('order_id', array($from_order['order_id'], $to_order['order_id']))->update($data);
+	
+	//合并订单商品
+	$order_goods_list = RC_DB::table('order_goods')
+		->where('order_id', $order_id)
+		->selectRaw('*, sum(goods_number) as goods_number, count(*) as count, sum(goods_price) as goods_price, sum(send_number) as send_number, sum(shopping_fee) as shopping_fee')
+		->groupBy('goods_sn')
+		->get();
+	
+	if (!empty($order_goods_list)) {
+		foreach ($order_goods_list as $k => $v) {
+			$order_goods_list[$k]['goods_price'] = $v['goods_price'] / $v['count'];
+			unset($order_goods_list[$k]['count']);
+		}
+	}
+	RC_DB::table('order_goods')->where('order_id', $order_id)->delete();//删除原来的订单商品
+	RC_DB::table('order_goods')->insert($order_goods_list);//添加合并后的订单商品
 	
 	$payment_method = RC_Loader::load_app_class('payment_method','payment');
 	/* 插入支付日志 */

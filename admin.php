@@ -291,10 +291,10 @@ class admin extends ecjia_admin {
 			->leftJoin('brand as b', RC_DB::raw('g.brand_id'), '=', RC_DB::raw('b.brand_id'))
 			->selectRaw("o.*, IF(o.product_id > 0, p.product_number, g.goods_number) AS storage, 
 					o.goods_attr, g.suppliers_id, IFNULL(b.brand_name, '') AS brand_name, 
-					p.product_sn, g.goods_img")
+					p.product_sn, g.goods_img, g.goods_sn as goods_sn")
 			->where(RC_DB::raw('o.order_id'), $order_id)
 			->get();
-
+		
 		if (!empty($data)) {
 			foreach ($data as $key => $row) {
 				/* 虚拟商品支持 */
@@ -1456,7 +1456,7 @@ class admin extends ecjia_admin {
 						'order_id'			=> $order_id,
 						'goods_id'			=> $row['goods_id'],
 						'goods_name'		=> $row['goods_name'],
-						'goods_sn'			=> $row['goods_sn'],
+						'goods_sn'			=> $product_info['product_sn'],
 						'product_id'		=> $product_info['product_id'],
 						'goods_number'		=> $goods_number,
 						'market_price'		=> $row['market_price'],

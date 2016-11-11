@@ -20,8 +20,8 @@ class list_module extends api_admin implements api_interface {
 		$keywords	= $this->requestData('keywords');
 		$size = $this->requestData('pagination.count', 15);
 		$page = $this->requestData('pagination.page', 1);
-
-		$device		 = $this->requestData('device', array());
+		
+		$device		  = $this->device;
 		$device_code = isset($device['code']) ? $device['code'] : '';
 		$device_udid = isset($device['udid']) ? $device['udid'] : '';
 		$device_client = isset($device['client']) ? $device['client'] : '';

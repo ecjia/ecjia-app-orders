@@ -108,7 +108,9 @@ class list_module extends api_admin implements api_interface {
 						$where['oi.order_id'][] = $val['order_id'];
 					}
 					//$data = $db_orderinfo_view->field($field)->join(array('order_info', 'order_goods', 'goods'))->where($where)->order(array('oi.add_time' => 'desc'))->select();
-					$data = $db_orderinfo_view->field($field)->join(array('order_goods', 'goods'))->where($where)->order(array('oi.add_time' => 'desc'))->group('oi.order_id')->select();
+					//$data = $db_orderinfo_view->field($field)->join(array('order_goods', 'goods'))->where($where)->order(array('oi.add_time' => 'desc'))->group('oi.order_id')->select();
+					
+					$data = $db_orderinfo_view->field($field)->join(array('order_info', 'order_goods', 'goods'))->where($where)->order(array('oi.add_time' => 'desc'))->select();
 				}
 			} else {
 				$db_orderinfo_view->view = array(

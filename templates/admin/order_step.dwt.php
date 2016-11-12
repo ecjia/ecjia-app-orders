@@ -9,17 +9,17 @@
 
 <!-- {block name="main_content"} -->
 {if $shipping_list_error}
-<div class="alert alert-error">	
+<div class="alert alert-error">
 	<strong>{lang key='orders::order.no_correspondence'}</strong>
 </div>
 {/if}
 {if $step eq "invoice"}
-<div class="alert alert-info">	
+<div class="alert alert-info">
 	<strong>{lang key='orders::order.shipping_note'}</strong>
 </div>
 {/if}
 {if $step eq "user"}
-<div class="alert alert-info">	
+<div class="alert alert-info">
 	<strong>{lang key='orders::order.notice_user'}</strong>
 </div>
 {/if}
@@ -343,7 +343,7 @@
 							<td><input type="radio" name='user_address' value="{$val.address_id}"/></td>
 							<td>{$val.consignee|escape}<br>{if $val.default_address}{lang key='orders::order.default_shipping_address'}{/if}</td>
 							<td>{$val.country_name} {$val.province_name} {$val.city_name} {$val.district_name}</td>
-							<td>{$val.address|escape}</td>
+							<td>{$val.address|escape}{$val.address_info|escape}</td>
 							<td>{$val.zipcode|escape}</td>
 							<td>{lang key='orders::order.label_tel'}{$val.tel}<br/>
 								{lang key='orders::order.label_mobile'}{$val.mobile}
@@ -456,7 +456,7 @@
 	</fieldset>
 </form>
 {elseif $step eq "shipping"}
-<form name="shippingForm" action='{url path="orders/admin/step_post" args="step={$step}&order_id={$order_id}&step_act={$step_act}"}' method="post">	
+<form name="shippingForm" action='{url path="orders/admin/step_post" args="step={$step}&order_id={$order_id}&step_act={$step_act}"}' method="post">
 	<!-- {if $exist_real_goods} -->
 	<table class="table table-striped">
 		<thead>
@@ -483,13 +483,13 @@
     		<tr><td class="no-records" colspan="6">没有找到任何记录</td></tr>
     		<!-- {/foreach} -->
 		</tbody>
-	</table>	
+	</table>
 	<p align="right">
 		<input name="insure" type="checkbox" value="1" {if $order.insure_fee > 0}checked{/if} />
 		{lang key='orders::order.want_insure'}
 	</p>
 	<!--{/if}-->
-	
+
 	<div id="exist_real_goods" data-real="{if $exist_real_goods}true{else}false{/if}">
 		<h3 class="heading">
 			<!-- {if $ur_heres}{$ur_heres}{/if} -->
@@ -730,7 +730,7 @@
 											<!-- {foreach from=$available_bonus item=bonus} -->
 											<option value="{$bonus.bonus_id}" {if $order.bonus_id eq $bonus.bonus_id}selected{/if} money="{$bonus.type_money}">{$bonus.type_name} - {$bonus.type_money}</option>
 											<!--{/foreach}  -->
-										</select>    
+										</select>
 									</td>
 								</tr>
 								<tr>
@@ -745,7 +745,7 @@
 								</tr>
 							</tbody>
 						</table>
-					</div>			
+					</div>
 				</div>
 			</div>
 		</div>

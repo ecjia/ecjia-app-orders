@@ -39,7 +39,7 @@
 				<table class="table table-bordered">
 					<tr><td colspan="2"><strong>{lang key='orders::order.consignee'}:{$order.consignee|default:$order.user_name}</strong></td></tr>
 					<tr><td class="w200">{lang key='orders::order.email'}</td><td>{$address.email}</td></tr>
-					<tr><td>{lang key='orders::order.address'}</td><td>{$address.address}</td></tr>
+					<tr><td>{lang key='orders::order.address'}</td><td>{$address.address}{$address.address_info}</td></tr>
 					<tr><td>{lang key='orders::order.zipcode'}</td><td>{$address.zipcode}</td></tr>
 					<tr><td>{lang key='orders::order.tel'}</td><td>{$address.tel}</td></tr>
 					<tr><td>{lang key='orders::order.mobile'}</td><td>{$address.mobile}</td></tr>
@@ -134,7 +134,7 @@
 										{if !$invalid_order}
 										<a class="data-pjax" href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=shipping"}'>{lang key='system::system.edit'}</a>
 										{/if}
-										<input type="button" class="btn" onclick="window.open('{url path="orders/admin/info" args="order_id={$order.order_id}&shipping_print=1"}')" value="{lang key='orders::order.print_shipping'}"> 
+										<input type="button" class="btn" onclick="window.open('{url path="orders/admin/info" args="order_id={$order.order_id}&shipping_print=1"}')" value="{lang key='orders::order.print_shipping'}">
 										{if $order.insure_fee gt 0}{lang key='orders::order.label_insure_fee'}{$order.formated_insure_fee}{/if}
 										{/if}
 									</td>
@@ -214,9 +214,9 @@
 								</tr>
 							</tbody>
 						</table>
-					</div>	
+					</div>
 				</div>
-				
+
 				<!-- 店铺信息 start -->
 				<!-- {if $order.store_id gt 0} -->
 				<div class="accordion-group">
@@ -252,7 +252,7 @@
 				</div>
 				<!-- {/if} -->
 				<!-- 店铺信息 end -->
-				
+
 				<div class="accordion-group">
 					<div class="accordion-heading accordion-heading-url">
 						<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseThree">
@@ -374,7 +374,7 @@
 								<td>
 									<div align="right">
 										{lang key='orders::order.label_goods_amount'}<strong>{$order.formated_goods_amount}</strong>
-										- {lang key='orders::order.label_discount'}<strong>{$order.formated_discount}</strong>     
+										- {lang key='orders::order.label_discount'}<strong>{$order.formated_discount}</strong>
 										+ {lang key='orders::order.label_tax'}<strong>{$order.formated_tax}</strong>
 										+ {lang key='orders::order.label_shipping_fee'}<strong>{$order.formated_shipping_fee}</strong>
 										+ {lang key='orders::order.label_insure_fee'}<strong>{$order.formated_insure_fee}</strong>
@@ -390,7 +390,7 @@
 							<tr>
 								<td>
 									<div align="right">
-										- {lang key='orders::order.label_money_paid'}<strong>{$order.formated_money_paid}</strong> 
+										- {lang key='orders::order.label_money_paid'}<strong>{$order.formated_money_paid}</strong>
 										- {lang key='orders::order.label_surplus'}<strong>{$order.formated_surplus}</strong>
 										- {lang key='orders::order.label_integral'}<strong>{$order.formated_integral_money}</strong>
 										- {lang key='orders::order.label_bonus'}<strong>{$order.formated_bonus}</strong>
@@ -399,7 +399,7 @@
 							</tr>
 							<tr>
 								<td>
-									<div align="right"> 
+									<div align="right">
 										= {if $order.order_amount >= 0}
 										{lang key='orders::order.label_money_dues'}<strong>{$order.formated_order_amount}</strong>
 										{else}
@@ -427,7 +427,7 @@
 									<td class="w130"><strong>{lang key='orders::order.pay_status'}</strong></td>
 									<td class="w130"><strong>{lang key='orders::order.shipping_status'}</strong></td>
 									<td class="ecjiafc-pre t_c"><strong>备注</strong></td>
-									
+
 								</tr>
 							</thead>
 							<tbody>
@@ -457,12 +457,12 @@
 					<div class="accordion-body in collapse" id="collapseSeven">
 						<table class="table table-oddtd m_b0">
 							<tbody class="first-td-no-leftbd">
-								<tr> 
+								<tr>
 									<td width="15%">
 										<div align="right">
 											<span class="input-must">*</span>
 											<strong>{lang key='orders::order.label_action_note'}</strong>
-										</div></td> 
+										</div></td>
 									<td colspan="3"><textarea name="action_note" class="span12 action_note" cols="60" rows="3"></textarea></td>
 								</tr>
 								<tr>
@@ -492,7 +492,7 @@
 										{/if} {if $operable_list.to_delivery}
 										<button class="btn operatesubmit" type="submit" name="to_delivery">{lang key='orders::order.op_to_delivery'}</button>
 										<input name="order_sn" type="hidden" value="{$order.order_sn}" />
-										{/if} 
+										{/if}
 										<button class="btn operatesubmit" type="submit" name="after_service">{lang key='orders::order.op_after_service'}</button>
 										{if $operable_list.remove}
 										<button class="btn operatesubmit" type="submit" name="remove">{lang key='system::system.remove'}</button>
@@ -506,7 +506,7 @@
 											<!-- {/foreach} -->
 										</select>
 										{/if}
-										<input name="order_id" class="order_id" type="hidden" value="{$order.order_id}">								        
+										<input name="order_id" class="order_id" type="hidden" value="{$order.order_id}">
 									</td>
 								</tr>
 							</tbody>

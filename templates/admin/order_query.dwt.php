@@ -103,6 +103,12 @@
 					</div>
 				</div>
 				<div class="control-group control-group-small">
+					<label class="control-label">商家名称：</label>
+					<div class="controls">
+						<input class="w350" type="text" name="merchants_name" />
+					</div>
+				</div>
+				<div class="control-group control-group-small">
 					<div class="controls">
 						<button class="btn btn-gebo" type="submit">{lang key='system::system.button_search'}</button>
 						<button class="btn" type="reset">{lang key='system::system.button_reset'}</button>

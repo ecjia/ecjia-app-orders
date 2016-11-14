@@ -149,6 +149,9 @@ class order_query extends order {
         if ($filter['mobile']) {
         	$this->where['o.mobile'] = array('like' => '%'.mysql_like_quote($filter['mobile']).'%');
         }
+        if ($filter['merchants_name']) {
+        	$this->where['s.merchants_name'] = array('like' => '%'.mysql_like_quote($filter['merchants_name']).'%');
+        }
         if ($filter['country']) {
         	$this->where['o.country'] = $filter['country'];
         }
@@ -216,6 +219,8 @@ class order_query extends order {
         $filter['zipcode'] 				= empty($args['zipcode']) 			? '' 	: trim($args['zipcode']);
         $filter['tel'] 					= empty($args['tel']) 				? '' 	: trim($args['tel']);
         $filter['mobile'] 				= empty($args['mobile']) 			? 0 	: intval($args['mobile']);
+        $filter['merchants_name'] 		= empty($args['merchants_name']) 	? '' 	: trim($args['merchants_name']);
+        
         $filter['country'] 				= empty($args['country']) 			? 0 	: intval($args['country']);
         $filter['province'] 			= empty($args['province']) 			? 0 	: intval($args['province']);
         $filter['city'] 				= empty($args['city']) 				? 0 	: intval($args['city']);

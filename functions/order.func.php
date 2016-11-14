@@ -132,11 +132,11 @@ function order_info($order_id, $order_sn = '', $type = '') {
 		->selectRaw('o.*, s.merchants_name, s.responsible_person, s.contact_mobile, s.email as merchants_email, s.company_name, '. $total_fee)
 		->first();
 	}
-	
+
 	if ($order) {
     	$order['store_id'] = intval($order['store_id']);
     	$order['invoice_no'] = empty($order['invoice_no']) ? '' : $order['invoice_no'];
-		
+
 		/* 格式化金额字段 */
 		$order['formated_goods_amount']		= price_format($order['goods_amount'], false);
 		$order['formated_discount']			= price_format($order['discount'], false);
@@ -1142,33 +1142,34 @@ function return_order_bonus($order_id) {
 function order_bonus($order_id) {
 // 	$db_bonus_type	= RC_Loader::load_app_model('bonus_type_model', 'bonus');
 // 	$db_order_info	= RC_Loader::load_app_model('order_info_model', 'orders');
-// 	$dbview			= RC_Loader::load_app_model('order_order_goods_viewmodel', 'orders');
+ // $dbview			= RC_Loader::load_app_model('order_order_goods_viewmodel', 'orders');
 
 	/* 查询按商品发的红包 */
 // 	$day	= getdate();
 // 	$today	= RC_Time::local_mktime(23, 59, 59, $day['mon'], $day['mday'], $day['year']);
-
+	$store_id = RC_DB::table('order_info')->where('order_id', $order_id)->pluck('store_id');
 	$today = RC_Time::gmtime();
 
-// 	$dbview->view = array(
-// 		'goods' => array(
-// 			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-// 			'alias'	=> 'g',
-// 			'field'	=> 'b.type_id, b.type_money, SUM(o.goods_number) AS number',
-// 			'on'	=> 'o.goods_id = g.goods_id',
-// 		),
-// 		'bonus_type' => array(
-// 			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-// 			'alias'	=> 'b',
-// 			'on'	=> 'g.bonus_type_id = b.type_id',
-// 		)
-// 	);
-// 	$list = $dbview->where(array('o.order_id' => $order_id , 'o.is_gift' => 0 , 'b.send_type' => SEND_BY_GOODS , 'b.send_start_date' => array('elt' => $today) , 'b.send_end_date' => array('egt' => $today)))->group('b.type_id')->select();
+	// $dbview->view = array(
+	// 	'goods' => array(
+	// 		'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+	// 		'alias'	=> 'g',
+	// 		'field'	=> 'b.type_id, b.type_money, SUM(o.goods_number) AS number',
+	// 		'on'	=> 'o.goods_id = g.goods_id',
+	// 	),
+	// 	'bonus_type' => array(
+	// 		'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+	// 		'alias'	=> 'b',
+	// 		'on'	=> 'g.bonus_type_id = b.type_id',
+	// 	)
+	// );
+	// $list = $dbview->where(array('o.order_id' => $order_id , 'o.is_gift' => 0 , 'b.send_type' => SEND_BY_GOODS , 'b.send_start_date' => array('elt' => $today) , 'b.send_end_date' => array('egt' => $today)))->group('b.type_id')->select();
 
 	$list = RC_DB::table('order_goods as o')
 		->leftJoin('goods as g', RC_DB::raw('o.goods_id'), '=', RC_DB::raw('g.goods_id'))
 		->leftJoin('bonus_type as b', RC_DB::raw('g.bonus_type_id'), '=', RC_DB::raw('b.type_id'))
-		->whereRaw('o.order_id = ' . $order_id . ' and o.is_gift = 0 and b.send_type = ' . SEND_BY_GOODS . ' and b.send_start_date <= ' . $today . ' and b.send_end_date >= ' . $today)
+		->selectRaw('b.type_id, b.type_money, SUM(o.goods_number) AS number')
+		->whereRaw('o.order_id = ' . $order_id . ' and o.is_gift = 0 and b.send_type = ' . SEND_BY_GOODS . ' and b.send_start_date <= ' . $today . ' and b.send_end_date >= ' . $today. ' and (b.store_id = '. $store_id .' OR b.store_id = 0 )')
 		->groupby(RC_DB::raw('b.type_id'))
 		->get();
 
@@ -1182,9 +1183,9 @@ function order_bonus($order_id) {
 	/* 查询按订单发的红包 */
 // 	$data = $db_bonus_type->field('type_id, type_money, IFNULL(FLOOR('.$amount.' / min_amount), 1)|number')->where(array('send_type' => SEND_BY_ORDER , 'send_start_date' => array('elt' => $order_time) ,  'send_end_date' => array('egt' => $order_time)))->select();
 	$data = RC_DB::table('bonus_type')->select('type_id', 'type_money', RC_DB::raw('IFNULL(FLOOR('.$amount.' / min_amount), 1) as number'))
-		->where('send_type', SEND_BY_ORDER)->where('send_start_date', '<=', $order_time)->where('send_end_date', '>=', $order_time)
+		// ->where('send_type', SEND_BY_ORDER)->where('send_start_date', '<=', $order_time)->where('send_end_date', '>=', $order_time)
+		->whereRaw('send_type = '. SEND_BY_ORDER .' AND send_start_date <='. $order_time . ' AND send_end_date >= '. $order_time . ' AND (store_id = '. $store_id .' OR store_id = 0)')
 		->get();
-
 	if (!empty($data)) {
 		$list = array_merge($list, $data);
 	}

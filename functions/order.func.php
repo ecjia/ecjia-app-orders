@@ -1172,7 +1172,6 @@ function order_bonus($order_id) {
 		->whereRaw('o.order_id = ' . $order_id . ' and o.is_gift = 0 and b.send_type = ' . SEND_BY_GOODS . ' and b.send_start_date <= ' . $today . ' and b.send_end_date >= ' . $today. ' and (b.store_id = '. $store_id .' OR b.store_id = 0 )')
 		->groupby(RC_DB::raw('b.type_id'))
 		->get();
-
 	/* 查询定单中非赠品总金额 */
 	$amount = order_amount($order_id, false);
 

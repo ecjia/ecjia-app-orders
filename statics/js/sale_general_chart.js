@@ -43,10 +43,9 @@
 					        },
 					        legend: null,
 					        tooltip : {
-					        	/* valueSuffix : '°C',
+					        	valueSuffix : '单',
 					            shared : true, //是否多个数据序列共同显示信息
-					            crosshairs : true //是否出现基准线
-					            */
+					            crosshairs : false //是否出现基准线
 					        },
 					        series : [{
 					        	name: js_lang.order_number,
@@ -95,10 +94,9 @@
 					        },
 					        legend: null,
 					        tooltip : {
-					        	/* valueSuffix : '°C',
+					        	valueSuffix : '元',
 					            shared : true, //是否多个数据序列共同显示信息
-					            crosshairs : true //是否出现基准线
-					            */
+					            crosshairs : false //是否出现基准线
 					        },
 					        series : [{
 					          	name: js_lang.sales_volume,

@@ -188,7 +188,20 @@ class admin_order_delivery extends ecjia_admin {
 		$delivery_id			= intval(trim($_POST['delivery_id']));		// 发货单id
 		$delivery['invoice_no']	= isset($_POST['invoice_no']) ? trim($_POST['invoice_no']) : '';
 		$action_note			= isset($_POST['action_note']) ? trim($_POST['action_note']) : '';
-
+		
+		/*检查订单商品是否存在或已移除到回收站*/
+		$order_goods_ids = RC_DB::table('order_goods')->where('order_id', $order_id)->select(RC_DB::raw('goods_id'))->get();
+		foreach ($order_goods_ids as $key => $val) {
+			$goods_info = RC_DB::table('goods')->where('goods_id', $val['goods_id'])->first();
+			$goods_name = $goods_info['goods_name'];
+			if (empty($goods_info)) {
+				$this->showmessage('此订单包含的商品已被删除，请核对后再发货！' , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			}
+			if ($goods_info['is_delete'] == 1) {
+				$this->showmessage('此订单包含的商品【'.$goods_name.'】已被移除到了回收站，请核对后再发货！' , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			}
+		}
+		
 		/*判断备注是否填写*/
 	    if (empty($_POST['action_note'])) {
 		   $this->showmessage(__('请填写备注信息！') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);

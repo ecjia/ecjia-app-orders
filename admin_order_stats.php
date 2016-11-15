@@ -65,29 +65,15 @@ class admin_order_stats extends ecjia_admin {
 		$this->assign('end_date', $end_date);
 
 		$year_month = !empty($_GET['year_month']) ? $_GET['year_month'] : '';
-		if (!empty($year_month)) {
-			$filter	= explode('.', $year_month);
-			$arr 	= array_filter($filter);
-			$tmp 	= $arr;
-			for ($i = 0; $i < count($tmp); $i++) {
-				if (!empty($tmp[$i])) {
-					$tmp_time 			= RC_Time::local_strtotime($tmp[$i] . '-1');
-					$start_date_arr[]	= $tmp_time;
-					$end_date_arr[]   	= RC_Time::local_strtotime($tmp[$i] . '-' . date('t', $tmp_time));
-				}
-			}
-		} else {
-			$tmp_time 			= RC_Time::local_strtotime(RC_Time::local_date('Y-m-d'));
-			$start_date_arr[] 	= RC_Time::local_strtotime(RC_Time::local_date('Y-m') . '-1');
-			$end_date_arr[]   	= RC_Time::local_strtotime(RC_Time::local_date('Y-m') . '-31');
-		}
 
-		for ($i = 0; $i < 5; $i++) {
-	        if (isset($start_date_arr[$i])) {
-    			$start_date_arr[$i] = RC_Time::local_date('Y-m', $start_date_arr[$i]);
-			} else {
-				$start_date_arr[$i] = null;
-			}
+		if (!empty($year_month)) {
+		    $start_date_arr	= explode('.', $year_month);
+		    
+		    for ($i = 0; $i < 6; $i++) {
+		        if (empty($start_date_arr[$i])) {
+		            unset($start_date_arr[$i]);
+		        }
+		    }
 		}
 
 		$this->assign('start_date_arr', $start_date_arr);
@@ -137,30 +123,14 @@ class admin_order_stats extends ecjia_admin {
 
 		$year_month = !empty($_GET['year_month']) ? $_GET['year_month'] : '';
 
-		if (!empty($year_month)) {
-			$filter	= explode('.', $year_month);
-			$arr 	= array_filter($filter);
-			$tmp 	= $arr;
-
-			for ($i = 0; $i < count($tmp); $i++) {
-				if (!empty($tmp[$i])) {
-					$tmp_time 			= RC_Time::local_strtotime($tmp[$i] . '-1');
-					$start_date_arr[]	= $tmp_time;
-					$end_date_arr[]   	= RC_Time::local_strtotime($tmp[$i] . '-' . date('t', $tmp_time));
-				}
-			}
-		} else {
-			$tmp_time 			= RC_Time::local_strtotime(RC_Time::local_date('Y-m-d'));
-			$start_date_arr[] 	= RC_Time::local_strtotime(RC_Time::local_date('Y-m') . '-1');
-			$end_date_arr[]   	= RC_Time::local_strtotime(RC_Time::local_date('Y-m') . '-31');
-		}
-
-		for ($i = 0; $i < 5; $i++) {
-			if (isset($start_date_arr[$i])) {
-				$start_date_arr[$i] = RC_Time::local_date('Y-m', $start_date_arr[$i]);
-			} else {
-				$start_date_arr[$i] = null;
-			}
+	   if (!empty($year_month)) {
+		    $start_date_arr	= explode('.', $year_month);
+		    
+		    for ($i = 0; $i < 6; $i++) {
+		        if (empty($start_date_arr[$i])) {
+		            unset($start_date_arr[$i]);
+		        }
+		    }
 		}
 
 		$this->assign('start_date_arr', $start_date_arr);
@@ -202,38 +172,22 @@ class admin_order_stats extends ecjia_admin {
 		$is_multi = empty($_GET['is_multi']) ? false : true;
 
 		/* 时间参数 */
-		$start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date(ecjia::config('date_format'),strtotime('-1 month')-8*3600);
-		$end_date   = !empty($_GET['end_date'])   ? $_GET['end_date']   : RC_Time::local_date(ecjia::config('date_format'));
+		$start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date('Y-m-d',RC_Time::local_strtotime('-1 month'));
+		$end_date   = !empty($_GET['end_date'])   ? $_GET['end_date']   : RC_Time::local_date('Y-m-d');
 
 		$this->assign('start_date', $start_date);
 		$this->assign('end_date', $end_date);
 
 		$year_month = !empty($_GET['year_month']) ? $_GET['year_month'] : '';
 
-		if (!empty($year_month)) {
-			$filter	= explode('.', $year_month);
-			$arr 	= array_filter($filter);
-			$tmp 	= $arr;
-
-			for ($i = 0; $i < count($tmp); $i++) {
-				if (!empty($tmp[$i])) {
-					$tmp_time 			= RC_Time::local_strtotime($tmp[$i] . '-1');
-					$start_date_arr[]	= $tmp_time;
-					$end_date_arr[]   	= RC_Time::local_strtotime($tmp[$i] . '-' . date('t', $tmp_time));
-				}
-			}
-		} else {
-			$tmp_time 			= RC_Time::local_strtotime(RC_Time::local_date('Y-m-d'));
-			$start_date_arr[] 	= RC_Time::local_strtotime(RC_Time::local_date('Y-m') . '-1');
-			$end_date_arr[]   	= RC_Time::local_strtotime(RC_Time::local_date('Y-m') . '-31');
-		}
-
-		for ($i = 0; $i < 5; $i++) {
-			if (isset($start_date_arr[$i])) {
-				$start_date_arr[$i] = RC_Time::local_date('Y-m', $start_date_arr[$i]);
-			} else {
-				$start_date_arr[$i] = null;
-			}
+	    if (!empty($year_month)) {
+		    $start_date_arr	= explode('.', $year_month);
+		    
+		    for ($i = 0; $i < 6; $i++) {
+		        if (empty($start_date_arr[$i])) {
+		            unset($start_date_arr[$i]);
+		        }
+		    }
 		}
 
 		$this->assign('start_date_arr', $start_date_arr);
@@ -485,13 +439,12 @@ class admin_order_stats extends ecjia_admin {
 
 			for ($i = 0; $i < count($tmp); $i++) {
 				if (!empty($tmp[$i])) {
-					$tmp_time 			= RC_Time::local_strtotime($tmp[$i].'-1');
-					$start_date_arr[]	= $tmp_time;
-					$end_date_arr[]   	= RC_Time::local_strtotime($tmp[$i].'-31');
+					$start_date_arr[$i]	= RC_Time::local_strtotime($tmp[$i].'-1');
+					$end_date_arr[$i]   = RC_Time::local_strtotime('+1 month', $start_date_arr[$i]) - 1;
 				}
 			}
 			foreach ($start_date_arr as $key=>$val) {
-				$where = "p.pay_id = i.pay_id AND i.order_status = '" .OS_CONFIRMED. "' AND i.pay_status > '" .PS_UNPAYED. "' AND i.shipping_status > '" .SS_UNSHIPPED. "' "."AND i.add_time >= '$start_date_arr[$key]' AND i.add_time <= '$end_date_arr[$key]'";
+				$where = "p.pay_id = i.pay_id AND (i.order_status = '" .OS_CONFIRMED. "' or i.order_status = '" .OS_SPLITED. "') AND i.pay_status > '" .PS_UNPAYED. "' AND i.shipping_status > '" .SS_UNSHIPPED. "' "."AND i.add_time >= '$start_date_arr[$key]' AND i.add_time <= '$end_date_arr[$key]'";
 
 				$pay_stats[] = RC_DB::table('payment as p')
 					->leftJoin('order_info as i', RC_DB::raw('p.pay_id'), '=', RC_DB::raw('i.pay_id'))
@@ -503,7 +456,7 @@ class admin_order_stats extends ecjia_admin {
 			}
 
 			$arr1 = array();
-			if (!empty($pay_stat)) {
+			if (!empty($pay_stats)) {
 				foreach ($pay_stats as $k=>$v) {
 					if (empty($v)) {
 						unset($pay_stats[$k]);

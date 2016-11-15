@@ -146,8 +146,7 @@
 						</div>
 						<!-- {elseif $is_multi eq 1} -->
 						<div class="pay_stats">
-							<div id="pay_stats" data-url='{RC_Uri::url("orders/admin_order_stats/get_pay_stats","is_multi={$is_multi}&year_month={$year_month}")}'>
-							</div>
+							<div id="pay_stats" data-url='{RC_Uri::url("orders/admin_order_stats/get_pay_stats","is_multi={$is_multi}&year_month={$year_month}")}'></div>
 						</div>
 						<!-- {/if} -->
 					</div>

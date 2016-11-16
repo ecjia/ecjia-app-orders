@@ -443,12 +443,15 @@ class order_operate {
 			$arr['pay_status']		= PS_PAYED;
 			$order['pay_status']	= PS_PAYED;
 		}
-		$this->update_order($order['order_id'], $arr);
-		
-		/* 记录log */
-		$this->order_action($order['order_sn'], $order['order_status'], SS_RECEIVED, $order['pay_status'], $note['action_note']);
-		
-		return true;
+		if ($this->update_order($order['order_id'], $arr)) {
+		    /* 记录log */
+		    $this->order_action($order['order_sn'], $order['order_status'], SS_RECEIVED, $order['pay_status'], $note['action_note']);
+		    //update commission_bill
+		    RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => 1, 'order_id' => $order_id, 'order_amount' => $order['order_amount']));
+		    return true;
+		} else {
+		    return false;
+		}
 	}
 	
 	/**

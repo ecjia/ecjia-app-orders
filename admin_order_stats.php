@@ -262,8 +262,8 @@ class admin_order_stats extends ecjia_admin {
 			for ($i = 0; $i < count($tmp); $i++) {
 				if (!empty($tmp[$i])) {
 					$tmp_time 			= RC_Time::local_strtotime($tmp[$i].'-1');
-					$start_date_arr[]	= $tmp_time;
-					$end_date_arr[]   	= RC_Time::local_strtotime($tmp[$i].'-31');
+					$start_date_arr[$i]	= $tmp_time;
+					$end_date_arr[$i]   = RC_Time::local_strtotime($tmp[$i].'-31');
 				}
 			}
 			$where = '';
@@ -344,8 +344,8 @@ class admin_order_stats extends ecjia_admin {
 			for ($i = 0; $i < count($tmp); $i++) {
 				if (!empty($tmp[$i])) {
 					$tmp_time 			= RC_Time::local_strtotime($tmp[$i].'-1');
-					$start_date_arr[]	= $tmp_time;
-					$end_date_arr[]   	= RC_Time::local_strtotime($tmp[$i].'-31');
+					$start_date_arr[$i]	= $tmp_time;
+					$end_date_arr[$i]   = RC_Time::local_strtotime($tmp[$i].'-31');
 				}
 			}
 			foreach ($start_date_arr as $key=>$val) {

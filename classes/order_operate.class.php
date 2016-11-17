@@ -454,6 +454,19 @@ class order_operate {
 		}
 	}
 	
+	/* 取消订单*/
+	private function order_cancel($order, $note)
+	{
+	    /* 判断付款状态 */
+	    if ($order['pay_status'] != PS_UNPAYED) {
+	        return false;
+	    }
+	    $arr['order_status'] = OS_CANCELED;
+	    $this->update_order($order['order_id'], $arr);
+	    /* 记录log */
+	    $this->order_action($order['order_sn'], OS_CANCELED, $order['shipping_status'], $order['pay_status'], $note['action_note']);
+	}
+	
 	/**
 	 * 修改订单
 	 * @param   int	 $order_id   订单id

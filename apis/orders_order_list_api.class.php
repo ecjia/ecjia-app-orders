@@ -72,7 +72,7 @@ class orders_order_list_api extends Component_Event_Api {
 
         RC_Loader::load_app_class('order_list', 'orders', false);
 //         $where = array('oi.user_id' => $user_id, 'oii.order_id is null');
-        $where = array('oi.user_id' => $user_id);
+        $where = array('oi.user_id' => $user_id, 'oi.is_delete' => 0);
 
         if (!empty($type)) {
             $order_type = 'order_'.$type;

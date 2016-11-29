@@ -37,6 +37,55 @@ class orders_admin_plugin {
 		ecjia_admin::$controller->display(ecjia_app::get_app_template('library/widget_admin_dashboard_orderslist.lbi', 'orders'));
 	}
 	
+	public static function widget_admin_dashboard_shopchart() {
+		$order_query = RC_Loader::load_app_class('order_query', 'orders');
+		$db	= RC_Loader::load_app_model('order_info_viewmodel', 'orders');
+		$db->view = array(
+			'order_goods' => array(
+				'type' 	=> Component_Model_View::TYPE_LEFT_JOIN,
+				'alias' => 'g',
+				'on' 	=> 'oi.order_id = g.order_id '
+			)
+		);
+		
+// 		$db_order_viewmodel = RC_Loader::load_app_model('order_pay_viewmodel', 'orders');
+// 		$month_order = $db->where(array('oi.add_time' => array('gt' => RC_Time::gmtime() - 2592000)))->count('distinct oi.order_id');
+		$month_order = RC_DB::table('order_info as oi')
+			->leftJoin('order_goods as g', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('g.order_id'))
+			->where(RC_DB::raw('oi.add_time'), '>=', RC_Time::gmtime() - 2592000)
+			->count(RC_DB::raw('distinct oi.order_id'));
+			
+		$new = RC_Time::gmtime();
+// 		$order_money = $db_order_viewmodel->field('pl.order_amount')->where(array('oi.add_time' => array('gt' => $new-3600*24*30, 'lt' => $new), 'pl.is_paid' => 1))->group(array('oi.order_id'))->select();
+		$order_money = RC_DB::table('order_info as oi')
+			->leftJoin('pay_log as pl', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('pl.order_id'))
+			->selectRaw('pl.order_amount')
+			->where(RC_DB::raw('oi.add_time'), '>=', $new-3600*24*30)
+			->where(RC_DB::raw('oi.add_time'), '<=', $new)
+			->where(RC_DB::raw('pl.is_paid'), 1)
+			->groupBy(RC_DB::raw('oi.order_id'))
+			->get();
+			
+		$num = 0;
+		if (!empty($order_money)) {
+			foreach($order_money as $val){
+				$num += intval($val['order_amount']);
+			}
+		}
+
+		$order_unconfirmed = $db->field('oi.order_id')->where(array('oi.order_status' => 0, 'oi.add_time' => array('gt'=> $new-3600*60*24, 'lt' => $new)))->group('oi.order_id')->select();
+		$order_unconfirmed = count($order_unconfirmed);
+	
+		$order_await_ship = $db->field('oi.order_id')->where(array_merge($order_query->order_await_ship('oi.'), array('oi.add_time' => array('gt' => $new-3600*60*24, 'lt' => $new))))->group('oi.order_id')->select();
+		$order_await_ship = count($order_await_ship);
+	
+		ecjia_admin::$controller->assign('month_order', 		$month_order);
+		ecjia_admin::$controller->assign('order_money', 		intval($num));
+		ecjia_admin::$controller->assign('order_unconfirmed', 	$order_unconfirmed);
+		ecjia_admin::$controller->assign('order_await_ship', 	$order_await_ship);
+	
+		ecjia_admin::$controller->display(ecjia_app::get_app_template('library/widget_admin_dashboard_shopchart.lbi', 'orders'));
+	}
 	
 	public static function widget_admin_dashboard_ordersstat() {
 		if (!ecjia_admin::$controller->admin_priv('order_view', ecjia::MSGTYPE_HTML, false)) {
@@ -129,6 +178,7 @@ class orders_admin_plugin {
 		}
 	}
 }
+RC_Hook::add_action( 'admin_dashboard_top', array('orders_admin_plugin', 'widget_admin_dashboard_shopchart'));
 RC_Hook::add_action( 'admin_dashboard_left', array('orders_admin_plugin', 'widget_admin_dashboard_ordersstat') );
 RC_Hook::add_action( 'admin_dashboard_left', array('orders_admin_plugin', 'widget_admin_dashboard_orderslist') );
 // RC_Hook::add_action( 'ecjia_admin_finish_launching', array('orders_admin_plugin', 'admin_remind_order') );

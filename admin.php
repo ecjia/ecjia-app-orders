@@ -51,7 +51,7 @@ class admin extends ecjia_admin {
 	 */
 	public function init() {
 		/* 检查权限 */
-		$this->admin_priv('order_view', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_view');
 		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('system::system.02_order_list')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
@@ -94,7 +94,7 @@ class admin extends ecjia_admin {
 	 * 订单详情页面
 	 */	
 	public function info() {
-		$this->admin_priv('order_view', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_view');
 		
 		/* 根据订单id或订单号查询订单信息 */
 		if (isset($_GET['order_id'])) {
@@ -549,7 +549,7 @@ class admin extends ecjia_admin {
 	 */
 	public function order_query() {
 		/* 检查权限 */
-		$this->admin_priv('order_view', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_view');
 		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('system::system.02_order_list'), RC_Uri::url('orders/admin/init')));
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('system::system.03_order_query')));
@@ -591,7 +591,7 @@ class admin extends ecjia_admin {
 	 * 合并订单
 	 */
 	public function merge() {
-		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_os_edit');
 		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.merge_order')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
@@ -703,7 +703,7 @@ class admin extends ecjia_admin {
 	 */
 	public function add() {
 		/* 检查权限 */
-		$this->admin_priv('order_edit', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_edit');
 		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('system::system.08_add_order')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
@@ -995,7 +995,7 @@ class admin extends ecjia_admin {
 	 */
 	public function edit() {
 		/* 检查权限 */
-		$this->admin_priv('order_edit', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_edit');
 		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.edit_order')));
 
@@ -3654,7 +3654,7 @@ class admin extends ecjia_admin {
 	/**
 	 *  添加订单商品,获取商品信息
 	 */
-	public function json() {
+	public function goods_json() {
 		$this->admin_priv('order_edit', ecjia::MSGTYPE_JSON);
 // 		$db_view		= RC_Loader::load_app_model('goods_brand_viewmodel', 'orders');
 // 		$member_views	= RC_Loader::load_app_model('member_price_viewmodel', 'orders');

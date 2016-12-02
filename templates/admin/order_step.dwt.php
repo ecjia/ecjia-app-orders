@@ -261,7 +261,7 @@
 </div>
 <div class="row-fluid draggable">
 	<div class="ms-container ms-container-nobg" id="ms-custom-navigation">
-		<div class="ms-selectable ms-not-selectable" id="goodslist"  data-change-url='{url path="orders/admin/json"}'>
+		<div class="ms-selectable ms-not-selectable" id="goodslist"  data-change-url='{url path="orders/admin/goods_json"}'>
 			<div class="search-header">
 				<input class="span12" id="ms-search" type="text" placeholder="{lang key='orders::order.filter_information_goods'}" autocomplete="off">
 			</div>

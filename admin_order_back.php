@@ -80,10 +80,10 @@ class admin_order_back extends ecjia_admin {
 			RC_Loader::load_app_func('function');
 			$back_order = back_order_info($back_id);
 		} else {
-			$this->showmessage(RC_Lang::get('orders::order.return_form'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
+			return $this->showmessage(RC_Lang::get('orders::order.return_form'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
 		}
 		if (empty($back_order)) {
-			$this->showmessage(RC_Lang::get('orders::order.return_form'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
+			return $this->showmessage(RC_Lang::get('orders::order.return_form'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
 		}
 
 		/* 如果管理员属于某个办事处，检查该订单是否也属于这个办事处 */
@@ -91,7 +91,7 @@ class admin_order_back extends ecjia_admin {
 //		$agency_id = $this->db_admin_user->get_admin_agency_id($_SESSION['admin_id']);
 //		if ($agency_id > 0) {
 //			if ($back_order['agency_id'] != $agency_id) {
-//				$this->showmessage(RC_Lang::lang('priv_error'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR) ;
+//				return $this->showmessage(RC_Lang::lang('priv_error'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR) ;
 //			}
 //	
 //			/* 取当前办事处信息*/
@@ -159,7 +159,7 @@ class admin_order_back extends ecjia_admin {
 		/* 记录日志 */
 		ecjia_admin::admin_log($back_id, 'remove', 'back_order');
 
-		$this->showmessage(RC_Lang::get('orders::order.tips_back_del'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('orders/admin_order_back/init')));
+		return $this->showmessage(RC_Lang::get('orders::order.tips_back_del'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('orders/admin_order_back/init')));
 	}
 	
 	/*收货人信息*/
@@ -181,10 +181,10 @@ class admin_order_back extends ecjia_admin {
 					->first();
 				$row['region'] = $region['region'];
 			} else {
-				$this->showmessage(RC_Lang::get('orders::order.no_invoice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+				return $this->showmessage(RC_Lang::get('orders::order.no_invoice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 			}
 		} else {
-			$this->showmessage(RC_Lang::get('orders::order.a_mistake'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			return $this->showmessage(RC_Lang::get('orders::order.a_mistake'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		die(json_encode($row));
 	}

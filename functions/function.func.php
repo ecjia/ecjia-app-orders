@@ -1579,12 +1579,12 @@ function merge_order($from_order_sn, $to_order_sn) {
 
 	/* 订单号不能为空 */
 	if (trim($from_order_sn) == '' || trim($to_order_sn) == '') {
-		ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.order_sn_not_null'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		return ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.order_sn_not_null'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	/* 订单号不能相同 */
 	if ($from_order_sn == $to_order_sn) {
-		ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.two_order_sn_same'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		return ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.two_order_sn_same'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	/* 取得订单信息 */
@@ -1593,37 +1593,37 @@ function merge_order($from_order_sn, $to_order_sn) {
 
 	/* 检查订单是否存在 */
 	if (!$from_order) {
-		ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.order_not_exist'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		return ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.order_not_exist'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	} elseif (!$to_order) {
-		ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.order_not_exist'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		return ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.order_not_exist'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	/* 检查合并的订单是否为普通订单，非普通订单不允许合并 */
 	if ($from_order['extension_code'] != '' || $to_order['extension_code'] != 0) {
-		ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.merge_invalid_order'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		return ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.merge_invalid_order'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	/* 检查订单状态是否是已确认或未确认、未付款、未发货 */
 	if ($from_order['order_status'] != OS_UNCONFIRMED && $from_order['order_status'] != OS_CONFIRMED) {
-		ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.os_not_unconfirmed_or_confirmed'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		return ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.os_not_unconfirmed_or_confirmed'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		
 	} elseif ($from_order['pay_status'] != PS_UNPAYED) {
-		ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.ps_not_unpayed'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		return ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.ps_not_unpayed'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	} elseif ($from_order['shipping_status'] != SS_UNSHIPPED) {
-		ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.ss_not_unshipped'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		return ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.ss_not_unshipped'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	if ($to_order['order_status'] != OS_UNCONFIRMED && $to_order['order_status'] != OS_CONFIRMED) {
-		ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.os_not_unconfirmed_or_confirmed'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		return ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.os_not_unconfirmed_or_confirmed'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	} elseif ($to_order['pay_status'] != PS_UNPAYED) {
-		ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.ps_not_unpayed'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		return ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.ps_not_unpayed'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	} elseif ($to_order['shipping_status'] != SS_UNSHIPPED) {
-		ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.ss_not_unshipped'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		return ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.ss_not_unshipped'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	/* 检查订单用户是否相同 */
 	if ($from_order['user_id'] != $to_order['user_id']) {
-		ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.order_user_not_same'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		return ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.order_user_not_same'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 
 	/* 合并订单 */
@@ -1703,7 +1703,7 @@ function merge_order($from_order_sn, $to_order_sn) {
 	$order_id = RC_Model::model('orders/order_info_model')->insert(rc_addslashes($order));
 	
 	if (!$order_id) {
-		ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.order_merge_invalid'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		return ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.order_merge_invalid'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 	}
 //	do {
 //		$order['order_sn'] = get_order_sn();

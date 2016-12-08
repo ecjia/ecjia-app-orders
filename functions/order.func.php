@@ -2582,7 +2582,7 @@ function assign_adminlog_content() {
 // 		return " AND {$alias}order_status = '" . OS_CONFIRMED . "'" .
 // 		" AND {$alias}shipping_status " . db_create_in(array(SS_SHIPPED, SS_RECEIVED)) . " ";
 // 	} else {
-// 		ecjia_front::$controller->showmessage(__('操作有误！请重新操作！') , ecjia_admin::MSGTYPE_HTML | ecjia_admin::MSGSTAT_ERROR);
+// 		return ecjia_front::$controller->showmessage(__('操作有误！请重新操作！') , ecjia_admin::MSGTYPE_HTML | ecjia_admin::MSGSTAT_ERROR);
 // 	}
 // }
 

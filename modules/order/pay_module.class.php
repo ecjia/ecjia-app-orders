@@ -3,7 +3,7 @@ defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * 订单支付
  * @author royalwang
- *
+ * 16-12-09 增加支付状态
  */
 class pay_module extends api_front implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {	
@@ -70,6 +70,8 @@ class pay_module extends api_front implements api_interface {
         	$payment_data['update_time']	= RC_Time::gmtime();
         	$db->where('order_sn', $order['order_sn'])->update($payment_data);
         }
+        //增加支付状态
+        $order['payment']['order_pay_status'] = $order['pay_status'];//0 未付款，1付款中，2已付款
         
         return array('payment' => $order['payment']);
 	}

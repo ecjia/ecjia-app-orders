@@ -748,7 +748,7 @@ return array(
     'label_company_name'		=> '公司名称：',
     
     'place_order'				=> '订单提交成功',
-    'unpay'						=> '未付款',
+    'unpay'						=> '待付款',
     'payed'						=> '已付款',
     'shipping'					=> '配货中',
     'shipped'					=> '已发货',

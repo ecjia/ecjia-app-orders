@@ -7,7 +7,7 @@ defined('IN_ECJIA') or exit('No permission resources.');
  */
 class detail_module extends api_front implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
-
+    	
     	$user_id = $_SESSION['user_id'];
     	if ($user_id < 1 ) {
     	    return new ecjia_error(100, 'Invalid session');
@@ -117,8 +117,11 @@ class detail_module extends api_front implements api_interface {
 		$order_status_log = RC_Model::model('orders/order_status_log_model')->where(array('order_id' => $order_id))->order(array('log_id' => 'desc'))->select();
 		$order['order_status_log'] = array();
 		if (!empty($order_status_log)) {
+			$labe_order_status = array('place_order' => RC_Lang::get('orders::order.place_order'), 'unpay' => RC_Lang::get('orders::order.unpay'), 'payed' => RC_Lang::get('orders::order.payed'), 'shipping' => RC_Lang::get('orders::order.shipping'), 'shipped' => RC_Lang::get('orders::order.shipped'), 'finished' => RC_Lang::get('orders::order.confirm_receipt'));
+			
 			foreach ($order_status_log as $val) {
 				$order['order_status_log'][] = array(
+					'status'		=> array_search($val['order_status'], $labe_order_status),
 					'order_status'	=> $val['order_status'],
 					'message'		=> $val['message'],
 					'time'			=> RC_Time::local_date(ecjia::config('time_format'), $val['add_time']),

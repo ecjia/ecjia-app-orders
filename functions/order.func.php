@@ -115,7 +115,7 @@ function order_info($order_id, $order_sn = '', $type = '') {
 		$db_order_info = RC_DB::table('order_info as o')->leftJoin('store_franchisee as s', RC_DB::raw('o.store_id'), '=', RC_DB::raw('s.store_id'));
 	}
 	/* 计算订单各种费用之和的语句 */
-	$total_fee = " (goods_amount - discount + tax + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee) AS total_fee ";
+	$total_fee = " (goods_amount + tax + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee - integral_money - bonus - discount) AS total_fee ";
 
 	$order_id = intval($order_id);
 	if ($order_id > 0) {

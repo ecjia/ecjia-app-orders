@@ -114,25 +114,25 @@ function affirm_received($order_id, $user_id = 0) {
             	$express_finished = new ExpressFinished($express_data);
             	RC_Notification::send($user, $express_finished);
             	RC_DB::table('express_order')->where('express_id', $express_info['express_id'])->update(array('status' => 5, 'signed_time' => RC_Time::gmtime()));
-            }
-            
-            /*推送消息*/
-            $devic_info = RC_Api::api('mobile', 'device_info', array('user_type' => 'merchant', 'user_id' => $express_info['staff_id']));
-            if (!is_ecjia_error($devic_info) && !empty($devic_info)) {
-            	$push_event = RC_Model::model('push/push_event_viewmodel')->where(array('event_code' => 'express_confirm', 'is_open' => 1, 'status' => 1, 'mm.app_id is not null', 'mt.template_id is not null', 'device_code' => $devic_info['device_code'], 'device_client' => $devic_info['device_client']))->find();
-            	if (!empty($push_event)) {
-            		RC_Loader::load_app_class('push_send', 'push', false);
-            		ecjia_admin::$controller->assign('express_info', $express_order_info);
-            		$content = ecjia_admin::$controller->fetch_string($push_event['template_content']);
-            		 
-            		if ($devic_info['device_client'] == 'android') {
-            			$result = push_send::make($push_event['app_id'])->set_client(push_send::CLIENT_ANDROID)->set_field(array('open_type' => 'admin_message'))->send($devic_info['device_token'], $push_event['template_subject'], $content, 0, 1);
-            		} elseif ($devic_info['device_client'] == 'iphone') {
-            			$result = push_send::make($push_event['app_id'])->set_client(push_send::CLIENT_IPHONE)->set_field(array('open_type' => 'admin_message'))->send($devic_info['device_token'], $push_event['template_subject'], $content, 0, 1);
+            	
+            	/*推送消息*/
+            	$devic_info = RC_Api::api('mobile', 'device_info', array('user_type' => 'merchant', 'user_id' => $express_info['staff_id']));
+            	if (!is_ecjia_error($devic_info) && !empty($devic_info)) {
+            		$push_event = RC_Model::model('push/push_event_viewmodel')->where(array('event_code' => 'express_confirm', 'is_open' => 1, 'status' => 1, 'mm.app_id is not null', 'mt.template_id is not null', 'device_code' => $devic_info['device_code'], 'device_client' => $devic_info['device_client']))->find();
+            		if (!empty($push_event)) {
+            			RC_Loader::load_app_class('push_send', 'push', false);
+            			ecjia_admin::$controller->assign('express_info', $express_order_info);
+            			$content = ecjia_admin::$controller->fetch_string($push_event['template_content']);
+            			 
+            			if ($devic_info['device_client'] == 'android') {
+            				$result = push_send::make($push_event['app_id'])->set_client(push_send::CLIENT_ANDROID)->set_field(array('open_type' => 'admin_message'))->send($devic_info['device_token'], $push_event['template_subject'], $content, 0, 1);
+            			} elseif ($devic_info['device_client'] == 'iphone') {
+            				$result = push_send::make($push_event['app_id'])->set_client(push_send::CLIENT_IPHONE)->set_field(array('open_type' => 'admin_message'))->send($devic_info['device_token'], $push_event['template_subject'], $content, 0, 1);
+            			}
             		}
             	}
+            	
             }
-            
             
             /* 记录日志 */
         	RC_Loader::load_app_func('order', 'orders');

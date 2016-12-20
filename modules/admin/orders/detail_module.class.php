@@ -118,13 +118,13 @@ class detail_module extends api_admin implements api_interface {
 			}
 		}
 		$ordergoods_viewdb = RC_Model::model('orders/order_goods_goods_viewmodel');
-		$goods_list = $ordergoods_viewdb->where(array('order_id' => $order_id))->select();
+		$goods_list = $ordergoods_viewdb->where(array('order_id' => $order['order_id']))->select();
 		if (!empty($goods_list)) {
-			RC_Loader::load_app_func('common', 'goods');
+// 			RC_Loader::load_app_func('common', 'goods');
 			foreach ($goods_list as $k =>$v) {
-				if ($v['extension_code'] == 'package_buy') {
-					$v['package_goods_list'] = get_package_goods($v['goods_id']);
-				}
+// 				if ($v['extension_code'] == 'package_buy') {
+// 					$v['package_goods_list'] = get_package_goods($v['goods_id']);
+// 				}
 				$goods_list[$k] = array(
 						'id'	=> $v['goods_id'],
 						'name'	=> $v['goods_name'],

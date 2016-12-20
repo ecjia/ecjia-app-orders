@@ -82,8 +82,8 @@ function affirm_received($order_id, $user_id = 0) {
             	$express_order_info = $express_order_viewdb->field($field)->join(array('delivery_order', 'order_info', 'store_franchisee'))->where($where)->find();
             		
             	$express_data = array(
-            			'title'	=> '抢单成功',
-            			'body'	=> '您已成功抢到配送单号，单号为：'.$express_order_info['express_sn'],
+            			'title'	=> '配送成功',
+            			'body'	=> '买家已成功确认收货！配送单号为：'.$express_order_info['express_id'],
             			'data'	=> array(
             					'express_id'	=> $express_order_info['express_id'],
             					'express_sn'	=> $express_order_info['express_sn'],

@@ -8,7 +8,7 @@ defined('IN_ECJIA') or exit('No permission resources.');
  */
 class affirmReceived_module extends api_front implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
-    		
+    	
 		$user_id = $_SESSION['user_id'];
 		if ($user_id < 1) {
 		    return new ecjia_error(100, 'Invalid session');
@@ -130,6 +130,16 @@ function affirm_received($order_id, $user_id = 0) {
             				$result = push_send::make($push_event['app_id'])->set_client(push_send::CLIENT_IPHONE)->set_field(array('open_type' => 'admin_message'))->send($devic_info['device_token'], $push_event['template_subject'], $content, 0, 1);
             			}
             		}
+            	}
+            	
+            	/* 更新配送员相关信息*/
+            	$express_user = RC_DB::table('express_user')->where('user_id', $express_info['staff_id'])->first();
+            	if ($express_user) {
+            		RC_DB::table('express_user')->where('user_id', $express_info['staff_id'])->increment('delivery_count', 1);
+            		RC_DB::table('express_user')->where('user_id', $express_info['staff_id'])->increment('delivery_distance', $express_info['distance']);
+            		RC_DB::table('express_user')->where('user_id', $express_info['staff_id'])->update(array('longitude' => $express_info['longitude'], 'latitude' => $express_info['latitude']));
+            	} else {
+            		RC_DB::table('express_user')->insert(array('user_id' => $express_info['staff_id'], 'store_id' => $express_info['store_id'], 'delivery_count' => 1, 'delivery_distance' => $express_info['distance'], 'longitude' => $express_info['longitude'], 'latitude' => $express_info['latitude']));
             	}
             	
             }

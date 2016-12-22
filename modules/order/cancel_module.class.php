@@ -19,6 +19,12 @@ class cancel_module extends api_front implements api_interface {
 		}
 		$result = cancel_order($order_id, $user_id);
 		if (!is_ecjia_error($result)) {
+			RC_DB::table('order_status_log')->insert(array(
+					'order_status'	=> RC_Lang::get('order::order.order_cancel'),
+					'order_id'		=> $order_id,
+					'message'		=> '您的订单已取消成功！',
+					'add_time'		=> RC_Time::gmtime(),
+			));
 			return array();
 		} else {
 			return $result;

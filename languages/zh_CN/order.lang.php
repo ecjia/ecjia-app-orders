@@ -752,8 +752,9 @@ return array(
     'payed'						=> '已付款',
     'shipping'					=> '配货中',
     'shipped'					=> '已发货',
-    'confirm_receipt'			=> '确认收货',
-    
+    'confirm_receipt'			=> '已确认收货',
+    'order_finished'			=> '订单已完成',
+    'order_cancel'				=> '订单已取消',
 );
 
 // end

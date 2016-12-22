@@ -120,6 +120,12 @@ class orders_order_paid_api extends Component_Event_Api {
 		                'message'		=> RC_Lang::get('orders::order.notice_merchant_message'),
 		                'add_time'		=> RC_Time::gmtime(),
 	                ));
+	                RC_DB::table('order_status_log')->insert(array(
+		                'order_status'	=> RC_Lang::get('cart::shopping_flow.merchant_process'),
+		                'order_id'		=> $order_id,
+		                'message'		=> '订单已通知商家，等待商家处理',
+		                'add_time'		=> RC_Time::gmtime(),
+	                ));
 	                
 	                $push_payed = ecjia::config('push_order_payed');
 	                if ($push_payed) {

@@ -103,6 +103,15 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		);
 		RC_DB::table('order_status_log')->insert($data);
 		
+		
+		RC_DB::table('order_status_log')->insert(array(
+							'order_status'	=> RC_Lang::get('cart::shopping_flow.merchant_process'),
+							'order_id'		=> $order_info['order_id'],
+							'message'		=> '订单已通知商家，等待商家处理',
+							'add_time'		=> RC_Time::gmtime(),
+		));
+		
+		
 		$result = ecjia_app::validate_application('sms');
 		if (!is_ecjia_error($result)) {
 			/* 客户付款短信提醒 */

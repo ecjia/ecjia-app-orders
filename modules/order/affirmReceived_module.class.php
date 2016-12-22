@@ -74,7 +74,7 @@ function affirm_received($order_id, $user_id = 0) {
         	$order_status_data = array(
             		'order_status' => RC_Lang::get('orders::order.order_finished'),
             		'order_id' 	   => $order_id,
-            		'message'	   => '感谢您在'.ecjia_config::config('shop_name').'购物，欢迎您再次光临！',
+            		'message'	   => '感谢您在'.ecjia::config('shop_name').'购物，欢迎您再次光临！',
             		'add_time'	   => RC_Time::gmtime()
             );
             $db_order_status_log->insert($order_status_data);

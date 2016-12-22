@@ -63,9 +63,18 @@ function affirm_received($order_id, $user_id = 0) {
         if ($query) {
         	$db_order_status_log = RC_Model::model('orders/order_status_log_model');
         	$order_status_data = array(
-            		'order_status' => RC_Lang::get('orders::order.confirm_receipt'),
+        			'order_status' => RC_Lang::get('orders::order.confirm_receipt'),
+        			'order_id' 	   => $order_id,
+        			'message'	   => '宝贝已签收，购物愉快！',
+        			'add_time'	   => RC_Time::gmtime()
+        	);
+        	$db_order_status_log->insert($order_status_data);
+        	
+        	
+        	$order_status_data = array(
+            		'order_status' => RC_Lang::get('orders::order.order_finished'),
             		'order_id' 	   => $order_id,
-            		'message'	   => '商品已送达，感谢您下次光顾！',
+            		'message'	   => '感谢您在'.ecjia_config::config('shop_name').'购物，欢迎您再次光临！',
             		'add_time'	   => RC_Time::gmtime()
             );
             $db_order_status_log->insert($order_status_data);

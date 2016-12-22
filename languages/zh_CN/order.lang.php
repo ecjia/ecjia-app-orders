@@ -755,6 +755,8 @@ return array(
     'confirm_receipt'			=> '已确认收货',
     'order_finished'			=> '订单已完成',
     'order_cancel'				=> '订单已取消',
+    'merchant_process'			=> '等待商家接单',
+    'express_user_pickup'		=> '配送员已取货',
 );
 
 // end

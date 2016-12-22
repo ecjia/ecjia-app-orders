@@ -121,7 +121,19 @@ class detail_module extends api_front implements api_interface {
 		$order_status_log = RC_Model::model('orders/order_status_log_model')->where(array('order_id' => $order_id))->order(array('log_id' => 'desc'))->select();
 		$order['order_status_log'] = array();
 		if (!empty($order_status_log)) {
-			$labe_order_status = array('place_order' => RC_Lang::get('orders::order.place_order'), 'unpay' => RC_Lang::get('orders::order.unpay'), 'payed' => RC_Lang::get('orders::order.payed'), 'shipping' => RC_Lang::get('orders::order.shipping'), 'shipped' => RC_Lang::get('orders::order.shipped'), 'finished' => RC_Lang::get('orders::order.confirm_receipt'));
+			$labe_order_status = array(
+							'place_order'	=> RC_Lang::get('orders::order.place_order'), 
+							'unpay'			=> RC_Lang::get('orders::order.unpay'), 
+							'payed' 		=> RC_Lang::get('orders::order.payed'),
+							'merchant_process' => RC_Lang::get('orders::order.merchant_process'),
+							'shipping' 		=> RC_Lang::get('orders::order.shipping'), 
+							'shipped' 		=> RC_Lang::get('orders::order.shipped'),
+							'express_user_pickup'	=> RC_Lang::get('orders::order.express_user_pickup'),
+							'cancel'		=> RC_Lang::get('orders::order.order_cancel'),
+							'confirm_receipt'	=> RC_Lang::get('orders::order.confirm_receipt'),
+							'finished'		=> RC_Lang::get('orders::order.order_finished')
+					
+			);
 			
 			foreach ($order_status_log as $val) {
 				$order['order_status_log'][] = array(

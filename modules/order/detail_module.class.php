@@ -68,12 +68,12 @@ class detail_module extends api_front implements api_interface {
 		foreach ($goods_list as $k => $v) {
 			if ($k == 0) {
 				if ($v['store_id'] > 0) {
-					$seller_info = RC_DB::table('store_franchisee')->where(RC_DB::raw('store_id'), $v['store_id'])->pluck('merchants_name');
+					$seller_info = RC_DB::table('store_franchisee')->where(RC_DB::raw('store_id'), $v['store_id'])->lists('merchants_name', 'manage_mode');
 				}
 
-
 				$order['seller_id']		= isset($v['store_id']) ? intval($v['store_id']) : 0;
-				$order['seller_name']	= isset($seller_info) ? $seller_info : '自营';
+				$order['seller_name']	= isset($seller_info['merchants_name']) ? $seller_info['merchants_name'] : '自营';
+				$order['manage_mode']	= $seller_info['manage_mode'];
 				$order['service_phone']		= RC_DB::table('merchants_config')->where(RC_DB::raw('store_id'), $v['store_id'])->where(RC_DB::raw('code'), 'shop_kf_mobile')->pluck('value');
 			}
 			$attr = array();

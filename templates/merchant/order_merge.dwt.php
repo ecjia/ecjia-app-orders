@@ -31,13 +31,13 @@
 					   <div class="form-group order-query">
     					   <div class="col-lg-11">
         					   <select class="panel-body w250" name="to_list" id="to_list" >
-        					       <option value="">{$lang.select_please}</option>
+        					       <option value="">{lang key='system::system.select_please'}</option>
                 				   <!-- {foreach from=$order_list item=order} -->
             						    <option value="{$order.order_sn}">{$order.order_sn} {if $order.user_name}[{$order.user_name}]{else}[匿名]{/if}</option>
                 				   <!-- {/foreach} -->
         					   </select>
     					   </div>
-					   <span class="input-must">{$lang.require_field}</span>
+					   <span class="input-must">{lang key='system::system.require_field'}</span>
 					   </div>
 					   <span class="help-block" {if $help_open}style="display:block" {else} style="display:none" {/if} id="noticeOrderSn">{$lang.notice_order_sn}</span>
 			       </div>
@@ -50,13 +50,13 @@
 						<div class="form-group order-query">
     					   <div class="col-lg-11">
         						<select class="panel-body w250" name="from_list" id="from_list" >
-        							<option value="">{$lang.select_please}</option>
+        							<option value="">{lang key='system::system.select_please'}</option>
         							<!-- {foreach from=$order_list item=order} -->
         							     <option value="{$order.order_sn}">{$order.order_sn} {if $order.user_name}[{$order.user_name}]{else}[匿名]{/if}</option>
         							<!-- {/foreach} -->
         						</select>
 							</div>
-							<span class="input-must">{$lang.require_field}</span>
+							<span class="input-must">{lang key='system::system.require_field'}</span>
 						</div>
     				</div>	
 				</div>

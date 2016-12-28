@@ -140,7 +140,7 @@ class merchant extends ecjia_merchant {
 		RC_Script::enqueue_script('order_delivery', RC_App::apps_url('statics/js/merchant_order_delivery.js', __FILE__));
 
 		RC_Loader::load_app_class('merchant_order_list', 'orders', false);
-		$getlast_db = new merchant_order_listmerchant_order_list();
+		$getlast_db = new merchant_order_list();
 		$getnext_db = new merchant_order_list();
 		/* 取得上一个、下一个订单号 */
 		$composite_status = RC_Cookie::get('composite_status');
@@ -545,8 +545,8 @@ class merchant extends ecjia_merchant {
 		$this->assign('os_list'			, get_status_list('order'));
 		$this->assign('ps_list'			, get_status_list('payment'));
 		$this->assign('ss_list'			, get_status_list('shipping'));
-		$this->assign('ur_here'			, RC_Lang::lang('03_order_query'));
-		$this->assign('action_link'		, array('href' => RC_Uri::url('orders/merchant/init'), 'text' => RC_Lang::lang('02_order_list')));
+		$this->assign('ur_here'			, RC_Lang::get('system::system.03_order_query'));
+		$this->assign('action_link'		, array('href' => RC_Uri::url('orders/merchant/init'), 'text' => RC_Lang::get('system::system.02_order_list')));
 		$this->assign('form_action'		, RC_Uri::url('orders/merchant/init'));
 		
 		$this->assign_lang();

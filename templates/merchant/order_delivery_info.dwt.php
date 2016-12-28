@@ -53,7 +53,7 @@
 									<!-- {if $order.shipping_id > 0} -->
 										{$order.shipping_name}
 									<!-- {else} -->
-										{$lang.require_field}
+										{lang key='system::system.require_field'}
 									<!-- {/if} -->
 									<!-- {if $order.insure_fee > 0} -->
 										（{$lang.label_insure_fee}{$order.formated_insure_fee}）

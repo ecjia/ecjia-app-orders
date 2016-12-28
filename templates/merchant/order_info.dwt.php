@@ -131,7 +131,7 @@ ecjia.merchant.order.info();
 								<td>
 									{$order.pay_name}
 									{if $order.shipping_status neq 1 && !$invalid_order}
-									<a class="data-pjax" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=shipping"}'>{$lang.edit}</a>
+									<a class="data-pjax" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=shipping"}'>{lang key='system::system.edit'}</a>
 									{/if}
 									({$lang.action_note}: <span >{if $order.pay_note}{$order.pay_note}{else}N/A{/if}</span>)
 								</td>
@@ -145,10 +145,10 @@ ecjia.merchant.order.info();
 									{if $order.shipping_id gt 0}
 									<span>{$order.shipping_name}</span>
 									{else}
-									<span>{$lang.require_field}</span>
+									<span>{lang key='system::system.require_field'}</span>
 									{/if}
 									{if !$invalid_order}
-									<a class="data-pjax" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=shipping"}'>{$lang.edit}</a>
+									<a class="data-pjax" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=shipping"}'>{lang key='system::system.edit'}</a>
 									{/if}
 									<input type="button" class="btn btn-primary" onclick="window.open('{url path="orders/merchant/info" args="order_id={$order.order_id}&shipping_print=1"}')" value="{$lang.print_shipping}">
 									{if $order.insure_fee gt 0}{$lang.label_insure_fee}{$order.formated_insure_fee}{/if}
@@ -165,7 +165,7 @@ ecjia.merchant.order.info();
 									{else}
 										{if $order.shipping_id gt 0 and $order.shipping_status gt 0}
 											<span>{if $order.invoice_no}{$order.invoice_no}{else}N/A{/if}</span>&nbsp;
-											<a href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=shipping"}' class="special data-pjax">{$lang.edit}</a>
+											<a href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=shipping"}' class="special data-pjax">{lang key='system::system.edit'}</a>
 										{/if}
 									{/if}
 								</td>
@@ -184,7 +184,7 @@ ecjia.merchant.order.info();
                         </h4>
                     </a>
                     {if $order.shipping_status neq 1 && !$invalid_order}
-						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=other"}'>{$lang.edit}</a>
+						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=other"}'>{lang key='system::system.edit'}</a>
 					{/if}
                 </div>
                 <div class="accordion-body in collapse " id="collapseTwo">
@@ -212,7 +212,7 @@ ecjia.merchant.order.info();
                         </h4>
                     </a>
                     {if $order.shipping_status neq 1 && !$invalid_order}
-						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=other"}'>{$lang.edit}</a>
+						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=other"}'>{lang key='system::system.edit'}</a>
 					{/if}
                 </div>
                 <div class="accordion-body in collapse " id="collapseThree">
@@ -252,7 +252,7 @@ ecjia.merchant.order.info();
                         </h4>
                     </a>
                     {if $order.shipping_status neq 1 && !$invalid_order}
-						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=consignee"}'>{$lang.edit}</a>
+						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=consignee"}'>{lang key='system::system.edit'}</a>
 					{/if}
                 </div>
                 <div class="accordion-body in collapse " id="collapseFour">
@@ -294,7 +294,7 @@ ecjia.merchant.order.info();
                         </h4>
                     </a>
                     {if $order.shipping_status neq 1}
-<!-- 						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=goods"}'>{$lang.edit}</a> -->
+<!-- 						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=goods"}'>{lang key='system::system.edit'}</a> -->
 					{/if}
                 </div>
                 <div class="accordion-body in collapse " id="collapseFive">
@@ -362,7 +362,7 @@ ecjia.merchant.order.info();
                         </h4>
                     </a>
                     {if $order.shipping_status neq 1 && !$invalid_order}
-						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=money"}'>{$lang.edit}</a>
+						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=money"}'>{lang key='system::system.edit'}</a>
 					{/if}
                 </div>
                 <div class="accordion-body in collapse " id="collapseSix">

@@ -129,7 +129,7 @@
 										{if $order.shipping_id gt 0}
 										<span>{$order.shipping_name}</span>
 										{else}
-										<span>{$lang.require_field}</span>
+										<span>{lang key='system::system.require_field'}</span>
 										{/if}
 										{if !$invalid_order}
 										<a class="data-pjax" href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=shipping"}'>{lang key='system::system.edit'}</a>

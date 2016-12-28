@@ -23,7 +23,7 @@
             <div class="col-lg-12 panel-heading form-inline">
                 <div class="btn-group form-group">
                 	<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cogs"></i> {lang key='orders::order.bulk_operations'} <span class="caret"></span></button>
-                    <ul class="dropdown-menu"><li><a class="batch-del-btn" name='movetype' data-toggle="ecjiabatch" data-name="back_id" data-idClass=".checkbox:checked" data-url="{$del_action}" data-msg="您确定需要删除这些发货单吗？" data-noSelectMsg="请选择需要操作的发货单！" href="javascript:;"><i class="fa fa-trash-o"></i> {$lang.remove}</a></li></ul>
+                    <ul class="dropdown-menu"><li><a class="batch-del-btn" name='movetype' data-toggle="ecjiabatch" data-name="back_id" data-idClass=".checkbox:checked" data-url="{$del_action}" data-msg="您确定需要删除这些发货单吗？" data-noSelectMsg="请选择需要操作的发货单！" href="javascript:;"><i class="fa fa-trash-o"></i> {lang key='orders::order.remove'}</a></li></ul>
                 </div>	
                 <form class="form-inline pull-right" action='{RC_Uri::url("orders/mh_back/init")}{if $smarty.get.type}&type={$smarty.get.type}{/if}' method="post" name="searchForm">
                     <div class="form-group">
@@ -79,7 +79,7 @@
 					            <td>{$back.action_user}</td>
 					        </tr>
 					        <!-- {foreachelse} -->
-					        <tr><td class="no-records" colspan="8">{$lang.no_records}</td></tr>
+					        <tr><td class="no-records" colspan="8">{lang key='system::system.no_records'}</td></tr>
 					        <!-- {/foreach} -->
 					    </tbody>
 					</table>

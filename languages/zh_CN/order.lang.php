@@ -314,6 +314,8 @@ return array(
 	'button_next' 	=> '下一步',
 	'button_finish' => '完成',
 	'button_cancel' => '取消',
+	'button_submit'	=> '确定',
+	'button_search' => '搜索',
 	'name' 			=> '名称',
 	'desc' 			=> '描述',
 	'shipping_fee' 	=> '配送费',

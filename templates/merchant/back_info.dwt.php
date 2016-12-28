@@ -74,7 +74,7 @@
 									{if $back_order.shipping_id gt 0}
 									{$back_order.shipping_name}
 									{else}
-									{$lang.require_field}
+									{lang key='system::system.require_field'}
 									{/if}
 									{if $back_order.insure_fee gt 0}
 									{$lang.label_insure_fee}{$back_order.formated_insure_fee}
@@ -87,7 +87,7 @@
 
 							<tr>
 								<td><div align="right"><strong>{lang key='orders::order.label_insure_yn'}</strong></div></td>
-								<td>{if $insure_yn}{$lang.yes}{else}{$lang.no}{/if}</td>
+								<td>{if $insure_yn}{lang key='system::system.yes'}{else}{lang key='system::system.no'}{/if}</td>
 								<td><div align="right"><strong>{lang key='orders::order.label_insure_fee'}</strong></div></td>
 								<td>{$back_order.insure_fee|default:0.00}</td>
 							</tr>

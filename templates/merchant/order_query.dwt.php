@@ -48,7 +48,7 @@ ecjia.merchant.order_query.init();
 					<label class="control-label col-lg-2">{$lang.label_order_status}</label>
 					<div class="col-lg-6">
 						<select class="form-control" name="order_status" id="select9" >
-							<option value="-1">{$lang.select_please}</option>
+							<option value="-1">{lang key='system::system.select_please'}</option>
 							<!-- {foreach from = $os_list item = list key=key} -->
 							<option value="{$key}">{$list}</option>
 							<!-- {/foreach} -->
@@ -59,7 +59,7 @@ ecjia.merchant.order_query.init();
 					<label class="control-label col-lg-2">{$lang.label_pay_status}</label>
 					<div class="col-lg-6">
 						<select class="form-control" name="pay_status" id="select11" >
-							<option value="-1">{$lang.select_please}</option>
+							<option value="-1">{lang key='system::system.select_please'}</option>
 							<!-- {html_options options=$ps_list selected=-1} -->
 						</select>
 					</div>
@@ -68,7 +68,7 @@ ecjia.merchant.order_query.init();
 					<label class="control-label col-lg-2">{$lang.label_shipping_status}</label>
 					<div class="col-lg-6">
 						<select class="form-control" name="shipping_status" id="select10">
-							<option value="-1">{$lang.select_please}</option>
+							<option value="-1">{lang key='system::system.select_please'}</option>
 							<!-- {html_options options=$ss_list selected=-1} -->
 						</select>
 					</div>
@@ -112,8 +112,8 @@ ecjia.merchant.order_query.init();
 				<div class="form-group">
 					<label class="control-label col-lg-2"></label>
 					<div class="col-lg-6">
-						<button class="btn btn-info" type="submit">{$lang.button_search}</button>
-						<button class="btn btn-info" type="reset">{$lang.button_reset}</button>
+						<button class="btn btn-info" type="submit">{lang key='system::system.button_search'}</button>
+						<button class="btn btn-info" type="reset">{lang key='system::system.button_reset'}</button>
 					</div>
 				</div>
 			</div>
@@ -138,7 +138,7 @@ ecjia.merchant.order_query.init();
 							<label class="control-label col-lg-4">{t}国家：{/t}</label>
 							<div class="col-lg-7">
 								<select class="form-control" name="country" data-toggle="regionSummary" data-url='{url path="shipping/region/init"}' data-type="1" data-target="region-summary-provinces" >
-									<option value="0">{$lang.select_please}</option>
+									<option value="0">{lang key='system::system.select_please'}</option>
 									<!-- {foreach from=$country_list item=country} -->
 									<option value="{$country.region_id}">{$country.region_name}</option>
 									<!-- {/foreach} -->
@@ -149,7 +149,7 @@ ecjia.merchant.order_query.init();
 							<label class="control-label col-lg-4">{t}省/市：{/t}</label>
 							<div class="col-lg-7">
 								<select class="region-summary-provinces form-control" name="province" data-toggle="regionSummary" data-type="2" data-target="region-summary-cities" >
-									<option value="0">{$lang.select_please}</option>
+									<option value="0">{lang key='system::system.select_please'}</option>
 								</select>
 							</div>
 						</div>
@@ -157,7 +157,7 @@ ecjia.merchant.order_query.init();
 							<label class="control-label col-lg-4">{t}市：{/t}</label>
 							<div class="col-lg-7">
 								<select class="region-summary-cities form-control" name="city" data-toggle="regionSummary" data-type="3" data-target="region-summary-districts" >
-									<option value="0">{$lang.select_please}</option>
+									<option value="0">{lang key='system::system.select_please'}</option>
 								</select>
 							</div>
 						</div>
@@ -165,7 +165,7 @@ ecjia.merchant.order_query.init();
 							<label class="control-label col-lg-4">{t}区：{/t}</label>
 							<div class="col-lg-7">
 								<select class="region-summary-districts form-control" name="district">
-									<option value="0">{$lang.select_please}</option>
+									<option value="0">{lang key='system::system.select_please'}</option>
 								</select>
 							</div>
 						</div>
@@ -191,7 +191,7 @@ ecjia.merchant.order_query.init();
 							<label class="control-label col-lg-4">{$lang.label_shipping}</label>
 							<div class="col-lg-7">
 								<select class="form-control" name="shipping_id" id="select4">
-									<option value="0">{$lang.select_please}</option>
+									<option value="0">{lang key='system::system.select_please'}</option>
 									<!-- {foreach from=$shipping_list item=shipping} -->
 									<option value="{$shipping.shipping_id}">{$shipping.shipping_name}</option>
 									<!-- {/foreach} -->
@@ -202,7 +202,7 @@ ecjia.merchant.order_query.init();
 							<label class="control-label col-lg-4">{$lang.label_payment}</label>
 							<div class="col-lg-7">
 								<select class="form-control" name="pay_id" id="select5">
-									<option value="0">{$lang.select_please}</option>
+									<option value="0">{lang key='system::system.select_please'}</option>
 									<!-- {foreach from=$pay_list item=pay} -->
 									<option value="{$pay.pay_id}">{$pay.pay_name}</option>
 									<!-- {/foreach} -->

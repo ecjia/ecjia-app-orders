@@ -232,7 +232,7 @@ ecjia.merchant.order.addedit();
 							<label class="control-label col-lg-2">{$lang.label_consignee}</label>
 							<div class="col-lg-6 form-inline" >
 								<input type="text" name="consignee" class="form-control" value="{$order.consignee}"/>
-								<span class="input-must">{$lang.require_field}</span>
+								<span class="input-must">{lang key='system::system.require_field'}</span>
 							</div>
 						</div>
 						<!--{if $exist_real_goods} -->
@@ -240,7 +240,7 @@ ecjia.merchant.order.addedit();
 							<label class="control-label col-lg-2">{t}详细地址 ：{/t}</label>
 							<div class="col-lg-6 form-inline" >
 								<input type="text" name="address" class="form-control" value="{$order.address}"/>
-								<span class="input-must">{$lang.require_field}</span>
+								<span class="input-must">{lang key='system::system.require_field'}</span>
 							</div>
 						</div>
 						<div class="form-group order-step">
@@ -248,7 +248,7 @@ ecjia.merchant.order.addedit();
 							<div class="col-lg-6 form-inline" >
 								<div class="form-group">
 									<select class="form-control" name="country" data-toggle="regionSummary" data-url='{url path="shipping/region/init"}' data-type="1" data-target="region-summary-provinces">
-										<option value="" selected="selected">{$lang.select_please}</option>
+										<option value="" selected="selected">{lang key='system::system.select_please'}</option>
 										<!--{foreach from=$country_list item=country} -->
 										<option value="{$country.region_id}" {if $order.country eq $country.region_id}selected{/if}>{$country.region_name}</option>
 										<!--{/foreach} -->
@@ -256,7 +256,7 @@ ecjia.merchant.order.addedit();
 								</div>
 								<div class="form-group">
 									<select class="region-summary-provinces form-control" name="province" data-toggle="regionSummary" data-type="2" data-target="region-summary-cities">
-										<option value="">{$lang.select_please}</option>
+										<option value="">{lang key='system::system.select_please'}</option>
 										<!--{foreach from=$province_list item=province} -->
 										<option value="{$province.region_id}" {if $order.province eq $province.region_id}selected{/if}>{$province.region_name}</option>
 										<!-- {/foreach} -->
@@ -264,7 +264,7 @@ ecjia.merchant.order.addedit();
 								</div>
 								<div class="form-group">
 									<select class="region-summary-cities form-control" name="city" data-toggle="regionSummary" data-type="3" data-target="region-summary-districts">
-										<option value="">{$lang.select_please}</option>
+										<option value="">{lang key='system::system.select_please'}</option>
 										<!-- {foreach from=$city_list item=city} -->
 										<option value="{$city.region_id}" {if $order.city eq $city.region_id}selected{/if}>{$city.region_name}</option>
 										<!-- {/foreach} -->
@@ -272,13 +272,13 @@ ecjia.merchant.order.addedit();
 								</div>
 								<div class="form-group">
 									<select class="region-summary-districts form-control" name="district" >
-										<option value="">{$lang.select_please}</option>
+										<option value="">{lang key='system::system.select_please'}</option>
 										<!-- {foreach from=$district_list item=district} -->
 										<option value="{$district.region_id}" {if $order.district eq $district.region_id}selected{/if}>{$district.region_name}</option>
 										<!-- {/foreach} -->
 									</select>
 								</div>
-								<span class="input-must">{$lang.require_field}</span>
+								<span class="input-must">{lang key='system::system.require_field'}</span>
 							</div>
 						</div>
 						<div class="order-step-formgroup form-group">
@@ -539,7 +539,7 @@ ecjia.merchant.order.addedit();
 								<td><div align="right"><strong>{$lang.label_bonus}</strong></div></td>
 								<td>
 									<select class="form-control" name="bonus_id">
-										<option value="0" {if $order.bonus_id eq 0}selected{/if}>{$lang.select_please}</option>
+										<option value="0" {if $order.bonus_id eq 0}selected{/if}>{lang key='system::system.select_please'}</option>
 										<!-- {foreach from=$available_bonus item=bonus} -->
 										<option value="{$bonus.bonus_id}" {if $order.bonus_id eq $bonus.bonus_id}selected{/if} money="{$bonus.type_money}">{$bonus.type_name} - {$bonus.type_money}</option>
 										<!--{/foreach}  -->

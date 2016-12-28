@@ -157,7 +157,7 @@ class mh_back extends ecjia_merchant {
 		$this->assign('goods_list'			, $goods_list);
 		$this->assign('back_id'				, $back_id); // 发货单id
 		/* 显示模板 */
-		$this->assign('action_link'			, array('href' => RC_Uri::url('orders/mh_back/init'), 'text' => RC_Lang::lang('10_back_order')));
+		$this->assign('action_link'			, array('href' => RC_Uri::url('orders/mh_back/init'), 'text' => RC_Lang::get('system::system.10_back_order')));
 		
 		$this->assign_lang();
 		$this->display('back_info.dwt');

@@ -64,13 +64,13 @@
 							</tr>
 							<tr>
 								<td><div align="right"><strong>{lang key='orders::order.label_shipping'}</strong></div></td>
-								<td>{if $exist_real_goods}{if $delivery_order.shipping_id gt 0}{$delivery_order.shipping_name}{else}{$lang.require_field}{/if} {if $delivery_order.insure_fee gt 0}{$lang.label_insure_fee}{$delivery_order.formated_insure_fee}{/if}{/if}</td>
+								<td>{if $exist_real_goods}{if $delivery_order.shipping_id gt 0}{$delivery_order.shipping_name}{else}{lang key='system::system.require_field'}{/if} {if $delivery_order.insure_fee gt 0}{$lang.label_insure_fee}{$delivery_order.formated_insure_fee}{/if}{/if}</td>
 								<td><div align="right"><strong>{lang key='orders::order.label_shipping_fee'}</strong></div></td>
 								<td>{$delivery_order.shipping_fee}</td>
 							</tr>
 							<tr>
 								<td><div align="right"><strong>{lang key='orders::order.label_insure_yn'}</strong></div></td>
-								<td>{if $insure_yn}{$lang.yes}{else}{$lang.no}{/if}</td>
+								<td>{if $insure_yn}{lang key='system::system.yes'}{else}{lang key='system::system.no'}{/if}</td>
 								<td><div align="right"><strong>{lang key='orders::order.label_insure_fee'}</strong></div></td>
 								<td>{$delivery_order.insure_fee|default:0.00}</td>
 							</tr>

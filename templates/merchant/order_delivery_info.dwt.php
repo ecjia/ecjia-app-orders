@@ -65,7 +65,7 @@
 						</tr>
 						<tr>
 							<td><div align="right"><strong>{$lang.label_insure_yn}</strong></div></td>
-							<td>{if $insure_yn}{$lang.yes}{else}{$lang.no}{/if}</td>
+							<td>{if $insure_yn}{lang key='system::system.yes'}{else}{lang key='system::system.no'}{/if}</td>
 							<td><div align="right"><strong>{$lang.label_insure_fee}</strong></div></td>
 							<td>{$order.insure_fee|default:0.00}</td>
 						</tr>

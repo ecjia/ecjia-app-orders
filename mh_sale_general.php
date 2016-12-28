@@ -157,13 +157,8 @@ class mh_sale_general extends ecjia_merchant {
 		            unset($templateCount[$k]['order_amount']);
 		        }
 		    } else {
-	            $templateCount = array(
-	                array(
-	                    'period' => '没有数据',
-	                    'order_amount' => '0',
-	                )
-	            );
-		    }
+				$templateCount = null;
+			}
 			
 		} else {
 		    if ($templateCount) {
@@ -171,13 +166,8 @@ class mh_sale_general extends ecjia_merchant {
 		            unset($templateCount[$k]['order_count']);
 		        }
 		    } else {
-		        $templateCount = array(
-    		        array(
-    		            'period' => '没有数据',
-    		            'order_count' => 0,
-    		        )
-		        );
-		    }
+				$templateCount = null;
+			}
 		}
 		echo json_encode($templateCount);
 	}

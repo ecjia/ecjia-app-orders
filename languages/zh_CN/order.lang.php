@@ -70,6 +70,7 @@ return array(
 	'op_cancel' 	=> '取消',
 	'op_invalid' 	=> '无效',
 	'op_return' 	=> '退货',
+	'already_shipped'	=>	'已发货',
 	'op_unpay' 		=> '设为未付款',
 	'op_unship' 	=> '未发货',
 	
@@ -220,6 +221,7 @@ return array(
 	'order_splited_sms' => '您的订单%s,%s正在%s [%s',
 	'order_removed' 	=> '订单删除成功',
 	'return_list' 		=> '返回订单列表',
+	'detailed_information'	=>	'详细信息',
 	
 	/* 订单处理提示 */
 	'surplus_not_enough'	=> '该订单使用 %s 余额支付，现在用户余额不足',
@@ -273,6 +275,7 @@ return array(
 	'invalid_order' 	=> '有订单无法设置为无效',
 	'cancel_order' 		=> '有订单无法取消',
 	'remove_order' 		=> '有订单无法被移除',
+	'remove'			=>	'移除',
 	'check_info' 		=> '查看详情',
 	
 	/* 编辑订单打印模板 */
@@ -440,6 +443,8 @@ return array(
 		1 	=> '退货',
 		2 	=> '正常',
 	),
+	
+	'normal'			=>	'正常',
 	
 	/* 发货单标签 */
 	'label_delivery_status' => '发货单状态',
@@ -746,6 +751,9 @@ return array(
     'label_responsible_person' 	=> '负责人：',
     'label_contact_mobile'		=> '联系方式：',
     'label_company_name'		=> '公司名称：',
+    
+    'label_expect_shipping_time'=> '期望送达时间：',
+    'label_express_user'		=> '配送员：',
     
     'place_order'				=> '订单提交成功',
     'unpay'						=> '待付款',

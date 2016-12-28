@@ -668,7 +668,11 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
 	/* 检查参数 */
 	$user_id = $order['user_id'];
 	if ($user_id == 0 && $refund_type == 1) {
-		ecjia_admin::$controller->showmessage(RC_Lang::get('orders::order.refund_error_notice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		if (isset($_SESSION['store_id'])) {
+			return ecjia_merchant::$controller->showmessage(__('匿名用户不能返回退款到帐户余额！') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		} else {
+			return ecjia_admin::$controller->showmessage(RC_Lang::get('orders::order.refund_error_notice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		}
 	}
 
 	$amount = $refund_amount > 0 ? $refund_amount : $order['money_paid'];
@@ -677,7 +681,11 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
 	}
 
 	if (!in_array($refund_type, array(1, 2, 3))) {
-		ecjia_admin::$controller->showmessage(RC_Lang::get('orders::order.error_notice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		if (isset($_SESSION['store_id'])) {
+			return ecjia_merchant::$controller->showmessage(__('操作有误！请重新操作！') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		} else {
+			return ecjia_admin::$controller->showmessage(RC_Lang::get('orders::order.error_notice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		}
 	}
 
 	/* 备注信息 */
@@ -714,7 +722,7 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
 			'add_time'		=> RC_Time::gmtime(),
 			'user_note'		=> $refund_note,
 			'process_type'	=> SURPLUS_RETURN,
-			'admin_user'	=> $_SESSION['admin_name'],
+			'admin_user'	=> isset($_SESSION['store_id']) ? $_SESSION['staff_name'] : $_SESSION['admin_name'],
 			'admin_note'	=> sprintf(RC_Lang::lang('order_refund'), $order['order_sn']),
 			'is_paid'		=> 0
 		);
@@ -1077,14 +1085,23 @@ function send_order_bonus($order_id) {
 		if ($count > 0) {
 			$tpl_name = 'send_bonus';
 			$tpl = RC_Api::api('mail', 'mail_template', $tpl_name);
+			if (isset($_SESSION['store_id'])) {
+				ecjia_admin::$controller->assign('user_name'	, $user['user_name']);
+				ecjia_admin::$controller->assign('count'		, $count);
+				ecjia_admin::$controller->assign('money'		, $money);
+				ecjia_admin::$controller->assign('shop_name'	, ecjia::config('shop_name'));
+				ecjia_admin::$controller->assign('send_date'	, RC_Time::local_date(ecjia::config('date_format')));
 
-			ecjia_front::$controller->assign('user_name', $user['user_name']);
-			ecjia_front::$controller->assign('count', $count);
-			ecjia_front::$controller->assign('money', $money);
-			ecjia_front::$controller->assign('shop_name', ecjia::config('shop_name'));
-			ecjia_front::$controller->assign('send_date', RC_Time::local_date(ecjia::config('date_format')));
+				$content = ecjia_admin::$controller->fetch_string($tpl['template_content']);
+			} else {
+				ecjia_front::$controller->assign('user_name', $user['user_name']);
+				ecjia_front::$controller->assign('count', $count);
+				ecjia_front::$controller->assign('money', $money);
+				ecjia_front::$controller->assign('shop_name', ecjia::config('shop_name'));
+				ecjia_front::$controller->assign('send_date', RC_Time::local_date(ecjia::config('date_format')));
 
-			$content = ecjia_front::$controller->fetch_string($tpl['template_content']);
+				$content = ecjia_front::$controller->fetch_string($tpl['template_content']);
+			}
 			RC_Mail::send_mail($user['user_name'], $user['email'] , $tpl['template_subject'], $content, $tpl['is_html']);
 		}
 	}
@@ -2527,7 +2544,8 @@ function sc_unserialize_config($cfg)
  */
 function assign_adminlog_content() {
     ecjia_admin_log::instance()->add_action('produce', RC_Lang::get('orders::order.produce'));
-
+    ecjia_admin_log::instance()->add_action('batch_setup', '批量设置');
+    
     ecjia_admin_log::instance()->add_object('delivery_order', RC_Lang::get('orders::order.delivery_sn'));
     ecjia_admin_log::instance()->add_object('back_order', RC_Lang::get('orders::order.back_sn'));
     ecjia_admin_log::instance()->add_object('order_payment', RC_Lang::get('orders::order.order_payment'));

@@ -38,7 +38,6 @@
 					year = myDate.getFullYear(),
 					month = myDate.getMonth()+1,
 					date = myDate.getDate();
-					console.log(String(date).length);
 					if(String(date).length < 2) date = '0'+date;
 					time = year + '-' + month + '-' + date;
 				if(start_date > time){

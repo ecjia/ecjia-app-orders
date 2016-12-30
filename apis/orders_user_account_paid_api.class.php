@@ -45,13 +45,12 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		
 		/* 订单详情 */
 		$order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));
-	//get_order_detail($order_id, $user_id);
 		if ($user_id != $order_info['user_id']) {
 			return new ecjia_error('error_order_detail', RC_Lang::get('orders::order.error_order_detail'));
 		}
 		/* 会员详情*/
 		$user_info = RC_Api::api('user', 'user_info', array('user_id' => $user_id));
-		//user_info($user_id);
+
 		/* 检查订单是否已经付款 */
 		if ($order_info['pay_status'] == PS_PAYED && $order_info['pay_time']) {
 			return new ecjia_error('order_paid', RC_Lang::get('orders::order.pay_repeat_message'));

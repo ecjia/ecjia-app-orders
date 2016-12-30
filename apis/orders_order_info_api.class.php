@@ -27,9 +27,6 @@ class orders_order_info_api extends Component_Event_Api {
 	 * @return  array   订单信息（金额都有相应格式化的字段，前缀是formated_）
 	 */
 	private function order_info($order_id, $order_sn = '', $store_id = 0, $user_id = 0) {
-// 	    RC_Loader::load_app_func('global', 'goods');
-// 	    $db = RC_Loader::load_app_model('order_info_model','orders');
-
 	    $db_order_info = RC_DB::table('order_info');
 	    /* 计算订单各种费用之和的语句 */
 	    $total_fee = " (goods_amount - discount + tax + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee) AS total_fee ";
@@ -37,10 +34,8 @@ class orders_order_info_api extends Component_Event_Api {
 
 	    $db_order_info->selectRaw('*, '.$total_fee);
 	    if ($order_id > 0) {
-// 	        $order = $db->field('*,'.$total_fee)->find(array('order_id' => $order_id));
 	        $db_order_info->where('order_id', $order_id);
 	    } else {
-// 	        $order = $db->field('*,'.$total_fee)->find(array('order_sn' => $order_sn));
 	        $db_order_info->where('order_sn', $order_sn);
 	    }
         if(!empty($store_id)){
@@ -122,7 +117,6 @@ class orders_order_info_api extends Component_Event_Api {
 	        }
 	        
 	        /* 获取订单中实体商品数量 */
-// 	        $order['exist_real_goods'] = exist_real_goods($order_id);
 	        $order['exist_real_goods'] = RC_DB::table('order_goods')->where('order_id', $order_id)->where('is_real', 1)->count();
 	        
 	        $pay_method = RC_Loader::load_app_class('payment_method', 'payment');
@@ -214,7 +208,6 @@ class orders_order_info_api extends Component_Event_Api {
 	        }
 	    }
 	    
-//         $order = empty($order) ? false : $order;
 	    return $order;
 	}
 }

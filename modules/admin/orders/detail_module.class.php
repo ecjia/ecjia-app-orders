@@ -25,7 +25,6 @@ class detail_module extends api_admin implements api_interface {
 		RC_Loader::load_app_func('admin_order', 'orders');
 
 		/* 订单详情 */
-// 		$order = order_info($order_id);
 		$order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => $order_sn, 'store_id' => $_SESSION['store_id']));
 
 		if ($order === false) {
@@ -73,13 +72,6 @@ class detail_module extends api_admin implements api_interface {
 					$goods_lists = array();
 					if (!empty($order_goods)) {
 						foreach ($order_goods as $v) {
-// 							if ($v['ru_id'] > 0) {
-// 								$db_msi = RC_Loader::load_app_model('merchants_shop_information_model', 'seller');
-// 								$info = $db_msi->field('CONCAT(shoprz_brandName,shopNameSuffix) as seller_name')->where(array('user_id' => $v['ru_id']))->find();
-// 								$seller_name = $info['seller_name'];
-// 							} else {
-// 								$seller_name = '自营';
-// 							}
 
 							$goods_info = $goods_db->find(array('goods_id' => $v['goods_id']));
 
@@ -110,7 +102,6 @@ class detail_module extends api_admin implements api_interface {
 							'formated_shipping_fee'		=> price_format($val['shipping_fee'], false),
 							'formated_discount'			=> price_format($val['discount'], false),
 							'status'					=> $order_status.','.RC_Lang::lang('ps/'.$val['pay_status']).','.RC_Lang::lang('ss/'.$val['shipping_status']),
-	// 						'goods_number'				=> $val['goods_num'],
 							'create_time' 				=> RC_Time::local_date(ecjia::config('date_format'), $val['add_time']),
 							'goods_items' 				=> $goods_lists
 					);
@@ -120,11 +111,7 @@ class detail_module extends api_admin implements api_interface {
 		$ordergoods_viewdb = RC_Model::model('orders/order_goods_goods_viewmodel');
 		$goods_list = $ordergoods_viewdb->where(array('order_id' => $order['order_id']))->select();
 		if (!empty($goods_list)) {
-// 			RC_Loader::load_app_func('global', 'goods');
 			foreach ($goods_list as $k =>$v) {
-// 				if ($v['extension_code'] == 'package_buy') {
-// 					$v['package_goods_list'] = get_package_goods($v['goods_id']);
-// 				}
 				$goods_list[$k] = array(
 						'id'	=> $v['goods_id'],
 						'name'	=> $v['goods_name'],

@@ -319,7 +319,6 @@
 		
 		refundsubmit : function() {
 			var $form = $('form[name="refundForm"]');
-            // console.log($form);
 			/* 给表单加入submit事件 */
 			var option = {
 				rules:{
@@ -471,23 +470,6 @@
 						}
 						app.order.search_opt();
 						app.order.click_search_goods();
-//						if (data.state == "error") {
-//							ecjia.merchant.showmessage(data);
-//						} else {
-//							if ($('div').hasClass('ui_showmessage')) {
-//								$(".ui_showmessage").remove();
-//							}
-//							/*JQ给下拉框赋值*/
-//							/* 清空之前的值*/
-//							$("#goodslist").empty();  
-//							var option = '';
-//							$(data).each(function(){
-//								option = "<option value=\""+ this.goods_id +"\" >"+ this.name +"</option>";
-//								$("#goodslist").append(option);  
-//							});
-//							$("#goodslist").trigger("liszt:updated");
-//							app.order.change();
-//						} 
 					}
 				});
 			});
@@ -518,7 +500,6 @@
 					$("#goods_cat").text(goods.cat_name);
 					$("#goods_number").html(goods.goods_number);
 					goods.brand_name = goods.brand_name == null ? '无品牌' : goods.brand_name.trim()==''?'无品牌':goods.brand_name;
-//					$("#goods_brand").text(goods.brand_name);
 					var img = '<img src="'+ goods.goods_img + '" class="w130"/>'
 					$("#goods_img").html(img);
 					// 显示价格：包括市场价、本店价（促销价）、会员价
@@ -592,7 +573,6 @@
 					$("input[name='spec_count']").val(specCnt);
 					$("#goods_attr").html(attrHtml.trim()== "" ? '暂无其他属性' : attrHtml);
 					$("#sel_goodsattr").html(selattrHtml);
-//					$("input[type='radio'],input[type='checkbox']").uniform();
 					$(".goods_info").removeClass('ecjiaf-dn');
 				}
 			});
@@ -698,10 +678,6 @@
 			}
 		},
 		toggle_address: function() {
-//			$('.add_address,.cancel_address').on('click',function(){
-//				$("#add_address,.add_address").slideToggle();
-//				
-//			});
 			$("input[name='user_address']").on('change',function(){
 				if ($(this).val() =='-1') {
 					$("#add_address").show("normal");
@@ -710,31 +686,6 @@
 				}
 			})
 		},
-//		consigneeForm : function() {
-//			/*验证收货人信息*/
-//			var $this = $("form[name='addaddressForm']");
-//			var option = {	 
-//					rules : {
-//						consignee 	: {required : true},
-//						email		: {required : true},
-//						tel			: {required : true},
-//						address		: {required : true},
-//						district	: {required : true}
-//					},
-//					messages : {
-//						consignee	: {required : "请填写收货人！"},
-//						email		: {required : "请输入电子邮件！"},
-//						tel			: {required : "请输入电话号码！"},
-//						address		: {required : "请输入详细地址！"},
-//						district	: {required : "请选择所在地区！"}
-//					},
-//					submitHandler:function(){
-//						app.order.submitConsigneeForm($this);
-//					}
-//			}
-//			var options = $.extend(ecjia.merchant.defaultOptions.validate, option);
-//			$this.validate(options);			
-//		},
 		consigneelistForm : function() {
 			var $this = $("form[name='consigneeForm']");
 			
@@ -818,7 +769,6 @@
 					}
 				});
 				
-//				$.uniform.update && $.uniform.update($('input[name="payment"]'));
 			});
 			if ($("input[name='shipping']").is(':checked')) {
 				var is_cod = $(this).attr("data-cod");
@@ -832,28 +782,8 @@
 						$(this).attr('disabled', true);
 					}
 				});
-//				
-//				$.uniform.update && $.uniform.update($('input[name="payment"]'));
 			}
 		},
-//		paymentForm : function() {
-//			$("form[name='paymentForm']").on('submit', function(e){
-//				e.preventDefault();
-//				if (app.order.checkPayment()) {
-//					$(this).ajaxSubmit({
-//						dataType:"json",
-//						success:function(data) {
-//							if(data.state == "success") {
-//								var url = data.url;
-//								ecjia.pjax(url);
-//							} else {
-//								ecjia.merchant.showmessage(data);
-//							}
-//						}
-//					});	
-//				}
-//			});
-//		},
 		checkPayment : function() {
 			if (!$("input[name='payment']:radio").is(':checked')) {
 				var data = {

@@ -55,10 +55,6 @@ class list_module extends api_admin implements api_interface {
 					$where = array_merge($order_query->order_invalid('oi.'),$order_query->order_canceled('oi.'));
 					break;
 				case 'whole':
-					//if ($filter['composite_status'] != -1) {
-					//	$this->where['o.order_status'] = $filter['composite_status'];
-					//}
-					//$where = 'oi.order_status = -1';
 					break;
 			}
 
@@ -82,23 +78,16 @@ class list_module extends api_admin implements api_interface {
 						),
 				);
 
-				//if (isset($_SESSION['ru_id']) && $_SESSION['ru_id'] > 0) {
-				//	$where['og.ru_id'] = $_SESSION['ru_id'];
-				//	$where[] = 'oii.order_id is null';
-				//}
-
 				if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
 					$where['oi.store_id'] = $_SESSION['store_id'];
 				}
 
 				/*获取记录条数*/
-				//$record_count = $db_orderinfo_view->join(array('order_info', 'order_goods'))->where($where)->count('DISTINCT oi.order_id');
 				$record_count = $db_orderinfo_view->join(array('order_goods'))->where($where)->count('DISTINCT oi.order_id');
 
 				//实例化分页
 				$page_row = new ecjia_page($record_count, $size, 6, '', $page);
 
-				//$order_id_group = $db_orderinfo_view->field('oi.order_id')->join(array('order_info', 'order_goods'))->where($where)->limit($page_row->limit())->order(array('oi.add_time' => 'desc'))->group('oi.order_id')->select();
 				$order_id_group = $db_orderinfo_view->field('oi.order_id')->join(array('order_goods'))->where($where)->limit($page_row->limit())->order(array('oi.add_time' => 'desc'))->group('oi.order_id')->select();
 
 				if (empty($order_id_group)) {
@@ -107,8 +96,6 @@ class list_module extends api_admin implements api_interface {
 					foreach ($order_id_group as $val) {
 						$where['oi.order_id'][] = $val['order_id'];
 					}
-					//$data = $db_orderinfo_view->field($field)->join(array('order_info', 'order_goods', 'goods'))->where($where)->order(array('oi.add_time' => 'desc'))->select();
-					//$data = $db_orderinfo_view->field($field)->join(array('order_goods', 'goods'))->where($where)->order(array('oi.add_time' => 'desc'))->group('oi.order_id')->select();
 					
 					$data = $db_orderinfo_view->field($field)->join(array('order_info', 'order_goods', 'goods'))->where($where)->order(array('oi.add_time' => 'desc'))->select();
 				}

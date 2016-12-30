@@ -20,7 +20,6 @@ class pay_module extends api_front implements api_interface {
 		}
 		
 		/* 订单详情 */
-// 		$order = get_order_detail($order_id, $user_id, 'front');
 		$order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));
 		if (is_ecjia_error($order)) {
 			return $order;

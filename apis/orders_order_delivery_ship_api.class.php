@@ -47,7 +47,6 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 		
 		/* 检查此单发货商品库存缺货情况 */
 		$virtual_goods			= array();
-// 		$delivery_stock_result	= $db_delivery->join(array('goods', 'products'))->where(array('dg.delivery_id' => $delivery_id))->group('dg.product_id')->select();
 		$delivery_stock_result = $db_delivery_goods
 			->leftJoin('goods as g', RC_DB::raw('dg.goods_id'), '=', RC_DB::raw('g.goods_id'))
 			->leftJoin('products as p', RC_DB::raw('dg.product_id'), '=', RC_DB::raw('p.product_id'))
@@ -78,15 +77,6 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 				}
 			}
 		} else {
-// 			$db_delivery->view = array(
-// 				'goods' => array(
-// 					'type'		=> Component_Model_View::TYPE_LEFT_JOIN,
-// 					'alias'		=> 'g',
-// 					'field'		=> 'dg.goods_id, dg.is_real, SUM(dg.send_number) AS sums, g.goods_number, g.goods_name, dg.send_number',
-// 					'on'		=> 'dg.goods_id = g.goods_id ',
-// 				)
-// 			);
-// 			$delivery_stock_result = $db_delivery->where(array('dg.delivery_id' => $delivery_id))->group('dg.goods_id')->select();
 			
 			$delivery_stock_result = $db_delivery_goods
 				->leftJoin('goods as g', RC_DB::raw('dg.goods_id'), '=', RC_DB::raw('g.goods_id'))
@@ -135,13 +125,11 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 						$data = array(
 							'product_number' => $value['storage'] - $value['sums'],
 						);
-// 						$this->db_products->where(array('product_id' => $value['product_id']))->update($data);
 						RC_DB::table('products')->where('product_id', $value['product_id'])->update($data);
 					} else {
 						$data = array(
 							'goods_number' => $value['storage'] - $value['sums'],
 						);
-// 						$this->db_goods->where(array('goods_id' => $value['goods_id']))->update($data);
 						RC_DB::table('goods')->where('goods_id', $value['goods_id'])->update($data);
 					}
 				}
@@ -153,7 +141,6 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 		$invoice_no = trim($invoice_no, '<br>');
 		$_delivery['invoice_no']	= $invoice_no;
 		$_delivery['status']		= 0;	/* 0，为已发货 */
-// 		$result = $this->db_delivery_order->where(array('delivery_id' => $delivery_id))-> update($_delivery);
 		$result = RC_DB::table('delivery_order')->where('delivery_id', $delivery_id)->update($_delivery);
 		
 		if (!$result) {
@@ -198,7 +185,6 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 			$cfg = ecjia::config('send_ship_email');
 			if ($cfg == '1') {
 				$order['invoice_no'] = $invoice_no;
-				//$tpl = get_mail_template('deliver_notice');
 				$tpl_name = 'deliver_notice';
 				$tpl   = RC_Api::api('mail', 'mail_template', $tpl_name);
 		

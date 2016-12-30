@@ -47,11 +47,6 @@ class orders_order_list_api extends Component_Event_Api {
          */
         $dbview_order_info = RC_Model::model('orders/order_info_viewmodel');
         $dbview_order_info->view = array(
-//             'order_info' => array(
-//                 'type'    => Component_Model_View::TYPE_LEFT_JOIN,
-//                 'alias'    => 'oii',
-//                 'on'    => 'oi.order_id = oii.main_order_id'
-//             ),
             'order_goods' => array(
                 'type'  =>    Component_Model_View::TYPE_LEFT_JOIN,
                 'alias'    =>    'og',
@@ -71,7 +66,6 @@ class orders_order_list_api extends Component_Event_Api {
         );
 
         RC_Loader::load_app_class('order_list', 'orders', false);
-//         $where = array('oi.user_id' => $user_id, 'oii.order_id is null');
         $where = array('oi.user_id' => $user_id, 'oi.is_delete' => 0);
 
         if (!empty($type)) {
@@ -79,12 +73,10 @@ class orders_order_list_api extends Component_Event_Api {
             $where = array_merge($where, order_list::$order_type('oi.'));
         }
 
-//         $record_count = $dbview_order_info->join(array('order_info'))->where($where)->count('*');
         $record_count = $dbview_order_info->join(null)->where($where)->count('*');
         //实例化分页
         $page_row = new ecjia_page($record_count, $size, 6, '', $page);
 
-//         $order_group = $dbview_order_info->join(array('order_info'))->field('oi.order_id')->where($where)->order(array('oi.add_time' => 'desc'))->limit($page_row->limit())->select();
         $order_group = $dbview_order_info->join(null)->field('oi.order_id')->where($where)->order(array('oi.add_time' => 'desc'))->limit($page_row->limit())->select();
         if (empty($order_group)) {
             return array('order_list' => array(), 'page' => $page_row);
@@ -97,7 +89,6 @@ class orders_order_list_api extends Component_Event_Api {
 
         $field = 'oi.order_id, oi.order_sn, oi.order_status, oi.shipping_status, oi.pay_status, oi.add_time, (oi.goods_amount + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee + oi.tax - oi.integral_money - oi.bonus - oi.discount) AS total_fee, oi.discount, oi.integral_money, oi.bonus, oi.shipping_fee, oi.pay_id, oi.order_amount'.
         ', og.goods_id, og.goods_name, og.goods_attr, og.goods_price, og.goods_number, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, ssi.store_id, ssi.merchants_name, ssi.manage_mode';
-//         array('order_info', 'order_goods', 'goods', 'term_relationship')
         $res = $dbview_order_info->join(array('order_goods', 'goods', 'store_franchisee'))->field($field)->where($where)->order(array('oi.order_id' => 'desc'))->select();
         RC_Lang::load('orders/order');
 
@@ -106,7 +97,6 @@ class orders_order_list_api extends Component_Event_Api {
         if (!empty($res)) {
             $order_id = $goods_number = $goods_type_number = 0;
             $payment_method = RC_Loader::load_app_class('payment_method', 'payment');
-//             $msi_dbview = RC_Loader::load_app_model('merchants_shop_information_viewmodel', 'seller');
             foreach ($res as $row) {
                 $attr = array();
                 if (isset($row['goods_attr']) && !empty($row['goods_attr'])) {
@@ -119,7 +109,6 @@ class orders_order_list_api extends Component_Event_Api {
                         }
                     }
                 }
-//                 o5,s1,p2
                 if ($order_id == 0 || $row['order_id'] != $order_id ) {
                     $goods_number = $goods_type_number = 0;
                     if ($row['pay_id'] > 0) {
@@ -166,14 +155,6 @@ class orders_order_list_api extends Component_Event_Api {
                         $label_order_status = RC_Lang::get('orders::order.label_canceled');
                         $status_code = 'canceled';
                     }
-
-//                     if ($row['ru_id'] > 0) {
-//                         $field ='msi.user_id, ssi.*, CONCAT(shoprz_brandName,shopNameSuffix) as seller_name';
-//                         $seller_info = $msi_dbview->join(array('seller_shopinfo'))
-//                                             ->field($field)
-//                                             ->where(array('msi.user_id' => $row['ru_id']))
-//                                             ->find();
-//                     }
 
                     $orders[$row['order_id']] = array(
                         'seller_id'             => !empty($row['store_id']) ? intval($row['store_id']) : 0,

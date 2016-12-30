@@ -23,8 +23,6 @@ class orders_admin_plugin {
 	        RC_Cache::app_cache_set('admin_dashboard_order_list', $order_list, 'orders', 120);
 	    }
 		
-// 		RC_Lang::load('orders/order');
-		
 	    ecjia_admin::$controller->assign('title', $title);
 	    ecjia_admin::$controller->assign('order_count', $order_list['filter']['record_count']);
 	    ecjia_admin::$controller->assign('order_list', $order_list['orders']);
@@ -48,15 +46,12 @@ class orders_admin_plugin {
 			)
 		);
 		
-// 		$db_order_viewmodel = RC_Loader::load_app_model('order_pay_viewmodel', 'orders');
-// 		$month_order = $db->where(array('oi.add_time' => array('gt' => RC_Time::gmtime() - 2592000)))->count('distinct oi.order_id');
 		$month_order = RC_DB::table('order_info as oi')
 			->leftJoin('order_goods as g', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('g.order_id'))
 			->where(RC_DB::raw('oi.add_time'), '>=', RC_Time::gmtime() - 2592000)
 			->count(RC_DB::raw('distinct oi.order_id'));
 			
 		$new = RC_Time::gmtime();
-// 		$order_money = $db_order_viewmodel->field('pl.order_amount')->where(array('oi.add_time' => array('gt' => $new-3600*24*30, 'lt' => $new), 'pl.is_paid' => 1))->group(array('oi.order_id'))->select();
 		$order_money = RC_DB::table('order_info as oi')
 			->leftJoin('pay_log as pl', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('pl.order_id'))
 			->selectRaw('pl.order_amount')
@@ -103,9 +98,6 @@ class orders_admin_plugin {
 	        $order_query = RC_Loader::load_app_class('order_query','orders');
 			$db	= RC_Model::model('orders/order_info_model');
 			
-// 			$db_good_booking = RC_Loader::load_app_model('goods_booking_model','goods');
-// 			$db_user_account = RC_Loader::load_app_model('user_account_model', 'user');
-
 			/* 已完成的订单 */
 			$order['finished']		= $db->where($order_query->order_finished())->count();
 			/* 待发货的订单： */
@@ -119,7 +111,6 @@ class orders_admin_plugin {
 			/* 缺货登记 */
 // 			$order['booking_goods_count'] = $db_good_booking->where(array('is_dispose' => '0'))->count();
 			/* 退款申请 */
-// 			$order['new_repay_count'] = $db_user_account->where(array('process_type' => SURPLUS_RETURN ,'is_paid' =>'0'))->count();
 			$order['new_repay_count'] = RC_DB::table('user_account')->where('process_type', SURPLUS_RETURN)->where('is_paid', 0)->count();
 	    	
 	        RC_Cache::app_cache_set('admin_dashboard_order_stats', $order, 'orders', 120);
@@ -181,7 +172,6 @@ class orders_admin_plugin {
 RC_Hook::add_action( 'admin_dashboard_top', array('orders_admin_plugin', 'widget_admin_dashboard_shopchart'));
 RC_Hook::add_action( 'admin_dashboard_left', array('orders_admin_plugin', 'widget_admin_dashboard_ordersstat') );
 RC_Hook::add_action( 'admin_dashboard_left', array('orders_admin_plugin', 'widget_admin_dashboard_orderslist') );
-// RC_Hook::add_action( 'ecjia_admin_finish_launching', array('orders_admin_plugin', 'admin_remind_order') );
 RC_Hook::add_filter( 'stats_admin_menu_api', array('orders_admin_plugin', 'orders_stats_admin_menu_api') );
 
 // end

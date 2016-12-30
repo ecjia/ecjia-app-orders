@@ -7,9 +7,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 defined('IN_ECJIA') or exit('No permission resources.');
 
 class order_list{
-	
-// 	private $where = array();//where条件数组
-	
 	/* 已完成订单 */
 	public static function order_finished($alias = '') {
 		$where = array();
@@ -79,7 +76,6 @@ class order_list{
 	/* 已发货订单：不论是否付款 */
 	public static function order_shipped($alias = '') {
 		$where = array();
-//         $where[$alias.'order_status'] = OS_CONFIRMED;
         $where[$alias.'shipping_status'] = array(SS_SHIPPED);
         return $where;
 	}
@@ -104,22 +100,6 @@ class order_list{
     	$where[$alias.'order_status'] = OS_CANCELED;
     	return $where;
     }
-
-	
-	
-// 	/**
-// 	 * 生成查询订单总金额的字段
-// 	 * @param   string  $alias  order表的别名（包括.例如 o.）
-// 	 * @return  string
-// 	 */
-// 	function order_amount_field($alias = '') {
-// 	    return "   {$alias}goods_amount + {$alias}tax + {$alias}shipping_fee" .
-// 	           " + {$alias}insure_fee + {$alias}pay_fee + {$alias}pack_fee" .
-// 	           " + {$alias}card_fee ";
-// 	}
-	
-	
-	 
 }
 
 // end

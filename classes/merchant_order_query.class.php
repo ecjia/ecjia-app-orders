@@ -93,7 +93,7 @@ class merchant_order_query extends order {
 
 	public function order_where($filter) {
 		if ($filter['keywords']) {
-// 			$this->where[] = "o.seller_id = ".$_SESSION['seller_id']." AND o.order_sn like '%".mysql_like_quote($filter['keywords'])."%' or o.consignee like '%".mysql_like_quote($filter['keywords'])."%'";
+
 		} else {
 			if ($filter['order_sn']) {
 				$this->where['o.order_sn'] = array('like' => '%'.mysql_like_quote($filter['order_sn']).'%');
@@ -166,8 +166,6 @@ class merchant_order_query extends order {
 			$this->where['o.extension_code'] = 'group_buy';
 			$this->where['o.extension_id'] = $filter['group_buy_id'];
 		}
-// 		$this->where['o.seller_id'] = $_SESSION['seller_id'];
-		
 		return $this->where;
 	}
 
@@ -219,7 +217,6 @@ public function get_order_list($pagesize = '15') {
 		$filter['start_time'] 			= empty($args['start_time']) 		? '' : (strpos($args['start_time'], '-') > 0 ?  RC_Time::local_strtotime($_REQUEST['start_time']) : $_REQUEST['start_time']);
 		$filter['end_time'] 			= empty($args['end_time']) 			? '' : (strpos($args['end_time'], '-') > 0 ?  RC_Time::local_strtotime($_REQUEST['end_time']) : $_REQUEST['end_time']);
 
-// 		$this->where = array('o.extension_code' => '', 'o.extension_id' => 0);
 		$this->where = array_merge($this->where, $this->order_where($filter));
 
 		//综合状态
@@ -250,54 +247,11 @@ public function get_order_list($pagesize = '15') {
 			if ($filter['composite_status'] != -1) {
 				$this->where['o.order_status'] = $filter['composite_status'];
 			}
-			//$this->where = array_merge($this->where,$this->order_await_pay());
 		};
 
-
-		//		setcookie('ECJIA[composite_status]', urlencode(serialize($filter['composite_status'])), RC_Time::gmtime()+ 36000);
 		RC_Cookie::set('composite_status', $filter['composite_status']);
 
-		/* 如果管理员属于某个办事处，只列出这个办事处管辖的订单 */
-		//注释by  will.chen  关于办事处的先注释
-		//        $agency_id = $db_admin->where(array('user_id' => $_SESSION['admin_id']))->get_field('agency_id');
-		//         if ($agency_id > 0) {
-		//             $this->where['o.agency_id'] = $agency_id;
-		//         }
-		/* 记录总数 */
-		//         if ($filter['user_name']) {
-
-		//         } else {
-		//             $count = $dbview->join(null)->where($this->where)->count();
-		//         }
 		$db_orderview    = RC_Loader::load_app_model('order_info_viewmodel','orders');
-		
-		//$rs = $db_orderview->field('oi.order_id, oi.main_order_id')->where(array('g.ru_id' => $_SESSION['ru_id']))->select();
-		//$rs = $db_orderview->field('oi.order_id, oi.main_order_id')->where(array('oi.seller_id' => $_SESSION['seller_id']))->select();
-		//if (!empty($rs)) {
-		//	foreach($rs as $value){
-		//		if(empty($value['main_order_id'])){
-		//			$arr = array();
-		//			$arr[$value['order_id']]['order_id']        = $value['order_id']; // 主订单 和普通订单
-		//		}else{
-		//			$orders = array();
-		//			$orders[$value['order_id']]['order_id']      = $value['order_id'];
-		//			$orders[$value['order_id']]['main_order_id'] = $value['main_order_id']; // 子订单
-		//		}
-		//	}
-		//}
-		//if (!empty($orders)) {
-		//	foreach ($orders as $key => $val){
-		//		$arr = array();
-		//		unset($arr[$val['main_order_id']]); //删除主订单
-		//		unset($orders[$key]['main_order_id']);
-		//	}
-		//	$orders = array_merge($orders, $arr);
-		//}
-		//if (!empty($orders)) {
-		//	foreach ($orders as $val){
-		//		$in['o.order_id'][] = $val['order_id'];
-		//	}
-		//}
 		
 		$order_id_group = $dbview->field('o.order_id')->join(array('order_goods'))->where($this->where)->order(array('o.add_time' => 'desc'))->group('o.order_id')->select();
 		$in = array();
@@ -317,14 +271,12 @@ public function get_order_list($pagesize = '15') {
 		$page = new ecjia_page($count, $pagesize, 6);
 
 		$filter['record_count']   = $count;
-		//$filter['page_count']     = $filter['record_count'] > 0 ? ceil($filter['record_count'] / $filter['page_size']) : 1;
 		
 		/* 查询 */
 		$dbview->view 	= array(
 			'users' => array(
 				'type'  	=> Component_Model_View::TYPE_LEFT_JOIN,
 				'alias'		=> 'u',
-				//'field' 	=> "o.order_id, o.user_id, o.order_sn, o.add_time, o.order_status, o.shipping_status, o.order_amount, o.money_paid,o.pay_status, o.consignee, o.address, o.email, o.tel, o.extension_code, o.extension_id ,(" . $this->order_amount_field('o.') . ") AS total_fee,IFNULL(u.user_name, '" .RC_Lang::lang(anonymous). "') AS buyer,u.email as user_mail,u.mobile_phone as user_phone",
 				'on'    	=> 'u.user_id = o.user_id ',
 			),
 			'order_goods' => array(
@@ -364,10 +316,6 @@ public function get_order_list($pagesize = '15') {
 				$order[$value['order_id']]['extension_code']				= $value['extension_code'];
 				$order[$value['order_id']]['extension_id']					= $value['extension_id'];
 				$order[$value['order_id']]['total_fee']						= $value['total_fee'];
-				//$order[$value['order_id']]['buyer']							= $value['buyer'];
-				//$order[$value['order_id']]['user_mail']						= $value['user_mail'];
-				//$order[$value['order_id']]['user_phone']					= $value['user_phone'];
-// 				$order[$value['order_id']]['main_order_id']					= $value['main_order_id'];
 				$order[$value['order_id']]['mobile']						= $value['mobile'];
 
 				if ($value['order_status'] == OS_INVALID || $value['order_status'] == OS_CANCELED) {

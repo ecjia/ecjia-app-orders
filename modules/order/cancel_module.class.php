@@ -90,8 +90,6 @@ function cancel_order ($order_id, $user_id = 0) {
         	if (is_ecjia_error($result)) {
         		return $result;
         	}
-//             $change_desc = sprintf(RC_Lang::lang('return_surplus_on_cancel'), $order['order_sn']);
-//             log_account_change($order['user_id'], $order['surplus'], 0, 0, 0, $change_desc);
         }
         if ($order['user_id'] > 0 && $order['integral'] > 0) {
             $options = array(
@@ -133,9 +131,6 @@ function cancel_order ($order_id, $user_id = 0) {
     } else {
         return new ecjia_error('database_query_error', $db->error());
     }
-    
-    //             $change_desc = sprintf(RC_Lang::lang('return_integral_on_cancel'), $order['order_sn']);
-    //             log_account_change($order['user_id'], 0, 0, 0, $order['integral'], $change_desc);
 }
 
 // end

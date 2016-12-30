@@ -37,7 +37,6 @@ class merchant_order_list {
 		$row = $this->db_order_info
 							->leftJoin('order_goods as og', RC_DB::raw('o.order_id'), '=', RC_DB::raw('og.order_id'))
 							->selectRaw($fields)
-// 							->orderby($filter['sort_by'], $filter['sort_order'])
 							->take($pagesize)
 							->skip($page->start_id-1)
 							->groupby(RC_DB::raw('o.order_id'))
@@ -51,10 +50,8 @@ class merchant_order_list {
 				$order[$key]['formated_money_paid']		= price_format($value['money_paid']);
 				$order[$key]['formated_total_fee']		= price_format($value['total_fee']);
 				$order[$key]['short_order_time']		= RC_Time::local_date('Y-m-d H:i', $value['add_time']);
-// 				$order[$key]['shop_name']				= $value['shop_name'];
 				$order[$key]['user_name']				= empty($value['user_name']) ? RC_Lang::get('orders.order.anonymous') : $value['user_name'];
 				$order[$key]['order_id']				= $value['order_id'];
-// 				$order[$key]['main_order_id']			= $value['main_order_id'];
 				$order[$key]['order_sn']				= $value['order_sn'];
 				$order[$key]['add_time']				= $value['add_time'];
 				$order[$key]['order_status']			= $value['order_status'];
@@ -183,35 +180,29 @@ class merchant_order_list {
 			switch($filter['composite_status']) {
 				case CS_AWAIT_PAY :
 					$this->order_await_pay();
-// 					$this->where = array_merge($this->where,$this->order_await_pay());
 					break;
 			
 				case CS_AWAIT_SHIP :
 					$this->order_await_ship();
-// 					$this->where = array_merge($this->where,$this->order_await_ship());
 					break;
 			
 				case CS_FINISHED :
 					$this->order_finished();
-// 					$this->where = array_merge($this->where,$this->order_finished());
 					break;
 			
 				case PS_PAYING :
 					if ($filter['composite_status'] != -1) {
 						$this->db_order_info->where(RC_DB::raw('o.pay_status'), $filter['composite_status']);
-// 						$this->where['o.pay_status'] = $filter['composite_status'];
 					}
 					break;
 				case OS_SHIPPED_PART :
 					if ($filter['composite_status'] != -1) {
 						$this->db_order_info->where(RC_DB::raw('o.shipping_status'), $filter['composite_status']-2);
-// 						$this->where['o.shipping_status'] = $filter['composite_status']-2;
 					}
 					break;
 				default:
 					if ($filter['composite_status'] != -1) {
 						$this->db_order_info->where(RC_DB::raw('o.order_status'), $filter['composite_status']);
-// 						$this->where['o.order_status'] = $filter['composite_status'];
 					}
 			};
 		}
@@ -228,11 +219,6 @@ class merchant_order_list {
 		$this->db_order_info->whereIn(RC_DB::raw($alias.'order_status'), array(OS_CONFIRMED, OS_SPLITED));
 		$this->db_order_info->whereIn(RC_DB::raw($alias.'shipping_status'), array(SS_SHIPPED, SS_RECEIVED));
 		$this->db_order_info->whereIn(RC_DB::raw($alias.'pay_status'), array(PS_PAYED, PS_PAYING));
-// 		$this->db_order_info->where
-// 		$where[$alias.'order_status'] = array(OS_CONFIRMED, OS_SPLITED);
-// 		$where[$alias.'shipping_status'] = array(SS_SHIPPED, SS_RECEIVED);
-// 		$where[$alias.'pay_status'] = array(PS_PAYED, PS_PAYING);
-// 		return $where;
 	}
 	
 	/* 待付款订单 */
@@ -248,11 +234,6 @@ class merchant_order_list {
 		$this->db_order_info->whereIn(RC_DB::raw($alias.'order_status'), array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED));
 		$this->db_order_info->where(RC_DB::raw($alias.'pay_status'), PS_UNPAYED);
 		$this->db_order_info->whereRaw("( {$alias}shipping_status in (". SS_SHIPPED .",". SS_RECEIVED .") OR {$alias}pay_id in (" . $payment_id . ") )");
-		
-// 		$where[$alias.'order_status'] = array(OS_UNCONFIRMED, OS_CONFIRMED,OS_SPLITED);
-// 		$where[$alias.'pay_status'] = PS_UNPAYED;
-// 		$where[]= "( {$alias}shipping_status in (". SS_SHIPPED .",". SS_RECEIVED .") OR {$alias}pay_id in (" . $payment_id . ") )";
-// 		return $where;
 	}
 	
 	/* 待发货订单 */
@@ -269,18 +250,12 @@ class merchant_order_list {
 		$this->db_order_info->whereIn(RC_DB::raw($alias.'shipping_status'), array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING));
 		$this->db_order_info->whereRaw("( {$alias}pay_status in (" . PS_PAYED .",". PS_PAYING.") OR {$alias}pay_id in (" . $payment_id . "))");
 		
-		
-// 		$where[$alias.'order_status'] = array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART);
-// 		$where[$alias.'shipping_status'] = array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING);
-// 		$where[] = "( {$alias}pay_status in (" . PS_PAYED .",". PS_PAYING.") OR {$alias}pay_id in (" . $payment_id . "))";
 		return $where;
 	}
 	
 	/* 未确认订单 */
 	public function order_unconfirmed($alias = '') {
 		$this->db_order_info->where(RC_DB::raw($alias.'order_status'), OS_UNCONFIRMED);
-// 		$where[$alias.'order_status'] = OS_UNCONFIRMED;
-// 		return $where;
 	}
 	
 	/* 未处理订单：用户可操作 */
@@ -288,10 +263,6 @@ class merchant_order_list {
 		$this->db_order_info->whereIn(RC_DB::raw($alias.'order_status'), array(OS_UNCONFIRMED, OS_CONFIRMED));
 		$this->db_order_info->where(RC_DB::raw($alias.'shipping_status'), SS_UNSHIPPED);
 		$this->db_order_info->where(RC_DB::raw($alias.'pay_status'), PS_UNPAYED);
-// 		$where[$alias.'order_status'] =  array(OS_UNCONFIRMED, OS_CONFIRMED);
-// 		$where[$alias.'shipping_status'] = SS_UNSHIPPED;
-// 		$where[$alias.'pay_status'] = PS_UNPAYED;
-// 		return $where;
 	}
 	
 	/* 未付款未发货订单：管理员可操作 */
@@ -299,43 +270,27 @@ class merchant_order_list {
 		$this->db_order_info->whereIn(RC_DB::raw($alias.'order_status'), array(OS_UNCONFIRMED, OS_CONFIRMED));
 		$this->db_order_info->whereIn(RC_DB::raw($alias.'shipping_status'), array(SS_UNSHIPPED, SS_PREPARING));
 		$this->db_order_info->where(RC_DB::raw($alias.'pay_status'), PS_UNPAYED);
-// 		$where[$alias.'order_status'] = array(OS_UNCONFIRMED, OS_CONFIRMED);
-// 		$where[$alias.'shipping_status'] = array(SS_UNSHIPPED, SS_PREPARING);
-// 		$where[$alias.'pay_status'] = PS_UNPAYED;
-// 		return $where;
 	}
 	
 	/* 已发货订单：不论是否付款 */
 	public function order_shipped($alias = '') {
 		$this->db_order_info->whereIn(RC_DB::raw($alias.'order_status'), array(OS_CONFIRMED, OS_SPLITED));
 		$this->db_order_info->whereIn(RC_DB::raw($alias.'shipping_status'), array(SS_SHIPPED));
-		
-// 		$where[$alias.'order_status'] = array(OS_CONFIRMED, OS_SPLITED);
-// 		$where[$alias.'shipping_status'] = array(SS_SHIPPED);
-// 		return $where;
 	}
 	
 	/* 退货*/
 	public function order_refund($alias = '') {
 		$this->db_order_info->where(RC_DB::raw($alias.'order_status'), OS_RETURNED);
-		
-		
-// 		$where[$alias.'order_status'] = OS_RETURNED;
-// 		return $where;
 	}
 	
 	/* 无效*/
 	public function order_invalid($alias = '') {
 		$this->db_order_info->where(RC_DB::raw($alias.'order_status'), OS_INVALID);
-// 		$where[$alias.'order_status'] = OS_INVALID;
-// 		return $where;
 	}
 	
 	/* 取消*/
 	public function order_canceled($alias = '') {
 		$this->db_order_info->where(RC_DB::raw($alias.'order_status'), OS_CANCELED);
-// 		$where[$alias.'order_status'] = OS_CANCELED;
-// 		return $where;
 	}
 	
 	/**

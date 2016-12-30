@@ -18,37 +18,6 @@ function chart_color($n)
     return $arr[$n];
 }
 /**
- * 创建像这样的查询: "IN('a','b')";
- *
- * @access   public
- * @param    mix      $item_list      列表数组或字符串
- * @param    string   $field_name     字段名称
- *
- * @return   void
- */
-function db_create_in($item_list, $field_name = '')
-{
-    if (empty($item_list)) {
-        return $field_name . " IN ('') ";
-    } else {
-        if (!is_array($item_list)) {
-            $item_list = explode(',', $item_list);
-        }
-        $item_list = array_unique($item_list);
-        $item_list_tmp = '';
-        foreach ($item_list as $item) {
-            if ($item !== '') {
-                $item_list_tmp .= $item_list_tmp ? ",'{$item}'" : "'{$item}'";
-            }
-        }
-        if (empty($item_list_tmp)) {
-            return $field_name . " IN ('') ";
-        } else {
-            return $field_name . ' IN (' . $item_list_tmp . ') ';
-        }
-    }
-}
-/**
  * 过滤和排序所有分类，返回一个带有缩进级别的数组
  *
  * @access private
@@ -160,23 +129,6 @@ function cat_options($spec_cat_id, $arr)
         $cat_options[$spec_cat_id] = $spec_cat_id_array;
         return $spec_cat_id_array;
     }
-}
-/**
- * 取得品牌列表
- *
- * @return array 品牌列表 id => name
- */
-function get_brand_list()
-{
-    $db = RC_Loader::load_app_model('brand_model', 'orders');
-    $res = $db->field('brand_id, brand_name')->order('sort_order asc')->select();
-    $brand_list = array();
-    if (!empty($res)) {
-        foreach ($res as $row) {
-            $brand_list[$row['brand_id']] = addslashes($row['brand_name']);
-        }
-    }
-    return $brand_list;
 }
 /**
  * 获得指定分类下的子分类的数组
@@ -387,20 +339,6 @@ function sub_str($str, $length = 0, $append = true)
         $newstr .= '...';
     }
     return $newstr;
-}
-/**
- * 添加管理员记录日志操作对象
- *
- */
-function assign_adminlog_content()
-{
-    ecjia_admin_log::instance()->add_action('produce', RC_Lang::get('orders::order.produce'));
-    ecjia_admin_log::instance()->add_action('batch_setup', '批量设置');
-    ecjia_admin_log::instance()->add_object('delivery_order', RC_Lang::get('orders::order.delivery_sn'));
-    ecjia_admin_log::instance()->add_object('back_order', RC_Lang::get('orders::order.back_sn'));
-    ecjia_admin_log::instance()->add_object('order_payment', RC_Lang::get('orders::order.order_payment'));
-    ecjia_admin_log::instance()->add_object('order_status', RC_Lang::get('orders::order.order_status'));
-    ecjia_admin_log::instance()->add_object('order_consignee', RC_Lang::get('orders::order.order_consignee'));
 }
 /**
  * 取得状态列表

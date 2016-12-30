@@ -1,6 +1,20 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
 /**
+ * 添加管理员记录日志操作对象
+ *
+ */
+function assign_orderlog_content()
+{
+	ecjia_admin_log::instance()->add_action('produce', RC_Lang::get('orders::order.produce'));
+	ecjia_admin_log::instance()->add_action('batch_setup', '批量设置');
+	ecjia_admin_log::instance()->add_object('delivery_order', RC_Lang::get('orders::order.delivery_sn'));
+	ecjia_admin_log::instance()->add_object('back_order', RC_Lang::get('orders::order.back_sn'));
+	ecjia_admin_log::instance()->add_object('order_payment', RC_Lang::get('orders::order.order_payment'));
+	ecjia_admin_log::instance()->add_object('order_status', RC_Lang::get('orders::order.order_status'));
+	ecjia_admin_log::instance()->add_object('order_consignee', RC_Lang::get('orders::order.order_consignee'));
+}
+/**
 * ECJIA 购物流程函数库
 */
 /**
@@ -726,15 +740,6 @@ function change_goods_storage($goods_id, $product_id, $number = 0)
     } else {
         return false;
     }
-}
-/**
-* 生成查询订单总金额的字段
-* @param   string  $alias  order表的别名（包括.例如 o.）
-* @return  string
-*/
-function order_amount_field($alias = '')
-{
-    return "   {$alias}goods_amount + {$alias}tax + {$alias}shipping_fee" . " + {$alias}insure_fee + {$alias}pay_fee + {$alias}pack_fee" . " + {$alias}card_fee ";
 }
 /**
 * 生成计算应付款金额的字段

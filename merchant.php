@@ -36,7 +36,8 @@ class merchant extends ecjia_merchant {
 		RC_Loader::load_app_func('admin_order', 'orders');
 		RC_Loader::load_app_func('merchant_order', 'orders');
 		RC_Loader::load_app_func('global', 'goods');
-		assign_adminlog_content();
+		RC_Loader::load_app_func('global', 'orders');
+		assign_orderlog_content();
 
 		$this->db_order_info		= RC_Model::model('orders/order_info_model');
 		$this->db_order_good		= RC_Model::model('orders/order_goods_model');

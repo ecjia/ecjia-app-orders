@@ -14,7 +14,8 @@ class admin extends ecjia_admin {
 		RC_Lang::load('order');
 		RC_Loader::load_app_func('admin_order', 'orders');
 		RC_Loader::load_app_func('global', 'goods');
-		assign_adminlog_content();
+		RC_Loader::load_app_func('global', 'orders');
+		assign_orderlog_content();
 		
 		$this->db_order_info	= RC_Model::model('orders/order_info_model');
 		$this->db_order_view	= RC_Model::model('orders/order_order_info_viewmodel');

@@ -13,7 +13,7 @@ class admin_order_delivery extends ecjia_admin {
 		RC_Loader::load_app_func('admin_order', 'orders');
 		RC_Loader::load_app_func('global', 'goods');
 		RC_Loader::load_app_func('global');
-		assign_adminlog_content();
+		assign_orderlog_content();
 
 		/* 加载所有全局 js/css */
 		RC_Script::enqueue_script('jquery-validate');

@@ -77,7 +77,7 @@ class orders_order_paid_api extends Component_Event_Api {
 // 	    $db_pay = RC_Loader::load_app_model('pay_log_model', 'orders');
 // 	    $db_order = RC_Loader::load_app_model('order_info_model', 'orders');
 // 	    $db_user = RC_Loader::load_app_model('user_account_model', 'user');
-	    RC_Loader::load_app_func('order', 'orders');
+	    RC_Loader::load_app_func('admin_order', 'orders');
 	    /* 取得支付编号 */
 	    $log_id = intval($log_id);
 	    if ($log_id > 0) {

@@ -10,10 +10,10 @@ class admin_order_delivery extends ecjia_admin {
 	public function __construct() {
 		parent::__construct();
 
-		RC_Loader::load_app_func('order', 'orders');
-		RC_Loader::load_app_func('common', 'goods');
-		RC_Loader::load_app_func('function');
-		assign_adminlog_content();
+		RC_Loader::load_app_func('admin_order', 'orders');
+		RC_Loader::load_app_func('global', 'goods');
+		RC_Loader::load_app_func('global');
+		assign_orderlog_content();
 
 		/* 加载所有全局 js/css */
 		RC_Script::enqueue_script('jquery-validate');
@@ -624,16 +624,10 @@ class admin_order_delivery extends ecjia_admin {
 
 		$id = $_GET['delivery_id'];
 		if (!empty($id)) {
-// 			$field = "order_id, consignee, address, country, province, city, district, sign_building, email, zipcode, tel, mobile, best_time";
-// 			$row = $this->db_delivery_order->field($field)->where(array('delivery_id'=>$id))->find();
-
 			$row = RC_DB::table('delivery_order')->select(RC_DB::raw('order_id, consignee, address, country, province, city, district, sign_building, email, zipcode, tel, mobile, best_time'))
 				->where('delivery_id', $id)->first();
 
 			if (!empty($row)) {
-// 				$field = array("concat(IFNULL(c.region_name, ''), '  ', IFNULL(p.region_name, ''),'  ', IFNULL(t.region_name, ''), '  ', IFNULL(d.region_name, '')) AS region");
-// 				$region = $this->db_order_region->field($field)->find('o.order_id = "'.$row['order_id'].'"');
-
 				$region = RC_DB::table('order_info as o')
 					->leftJoin('region as c', RC_DB::raw('o.country'), '=', RC_DB::raw('c.region_id'))
 					->leftJoin('region as p', RC_DB::raw('o.province'), '=', RC_DB::raw('p.region_id'))

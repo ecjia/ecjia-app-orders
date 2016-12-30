@@ -24,7 +24,7 @@ class update_module extends api_front implements api_interface {
 		if (empty($payment_info) || $payment_info['is_online'] == 0) {
 			return new ecjia_error('payment_error', '无法使用该支付方式，请选择其他支付方式！');
 		} else {
-			RC_Loader::load_app_func('order', 'orders');
+			RC_Loader::load_app_func('admin_order', 'orders');
 			
 			$order_info = get_order_detail($order_id, $user_id, 'front');
 			if (is_ecjia_error($order_info)) {

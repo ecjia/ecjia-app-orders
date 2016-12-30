@@ -41,7 +41,7 @@ class orders_user_account_paid_api extends Component_Event_Api {
 	 */
 	private function user_account_paid($user_id, $order_id)
 	{
-		RC_Loader::load_app_func('order', 'orders');
+		RC_Loader::load_app_func('admin_order', 'orders');
 		
 		/* 订单详情 */
 		$order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));

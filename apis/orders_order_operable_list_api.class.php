@@ -189,10 +189,9 @@ class orders_order_operable_list_api extends Component_Event_Api {
 		/* 修正发货操作 */
 		if (!empty($list['split'])) {
 			/* 如果是团购活动且未处理成功，不能发货 */
-			RC_Loader::load_app_func('function', 'orders');
+			RC_Loader::load_app_func('global', 'orders');
 			if ($order['extension_code'] == 'group_buy') {
-				RC_Loader::load_app_func('goods', 'goods');
-				//TODO wu
+				RC_Loader::load_app_func('admin_goods', 'goods');
 				$group_buy = group_buy_info(intval($order['extension_id']));
 				if ($group_buy['status'] != GBS_SUCCEED) {
 					unset($list['split']);

@@ -58,32 +58,18 @@ class admin_guest_stats extends ecjia_admin {
 		
 		$user_all_order['turnover'] = floatval($user_all_order['turnover']);
 		
- 		/* 匿名会员订单总数和总购物额 */
-// 		$guest_all_order = array();
-// 		$guest_all_order = RC_DB::table('order_info')->select(RC_DB::raw('COUNT(*) AS order_num , '.$total_fee.''))->whereRaw(RC_DB::raw('user_id = 0 ' . order_query_sql('finished').''))->first();
- 		
-//  		/* 匿名会员平均订单额: 购物总额/订单数 */
-// 		$guest_order_amount = ($guest_all_order['order_num'] > 0) ? floatval($guest_all_order['turnover'] / $guest_all_order['order_num']) : '0.00';
-		
 		/* 赋值到模板 */
 		$this->assign('user_num',            $user_num);                    // 会员总数
 		$this->assign('have_order_usernum',  $have_order_usernum);          // 有过订单的会员数
 		$this->assign('user_order_turnover', $user_all_order['order_num']); // 会员总订单数
 		$this->assign('user_all_turnover',   price_format($user_all_order['turnover']));  //会员购物总额
-// 		$this->assign('guest_all_turnover',  price_format($guest_all_order['turnover'])); //匿名会员购物总额
-// 		$this->assign('guest_order_num',     $guest_all_order['order_num']);              //匿名会员订单总数
 		/* 每会员订单数 */
 		$this->assign('ave_user_ordernum', $user_num > 0 ? sprintf("%0.2f", $user_all_order['order_num'] / $user_num) : 0);
 		
 		/* 每会员购物额 */
 		$this->assign('ave_user_turnover', $user_num > 0 ? price_format($user_all_order['turnover'] / $user_num) : 0);
-		
 		/* 注册会员购买率 */
 		$this->assign('user_ratio', sprintf("%0.2f", ($user_num > 0 ? $have_order_usernum / $user_num : 0) * 100));
-		
-		/* 匿名会员平均订单额 */
-// 		$this->assign('guest_order_amount', $guest_all_order['order_num'] > 0 ? price_format($guest_all_order['turnover'] / $guest_all_order['order_num']) : 0);
-// 		$this->assign('all_order', $user_all_order);    //所有订单总数以及所有购物总额
 		
 		$this->assign_lang();
 		$this->display('guest_stats.dwt');
@@ -112,13 +98,6 @@ class admin_guest_stats extends ecjia_admin {
 		
 		$user_all_order['turnover'] = floatval($user_all_order['turnover']);
 		
-		/*匿名会员订单总数和总购物额 */
-// 		$guest_all_order = array();
-// 		$guest_all_order = RC_DB::table('order_info')->select(RC_DB::raw('COUNT(*) AS order_num , '.$total_fee.''))->whereRaw(RC_DB::raw('user_id = 0 ' . order_query_sql('finished').''))->first();
-		
-		/* 匿名会员平均订单额: 购物总额/订单数 */
-// 		$guest_order_amount = ($guest_all_order['order_num'] > 0) ? floatval($guest_all_order['turnover'] / $guest_all_order['order_num']) : '0.00';
-		
 		$filename = mb_convert_encoding(RC_Lang::get('orders::statistic.guest_statement').'-'.RC_Time::local_date('Y-m-d'),"GBK","UTF-8");
 		header("Content-type: application/vnd.ms-excel;charset=utf-8");
 		header("Content-Disposition:attachment;filename=$filename.xls");
@@ -137,13 +116,6 @@ class admin_guest_stats extends ecjia_admin {
 		$ave_user_turnover = $user_num > 0 ? price_format($user_all_order['turnover'] / $user_num) : 0;
 		
 		$data .= price_format($user_all_order['turnover']) . "\t" . $ave_user_ordernum . "\t" . $ave_user_turnover . "\n\n";
-	
-		/* 匿名会员平均订单数及购物额 */
-// 		$data .= RC_Lang::get('orders::statistic.order_turnover_percus') . "\t\n";
-// 		$data .= RC_Lang::get('orders::statistic.guest_member_orderamount') . "\t" . RC_Lang::get('orders::statistic.guest_member_ordercount') . "\t" . RC_Lang::get('orders::statistic.guest_order_sum') . "\n";
-// 		$order_num = $guest_all_order['order_num'] > 0 ? price_format($guest_all_order['turnover'] / $guest_all_order['order_num']) : 0;
-// 		$data .= price_format($guest_all_order['turnover']) . "\t" . $guest_all_order['order_num'] . "\t" . $order_num;
-		
 		echo mb_convert_encoding($data. "\t", "GBK", "UTF-8");
 		exit;
 	}

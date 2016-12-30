@@ -27,7 +27,7 @@ class orders_order_info_api extends Component_Event_Api {
 	 * @return  array   订单信息（金额都有相应格式化的字段，前缀是formated_）
 	 */
 	private function order_info($order_id, $order_sn = '', $store_id = 0, $user_id = 0) {
-// 	    RC_Loader::load_app_func('common', 'goods');
+// 	    RC_Loader::load_app_func('global', 'goods');
 // 	    $db = RC_Loader::load_app_model('order_info_model','orders');
 
 	    $db_order_info = RC_DB::table('order_info');

@@ -14,8 +14,8 @@ class order_operate {
 	
 	/* 订单确认*/
 	private function order_confirm($order, $note) {
-		RC_Loader::load_app_func('order', 'orders');
-		RC_Loader::load_app_func('function', 'orders');
+		RC_Loader::load_app_func('admin_order', 'orders');
+		RC_Loader::load_app_func('global', 'orders');
 		/* 标记订单为已确认 */
 		$this->update_order($order['order_id'], array('order_status' => OS_CONFIRMED, 'confirm_time' => RC_Time::gmtime()));
 		update_order_amount($order['order_id']);
@@ -99,8 +99,8 @@ class order_operate {
 	
 	/* 分单确认 */
 	private function order_split($order, $note) {
-		RC_Loader::load_app_func('function', 'orders');
-		RC_Loader::load_app_func('order', 'orders');
+		RC_Loader::load_app_func('global', 'orders');
+		RC_Loader::load_app_func('admin_order', 'orders');
 	
 		/* 定义当前时间 */
 		define('GMTIME_UTC', RC_Time::gmtime()); // 获取 UTC 时间戳

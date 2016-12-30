@@ -5,27 +5,12 @@
  */
 
 defined('IN_ECJIA') or exit('No permission resources.');
-//RC_Loader::load_sys_class('ecjia_admin', false);
 
 class mh_back extends ecjia_merchant {
-
-//	private $db_back_order;
-//	private $db_back_goods;
-//	private $db_order_region;
-// 	private $db_admin_user;
-//	private $back_order_viewmodel;
-	
 	public function __construct() {
 		parent::__construct();
-//		RC_Lang::load('order');
-		RC_Loader::load_app_func('order','orders');
-		RC_Loader::load_app_func('common','goods');
-//		$this->db_back_order		= RC_Loader::load_app_model('back_order_model');
-//		$this->db_back_goods		= RC_Loader::load_app_model('back_goods_model');
-//		$this->db_order_region		= RC_Loader::load_app_model('order_region_viewmodel');
-// 		$this->db_admin_user		= RC_Loader::load_model('admin_user_model');
-//		$this->back_order_viewmodel = RC_Loader::load_app_model('back_order_viewmodel', 'orders');
-
+		RC_Loader::load_app_func('admin_order', 'orders');
+		RC_Loader::load_app_func('global', 'goods');
 		/* 加载所有全局 js/css */
 		RC_Script::enqueue_script('jquery-form');
 
@@ -53,7 +38,7 @@ class mh_back extends ecjia_merchant {
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.order_back_list')));
 
 		/* 查询 */
-		RC_Loader::load_app_func('function');
+		RC_Loader::load_app_func('merchant_order');
 		$result = get_merchant_back_list();
         
 		/* 模板赋值 */
@@ -80,23 +65,17 @@ class mh_back extends ecjia_merchant {
 		$this->admin_priv('back_view', ecjia::MSGTYPE_JSON);
 
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.return_look')));
-// 		$seller_id = $_SESSION['seller_id'];
         $store_id = $_SESSION['store_id'];
 
 		$back_id = intval(trim($_GET['back_id']));
-//	    $count = $this->back_order_viewmodel->where(array('bo.back_id' => $back_id , 'og.seller_id' => $_SESSION['seller_id']))->count();
 		$count = RC_DB::table('back_order as bo')
 				->leftJoin('order_goods as og', RC_DB::raw('bo.order_id'), '=', RC_DB::raw('og.order_id'))
 				->whereRaw("bo.back_id = $back_id")
-//				->whereRaw("og.seller_id = $seller_id")
 				->count();
         
-//	    if(empty($count)){
-//	        return $this->showmessage(__('没有找到相对应的数据'), ecjia_admin::MSGTYPE_HTML, ecjia_admin::MSGSTAT_ERROR);
-//	    }
 		/* 根据发货单id查询发货单信息 */
 		if (!empty($back_id)) {
-			RC_Loader::load_app_func('function');
+			RC_Loader::load_app_func('global');
 			$back_order = back_order_info($back_id, $store_id);
 		} else {
 			return $this->showmessage(RC_Lang::get('orders::order.return_form').'！' , ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR) ;
@@ -127,18 +106,10 @@ class mh_back extends ecjia_merchant {
 	
 		/* 取得区域名 */
 		$field = array("concat(IFNULL(c.region_name, ''), '  ', IFNULL(p.region_name, ''),'  ', IFNULL(t.region_name, ''), '  ', IFNULL(d.region_name, '')) AS region");
-//		$region = $this->db_order_region->field($field)->find('o.order_id = "'.$back_order['order_id'].'"');
-//		$region = RC_DB::table('order_info as o')->leftJoin('region as p', 'o.province', '=', 'p.region_id')
-//				->selectRaw($field)
-//				->where('o.order_id', '.$back_order['order_id'].')
-//				->first();
-//		$back_order['region'] = $region['region'] ;
-	
 		/* 是否保价 */
 		$order['insure_yn'] = empty($order['insure_fee']) ? 0 : 1;
 	
 		/* 取得发货单商品 */
-//		$goods_list = $this->db_back_goods->where(array('back_id' => $back_order['back_id']))->select();
 		$goods_list	= RC_DB::table('back_goods')->where('back_id', $back_order['back_id'])->get();
 		/* 是否存在实体商品 */
 		$exist_real_goods = 0;
@@ -162,8 +133,7 @@ class mh_back extends ecjia_merchant {
 		$this->assign_lang();
 		$this->display('back_info.dwt');
 	}
-	
-	
+
 	/* 退货单删除 */
 	public function remove() {
 		/* 检查权限 */
@@ -173,18 +143,6 @@ class mh_back extends ecjia_merchant {
 		ecjia_admin_log::instance()->add_object('order_back', RC_Lang::get('orders::order.back_sn'));
 		$type = htmlspecialchars($_GET['type']);
 		$back = explode(',',$back_id);
-// 		if($type != 'batch'){
-// 			foreach($back as $val ){
-//				$order_sn = $this->db_back_order->where(array('back_id' =>$val))->get_field('order_sn');
-// 				$order_sn = RC_DB::table('back_order')->where('back_id', $val)->pluck('order_sn');
-// 				ecjia_merchant::admin_log($order_sn, 'remove', 'order_back');
-// 			}
-// 		}else{
-//			$order_sn = $this->db_back_order->where(array('back_id' =>$back_id))->get_field('order_sn');
-// 			$order_sn = RC_DB::table('back_order')->where('back_id', $back_id)->pluck('order_sn');
-// 			ecjia_merchant::admin_log($order_sn, 'batch_remove', 'order_back');
-// 		}
-//		$this->db_back_order->in(array('back_id' => $back_id))->delete();
         
 		$db_back_order = RC_DB::table('back_order')->whereIn('back_id', $back);
 		$db_back_order_get = $db_back_order->first();
@@ -201,10 +159,6 @@ class mh_back extends ecjia_merchant {
 	public function consignee_info(){
 		$this->admin_priv('back_view' ,ecjia::MSGTYPE_JSON);
 		$id = $_GET['back_id'];
-//		$count = $this->back_order_viewmodel->where(array('bo.back_id' => $id , 'og.seller_id' => $_SESSION['seller_id']))->count();
-//		if(empty($count)){
-//		    return $this->showmessage(__('没有找到相对应的数据'), ecjia_admin::MSGTYPE_HTML, ecjia_admin::MSGSTAT_ERROR);
-//		}
 		if (!empty($id)) {
 			$field = array('order_id', 'consignee', 'address', 'country', 'province', 'city', 'district', 'sign_building', 'email', 'zipcode', 'tel', 'mobile', 'best_time');
 			$row = RC_DB::table('back_order')->select($field)->where('back_id', $id)->first();

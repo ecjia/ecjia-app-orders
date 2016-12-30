@@ -369,7 +369,7 @@ function order_fee($order, $goods, $consignee, $cart_id = array()) {
 //    }
     $total['card_fee_formated'] = price_format($total['card_fee'], false);
 
-	RC_Loader::load_app_func('bonus', 'bonus');
+	RC_Loader::load_app_func('admin_bonus', 'bonus');
    	/* 红包 */
 	if (!empty($order['bonus_id'])) {
 		$bonus          = bonus_info($order['bonus_id']);

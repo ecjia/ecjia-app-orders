@@ -71,7 +71,7 @@ function return_user_surplus_integral_bonus($order) {
 	}
 
 	if ($order['bonus_id'] > 0) {
-		RC_Loader::load_app_func('bonus', 'bonus');
+		RC_Loader::load_app_func('admin_bonus', 'bonus');
 		unuse_bonus($order['bonus_id']);
 	}
 
@@ -2166,7 +2166,7 @@ function merge_order($from_order_sn, $to_order_sn) {
 	
 	/* 返还 from_order 的红包，因为只使用 to_order 的红包 */
 	if ($from_order['bonus_id'] > 0) {
-		RC_Loader::load_app_func('bonus', 'bonus');
+		RC_Loader::load_app_func('admin_bonus', 'bonus');
 		unuse_bonus($from_order['bonus_id']);
 	}
 	ecjia_admin::admin_log(sprintf(RC_Lang::get('orders::order.merge_success_notice'), $to_order['order_sn'], $from_order['order_sn'], $order['order_sn']), 'merge', 'order');

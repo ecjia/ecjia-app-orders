@@ -105,7 +105,7 @@ function cancel_order ($order_id, $user_id = 0) {
             }
         }
         if ($order['user_id'] > 0 && $order['bonus_id'] > 0) {
-        	RC_Loader::load_app_func('bonus','bonus');
+        	RC_Loader::load_app_func('admin_bonus', 'bonus');
             change_user_bonus($order['bonus_id'], $order['order_id'], false);
         }
 

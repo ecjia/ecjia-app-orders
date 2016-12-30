@@ -886,7 +886,7 @@ class merchant extends ecjia_merchant {
 				/* 计算可用积分 */
 				$this->assign('available_pay_points'	, $order['integral'] + $user['pay_points']);
 				/* 取得用户可用红包 */
-				RC_Loader::load_app_func('bonus','bonus');
+				RC_Loader::load_app_func('admin_bonus', 'bonus');
 				$user_bonus = user_bonus($order['user_id'], $order['goods_amount']);
 				if ($order['bonus_id'] > 0) {
 					$bonus			= bonus_info($order['bonus_id']);
@@ -1521,7 +1521,7 @@ class merchant extends ecjia_merchant {
 				if ($old_order['user_id'] > 0) {
 					/* 如果选择了红包，先使用红包支付 */
 					if ($_POST['bonus_id'] > 0) {
-						RC_Loader::load_app_func('bonus','bonus');
+						RC_Loader::load_app_func('admin_bonus', 'bonus');
 						/* todo 检查红包是否可用 */
 						$order['bonus_id']		= $_POST['bonus_id'];
 						$bonus					= bonus_info($_POST['bonus_id']);

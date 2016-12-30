@@ -11,7 +11,7 @@ class admin_order_back extends ecjia_admin {
 
         RC_Lang::load('order');
 		RC_Loader::load_app_func('order', 'orders');
-		RC_Loader::load_app_func('common', 'goods');
+		RC_Loader::load_app_func('global', 'goods');
 		assign_adminlog_content();
 		
 		/* 加载所有全局 js/css */

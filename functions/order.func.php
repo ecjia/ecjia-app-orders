@@ -259,8 +259,8 @@ function order_fee($order, $goods, $consignee, $cart_id = array()) {
 // 	$sql = 'SELECT count(*) FROM ' . $GLOBALS['ecs']->table('cart') . " WHERE  `session_id` = '" . SESS_ID. "' AND `extension_code` != 'package_buy' AND `is_shipping` = 0";
 // 	$shipping_count = $GLOBALS['db']->getOne($sql);
 
-	RC_Loader::load_app_func('common','goods');
-	RC_Loader::load_app_func('cart','cart');
+	RC_Loader::load_app_func('global', 'goods');
+	RC_Loader::load_app_func('cart', 'cart');
 	$db 	= RC_Loader::load_app_model('cart_model', 'cart');
 	$dbview = RC_Loader::load_app_model('cart_exchange_viewmodel', 'cart');
     /* 初始化订单的扩展code */
@@ -993,7 +993,7 @@ function integral_to_give($order) {
 // 	TODO:团购暂时注释给的固定参数
 	$order['extension_code'] = '';
     if ($order['extension_code'] == 'group_buy') {
-		RC_Loader::load_app_func('goods', 'goods');
+		RC_Loader::load_app_func('admin_goods', 'goods');
 		//TODO wu
         $group_buy = group_buy_info(intval($order['extension_id']));
         return array('custom_points' => $group_buy['gift_integral'], 'rank_points' => $order['goods_amount']);
@@ -1035,7 +1035,7 @@ function integral_to_give($order) {
 * @return  bool
 */
 function send_order_bonus($order_id) {
-// 	RC_Loader::load_app_func('common', 'goods');
+// 	RC_Loader::load_app_func('global', 'goods');
 // 	$db		=  RC_Loader::load_app_model('user_bonus_model', 'bonus');
 // 	$dbview	=  RC_Loader::load_app_model('order_info_viewmodel', 'orders');
 	/* 取得订单应该发放的红包 */
@@ -2010,7 +2010,7 @@ function get_order_detail ($order_id, $user_id = 0, $type) {
     if ($order['pay_status'] != PS_UNPAYED) {
         /* 取得已发货的虚拟商品信息 */
     	//TODO
-        RC_Loader::load_app_func('common', 'goods');
+        RC_Loader::load_app_func('global', 'goods');
         $virtual_goods = get_virtual_goods($order_id, true);
         $virtual_card = array();
         foreach ($virtual_goods as $code => $goods_list) {
@@ -2192,7 +2192,7 @@ function EM_order_goods($order_id , $page=1 , $pagesize = 10)
 				  ->select();
 
 	if (!empty($res)) {
-		RC_Loader::load_app_func('common', 'goods');
+		RC_Loader::load_app_func('global', 'goods');
 		foreach ($res as $row) {
 			if ($row['extension_code'] == 'package_buy') {
 				$row['package_goods_list'] = get_package_goods($row['goods_id']);
@@ -2212,7 +2212,7 @@ function EM_order_goods($order_id , $page=1 , $pagesize = 10)
  * @return  string
  */
 function EM_order_query_sql($type = 'finished', $alias = '') {
-	RC_Loader::load_app_func('common', 'goods');
+	RC_Loader::load_app_func('global', 'goods');
 	$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
 	/* 已完成订单 */
 	if ($type == 'finished') {
@@ -2562,7 +2562,7 @@ function assign_adminlog_content() {
 // * @return  string
 // */
 // function order_query_sql($type = 'finished', $alias = '') {
-// 	RC_Loader::load_app_func('common','goods');
+// 	RC_Loader::load_app_func('global','goods');
 // 	if ($type == 'finished') {
 // 		/* 已完成订单 */
 // 		return " AND {$alias}order_status " . db_create_in(array(OS_CONFIRMED, OS_SPLITED)) .
@@ -2754,7 +2754,7 @@ function assign_adminlog_content() {
 ////	RC_Loader::load_sys_func('compositor');
 //
 //
-//	RC_Loader::load_app_func('common','goods');
+//	RC_Loader::load_app_func('global','goods');
 //	$db = RC_Loader::load_app_model('payment_model','payment');
 //
 //	$where = '';
@@ -3023,7 +3023,7 @@ function assign_adminlog_content() {
 //  * @return  array
 //  */
 // function get_cart_goods() {
-// 	RC_Loader::load_app_func('common','goods');
+// 	RC_Loader::load_app_func('global', 'goods');
 // 	$db_cart 		= RC_Loader::load_app_model('cart_model', 'cart');
 // 	$db_goods_attr 	= RC_Loader::load_app_model('goods_attr_model','goods');
 // 	$db_goods 		= RC_Loader::load_app_model('goods_model','goods');

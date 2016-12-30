@@ -33,8 +33,8 @@ class merchant extends ecjia_merchant {
 		parent::__construct();
  
 		RC_Lang::load('order');
-		RC_Loader::load_app_func('order','orders');
-		RC_Loader::load_app_func('common','goods');
+		RC_Loader::load_app_func('order', 'orders');
+		RC_Loader::load_app_func('global', 'goods');
 		RC_Loader::load_app_func('function');
 		assign_adminlog_content();
 
@@ -1110,7 +1110,7 @@ class merchant extends ecjia_merchant {
 				
 				
 				$prod = $this->db_products->find(array('goods_id' => $goods_id));
-				RC_Loader::load_app_func('goods','goods');
+				RC_Loader::load_app_func('admin_goods', 'goods');
 				//商品存在规格 是货品 检查该货品库存
 				if (is_spec($goods_attr) && !empty($prod)) {
 					$product_info = get_products_info($_POST['goodslist'], $goods_attr);

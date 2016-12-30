@@ -11,7 +11,7 @@ class admin_order_delivery extends ecjia_admin {
 		parent::__construct();
 
 		RC_Loader::load_app_func('order', 'orders');
-		RC_Loader::load_app_func('common', 'goods');
+		RC_Loader::load_app_func('global', 'goods');
 		RC_Loader::load_app_func('function');
 		assign_adminlog_content();
 

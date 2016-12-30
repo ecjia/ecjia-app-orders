@@ -272,7 +272,7 @@ function operable_list($order) {
 		/* 如果是团购活动且未处理成功，不能发货 */
 		
 		if ($order['extension_code'] == 'group_buy') {
-			RC_Loader::load_app_func('goods', 'goods');
+			RC_Loader::load_app_func('admin_goods', 'goods');
 			//TODO wu
 			$group_buy = group_buy_info(intval($order['extension_id']));
 			if ($group_buy['status'] != GBS_SUCCEED) {
@@ -473,7 +473,7 @@ function merchant_operable_list($order) {
 			unset($list['split']);
 			unset($list['to_delivery']);
 			// 			TODO:团购活动暂时注释，直接不给予发货等操作
-			// 			RC_Loader::load_app_func('goods','goods');
+			// 			RC_Loader::load_app_func('admin_goods', 'goods');
 			// 			$group_buy = group_buy_info(intval($order['extension_id']));
 			// 			if ($group_buy['status'] != GBS_SUCCEED) {
 			// 				unset($list['split']);

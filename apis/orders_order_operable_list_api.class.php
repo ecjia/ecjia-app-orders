@@ -191,7 +191,7 @@ class orders_order_operable_list_api extends Component_Event_Api {
 			/* 如果是团购活动且未处理成功，不能发货 */
 			RC_Loader::load_app_func('function', 'orders');
 			if ($order['extension_code'] == 'group_buy') {
-				RC_Loader::load_app_func('goods', 'goods');
+				RC_Loader::load_app_func('admin_goods', 'goods');
 				//TODO wu
 				$group_buy = group_buy_info(intval($order['extension_id']));
 				if ($group_buy['status'] != GBS_SUCCEED) {

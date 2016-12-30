@@ -18,8 +18,8 @@ class mh_back extends ecjia_merchant {
 	public function __construct() {
 		parent::__construct();
 //		RC_Lang::load('order');
-		RC_Loader::load_app_func('order','orders');
-		RC_Loader::load_app_func('common','goods');
+		RC_Loader::load_app_func('order', 'orders');
+		RC_Loader::load_app_func('global', 'goods');
 //		$this->db_back_order		= RC_Loader::load_app_model('back_order_model');
 //		$this->db_back_goods		= RC_Loader::load_app_model('back_goods_model');
 //		$this->db_order_region		= RC_Loader::load_app_model('order_region_viewmodel');

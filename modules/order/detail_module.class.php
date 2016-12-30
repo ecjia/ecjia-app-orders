@@ -13,7 +13,7 @@ class detail_module extends api_front implements api_interface {
     	    return new ecjia_error(100, 'Invalid session');
     	}
 
-		RC_Loader::load_app_func('order', 'orders');
+		RC_Loader::load_app_func('admin_order', 'orders');
 		$order_id = $this->requestData('order_id', 0);
 		if (!$order_id) {
 			return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));

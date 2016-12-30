@@ -10,7 +10,7 @@ class admin_order_back extends ecjia_admin {
 		parent::__construct();
 
         RC_Lang::load('order');
-		RC_Loader::load_app_func('order', 'orders');
+		RC_Loader::load_app_func('admin_order', 'orders');
 		RC_Loader::load_app_func('global', 'goods');
 		assign_adminlog_content();
 		
@@ -49,7 +49,7 @@ class admin_order_back extends ecjia_admin {
 		);
 		
 		/* 查询 */
-		RC_Loader::load_app_func('function');
+		RC_Loader::load_app_func('global');
 		$result = get_back_list();
 
 		/* 模板赋值 */
@@ -77,7 +77,7 @@ class admin_order_back extends ecjia_admin {
 	
 		/* 根据发货单id查询发货单信息 */
 		if (!empty($back_id)) {
-			RC_Loader::load_app_func('function');
+			RC_Loader::load_app_func('global');
 			$back_order = back_order_info($back_id);
 		} else {
 			return $this->showmessage(RC_Lang::get('orders::order.return_form'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);

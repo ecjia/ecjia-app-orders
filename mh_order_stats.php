@@ -5,7 +5,6 @@
 */
 
 defined('IN_ECJIA') or exit('No permission resources.');
-RC_Loader::load_sys_class('ecjia_admin', false);
 
 class mh_order_stats extends ecjia_merchant {
 	private $db_order_info;

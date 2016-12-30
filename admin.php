@@ -12,9 +12,8 @@ class admin extends ecjia_admin {
 		parent::__construct();
 
 		RC_Lang::load('order');
-		RC_Loader::load_app_func('order', 'orders');
+		RC_Loader::load_app_func('admin_order', 'orders');
 		RC_Loader::load_app_func('global', 'goods');
-		RC_Loader::load_app_func('function');
 		assign_adminlog_content();
 		
 		$this->db_order_info	= RC_Model::model('orders/order_info_model');
@@ -169,7 +168,6 @@ class admin extends ecjia_admin {
 				}
 			}
 		}
-		//TODO wu
 		$getlast = $this->db_order_info->where(array_merge(array('order_id' => array('lt' => $order_id)), $where))->max('order_id');
 		$getnext = $this->db_order_info->where(array_merge(array('order_id' => array('gt' => $order_id)), $where))->min('order_id');
 		
@@ -614,7 +612,6 @@ class admin extends ecjia_admin {
 		$where['o.user_id'] = array('gt' => 0);
 		$where['o.extension_code'] = "";
 		$where = array_merge($where, $order_query->order_unprocessed());
-		//TODO wu
 		$query = $this->db_order_view->join('users')->where($where)->select();
 		
 		$this->assign('order_list', $query);
@@ -1419,7 +1416,6 @@ class admin extends ecjia_admin {
 					$attr_value = implode(",", $attr_value);
 				}
 				
-// 				$prod = $this->db_products->find(array('goods_id' => $goods_id));
 				$prod = RC_DB::table('products')->where('goods_id', $goods_id)->first();
 				RC_Loader::load_app_func('admin_goods', 'goods');
 				//商品存在规格 是货品 检查该货品库存
@@ -2724,7 +2720,6 @@ class admin extends ecjia_admin {
 				$where = array();
 				$where['order_id'] = $id_order;
 				$where = array_merge($where, $order_query->order_unpay_unship());
-				//TODO wu
 				$order = $this->db_order_info->find($where);
 				
 				if ($order) {
@@ -2776,7 +2771,6 @@ class admin extends ecjia_admin {
 				$where['order_id'] = $id_order;
 				$where = array_merge($where, $order_query->order_unpay_unship());
 				
-				//TODO wu
 				$order = $this->db_order_info->find($where);
 			
 				if ($order) {
@@ -2870,7 +2864,6 @@ class admin extends ecjia_admin {
 			$sn_str .="<br/>";
 
 			$order_list_no_fail = array();
-			// $data = $this->db_order_info->in(array('order_id' => $sn_not_list ))->select();
 			$data = RC_DB::table('order_info')->whereIn('order_id', $sn_not_list)->get();
 
 			foreach ($data as $key => $row) {
@@ -3149,7 +3142,6 @@ class admin extends ecjia_admin {
 					}
 				} elseif ($value['extension_code'] == 'virtual_card' || $value['is_real'] == 0) {
 					// 商品（虚货）
-// 					$num = $this->db_virtual_card->where(array('goods_id' => $value['goods_id'], 'is_saled' => 0))->count();
 					$num = RC_DB::table('virtual_card')->where('goods_id', $value['goods_id'])->where('is_saled', 0)->count();
 					
 					if (($num < $goods_no_package[$value['goods_id']]) && !(ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_PLACE)) {
@@ -3169,11 +3161,9 @@ class admin extends ecjia_admin {
 		
 					/* （实货） */
 					if (empty($value['product_id'])) {
-// 						$num = $this->db_goods->where(array('goods_id' => $value['goods_id']))->get_field('goods_number');
 						$num = RC_DB::table('goods')->where('goods_id', $value['goods_id'])->pluck('goods_number');
 					} else {
 					/* （货品） */
-// 						$num = $this->db_products->where(array('goods_id' => $value['goods_id'], 'product_id' => $value['product_id']))->get_field('product_number');
 						$num = RC_DB::table('products')->where('goods_id', $value['goods_id'])->where('product_id', $value['product_id'])->pluck('product_number');
 					}
 		
@@ -3195,7 +3185,6 @@ class admin extends ecjia_admin {
 			$delivery['update_time']	= GMTIME_UTC;
 			$delivery_time = $delivery['update_time'];
 
-// 			$delivery['add_time']		= $this->db_order_info->where(array('order_sn' => $delivery['order_sn']))->get_field('add_time');
 			$delivery['add_time']		= RC_DB::table('order_info')->where('order_sn', $delivery['order_sn'])->pluck('add_time');
 			
 			/* 获取发货单所属供应商 */
@@ -3218,7 +3207,6 @@ class admin extends ecjia_admin {
 			$_delivery['store_id'] = $order['store_id'];
 			
 			/* 发货单入库 */
-// 			$delivery_id = $this->db_delivery_order->insert($_delivery);
 			$delivery_id = RC_DB::table('delivery_order')->insertGetId($_delivery);
 			
 			if ($delivery_id) {
@@ -3228,7 +3216,6 @@ class admin extends ecjia_admin {
 					'message'		=> sprintf(RC_Lang::get('orders::order.order_prepare_message'), $order['order_sn']),
 					'add_time'     	=> RC_Time::gmtime()
 				);
-// 				$this->db_order_status_log->insert($data);
 				RC_DB::table('order_status_log')->insert($data);
 			}	
 			/* 记录日志 */
@@ -3259,7 +3246,6 @@ class admin extends ecjia_admin {
 							if (!empty($value['product_id'])) {
 								$delivery_goods['product_id'] = $value['product_id'];
 							}
-// 							$query = $this->db_delivery->insert($delivery_goods);
 							$query = RC_DB::table('delivery_goods')->insertGetId($delivery_goods);
 							
 						} elseif ($value['extension_code'] == 'package_buy') {
@@ -3278,7 +3264,6 @@ class admin extends ecjia_admin {
 									'extension_code'	=> $value['extension_code'], // 礼包
 									'is_real'			=> $pg_value['is_real']
 								);
-// 								$query = $this->db_delivery->insert($delivery_pg_goods);
 								$query = RC_DB::table('delivery_goods')->insertGetId($delivery_pg_goods);
 							}
 						}
@@ -3375,7 +3360,6 @@ class admin extends ecjia_admin {
 			$data = array(
 				'send_number' => 0,
 			);
-// 			$this->db_order_good->where(array('order_id' => $order_id))->update($data);
 			RC_DB::table('order_goods')->where('order_id', $order_id)->update($data);
 			
 		} elseif ('receive' == $operation) {
@@ -3396,7 +3380,6 @@ class admin extends ecjia_admin {
 					'message'      => RC_Lang::get('orders::order.order_goods_served'),
 					'add_time'     => RC_Time::gmtime()
 				);
-// 				$this->db_order_status_log->insert($data);
 				RC_DB::table('order_status_log')->insert($data);
 				//update commission_bill
 				RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => 1, 'order_id' => $order_id, 'order_amount' => $order['order_amount']));
@@ -3424,7 +3407,6 @@ class admin extends ecjia_admin {
 					'order_id'		=> $order_id,
 					'add_time'   	=> RC_Time::gmtime(),
 				);
-// 				$this->db_order_status_log->insert($data);
 				RC_DB::table('order_status_log')->insert($data);
 			}
 				
@@ -3530,7 +3512,6 @@ class admin extends ecjia_admin {
 			if ($order['user_id'] > 0) {
 				/* 取得用户信息 */
 				$user = user_info($order['user_id']);
-// 				$goods_num = $this->db_order_good->field('goods_number, send_number')->find(array('order_id' => $order['order_id']));
 				$goods_num = RC_DB::table('order_goods')->select('goods_number', 'send_number')->where('order_id', $order['order_id'])->first();
 		
 				if ($goods_num['goods_number'] == $goods_num['send_number']) {
@@ -3564,7 +3545,6 @@ class admin extends ecjia_admin {
 			$delivery['action_user'] = $_SESSION['admin_name'];
 			/* 添加退货记录 */
 			$delivery_list = array();
-// 			$delivery_list = $this->db_delivery_order->where(array('order_id' => $order['order_id']))->in(array('status' => array(0,2)))->select();
 			$delivery_list = RC_DB::table('delivery_order')->where('order_id', $order['order_id'])->whereIn('status', array(0, 2))->get();
 	
 			if ($delivery_list) {
@@ -3600,10 +3580,8 @@ class admin extends ecjia_admin {
 					    'store_id'      => $list['store_id'],
 						'invoice_no'	=> $list['invoice_no'],
 					);					
-// 					$back_id = $this->db_back_order->insert($data);
 					$back_id = RC_DB::table('back_order')->insertGetId($data);
 		
-// 					$query = $this->db_delivery->field('goods_id, product_id, product_sn, goods_name,goods_sn, is_real, send_number, goods_attr')->find(array('delivery_id' => $list['delivery_id']));
 					$query = RC_DB::table('delivery_goods')
 						->selectRaw('goods_id, product_id, product_sn, goods_name, goods_sn, is_real, send_number, goods_attr')
 						->where('delivery_id', $list['delivery_id'])
@@ -3620,8 +3598,6 @@ class admin extends ecjia_admin {
 						'send_number'	=> $query['send_number'],
 						'goods_attr'	=> $query['goods_attr'],
 					);
-
-// 					$this->db_back_goods->insert($source);
 					RC_DB::table('back_goods')->insert($source);
 				}
 			}
@@ -3630,14 +3606,12 @@ class admin extends ecjia_admin {
 			$data = array(
 				'status' => 1,
 			);
-// 			$this->db_delivery_order->where(array('order_id' => $order['order_id']))->in(array('status' => array(0,2)))->update($data);
 			RC_DB::table('delivery_order')->where('order_id', $order['order_id'])->whereIn('status', array(0, 2))->update($data);
 	
 			/* 将订单的商品发货数量更新为 0 */
 			$data = array(
 				'send_number' => 0,
 			);
-// 			$this->db_order_good->where(array('order_id' => $order_id))->update($data);
 			RC_DB::table('order_goods')->where('order_id', $order_id)->update($data);
 			
 			//update commission_bill
@@ -3666,7 +3640,6 @@ class admin extends ecjia_admin {
 		
 		/* 取得商品信息 */
 		$goods_id = $_POST['goods_id'];
-// 		$goods = $db_view->join(array('brand','category'))->find(array('goods_id' => $goods_id));
 
 		$goods = RC_DB::table('goods as g')
 			->leftJoin('brand as b', RC_DB::raw('g.brand_id'), '=', RC_DB::raw('b.brand_id'))
@@ -3679,7 +3652,6 @@ class admin extends ecjia_admin {
 		$goods['goods_price'] = ($goods['is_promote'] == 1 && $goods['promote_start_date'] <= $today && $goods['promote_end_date'] >= $today) ? $goods['promote_price'] : $goods['shop_price'];
 		
 		/* 取得会员价格 */
-// 		$goods['user_price'] = $member_views->join('user_rank')->where(array('mp.goods_id' => $goods_id))->select();
 		$goods['user_price'] = RC_DB::table('member_price as mp')
 			->leftJoin('user_rank as r', RC_DB::raw('mp.user_rank'), '=', RC_DB::raw('r.rank_id'))
 			->selectRaw('mp.user_price, r.rank_name')
@@ -3688,7 +3660,6 @@ class admin extends ecjia_admin {
 			
 
 		/* 取得商品属性 */
-// 		$data = $attribute_view->join('attribute')->where(array('ga.goods_id' => $goods_id))->select();
 		$data = RC_DB::table('goods_attr as ga')
 			->leftJoin('attribute as a', RC_DB::raw('ga.attr_id'), '=', RC_DB::raw('a.attr_id'))
 			->where(RC_DB::raw('ga.goods_id'), $goods_id)
@@ -3757,9 +3728,6 @@ class admin extends ecjia_admin {
 
 		$result = array();
 		if (!empty($id_name)) {
-// 			$db_user = RC_Loader::load_app_model('users_model', 'user');
-// 			$data = $db_user->field('user_id, user_name, email')->where("email like '%".mysql_like_quote($id_name)."%' or user_name like '%".mysql_like_quote($id_name)."%'")->limit(50)->select();
-			
 			$data = RC_DB::table('users')
 				->select('user_id', 'user_name', 'email')
 				->where('email', 'like', '%'.mysql_like_quote($id_name).'%')
@@ -3774,7 +3742,6 @@ class admin extends ecjia_admin {
 			}
 		} 
 		return $this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('user' => $result));
-// 		die(json_encode($result));
 	}
 	
 	/**
@@ -3789,8 +3756,6 @@ class admin extends ecjia_admin {
 
 		$result = array();
 		if (!empty($keyword)) {
-// 			$data = $this->db_goods->field('goods_id, goods_name, goods_sn')->where('is_delete = 0 and is_on_sale = 1 and is_alone_sale = 1 and ( goods_id like "%'.mysql_like_quote($keyword).'%" or goods_name like "%'.mysql_like_quote($keyword).'%" or goods_sn like "%'.mysql_like_quote($keyword).'%" )')->limit(20)->select();
-			
 		    $data = RC_DB::table('goods')
 		              ->select('goods_id', 'goods_name', 'goods_sn')
 		              ->where('is_delete', 0)->where('is_on_sale', 1)->where('is_alone_sale', 1)
@@ -3806,7 +3771,6 @@ class admin extends ecjia_admin {
 			} 
 		} 
 		return $this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('goods' => $result));
-// 		die(json_encode($result));
 	}
 	
 	/**
@@ -3859,7 +3823,6 @@ class admin extends ecjia_admin {
 		$data = array(
 			'pay_note' => $no
 		);
-// 		$query = $this->db_order_info->where(array('order_id' => $order_id))->update($data);
 		$query = RC_DB::table('order_info')->where('order_id', $order_id)->update($data);
 
 		if ($query) {
@@ -3880,15 +3843,9 @@ class admin extends ecjia_admin {
 		/* 检查权限 */
 		$this->admin_priv('order_edit', ecjia::MSGTYPE_JSON);
 		$id = $_POST['user_id'];
-		
-// 		$db_user = RC_Loader::load_app_model('users_model','user');
-// 		$row = $db_user->find(array('user_id' => $id));
-		
 		$row = RC_Api::api('user', 'user_info', array('user_id' => $id));
 		
 		if ($row['user_rank'] > 0) {
-// 			$db_user_rank = RC_Loader::load_app_model('user_rank_model', 'user');
-// 			$user['user_rank'] = $db_user_rank->where(array('rank_id' => $row['user_rank']))->get_field('rank_name');
 			$user['user_rank'] = RC_DB::table('user_rank')->where('rank_id', $row['user_rank'])->pluck('rank_name');
 		} else {
 			$user['user_rank'] = RC_Lang::get('orders::order.no_special_grade');
@@ -3920,235 +3877,6 @@ class admin extends ecjia_admin {
 	private function get_regions($type = 0, $parent = 0) {
 		return RC_DB::table('region')->where('region_type', $type)->where('parent_id', $parent)->select('region_id', 'region_name')->get();
 	}
-	
-//	TODO：此方法为订单列表页，鼠标移动至订单上获取的订单商品信息
-//	/**
-//	 * 获取订单商品信息
-//	 */
-//	public function get_goods_info() {
-//		/* 取得订单商品 */
-//		$order_id = isset($_REQUEST['order_id'])?intval($_REQUEST['order_id']):0;
-//		$order = order_info($order_id);
-//		if (empty($order_id)) {
-//			return $this->showmessage(RC_Lang::lang('error_get_goods_info'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-//		}
-//		$goods_list = array();
-//		$goods_attr = array();
-//
-//		$this->db_order_goodview->view = array(
-//			'goods' => array(
-//				'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-//				'alias'	=> 'g',
-//				'field'	=> "o.*, g.goods_thumb, g.goods_number AS storage, o.goods_attr, IFNULL(b.brand_name, '') AS brand_name",
-//				'on'	=> 'o.goods_id = g.goods_id ',
-//			),
-//			'brand' => array(
-//				'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-//				'alias'	=> 'b',
-//				'on'	=> 'g.brand_id = b.brand_id ',
-//			)
-//		);
-//		
-//		$data = $this->db_order_goodview->where("o.order_id = '{$order_id}'")->select();
-//		
-//		foreach ($data as $key => $row) {
-//			/* 虚拟商品支持 */
-////			TODO:加载虚拟商品语言项，赞注释，后期是否需要再议
-////			if ($row['is_real'] == 0) {
-//				/* 取得语言项 */
-////				$filename = ROOT_PATH . 'plugins/' . $row['extension_code'] . '/languages/common_' . ecjia::config('lang') . '.php';
-////				if (file_exists($filename)) {
-////					include_once($filename);
-////					if (RC_Lang::lang($row['extension_code'].'_link')) {
-////						$row['goods_name'] = $row['goods_name'] . sprintf(RC_Lang::lang($row['extension_code'].'_link'), $row['goods_id'], $order['order_sn']);
-////					}
-////				}
-////			}
-//		
-//			$row['formated_subtotal']		= price_format($row['goods_price'] * $row['goods_number']);
-//			$row['formated_goods_price']	= price_format($row['goods_price']);
-//			$_goods_thumb					= get_image_path($row['goods_id'], $row['goods_thumb'], true);
-//			$_goods_thumb					= (strpos($_goods_thumb, 'http://') === 0) ? $_goods_thumb : SITE_URL . $_goods_thumb;
-//			$row['goods_thumb']				= $_goods_thumb;
-//			$goods_attr[]					= explode(' ', trim($row['goods_attr'])); //将商品属性拆分为一个数组
-//			$goods_list[]					= $row;
-//		}
-//		$attr	= array();
-//		$arr	= array();
-//		foreach ($goods_attr AS $index => $array_val) {
-//			foreach ($array_val AS $value) {
-//				$arr = explode(':', $value);//以 : 号将属性拆开
-//				$attr[$index][] =  @array('name' => $arr[0], 'value' => $arr[1]);
-//			}
-//		}
-//		
-//		$this->assign('goods_attr'	, $attr);
-//		$this->assign('goods_list'	, $goods_list);
-//		$str = $this->fetch('order_goods_info');
-//		$goods[] = array('order_id' => $order_id, 'str' => $str);
-//
-//		return $this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('content'=>$goods));
-//// 		global $ecs, $db, $_CFG, $sess;	
-//// 			make_json_response('', 1, RC_Lang::lang('error_get_goods_info'));	
-//// 		$sql = "SELECT o.*, g.goods_thumb, g.goods_number AS storage, o.goods_attr, IFNULL(b.brand_name, '') AS brand_name " .
-//// 				"FROM " . $ecs->table('order_goods') . " AS o ".
-//// 				"LEFT JOIN " . $ecs->table('goods') . " AS g ON o.goods_id = g.goods_id " .
-//// 				"LEFT JOIN " . $ecs->table('brand') . " AS b ON g.brand_id = b.brand_id " .
-//// 				"WHERE o.order_id = '{$order_id}' ";
-//// 		$res = $db->query($sql);
-//// 		while ($row = $db->fetchRow($res))
-//// 		make_json_result($goods);
-//	}
-	
-	/**
-	 *  获取订单列表信息					移动到order_query.class 中 by will.chen
-	 *
-	 * @access  public
-	 * @param
-	 *
-	 * @return void
-	 */
-//	private function get_order_list() {
-	
-	    // 	if (!empty($_GET['is_ajax']) && $_GET['is_ajax'] == 1)
-	        // 	{
-	        // 		$_REQUEST['consignee'] = json_str_iconv($_REQUEST['consignee']);
-	        // 		//          $_REQUEST['address'] = json_str_iconv($_REQUEST['address']);
-	        // 	}
-	
-	        // 	$sql = "SELECT agency_id FROM " . $GLOBALS['ecs']->table('admin_user') . " WHERE user_id = '$_SESSION[admin_id]'";
-	        // 	$agency_id = $GLOBALS['db']->getOne($sql);
-	
-	    /* 分页大小 */
-	        // 	$filter['page'] = empty($_REQUEST['page']) || (intval($_REQUEST['page']) <= 0) ? 1 : intval($_REQUEST['page']);
-	
-	        // 	$sql = "SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('order_info') . " AS o,".
-	        // 			$GLOBALS['ecs']->table('users') . " AS u " . $where;
-	        // 	$sql = "SELECT COUNT(*) FROM " . $GLOBALS['ecs']->table('order_info') . " AS o ". $where;
-	        // 	$filter['record_count']   = $GLOBALS['db']->getOne($sql);
-	
-	        // 	if (isset($_REQUEST['page_size']) && intval($_REQUEST['page_size']) > 0) {
-	        // 		$filter['page_size'] = intval($_REQUEST['page_size']);
-	        // 	} elseif (isset($_COOKIE['ECSCP']['page_size']) && intval($_COOKIE['ECSCP']['page_size']) > 0) {
-	        // 		$filter['page_size'] = intval($_COOKIE['ECSCP']['page_size']);
-	        // 	} else {
-	        // 		$filter['page_size'] = 15;
-	        // 	}
-	
-	        // 	$sql = "SELECT o.order_id, o.order_sn, o.add_time, o.order_status, o.shipping_status, o.order_amount, o.money_paid," .
-	        // 			"o.pay_status, o.consignee, o.address, o.email, o.tel, o.extension_code, o.extension_id, " .
-	        // 			"(" . order_amount_field('o.') . ") AS total_fee, " .
-	        // 			"IFNULL(u.user_name, '" .$GLOBALS['_LANG']['anonymous']. "') AS buyer ".
-	        // 			" FROM " . $GLOBALS['ecs']->table('order_info') . " AS o " .
-	        // 			" LEFT JOIN " .$GLOBALS['ecs']->table('users'). " AS u ON u.user_id=o.user_id ". $where .
-	        // 			" ORDER BY $filter[sort_by] $filter[sort_order] ".
-	        // 			" LIMIT " . ($filter['page'] - 1) * $filter['page_size'] . ",$filter[page_size]";
-
-//	    $result = get_filter();
-//	    if ($result === false) {	
-//	        $where = ' 1 ';	
-//	            $where .= " AND o.order_sn LIKE '%" . mysql_like_quote($filter['order_sn']) . "%'";	
-//	            $where .= " AND o.consignee LIKE '%" . mysql_like_quote($filter['consignee']) . "%'";
-//	            $where .= " AND o.email LIKE '%" . mysql_like_quote($filter['email']) . "%'";
-//	            $where .= " AND o.address LIKE '%" . mysql_like_quote($filter['address']) . "%'";
-//	            $where .= " AND o.zipcode LIKE '%" . mysql_like_quote($filter['zipcode']) . "%'";		
-//	            $where .= " AND o.tel LIKE '%" . mysql_like_quote($filter['tel']) . "%'";
-//	            $where .= " AND o.mobile LIKE '%" .mysql_like_quote($filter['mobile']) . "%'";		
-//	            $where .= " AND o.country = '$filter[country]'";
-//	            $where .= " AND o.province = '$filter[province]'";
-//	            $where .= " AND o.city = '$filter[city]'";
-//	            $where .= " AND o.district = '$filter[district]'";
-//	            $where .= " AND o.shipping_id  = '$filter[shipping_id]'";
-//	            $where .= " AND o.pay_id  = '$filter[pay_id]'";
-//	            $where .= " AND (o.order_status  = '$filter[status]' or o.shipping_status  = '$filter[status]' or o.pay_status  = '$filter[status]')";
-//	            $where .= " AND o.order_status  = '$filter[order_status]'";
-//	            $where .= " AND o.shipping_status = '$filter[shipping_status]'";
-//	            $where .= " AND o.pay_status = '$filter[pay_status]'";
-//	            $where .= " AND o.user_id = '$filter[user_id]'";
-//	            $where .= " AND u.user_name LIKE '%" . mysql_like_quote($filter['user_name']) . "%'";
-//	            $where .= " AND o.add_time >= '$filter[start_time]'";
-//	            $where .= " AND o.add_time <= '$filter[end_time]'";
-//	                    $where .= " AND o.pay_status = '$filter[composite_status]' ";
-//	                    $where .= " AND o.shipping_status  = '$filter[composite_status]'-2 ";
-//	                    $where .= " AND o.order_status = '$filter[composite_status]' ";
-//	            $where .= " AND o.extension_code = 'group_buy' AND o.extension_id = '$filter[group_buy_id]' ";
-//	            $where .= " AND o.agency_id = ".$agency_id." ";
-//		        set_filter($filter, $sql);
-//	    } else {
-//	        $sql    = $result['sql'];
-//	        $filter = $result['filter'];
-//	    }
-//     $row = $GLOBALS['db']->getAll($sql);
-	//        if ($filter['order_sn']) {
-//        	$where['o.order_sn'] = array('like' => '%'.mysql_like_quote($filter['order_sn']).'%');
-//        }
-//        if ($filter['consignee']) {
-//        	$where['o.consignee'] = array('like' => '%'.mysql_like_quote($filter['consignee']).'%');
-//        }
-//        if ($filter['email']) {
-//        	$where['o.email'] = array('like' => '%'.mysql_like_quote($filter['email']).'%');
-//        }
-//        if ($filter['address']) {
-//        	$where['o.address'] = array('like' => '%'.mysql_like_quote($filter['address']).'%');
-//        }
-//        if ($filter['zipcode']) {
-//        	$where['o.zipcode'] = array('like' => '%'.mysql_like_quote($filter['zipcode']).'%');
-//        }
-//        if ($filter['tel']) {
-//        	$where['o.tel'] = array('like' => '%'.mysql_like_quote($filter['tel']).'%');
-//        }
-//        if ($filter['mobile']) {
-//        	$where['o.mobile'] = array('like' => '%'.mysql_like_quote($filter['mobile']).'%');
-//        }
-//        if ($filter['country']) {
-//        	$where['o.country'] = $filter['country'];
-//        }
-//        if ($filter['province']) {
-//        	$where['o.province'] = $filter['province'];
-//        }
-//        if ($filter['city']) {
-//        	$where['o.city'] = $filter['city'];
-//        }
-//        if ($filter['district']) {
-//        	$where['o.district'] = $filter['district'];
-//        }
-//        if ($filter['shipping_id']) {
-//        	$where['o.shipping_id'] = $filter['shipping_id'];
-//        }
-//        if ($filter['pay_id']) {
-//        	$where['o.pay_id'] = $filter['pay_id'];
-//        }
-//        if ($filter['status'] != -1) {
-//        	$where[] = " (o.order_status  = '$filter[status]' or o.shipping_status  = '$filter[status]' or o.pay_status  = '$filter[status]')";
-//        }
-//        if ($filter['order_status'] != -1) {
-//        	$where['o.order_status'] = $filter['order_status'];
-//        }
-//        if ($filter['shipping_status'] != -1) {
-//        	$where['o.shipping_status'] = $filter['shipping_status'];
-//        }
-//        if ($filter['pay_status'] != -1) {
-//        	$where['o.pay_status'] = $filter['pay_status'];
-//        }
-//        if ($filter['user_id']) {
-//        	$where['o.user_id'] = $filter['user_id'];
-//        }
-//        if ($filter['user_name']) {
-//        	$where['u.user_name'] = array('like'=> '%'.mysql_like_quote($filter['user_name']).'%');
-//        }
-//        if ($filter['start_time']) {
-//        	$where[] = "o.add_time >= '$filter[start_time]'";
-//        }
-//        if ($filter['end_time']) {
-//        	$where[] = "o.add_time <= '$filter[end_time]'";
-//        }
-//		/* 团购订单 */
-//        if ($filter['group_buy_id']) {
-//        	$where['o.extension_code'] = 'group_buy';
-//        	$where['o.extension_id'] = $filter['group_buy_id'];
-//        }
-//	}
-	
 }
 
 // end

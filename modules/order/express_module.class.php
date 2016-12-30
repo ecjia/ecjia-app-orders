@@ -14,7 +14,7 @@ class express_module extends api_front implements api_interface {
     	}
     	
 		define('INIT_NO_USERS', true);
-		RC_Loader::load_app_func('order','orders');
+		RC_Loader::load_app_func('admin_order','orders');
 		
 		$AppKey = $this->requestData('app_key', '');
 		//$AppKey = '3b9fdc7e57c597ab';

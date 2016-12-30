@@ -76,7 +76,7 @@ function cancel_order ($order_id, $user_id = 0) {
     // 将用户订单设置为取消
     $query = $db->where(array('order_id' => $order_id))->update(array('order_status' => OS_CANCELED));
     if ($query) {
-        RC_Loader::load_app_func('order', 'orders');
+        RC_Loader::load_app_func('admin_order', 'orders');
         /* 记录log */
         order_action($order['order_sn'], OS_CANCELED, $order['shipping_status'], PS_UNPAYED, RC_Lang::lang('buyer_cancel'), 'buyer');
         /* 退货用户余额、积分、红包 */

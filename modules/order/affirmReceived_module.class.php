@@ -154,7 +154,7 @@ function affirm_received($order_id, $user_id = 0) {
             }
             
             /* 记录日志 */
-        	RC_Loader::load_app_func('order', 'orders');
+        	RC_Loader::load_app_func('admin_order', 'orders');
             order_action($order['order_sn'], $order['order_status'], SS_RECEIVED, $order['pay_status'], '', '买家');
             return true;
         } else {

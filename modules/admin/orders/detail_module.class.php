@@ -22,7 +22,7 @@ class detail_module extends api_admin implements api_interface {
  		if (empty($order_id) && empty($order_sn)) {
  			return new ecjia_error(101, '参数错误');
 		}
-		RC_Loader::load_app_func('order', 'orders');
+		RC_Loader::load_app_func('admin_order', 'orders');
 
 		/* 订单详情 */
 // 		$order = order_info($order_id);

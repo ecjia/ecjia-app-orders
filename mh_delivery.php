@@ -6,7 +6,6 @@ use Ecjia\System\Notifications\ExpressAssign;
  */
 
 defined('IN_ECJIA') or exit('No permission resources.');
-RC_Loader::load_sys_class('ecjia_admin', false);
 
 class mh_delivery extends ecjia_merchant {
 	private $db_delivery_order;
@@ -22,9 +21,9 @@ class mh_delivery extends ecjia_merchant {
 
 		RC_Lang::load('order');
 
-		RC_Loader::load_app_func('order', 'orders');
+		RC_Loader::load_app_func('admin_order', 'orders');
+		RC_Loader::load_app_func('merchant_order', 'orders');
 		RC_Loader::load_app_func('global', 'goods');
-		RC_Loader::load_app_func('function');
 		$this->db_delivery_order	= RC_Model::model('orders/delivery_order_model');
 		$this->db_order_region		= RC_Model::model('order_region_viewmodel');
 		$this->db_delivery			= RC_Model::model('delivery_goods_model');

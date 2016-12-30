@@ -220,7 +220,6 @@ class admin_order_delivery extends ecjia_admin {
 
 		/* 检查此单发货商品库存缺货情况 */
 		$virtual_goods = array();
-// 		$delivery_stock_result	= $db_delivery->join(array('goods', 'products'))->where(array('dg.delivery_id' => $delivery_id))->group(array('dg.product_id', 'dg.goods_id'))->select();
 
 		$delivery_stock_result = RC_DB::table('delivery_goods as dg')
 			->leftJoin('goods as g', RC_DB::raw('dg.goods_id'), '=', RC_DB::raw('g.goods_id'))
@@ -252,16 +251,6 @@ class admin_order_delivery extends ecjia_admin {
 				}
 			}
 		} else {
-// 			$db_delivery->view = array(
-// 				'goods' => array(
-// 					'type'		=> Component_Model_View::TYPE_LEFT_JOIN,
-// 					'alias'		=> 'g',
-// 					'field'		=> 'dg.goods_id, dg.is_real, SUM(dg.send_number) AS sums, g.goods_number, g.goods_name, dg.send_number',
-// 					'on'		=> 'dg.goods_id = g.goods_id ',
-// 				)
-// 			);
-// 			$delivery_stock_result = $db_delivery->where(array('dg.delivery_id' => $delivery_id))->group('dg.goods_id')->select();
-
 			$delivery_stock_result = RC_DB::table('delivery_goods as dg')
 				->leftJoin('goods as g', RC_DB::raw('dg.goods_id'), '=', RC_DB::raw('g.goods_id'))
 				->select(RC_DB::raw('dg.goods_id, dg.is_real, SUM(dg.send_number) AS sums, g.goods_number, g.goods_name, dg.send_number'))
@@ -329,7 +318,6 @@ class admin_order_delivery extends ecjia_admin {
 		$_delivery['invoice_no'] = $invoice_no;
 
 		$_delivery['status'] = 0;	/* 0，为已发货 */
-// 		$result = $this->db_delivery_order->where(array('delivery_id' => $delivery_id))-> update($_delivery);
 
 		$result = RC_DB::table('delivery_order')->where('delivery_id', $delivery_id)->update($_delivery);
 
@@ -385,7 +373,6 @@ class admin_order_delivery extends ecjia_admin {
 			$cfg = ecjia::config('send_ship_email');
 			if ($cfg == '1') {
 				$order['invoice_no'] = $invoice_no;
-				//$tpl = get_mail_template('deliver_notice');
 				$tpl_name = 'deliver_notice';
 				$tpl = RC_Api::api('mail', 'mail_template', $tpl_name);
 
@@ -425,12 +412,6 @@ class admin_order_delivery extends ecjia_admin {
 					}
 				}
 			}
-// 				if (ecjia::config('sms_order_shipped') == '1' && $order['mobile'] != '') {
-// 					RC_Loader::load_sys_class('sms',null,false);
-// 					$sms = new sms();
-// 					$sms->send($order['mobile'], sprintf(RC_Lang::lang('order_shipped_sms'), $order['order_sn'],
-// 					RC_Time::local_date(RC_Lang::lang('sms_time_format')), RC_Lang::lang('shop_name')), 0);
-// 				}
 		}
 
 		/* 操作成功 */
@@ -444,10 +425,6 @@ class admin_order_delivery extends ecjia_admin {
 	public function delivery_cancel_ship() {
 		/* 检查权限 */
 		$this->admin_priv('delivery_view', ecjia::MSGTYPE_JSON);
-
-// 		if (!empty($_SESSION['ru_id'])) {
-// 			return $this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-// 		}
 
 		/* 取得参数 */
 		$delivery				= '';
@@ -475,7 +452,6 @@ class admin_order_delivery extends ecjia_admin {
 		/* 取消当前发货单物流单号 */
 		$_delivery['invoice_no'] = '';
 		$_delivery['status'] = 2;
-// 		$result = $this->db_delivery_order->where(array('delivery_id' => $delivery_id))->update($_delivery);
 		$result = RC_DB::table('delivery_order')->where('delivery_id', $delivery_id)->update($_delivery);
 
 		if (!$result) {
@@ -517,7 +493,6 @@ class admin_order_delivery extends ecjia_admin {
 		if (ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) {
 			// 检查此单发货商品数量
 			$virtual_goods = array();
-// 			$delivery_stock_result = $this->db_delivery->field('goods_id, product_id, is_real, SUM(send_number)|sums')->where(array('delivery_id' => $delivery_id))->group('goods_id')->select();
 			$delivery_stock_result = RC_DB::table('delivery_goods')
 				->select(RC_DB::raw('goods_id, product_id, is_real, SUM(send_number) as sums'))
 				->where('delivery_id', $delivery_id)
@@ -533,7 +508,6 @@ class admin_order_delivery extends ecjia_admin {
 
 					//（货品）
 					if (!empty($value['product_id'])) {
-// 						$this->db_products->inc('product_number', 'product_id='.$value['product_id'], $value['sums']);
 						RC_DB::table('products')->where('product_id', $value['product_id'])->increment('product_number', $value['sums']);
 					}
 					RC_DB::table('goods')->where('goods_id', $value['goods_id'])->increment('goods_number', $value['sums']);
@@ -564,7 +538,6 @@ class admin_order_delivery extends ecjia_admin {
 		/* 操作成功 */
 		$links[] = array('text' => RC_Lang::get('system::system.09_delivery_order'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info'));
 		return $this->showmessage(RC_Lang::get('orders::order.act_ok'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('orders/admin_order_delivery/delivery_info', array('delivery_id' => $delivery_id)), 'links' => $links));
-// 		log_account_change($order['user_id'], 0, 0, (-1) * intval($integral['rank_points']), (-1) * intval($integral['custom_points']), sprintf(RC_Lang::lang('return_order_gift_integral'), $order['order_sn']));
 	}
 
 	/* 发货单删除 */

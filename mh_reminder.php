@@ -90,7 +90,6 @@ class mh_reminder extends ecjia_merchant {
 		$order_id = explode(',',$order_id);
 	
 		/* 记录日志 */
-// 		$type = htmlspecialchars($_GET['type']);
 		
 		RC_DB::table('order_reminder')->whereIn('order_id', $order_id)->delete();
 

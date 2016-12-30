@@ -205,7 +205,6 @@ class mh_order_stats extends ecjia_merchant {
 			}
 			$templateCounts = json_encode($arr1);
 			echo $templateCounts;
-// echo '{"\u5df2\u53d6\u6d88\u8ba2\u5355":{"2015-06":1,"2015-08":9,"2015-09":90},"\u672a\u786e\u8ba4\u8ba2\u5355":{"2015-06":0,"2015-08":41,"2015-09":163},"\u5df2\u786e\u8ba4\u8ba2\u5355":{"2015-06":0,"2015-08":3,"2015-09":30},"\u5df2\u5b8c\u6210\u8ba2\u5355":{"2015-06":0,"2015-08":2,"2015-09":20}}';
 		}
 	}
 
@@ -305,12 +304,6 @@ class mh_order_stats extends ecjia_merchant {
                     }
                 }
                 foreach ($format_ship_info as $k3 => &$v3) {
-                    /* foreach ($ship_name as $v_ship_name) {
-                        if ( $k3 != $v_ship_name && !isset($format_ship_info[$v_ship_name])) {
-                            $format_ship_info[$v_ship_name] = array();
-                            _dump($format_ship_info);
-                        }
-                    } */
                     foreach ($v3 as $k4 => &$v4) {
                         foreach ($format_start_date as $k2 => $v2) {
                             if ( $k4 != $v2 && !isset($v3[$v2])) {

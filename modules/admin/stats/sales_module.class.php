@@ -63,26 +63,15 @@ function sales_module($start_date,$end_date) {
 	$where[] = "(oi.pay_status = '" . PS_PAYED . "' OR oi.pay_status = '" . PS_PAYING . "')";
 
 // 	/* 判断请求时间，一天按小时返回*/
-// 	if ($type == 'day') {
-// 		$field = "CONCAT(FROM_UNIXTIME(oi.pay_time, '%Y-%m-%d'), ' 00:00:00') as new_day, SUM(oi.goods_amount - oi.discount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) AS total_fee";
-// 	} else {
-// 		$field = "CONCAT(FROM_UNIXTIME(oi.pay_time, '%Y-%m-%d %H'), ':00:00') as new_day, SUM(oi.goods_amount - oi.discount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) AS total_fee";
-// 	}
-
-	
-// 	$field = "FROM_UNIXTIME(oi.pay_time,'%Y-%c-%d %h:%i:%s') as new_time, oi.pay_time, (oi.goods_amount - oi.discount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) AS total_fee";
-	
 	$field = "oi.pay_time, (oi.goods_amount - oi.discount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) AS total_fee, oi.discount";
 	
 	/* 判断是否是入驻商*/
 	if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0 ) {
 		$join = array( 'order_goods');
 	}
-// 	$where[] = 'oi.add_time >="' .$start_date. '" and oi.add_time<="' .$end_date. '"';
 
 	$stats = $group = array();
 	$total_fee = $value = $max_amount = $discount_fee = 0 ;
-// 	$temp_stats = $temp_time = $start_date;
 	$temp_start_time = $start_date;
 	$now_time = RC_Time::gmtime();
 	$j = 1;
@@ -126,52 +115,6 @@ function sales_module($start_date,$end_date) {
 		$temp_start_time += $stats_scale;
 		$j++;
 	}
-	
-	
-// 	if (!empty($result)) {
-// 		$count = count($result);
-// 		foreach ($result as $key => $val) {
-// 			$total_fee += $val['total_fee'];
-// 			$max_amount = $max_amount < $val['total_fee'] ? $val['total_fee'] : $max_amount;
-// 			while (true) {
-// 				if ($val['pay_time'] >= ($temp_stats + $stats_scale) || $count == $key+1) {
-// 					if ($count == $key+1 && $temp_stats > $end_date) {
-// 						break;
-// 					}		
-// 					$stats[] = array(
-// 							'time'				=> $temp_stats,
-// 							'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s', $temp_stats),
-// 							'amount'			=> $value,
-// 							'value'				=> $value,
-// 					);
-// 					if ($val['pay_time'] < $temp_stats + $stats_scale || $count == $key+1) {
-// 						if ($val['pay_time'] < $temp_stats + $stats_scale && $count != $key+1) {
-// 							break;
-// 						}
-// 					}
-// 					/* 增加时间刻度*/
-// 					$temp_stats += $stats_scale;
-// 					$value = 0;
-// 				} else {
-// 					$value += $val['total_fee'];
-// 					break;
-// 				}
-// 				$temp_value++;
-// 			}
-// 		}
-// 	} else {
-// 		$i = 1;
-// 		while ($i <= 30) {
-// 			$stats[] = array(
-// 							'time'				=> $temp_stats,
-// 							'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s', $temp_stats),
-// 							'amount'			=> $value,
-// 							'value'				=> $value,
-// 					);
-// 			$temp_stats += $stats_scale;
-// 			$i++;
-// 		}
-// 	}
 	
 	$i = 1;
 	$temp_group = $start_date;

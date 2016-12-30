@@ -87,19 +87,5 @@ function orders_module($start_date, $end_date)
 			'formatted_integral_money'		=> price_format($result['integral_money'], false),
 	);
 	
-
-// 	orders : '6000', //订单数
-// 	total_sales_volume : '10000.00',  //总收益
-// 	member_orders :		'5000',		  //会员订单
-// 	anonymity_orders :  '1000',		  //匿名订单
-// 	discount_money    : '500.00',     //折扣费用
-// 	bouns_money : '600.00',	          //红包费用
-// 	integral_money : '500.00',        //积分费用
-	
-// 	formatted_total_sales_volume :　'￥10000.00元',
-// 	formatted_discount_money : '￥500.00元',
-// 	formatted_bouns_money : '￥600.00元',
-// 	formatted_integral_money : '￥500.00元',
-	
 	return $data;
 }

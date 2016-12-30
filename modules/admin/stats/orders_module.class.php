@@ -65,7 +65,6 @@ function orders_module($start_date, $end_date)
 	$where['oi.pay_status'] = 2;
 	$member_orders = 0;//会员数量
 	$anonymity_orders = 0;//非会员数量
-// 	$where[] = 'oi.pay_time >="' .$start_date. '" and oi.pay_time<="' .$end_date. '"';
 	
 	$field = 'oi.order_id, oi.pay_time, oi.user_id';
 	

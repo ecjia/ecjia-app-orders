@@ -74,9 +74,6 @@ class orders_order_paid_api extends Component_Event_Api {
 	 */
 	private function order_paid($log_id, $pay_status = PS_PAYED, $note = '')
 	{
-// 	    $db_pay = RC_Loader::load_app_model('pay_log_model', 'orders');
-// 	    $db_order = RC_Loader::load_app_model('order_info_model', 'orders');
-// 	    $db_user = RC_Loader::load_app_model('user_account_model', 'user');
 	    RC_Loader::load_app_func('admin_order', 'orders');
 	    /* 取得支付编号 */
 	    $log_id = intval($log_id);
@@ -174,31 +171,6 @@ class orders_order_paid_api extends Component_Event_Api {
 	                		}
 	                	}
 	                }
-	                
-// 	                $push_payed = ecjia::config('push_order_payed');
-// 	                if ($push_payed) {
-// 	                	$push_payed_app = ecjia::config('push_order_payed_apps');
-// 	                	if (!empty($push_payed_app)) {
-// 	                		/* 默认推店长*/
-// 	                		$user_id = RC_DB::table('staff_user')->where('store_id', $order['store_id'])->where('parent_id', 0)->pluck('user_id');
-	                		
-// 	                		$devic_info = RC_Api::api('mobile', 'device_info', array('user_type' => 'merchant', 'user_id' => $user_id));
-// 	                		if (!is_ecjia_error($devic_info) && !empty($devic_info)) {
-// 	                			$push_event = RC_Model::model('push/push_event_viewmodel')->where(array('event_code' => $push_payed_app, 'is_open' => 1, 'status' => 1, 'mm.app_id is not null', 'mt.template_id is not null', 'device_code' => $devic_info['device_code'], 'device_client' => $devic_info['device_client']))->find();
-// 	                			if (!empty($push_event)) {
-// 	                				RC_Loader::load_app_class('push_send', 'push', false);
-// 	                				ecjia_front::$controller->assign('order', $order);
-// 	                				$content = ecjia_front::$controller->fetch_string($push_event['template_content']);
-	                				
-// 	                				if ($devic_info['device_client'] == 'android') {
-// 	                					$result = push_send::make($push_event['app_id'])->set_client(push_send::CLIENT_ANDROID)->set_field(array('open_type' => 'main'))->send($devic_info['device_token'], $push_event['template_subject'], $content, 0, 1);
-// 	                				} elseif ($devic_info['device_client'] == 'iphone') {
-// 	                					$result = push_send::make($push_event['app_id'])->set_client(push_send::CLIENT_IPHONE)->set_field(array('open_type' => 'main'))->send($devic_info['device_token'], $push_event['template_subject'], $content, 0, 1);
-// 	                				}
-// 	                			}
-// 	                		}
-// 	                	}
-// 	                }
 	                
 	                $result = ecjia_app::validate_application('sms');
 	                if (!is_ecjia_error($result)) {

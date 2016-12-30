@@ -16,7 +16,6 @@ class orders_admin_menu_api extends Component_Event_Api {
 			ecjia_admin::make_admin_menu('08_add_order', RC_Lang::get('orders::order.add_order'), RC_Uri::url('orders/admin/add'), 5)->add_purview('order_edit'),
 			ecjia_admin::make_admin_menu('09_delivery_order', RC_Lang::get('orders::order.order_delivery_list'), RC_Uri::url('orders/admin_order_delivery/init'), 6)->add_purview('delivery_view'),
 			ecjia_admin::make_admin_menu('10_back_order', RC_Lang::get('orders::order.order_back_list'), RC_Uri::url('orders/admin_order_back/init'), 7)->add_purview('back_view'),
-// 			ecjia_admin::make_admin_menu('remind_order', RC_Lang::get('orders::order.order_reminder_list'), RC_Uri::url('orders/admin_order_reminder/init'), 8)->add_purview('remind_order_view'),
 		);
 		$menus->add_submenu($submenus);
 		

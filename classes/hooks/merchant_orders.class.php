@@ -4,23 +4,7 @@ defined('IN_ECJIA') or exit('No permission resources.');
 class orders_merchant_plugin {
 	
 	public static function widget_admin_dashboard_orderslist() {
-// 	    $result = ecjia_app::validate_application('payment');
-// 	    if (is_ecjia_error($result)) {
-// 	        return false;
-// 	    }
-	    
-// 	    $title = __('最新订单');
 
-// 	    $order_query = RC_Loader::load_app_class('order_query','orders');
-// 		$order_list = $order_query->get_order_list(5);
-// 		RC_Lang::load('orders/order');
-		
-// 	    ecjia_admin::$controller->assign('title'		, $title);
-// 	    ecjia_admin::$controller->assign('order_count'	, $order_list['filter']['record_count']);
-// 	    ecjia_admin::$controller->assign('order_list'	, $order_list['orders']);
-	    
-// 	    ecjia_admin::$controller->assign_lang();
-// 		ecjia_admin::$controller->display(ecjia_app::get_app_template('library/widget_admin_dashboard_orderslist.lbi', 'orders'));
 	}
 	
 	// 商城简报
@@ -77,7 +61,6 @@ class orders_merchant_plugin {
         }
 
         $where = array(
-            //'g.ru_id' => $_SESSION['ru_id'],
             'oi.store_id' => $_SESSION['store_id'],
             'oi.pay_status' => PS_PAYED,
             'oi.pay_time'   => array(
@@ -146,7 +129,6 @@ class orders_merchant_plugin {
         }
 
         $where = array(
-            //'g.ru_id' => $_SESSION['ru_id'],
         	'oi.store_id' => $_SESSION['store_id'],
             'oi.pay_status' => PS_PAYED,
             'oi.pay_time'   => array(
@@ -155,7 +137,6 @@ class orders_merchant_plugin {
             ),
         );
 
-// 	    $rs = $db_order->field('oi.order_id, oi.main_order_id')->where($where)->select();
         $rs = $db_order->field('oi.order_id')->where($where)->select();
         $arr = array();
 	    foreach($rs as $value){
@@ -214,11 +195,6 @@ class orders_merchant_plugin {
 		$db_user_account = RC_Loader::load_app_model('user_account_model','user');
 		
 		$db->view = array(
-// 				'order_info' => array(
-// 						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-// 						'alias'	=> 'oii',
-// 						'on'	=> 'oi.order_id = oii.main_order_id'
-// 				),
 				'order_goods' => array(
 						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
 						'alias'	=> 'g',
@@ -227,7 +203,6 @@ class orders_merchant_plugin {
 		);
 		/* 全部订单 */
 		//TODO: 入驻商订单筛选条件
-// 		$order['count']	= $db->where(array('oi.store_id' => $_SESSION['store_id']))->count('distinct oi.order_id');
 		$order['count']	= $db->where(array('oi.store_id' => $_SESSION['store_id']))->count('distinct oi.order_id');
 		
 		

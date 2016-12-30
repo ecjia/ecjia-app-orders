@@ -332,7 +332,6 @@ function sub_str($str, $length = 0, $append = true)
     } elseif (function_exists('iconv_substr')) {
         $newstr = iconv_substr($str, 0, $length, EC_CHARSET);
     } else {
-        //$newstr = trim_right(substr($str, 0, $length));
         $newstr = substr($str, 0, $length);
     }
     if ($append && $str != $newstr) {
@@ -907,8 +906,6 @@ function back_order_info($back_id, $store_id)
     }
     $db_back_order = RC_DB::table('back_order')->where('back_id', $back_id);
     isset($_SESSION['store_id']) ? $db_back_order->where('store_id', $store_id) : '';
-    // 	/* 获取管理员信息 */
-    // 	$where = array_merge($where, get_order_bac_where());
     $back = $db_back_order->first();
     if ($back) {
         /* 格式化金额字段 */

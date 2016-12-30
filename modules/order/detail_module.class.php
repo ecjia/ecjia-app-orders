@@ -106,32 +106,20 @@ class detail_module extends api_front implements api_interface {
 		}
 		$order['goods_list'] = $goods_list;
 
-// 		$db_term_meta = RC_Model::model('goods/goods_term_meta_model');
-// 		$meta_data_where = array(
-// 				'object_type'	=> 'ecjia.order',
-// 				'object_group'	=> 'order',
-// 				'object_id'		=> $order_id,
-// 				'meta_key'		=> 'receipt_verification',
-// 		);
-// 		$receipt_code = $db_term_meta->where($meta_data_where)->get_field('meta_value');
-// 		if (!empty($receipt_code)) {
-// 			$order['receipt_verification'] = $receipt_code;
-// 		}
-
 		$order_status_log = RC_Model::model('orders/order_status_log_model')->where(array('order_id' => $order_id))->order(array('log_id' => 'desc'))->select();
 		$order['order_status_log'] = array();
 		if (!empty($order_status_log)) {
 			$labe_order_status = array(
-							'place_order'	=> RC_Lang::get('orders::order.place_order'), 
-							'unpay'			=> RC_Lang::get('orders::order.unpay'), 
-							'payed' 		=> RC_Lang::get('orders::order.payed'),
-							'merchant_process' => RC_Lang::get('orders::order.merchant_process'),
-							'shipping' 		=> RC_Lang::get('orders::order.shipping'), 
-							'shipped' 		=> RC_Lang::get('orders::order.shipped'),
-							'express_user_pickup'	=> RC_Lang::get('orders::order.express_user_pickup'),
-							'cancel'		=> RC_Lang::get('orders::order.order_cancel'),
-							'confirm_receipt'	=> RC_Lang::get('orders::order.confirm_receipt'),
-							'finished'		=> RC_Lang::get('orders::order.order_finished')
+					'place_order'	=> RC_Lang::get('orders::order.place_order'), 
+					'unpay'			=> RC_Lang::get('orders::order.unpay'), 
+					'payed' 		=> RC_Lang::get('orders::order.payed'),
+					'merchant_process' => RC_Lang::get('orders::order.merchant_process'),
+					'shipping' 		=> RC_Lang::get('orders::order.shipping'), 
+					'shipped' 		=> RC_Lang::get('orders::order.shipped'),
+					'express_user_pickup'	=> RC_Lang::get('orders::order.express_user_pickup'),
+					'cancel'		=> RC_Lang::get('orders::order.order_cancel'),
+					'confirm_receipt'	=> RC_Lang::get('orders::order.confirm_receipt'),
+					'finished'		=> RC_Lang::get('orders::order.order_finished')
 					
 			);
 			

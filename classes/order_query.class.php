@@ -203,11 +203,7 @@ class order_query extends order {
 	}
 	
     public function get_order_list($pagesize = '15') {
-//     	$db_order 		= RC_Loader::load_app_model('order_info_model','orders');
-// 	    $dbview 		= RC_Loader::load_app_model('order_order_info_viewmodel','orders');
-// 		$db_admin 		= RC_Model::model('admin_user_model');
 	    $args 			= $_GET;
-// 	    $db_viewmodel 	= RC_Loader::load_app_model('merchants_order_goods_viewmodel','orders');
 	   
         /* 过滤信息 */
         $filter['order_sn'] 			= empty($args['order_sn']) 			? '' 	: trim($args['order_sn']);
@@ -246,10 +242,8 @@ class order_query extends order {
         /* 团购订单 */
         if ($filter['group_buy_id']) {
         	$this->where = array('o.extension_code' => 'group_buy', 'o.extension_id' => $filter['group_buy_id']);
-//         	$where .= " AND o.extension_code = 'group_buy' AND o.extension_id = '$filter[group_buy_id]' ";
         }
         
-// 		$this->where = array('o.extension_code' => '', 'o.extension_id' => 0);
 		$this->where = array_merge($this->where, $this->order_where($filter));
 
         //综合状态
@@ -282,23 +276,7 @@ class order_query extends order {
                 }
         };
 		
-//		setcookie('ECJIA[composite_status]', urlencode(serialize($filter['composite_status'])), RC_Time::gmtime()+ 36000);
 		RC_Cookie::set('composite_status', $filter['composite_status']);
-        
-        /* 如果管理员属于某个办事处，只列出这个办事处管辖的订单 */
-		//注释by  will.chen  关于办事处的先注释
-//        $agency_id = $db_admin->where(array('user_id' => $_SESSION['admin_id']))->get_field('agency_id');
-//         if ($agency_id > 0) {
-//             $this->where['o.agency_id'] = $agency_id;
-//         }
-        /* 记录总数 */
-//         if ($filter['user_name']) {
-            
-//         } else {
-//             $count = $dbview->join(null)->where($this->where)->count();
-//         }
-		
-//         $count = $dbview->join('users')->where($this->where)->count();
         
         $db_order_info = RC_DB::table('order_info as o')
         	->leftJoin('users as u', RC_DB::raw('o.user_id'), '=', RC_DB::raw('u.user_id'))
@@ -342,7 +320,6 @@ class order_query extends order {
         $filter['record_count'] = $count;
 
         $fields = "o.order_id, o.store_id, o.order_sn, o.add_time, o.order_status, o.shipping_status, o.order_amount, o.money_paid, o.pay_status, o.consignee, o.address, o.email, o.tel, o.mobile, o.extension_code, o.extension_id ,(" . $this->order_amount_field('o.') . ") AS total_fee, s.merchants_name, u.user_name";
-//         $row = $db_viewmodel->field($fields)->where($this->where)->order(array($filter['sort_by'] => $filter['sort_order']))->limit($page->limit())->group('o.order_id')->select();
     	
     	$row = $db_order_info
     		->leftJoin('order_goods as og', RC_DB::raw('o.order_id'), '=', RC_DB::raw('og.order_id'))
@@ -366,16 +343,13 @@ class order_query extends order {
 				$order[$value['order_id']]['formated_money_paid'] 	= price_format($value['money_paid']);
 				$order[$value['order_id']]['formated_total_fee'] 	= price_format($value['total_fee']);
 	            $order[$value['order_id']]['short_order_time']		= RC_Time::local_date('Y-m-d H:i', $value['add_time']);
-// 	            $order[$value['order_id']]['shop_name'] 			= $value['shop_name'];
                 $order[$value['order_id']]['user_name']             = empty($value['user_name']) ? RC_Lang::get('orders::order.anonymous') : $value['user_name'];
                 $order[$value['order_id']]['order_id']              = $value['order_id'];
-//                 $order[$value['order_id']]['main_order_id']         = $value['main_order_id'];
                 $order[$value['order_id']]['order_sn']              = $value['order_sn'];
                 $order[$value['order_id']]['add_time']              = $value['add_time'];
                 $order[$value['order_id']]['order_status']          = $value['order_status'];
                 $order[$value['order_id']]['shipping_status']       = $value['shipping_status'];
                 $order[$value['order_id']]['order_amount']         	= $value['order_amount'];
-//                 $order[$value['order_id']]['main_order_id']         = $value['main_order_id'];
                 $order[$value['order_id']]['money_paid']         	= $value['money_paid'];
                 $order[$value['order_id']]['pay_status']         	= $value['pay_status'];
                 $order[$value['order_id']]['consignee']         	= $value['consignee'];

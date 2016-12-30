@@ -51,7 +51,6 @@ function merchant_operable_list($order)
             } else {
                 /* 不是货到付款 */
                 if ($priv_list['ps']) {
-                    // 					$list['pay'] = true;	// 付款
                     $list['pay'] = false;
                     // 付款
                 }
@@ -82,7 +81,6 @@ function merchant_operable_list($order)
                 } else {
                     /* 不是货到付款 */
                     if ($priv_list['ps']) {
-                        // 						$list['pay'] = true;	// 付款
                         $list['pay'] = false;
                         // 付款
                     }
@@ -99,7 +97,6 @@ function merchant_operable_list($order)
             } else {
                 /* 状态：已确认、未付款、已发货或已收货 => 货到付款 */
                 if ($priv_list['ps']) {
-                    // 					$list['pay'] = true;	// 付款
                     $list['pay'] = false;
                     // 付款
                 }
@@ -129,7 +126,6 @@ function merchant_operable_list($order)
                     // 分单
                 }
                 if ($priv_list['ps']) {
-                    // 					$list['unpay'] = true;	// 设为未付款
                     $list['unpay'] = false;
                     // 设为未付款
                     if ($priv_list['os']) {
@@ -159,7 +155,6 @@ function merchant_operable_list($order)
                     }
                 }
                 if ($priv_list['ps'] && $is_cod) {
-                    // 					$list['unpay']  = true;	// 设为未付款
                     $list['unpay'] = false;
                     // 设为未付款
                 }
@@ -179,9 +174,6 @@ function merchant_operable_list($order)
         }
     } elseif (OS_INVALID == $os) {
         /* 状态：无效 无效订单只能删除*/
-        // 		if ($priv_list['os']) {
-        // 			$list['confirm'] = true;
-        // 		}
         if ($priv_list['edit']) {
             $list['remove'] = true;
         }

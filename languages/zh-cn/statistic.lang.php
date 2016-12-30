@@ -1,5 +1,5 @@
 <?php
-
+defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * ECSHOP 统计信息语言文件
  */
@@ -150,4 +150,4 @@ $LANG['confirm_order'] = '有效订单数';
 $LANG['gen_order_amount'] = '产生订单总数';
 $LANG['adsense_statement'] = '广告转化率报表';
 
-?>
+// end

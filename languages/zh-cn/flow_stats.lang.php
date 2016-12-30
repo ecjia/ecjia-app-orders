@@ -1,5 +1,5 @@
 <?php
-
+defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * ECSHOP 流量统计语言文件
  */
@@ -26,4 +26,4 @@ $LANG['end_date'] = '结束日期';
 $LANG['down_flow_stats'] = '流量分析报表下载';
 $LANG['flow_statistics'] = '流量分析报表';
 
-?>
+// end

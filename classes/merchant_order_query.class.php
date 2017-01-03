@@ -340,8 +340,6 @@ public function get_order_list($pagesize = '15') {
 		" + {$alias}card_fee ";
 	}
 
-
-
 }
 
 // end

@@ -35,13 +35,13 @@ class merchant_order_list {
 		$fields = "o.order_id, o.store_id, o.order_sn, o.add_time, o.order_status, o.shipping_status, o.order_amount, o.money_paid, o.pay_status, o.consignee, o.address, o.email, o.tel, o.mobile, o.extension_code, o.extension_id ,(" . $this->order_amount_field('o.') . ") AS total_fee, s.merchants_name, u.user_name";
 		 
 		$row = $this->db_order_info
-							->leftJoin('order_goods as og', RC_DB::raw('o.order_id'), '=', RC_DB::raw('og.order_id'))
-							->selectRaw($fields)
-							->take($pagesize)
-							->skip($page->start_id-1)
-							->groupby(RC_DB::raw('o.order_id'))
-							->get();
-		
+			->leftJoin('order_goods as og', RC_DB::raw('o.order_id'), '=', RC_DB::raw('og.order_id'))
+			->selectRaw($fields)
+			->take($pagesize)
+			->skip($page->start_id-1)
+			->groupby(RC_DB::raw('o.order_id'))
+			->get();
+
 		$order = array();
 		/* 格式话数据 */
 		if (!empty($row)) {
@@ -135,7 +135,6 @@ class merchant_order_list {
 		}
 		if (isset($filter['status']) && $filter['status'] != -1) {
 			$this->db_order_info->whereRaw('(o.order_status = '.$filter['status'].' or o.shipping_status  = '. $filter['status'] .' or o.pay_status  = '. $filter['status'] .')');
-// 			$this->where[] = " (o.order_status  = '$filter[status]' or o.shipping_status  = '$filter[status]' or o.pay_status  = '$filter[status]')";
 		}
 		if (isset($filter['order_status']) && $filter['order_status'] != -1) {
 			$this->db_order_info->where(RC_DB::raw('o.order_status'), $filter['order_status']);
@@ -209,10 +208,7 @@ class merchant_order_list {
 		
 		RC_Cookie::set('composite_status', $filter['composite_status']);
 		$this->filter = $filter;
-// 		return $this->where;
 	}
-	
-	
 	
 	/* 已完成订单 */
 	public function order_finished($alias = '') {
@@ -303,8 +299,6 @@ class merchant_order_list {
 		" + {$alias}insure_fee + {$alias}pay_fee + {$alias}pack_fee" .
 		" + {$alias}card_fee ";
 	}
-
-    
 }
 
 // end

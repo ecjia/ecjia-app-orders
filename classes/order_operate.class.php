@@ -47,7 +47,6 @@ class order_operate {
 			}
 		}
 		return true;
-		
 	}
 	
 	/* 设置已付款*/

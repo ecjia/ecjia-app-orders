@@ -13,7 +13,8 @@ class pay_module extends api_front implements api_interface {
     	    return new ecjia_error(100, 'Invalid session');
     	}
     	
-		$order_id = $this->requestData('order_id', 0);
+		$order_id	= $this->requestData('order_id', 0);
+		$is_mobile	= $this->requestData('is_mobile', true);
 		
 		if (!$order_id) {
 			return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
@@ -42,7 +43,7 @@ class pay_module extends api_front implements api_interface {
 
 		$handler = $payment_method->get_payment_instance($payment_info['pay_code'], $payment_config);
 		$handler->set_orderinfo($order);
-		$handler->set_mobile(true);
+		$handler->set_mobile($is_mobile);
 		
 		$result = $handler->get_code(payment_abstract::PAYCODE_PARAM);
         if (is_ecjia_error($result)) {

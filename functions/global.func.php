@@ -270,6 +270,7 @@ function order_amount_field($alias = '')
  */
 function order_query_sql($type = 'finished', $alias = '')
 {
+	RC_Loader::load_app_func('global', 'goods');
     /* 已完成订单 */
     if ($type == 'finished') {
         return " AND {$alias}order_status " . db_create_in(array(OS_CONFIRMED, OS_SPLITED)) . " AND {$alias}shipping_status " . db_create_in(array(SS_SHIPPED, SS_RECEIVED)) . " AND {$alias}pay_status " . db_create_in(array(PS_PAYED, PS_PAYING)) . " ";

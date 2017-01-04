@@ -110,10 +110,10 @@ class detail_module extends api_front implements api_interface {
 		$order['order_status_log'] = array();
 		if (!empty($order_status_log)) {
 			$labe_order_status = array(
-					'place_order'	=> RC_Lang::get('orders::order.place_order'), 
+					'place_order'	=> RC_Lang::get('orders::order.place_order'),//下单 
 					'unpay'			=> RC_Lang::get('orders::order.unpay'), 
 					'payed' 		=> RC_Lang::get('orders::order.payed'),
-					'merchant_process' => RC_Lang::get('orders::order.merchant_process'),
+					'merchant_process' => RC_Lang::get('orders::order.merchant_process'),//等待接单
 					'shipping' 		=> RC_Lang::get('orders::order.shipping'), 
 					'shipped' 		=> RC_Lang::get('orders::order.shipped'),
 					'express_user_pickup'	=> RC_Lang::get('orders::order.express_user_pickup'),

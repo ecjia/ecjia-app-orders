@@ -42,6 +42,7 @@ class admin extends ecjia_admin {
 		RC_Script::enqueue_script('orders', RC_Uri::home_url('content/apps/orders/statics/js/orders.js'));
 		RC_Script::enqueue_script('order_delivery', RC_App::apps_url('statics/js/order_delivery.js', __FILE__));
 		RC_Script::localize_script('orders', 'js_lang', RC_Lang::get('orders::order.js_lang'));
+		RC_Style::enqueue_style('orders', RC_App::apps_url('statics/css/orders.css', __FILE__), array());
 		
 		RC_Style::enqueue_style('aristo', RC_Uri::admin_url('statics/lib/jquery-ui/css/Aristo/Aristo.css'), array(), false, false);
 	}
@@ -204,6 +205,22 @@ class admin extends ecjia_admin {
 		$order['shipping_time']	= $order['shipping_time'] > 0 ? RC_Time::local_date(ecjia::config('time_format'), $order['shipping_time']) : RC_Lang::get('orders::order.ss.'.SS_UNSHIPPED);
 		$order['status']		= RC_Lang::get('orders::order.os.'.$order['order_status']) . ',' . RC_Lang::get('orders::order.ps.'.$order['pay_status']) . ',' . RC_Lang::get('orders::order.ss.'.$order['shipping_status']);
 		$order['invoice_no']	= $order['shipping_status'] == SS_UNSHIPPED || $order['shipping_status'] == SS_PREPARING ? RC_Lang::get('orders::order.ss.'.SS_UNSHIPPED) : $order['invoice_no'];
+		
+		//订单流程状态
+		if ($order['pay_time'] > 0) {
+			if ($order['shipping_time'] > 0) {
+				if ($order['shipping_status'] == 2) {
+					$time_key = 4;
+				} else {
+					$time_key = 3;
+				}
+			} else {
+				$time_key = 2;
+			}
+		} else {
+			$time_key = 1;
+		}
+		$this->assign('time_key', $time_key);
 		
 		/* 取得订单的来源 */
 		if ($order['from_ad'] == 0) {
@@ -1963,8 +1980,10 @@ class admin extends ecjia_admin {
 			$refund_note	= $_POST['refund_note'];
 			$refund_amount	= $_POST['refund_amount'];
 			$order			= order_info($order_id);
-			order_refund($order, $refund_type, $refund_note, $refund_amount);
-
+			$result = order_refund($order, $refund_type, $refund_note, $refund_amount);
+			if ($result == false) {
+				return false;
+			}
 			/* 修改应付款金额为0，已付款金额减少 $refund_amount */
 			update_order($order_id, array('order_amount' => 0, 'money_paid' => $order['money_paid'] - $refund_amount));
 		
@@ -2826,6 +2845,16 @@ class admin extends ecjia_admin {
 			/* 检查权限 */
 			$this->admin_priv('order_ps_edit', ecjia::MSGTYPE_JSON);
 		
+			/* todo 处理退款 */
+			if ($order['money_paid'] > 0) {
+				$refund_type = @$_POST['refund'];
+				$refund_note = @$_POST['refund_note'];
+				$result = order_refund($order, $refund_type, $refund_note);
+				if ($result == false) {
+					return false;
+				}
+			}
+			
 			/* 标记订单为未付款，更新付款时间和已付款金额 */
 			$arr = array(
 				'pay_status'	=> PS_UNPAYED,
@@ -2834,11 +2863,7 @@ class admin extends ecjia_admin {
 				'order_amount'	=> $order['money_paid']
 			);
 			update_order($order_id, $arr);
-		
-			/* todo 处理退款 */
-			$refund_type = @$_POST['refund'];
-			$refund_note = @$_POST['refund_note'];
-			order_refund($order, $refund_type, $refund_note);
+			
 			/* 记录日志 */
 			ecjia_admin::admin_log(RC_Lang::get('orders::order.op_unpay').' '.RC_Lang::get('orders::order.order_is').$order['order_sn'], 'edit', 'order_status');
 			/* 记录log */
@@ -3248,6 +3273,16 @@ class admin extends ecjia_admin {
 			order_action($order['order_sn'], $order['order_status'], SS_RECEIVED, $order['pay_status'], $action_note);
 		} elseif ('cancel' == $operation) {
 			/* 取消 */
+			
+			/* todo 处理退款 */
+			if ($order['money_paid'] > 0) {
+				$refund_type = $_POST['refund'];
+				$refund_note = $_POST['refund_note'];
+				$result = order_refund($order, $refund_type, $refund_note);
+				if ($result == false) {
+					return false;
+				}
+			}
 			/* 标记订单为“取消”，记录取消原因 */
 			$cancel_note = isset($_POST['cancel_note']) ? trim($_POST['cancel_note']) : '';
 			$arr = array(
@@ -3269,13 +3304,6 @@ class admin extends ecjia_admin {
 				RC_DB::table('order_status_log')->insert($data);
 			}
 				
-			/* todo 处理退款 */
-			if ($order['money_paid'] > 0) {
-				$refund_type = $_POST['refund'];
-				$refund_note = $_POST['refund_note'];
-				order_refund($order, $refund_type, $refund_note);
-			}
-		
 			/* 记录log */
 			order_action($order['order_sn'], OS_CANCELED, $order['shipping_status'], PS_UNPAYED, $action_note);
 		
@@ -3331,7 +3359,6 @@ class admin extends ecjia_admin {
 					return $this->showmessage(RC_Lang::get('orders::order.send_mail_fail'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 				}
 			}
-		
 			/* 退货用户余额、积分、红包 */
 			return_user_surplus_integral_bonus($order);
 		} elseif ('return' == $operation) {
@@ -3480,7 +3507,7 @@ class admin extends ecjia_admin {
 			/* 记录log */
 			order_action($order['order_sn'], $order['order_status'], $order['shipping_status'], $order['pay_status'], '[' . RC_Lang::get('orders::order.op_after_service') . '] ' . $action_note);
 		} else {
-			return $this->showmessage('invalid params', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			return $this->showmessage('参数错误', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		
 		/* 操作成功 */

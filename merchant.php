@@ -1705,8 +1705,10 @@ class merchant extends ecjia_merchant {
 			$refund_note	= $_POST['refund_note'];
 			$refund_amount	= $_POST['refund_amount'];
 			$order			= order_info($order_id);
-			order_refund($order, $refund_type, $refund_note, $refund_amount);
-		
+			$result = order_refund($order, $refund_type, $refund_note, $refund_amount);
+			if ($result == false) {
+				return false;
+			}
 			/* 修改应付款金额为0，已付款金额减少 $refund_amount */
 			update_order($order_id, array('order_amount' => 0, 'money_paid' => $order['money_paid'] - $refund_amount));
 		
@@ -3022,8 +3024,18 @@ class merchant extends ecjia_merchant {
 			/* 记录log */
 			order_action($order['order_sn'], $order['order_status'], SS_RECEIVED, $order['pay_status'], $action_note);
 		} elseif ('cancel' == $operation) {
-			
 			/* 取消 */
+
+			/* todo 处理退款 */
+			if ($order['money_paid'] > 0) {
+				$refund_type = $_POST['refund'];
+				$refund_note = $_POST['refund_note'];
+				$result = order_refund($order, $refund_type, $refund_note);
+				if ($result == false) {
+					return false;
+				}
+			}
+
 			/* 标记订单为“取消”，记录取消原因 */
 			$cancel_note = isset($_POST['cancel_note']) ? trim($_POST['cancel_note']) : '';
 			$arr = array(
@@ -3036,12 +3048,7 @@ class merchant extends ecjia_merchant {
 			);
 			update_order($order_id, $arr);
 		
-			/* todo 处理退款 */
-			if ($order['money_paid'] > 0) {
-				$refund_type = $_POST['refund'];
-				$refund_note = $_POST['refund_note'];
-				order_refund($order, $refund_type, $refund_note);
-			}
+
 			/* 记录日志 */
 			ecjia_merchant::admin_log('设为取消,订单号是'.$order['order_sn'], 'setup', 'order');
 			/* 记录log */

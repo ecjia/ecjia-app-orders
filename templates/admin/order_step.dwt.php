@@ -28,38 +28,38 @@
 	<ul class="">
 		<li class="step-first">
 			<div class="{if $time_key lt '2'}step-cur{else}step-done{/if}">
-				<div>{lang key='orders::order.buy_select'}</div>
 				<div class="step-no">{if $time_key lt '2'}1{/if}</div>
+				<div class="m_t5">{lang key='orders::order.buy_select'}</div>
 			</div>
 		</li>
 		<li>
 			<div class="{if $time_key eq '2'}step-cur{elseif $time_key gt '2'}step-done{/if}">
-				<div>{lang key='orders::order.order_goods_select'}</div>
 				<div class="step-no">{if $time_key lt '3'}2{/if}</div>
+				<div class="m_t5">{lang key='orders::order.order_goods_select'}</div>
 			</div>
 		</li>
 		<li>
 			<div class="{if $time_key eq '3'}step-cur{elseif $time_key gt '3'}step-done{/if}">
-				<div>{lang key='orders::order.confirm_shipping_address'}</div>
 				<div class="step-no">{if $time_key lt '4'}3{/if}</div>
+				<div class="m_t5">{lang key='orders::order.confirm_shipping_address'}</div>
 			</div>
 		</li>
 		<li>
 			<div class="{if $time_key eq '4'}step-cur{elseif $time_key gt '4'}step-done{/if}">
-				<div>{lang key='orders::order.payment_delivery'}</div>
 				<div class="step-no">{if $time_key lt '5'}4{/if}</div>
+				<div class="m_t5">{lang key='orders::order.payment_delivery'}</div>
 			</div>
 		</li>
 		<li>
 			<div class="{if $time_key eq '6'}step-cur{elseif $time_key gt '6'}step-done{/if}">
-				<div>{lang key='orders::order.other_info'}</div>
 				<div class="step-no">{if $time_key lt '7'}5{/if}</div>
+				<div class="m_t5">{lang key='orders::order.other_info'}</div>
 			</div>
 		</li>
 		<li class="step-last">
 			<div class="{if $time_key eq '7'}step-cur{/if}">
-				<div>{lang key='orders::order.claim_costs'}</div>
 				<div class="step-no">{if $time_key lt '8'}6{/if}</div>
+				<div>{lang key='orders::order.claim_costs'}</div>
 			</div>
 		</li>
 	</ul>

@@ -599,8 +599,8 @@ return array(
 	'area_lable'					=>	'区：',
 	'shipping_payment'				=>	'配送/支付方式',
 	'no_correspondence'				=>	'您可能没有添加配送插件或填写收货人地址信息！暂无对应的配送方式！',
-	'buy_select'					=>	'购买用户选择',
-	'order_goods_select'			=>	'订单商品选择',
+	'buy_select'					=>	'选择购买用户',
+	'order_goods_select'			=>	'选择订单商品',
 	'payment_delivery'				=>	'支付方式/配送方式',
 	'claim_costs'					=>	'确认费用',
 	'member_user'					=>	'会员用户',
@@ -762,11 +762,16 @@ return array(
     'payed'						=> '已付款',
     'shipping'					=> '配货中',
     'shipped'					=> '已发货',
-    'confirm_receipt'			=> '已确认收货',
+    'confirm_receipted'			=> '已确认收货',
     'order_finished'			=> '订单已完成',
     'order_cancel'				=> '订单已取消',
     'merchant_process'			=> '等待商家接单',
     'express_user_pickup'		=> '配送员已取货',
+    
+    'submit_order'				=> '提交订单',
+    'pay_for_order'				=> '支付订单',
+    'merchant_shipping'			=> '商家发货',
+    'confirm_receipt'			=> '确认收货',
 );
 
 // end

@@ -133,7 +133,7 @@ ecjia.merchant.order.info();
 									{if $order.shipping_status neq 1 && !$invalid_order}
 									<a class="data-pjax" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=shipping"}'>{lang key='system::system.edit'}</a>
 									{/if}
-									({$lang.action_note}: <span >{if $order.pay_note}{$order.pay_note}{else}N/A{/if}</span>)
+									({$lang.action_note}: <span >{if $order.pay_note}{$order.pay_note}{else}暂无{/if}</span>)
 								</td>
 								<td><div align="right"><strong>{$lang.label_pay_time}</strong></div></td>
 								<td>{$order.pay_time}</td>
@@ -164,7 +164,7 @@ ecjia.merchant.order.info();
 										{$express_order.express_user}{if $express_order.express_mobile}（{$express_order.express_mobile}）{/if}
 									{else}
 										{if $order.shipping_id gt 0 and $order.shipping_status gt 0}
-											<span>{if $order.invoice_no}{$order.invoice_no}{else}N/A{/if}</span>&nbsp;
+											<span>{if $order.invoice_no}{$order.invoice_no}{else}暂无{/if}</span>&nbsp;
 											<a href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=shipping"}' class="special data-pjax">{lang key='system::system.edit'}</a>
 										{/if}
 									{/if}

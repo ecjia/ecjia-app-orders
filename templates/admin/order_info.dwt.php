@@ -116,7 +116,7 @@
 										{if $order.shipping_status neq 1 && !$invalid_order}
 										<a class="data-pjax" href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=shipping"}'>{lang key='system::system.edit'}</a>
 										{/if}
-										({lang key='orders::order.action_note'}<span>{if $order.pay_note}{$order.pay_note}{else}N/A{/if}</span>)
+										({lang key='orders::order.action_note'}<span>{if $order.pay_note}{$order.pay_note}{else}暂无{/if}</span>)
 									</td>
 									<td><div align="right"><strong>{lang key='orders::order.label_pay_time'}</strong></div></td>
 									<td>{$order.pay_time}</td>
@@ -142,7 +142,7 @@
 								</tr>
 								<tr>
 									<td><div align="right"><strong>{lang key='orders::order.label_invoice_no'}</strong></div></td>
-									<td>{if $order.shipping_id gt 0 and $order.shipping_status gt 0}<span>{if $order.invoice_no}{$order.invoice_no}{else}N/A{/if}</span>&nbsp;
+									<td>{if $order.shipping_id gt 0 and $order.shipping_status gt 0}<span>{if $order.invoice_no}{$order.invoice_no}{else}暂无{/if}</span>&nbsp;
 									<a href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=shipping"}' class="special data-pjax">{lang key='system::system.edit'}</a>{/if}</td>
 									<td><div align="right"><strong>{lang key='orders::order.from_order'}</strong></div></td>
 									<td>{$order.referer}</td>

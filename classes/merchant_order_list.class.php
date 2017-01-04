@@ -24,7 +24,7 @@ class merchant_order_list {
 		$pagesize = 15;
 		
 		$this->db_order_info->leftJoin('users as u', RC_DB::raw('o.user_id'), '=', RC_DB::raw('u.user_id'))
-							->leftJoin('store_franchisee as s', RC_DB::raw('o.store_id'), '=', RC_DB::raw('s.store_id'));
+		->leftJoin('store_franchisee as s', RC_DB::raw('o.store_id'), '=', RC_DB::raw('s.store_id'));
 		
 		/* 处理查询提交*/
 		$this->order_filter_where();
@@ -76,9 +76,7 @@ class merchant_order_list {
 				}
 			}
 		}
-		
 		return array('orders' => $order, 'filter' => $this->filter, 'page' => $page->show(2), 'desc' => $page->page_desc(), 'count' => $count);
-		
 	}
 	
 	public function order_filter_where() {

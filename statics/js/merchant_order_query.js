@@ -16,8 +16,8 @@
 		},
 		
 		search : function() {
-			var $this 		= $("form[name='theForm']");
-			var url 		= $this.attr('action');
+			var $this	= $("form[name='theForm']");
+			var url		= $this.attr('action');
 			
 			$this.find("input").not("input[type='submit'],input[type='button'],input[type='reset']").each(function(i){
 				if ($(this).attr("name") != undefined) {
@@ -33,6 +33,5 @@
 		},
 	}
 })(ecjia.merchant, jQuery);
-
 
 // end

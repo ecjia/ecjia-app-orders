@@ -1,15 +1,14 @@
 <?php
+defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 商品销售排行
 */
-defined('IN_ECJIA') or exit('No permission resources.');
-
 class admin_sale_order extends ecjia_admin {
 	public function __construct() {
 		parent::__construct();
 
 		RC_Loader::load_app_func('global', 'orders');
-
 		/* 加载所有全局 js/css */
 		RC_Script::enqueue_script('bootstrap-placeholder');
 		RC_Script::enqueue_script('jquery-validate');
@@ -73,11 +72,10 @@ class admin_sale_order extends ecjia_admin {
 		$url_args = get_url_args($_GET, array('start_date', 'end_date'));
 		$this->assign('url_args', $url_args);
 
-		if($_REQUEST['store_id']){
+		if ($_REQUEST['store_id']) {
 			$store_info = RC_DB::table('store_franchisee')->where('store_id', $_GET['store_id'])->first();
 		    $this->assign('ur_here', $store_info['merchants_name'] . ' - ' . RC_Lang::get('system::system.sell_stats'));
         }
-
 		$goods_order_data = $this->get_sales_order(true, $filter);
 
 		$this->assign('start_date', $start_date);
@@ -126,7 +124,6 @@ class admin_sale_order extends ecjia_admin {
 				$data .= "$order_by\t$v[goods_name]\t$v[merchants_name]\t$v[goods_sn]\t$v[goods_num]\t$v[turnover]\t$v[wvera_price]\n";
 			}
 		}
-
 		echo mb_convert_encoding($data."\t","GBK","UTF-8");
 		exit;
 	}
@@ -180,4 +177,5 @@ class admin_sale_order extends ecjia_admin {
 	    return array('item' => $sales_order_data, 'filter' => $filter, 'desc' => $page->page_desc(), 'page'=>$page->show(2));
 	}
 }
+
 // end

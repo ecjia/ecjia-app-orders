@@ -52,9 +52,6 @@ class order_operate {
 	/* 设置已付款*/
 	private function order_pay($order, $note) {
 		/* 付款 */
-		// 		TODO:在外面做检查
-		// 		/* 检查权限 */
-	
 		/* 标记订单为已确认、已付款，更新付款时间和已支付金额，如果是货到付款，同时修改订单为“收货确认” */
 		if ($order['order_status'] != OS_CONFIRMED) {
 			$arr['order_status']	= OS_CONFIRMED;
@@ -79,8 +76,7 @@ class order_operate {
 	}
 	
 	/* 配货*/
-	private function order_prepare($order, $note)
-	{
+	private function order_prepare($order, $note) {
 		/* 配货 */
 		/* 标记订单为已确认，配货中 */
 		if ($order['order_status'] != OS_CONFIRMED) {
@@ -406,8 +402,7 @@ class order_operate {
 	}
 	
 	/* 取消订单*/
-	private function order_cancel($order, $note)
-	{
+	private function order_cancel($order, $note) {
 	    /* 判断付款状态 */
 	    if ($order['pay_status'] != PS_UNPAYED) {
 	        return false;
@@ -446,8 +441,7 @@ class order_operate {
 	 *        	用户名，用户自己的操作则为 buyer
 	 * @return void
 	 */
-	private function order_action($order_sn, $order_status, $shipping_status, $pay_status, $note = '', $username = null, $place = 0) 
-	{
+	private function order_action($order_sn, $order_status, $shipping_status, $pay_status, $note = '', $username = null, $place = 0) {
 		if (is_null ( $username )) {
 			$username = $_SESSION ['admin_name'];
 		}

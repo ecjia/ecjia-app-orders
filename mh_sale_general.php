@@ -1,11 +1,9 @@
 <?php
+defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
  * 销售概况
 */
-
-defined('IN_ECJIA') or exit('No permission resources.');
-
 class mh_sale_general extends ecjia_merchant {
 	private $db_order_info;
 	private $db_orderinfo_view;
@@ -21,7 +19,6 @@ class mh_sale_general extends ecjia_merchant {
 
 		/*自定义*/
 		RC_Lang::load('statistic');
-		
 		RC_Loader::load_app_func('global', 'orders');
 		
 		$this->db_order_info = RC_Loader::load_app_model('order_info_model', 'orders');
@@ -35,7 +32,6 @@ class mh_sale_general extends ecjia_merchant {
         RC_Style::enqueue_style('stats-css', RC_App::apps_url('statics/css/merchant_stats.css', __FILE__));
         
         ecjia_merchant_screen::get_current_screen()->set_parentage('stats');
-        
 	}
 	
 	/**

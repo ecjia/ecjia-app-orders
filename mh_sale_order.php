@@ -1,11 +1,9 @@
 <?php
+defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
  * 商品销售排行
 */
-
-defined('IN_ECJIA') or exit('No permission resources.');
-
 class mh_sale_order extends ecjia_merchant {
 	private $db_order_goods_view;
 	public function __construct() {
@@ -31,7 +29,6 @@ class mh_sale_order extends ecjia_merchant {
 		$this->db_order_goods_view = RC_Loader::load_app_model('order_goods_viewmodel','orders');
 		
 		ecjia_merchant_screen::get_current_screen()->set_parentage('stats');
-		
 	}
 	
 	public function init() {
@@ -97,7 +94,6 @@ class mh_sale_order extends ecjia_merchant {
 		exit;
 	}
 	
-
 	/**
 	 * 取得销售排行数据信息
 	 * @param   bool  $is_pagination  是否分页
@@ -132,4 +128,5 @@ class mh_sale_order extends ecjia_merchant {
 	    return $arr;
 	}
 }
+
 // end

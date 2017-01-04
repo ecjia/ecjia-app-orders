@@ -1,11 +1,9 @@
 <?php
+defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
  * ECJIA 订单-发货单管理
  */
-
-defined('IN_ECJIA') or exit('No permission resources.');
-
 class admin_order_delivery extends ecjia_admin {
 	public function __construct() {
 		parent::__construct();
@@ -96,18 +94,6 @@ class admin_order_delivery extends ecjia_admin {
 			'<p><strong>' . RC_Lang::get('orders::order.more_info') . '</strong></p>' .
 			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:发货单列表#.E8.AF.A6.E7.BB.86.E4.BF.A1.E6.81.AF" target="_blank">'. RC_Lang::get('orders::order.about_delivery_help') .'</a>') . '</p>'
 		);
-
-		/* 如果管理员属于某个办事处，检查该订单是否也属于这个办事处 */
-//		TODO:办事处模块赞无，暂时注释
-//		$agency_id = $this->db_admin_user->get_admin_agency_id($_SESSION['admin_id']);
-//		if ($agency_id > 0) {
-//			if ($delivery_order['agency_id'] != $agency_id) {
-//				return $this->showmessage(RC_Lang::lang('priv_error'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-//			}
-//
-//			/* 取当前办事处信息 */
-//			$delivery_order['agency_name'] = $this->db_agency->find(array('agency_id' => $agency_id))->get_field('agency_name');
-//		}
 
 		/* 取得用户名 */
 		if ($delivery_order['user_id'] > 0) {
@@ -280,15 +266,6 @@ class admin_order_delivery extends ecjia_admin {
 			}
 		}
 
-		/* 发货 */
-		/* 处理虚拟卡 商品（虚货） */
-// 		if (is_array($virtual_goods) && count($virtual_goods) > 0) {
-// 			foreach ($virtual_goods as $virtual_value) {
-				//TODO 虚拟商品方法已删除
-// 				virtual_card_shipping($virtual_value, $order['order_sn'], $msg, 'split');
-// 			}
-// 		}
-
 		/* 如果使用库存，且发货时减库存，则修改库存 */
 		if (ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) {
 			foreach ($delivery_stock_result as $value) {
@@ -299,13 +276,11 @@ class admin_order_delivery extends ecjia_admin {
 						$data = array(
 							'product_number' => $value['storage'] - $value['sums'],
 						);
-// 						$this->db_products->where(array('product_id' => $value['product_id']))->update($data);
 						RC_DB::table('products')->where('product_id', $value['product_id'])->update($data);
 					} else {
 						$data = array(
 							'goods_number' => $value['storage'] - $value['sums'],
 						);
-// 						$this->db_goods->where(array('goods_id' => $value['goods_id']))->update($data);
 						RC_DB::table('goods')->where('goods_id', $value['goods_id'])->update($data);
 					}
 				}

@@ -1,9 +1,9 @@
 <?php
+defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 会员排行
 */
-defined('IN_ECJIA') or exit('No permission resources.');
-
 class admin_users_order extends ecjia_admin {
 	public function __construct() {
 		parent::__construct();

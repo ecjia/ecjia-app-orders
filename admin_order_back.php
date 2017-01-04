@@ -1,10 +1,9 @@
 <?php
+defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * ECJIA 订单-退货单管理
  */
-
-defined('IN_ECJIA') or exit('No permission resources.');
-
 class admin_order_back extends ecjia_admin {
 	public function __construct() {
 		parent::__construct();
@@ -85,19 +84,6 @@ class admin_order_back extends ecjia_admin {
 		if (empty($back_order)) {
 			return $this->showmessage(RC_Lang::get('orders::order.return_form'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
 		}
-
-		/* 如果管理员属于某个办事处，检查该订单是否也属于这个办事处 */
-//		TODO:因未有相关app，办事处暂注释
-//		$agency_id = $this->db_admin_user->get_admin_agency_id($_SESSION['admin_id']);
-//		if ($agency_id > 0) {
-//			if ($back_order['agency_id'] != $agency_id) {
-//				return $this->showmessage(RC_Lang::lang('priv_error'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR) ;
-//			}
-//	
-//			/* 取当前办事处信息*/
-//			$back_order['agency_name'] = $this->db_agency->get_field('agency_name')->find(array('agency_id' => $agency_id));
-//		}
-	
 		/* 取得用户名 */
 		if ($back_order['user_id'] > 0) {
 			$user = user_info($back_order['user_id']);

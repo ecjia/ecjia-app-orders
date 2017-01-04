@@ -1,5 +1,6 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 取消订单
  * @author will
@@ -32,11 +33,11 @@ class cancel_module extends api_admin implements api_interface {
 		$cancel_note = $this->requestData('cancel_note','');
 		$action_note = $this->requestData('action_note','');
 		$arr = array(
-				'order_status'	=> OS_CANCELED,
-				'to_buyer'		=> $cancel_note,
-				'pay_status'	=> PS_UNPAYED,
-				'pay_time'		=> 0,
-				'money_paid'	=> 0,
+			'order_status'	=> OS_CANCELED,
+			'to_buyer'		=> $cancel_note,
+			'pay_status'	=> PS_UNPAYED,
+			'pay_time'		=> 0,
+			'money_paid'	=> 0,
 		);
 		update_order($order_id, $arr);
 
@@ -80,11 +81,8 @@ class cancel_module extends api_admin implements api_interface {
 
 			}
 		}
-
-
 		return array();
 	}
-
 
 }
 

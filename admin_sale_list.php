@@ -1,9 +1,9 @@
 <?php
+defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 销售明细列表程序
 */
-defined('IN_ECJIA') or exit('No permission resources.');
-
 class admin_sale_list extends ecjia_admin {
 	public function __construct() {
 		parent::__construct();

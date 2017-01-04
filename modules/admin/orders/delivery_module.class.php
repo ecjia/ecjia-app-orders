@@ -1,5 +1,6 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 订单详情
  * @author will
@@ -24,26 +25,22 @@ class delivery_module extends api_admin implements api_interface {
 		if (!empty($delivery_result)) {
 			foreach ($delivery_result as $val) {
 				$delivery_list[] = array(
-						'delivery_id'	=> $val['delivery_id'],
-						'delivery_sn'	=> $val['delivery_sn'],
-						'pickup_qrcode_sn'	=> 'ecjiaopen://app?open_type=express_pickup&delivery_sn='. $val['delivery_sn'],
-						'order_sn'		=> $val['order_sn'],
-						'shipping_name'	=> $val['shipping_name'],
-						'consignee'		=> $val['consignee'],
-						'address'		=> $val['address'],
-						'mobile'		=> $val['mobile'],
-						'status'		=> $val['status'] == 0 ? 'shipped' : 'shipping',
-						'label_status'	=> $val['status'] == 0 ? '已发货' : '发货中', 
+					'delivery_id'	=> $val['delivery_id'],
+					'delivery_sn'	=> $val['delivery_sn'],
+					'pickup_qrcode_sn'	=> 'ecjiaopen://app?open_type=express_pickup&delivery_sn='. $val['delivery_sn'],
+					'order_sn'		=> $val['order_sn'],
+					'shipping_name'	=> $val['shipping_name'],
+					'consignee'		=> $val['consignee'],
+					'address'		=> $val['address'],
+					'mobile'		=> $val['mobile'],
+					'status'		=> $val['status'] == 0 ? 'shipped' : 'shipping',
+					'label_status'	=> $val['status'] == 0 ? '已发货' : '发货中', 
 				);
 			}
 		}
-		
-		
 		return $delivery_list;
 	}
 
-
 }
-
 
 // end

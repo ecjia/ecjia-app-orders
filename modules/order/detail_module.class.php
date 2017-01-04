@@ -89,20 +89,19 @@ class detail_module extends api_front implements api_interface {
 			}
 
 			$goods_list[$k] = array(
-					'goods_id'	=> $v['goods_id'],
-					'name'		=> $v['goods_name'],
-					'goods_attr'	=> empty($attr) ? '' : $attr,
-					'goods_number'	=> $v['goods_number'],
-					'subtotal'		=> price_format($v['subtotal'], false),
-					'formated_shop_price' => $v['goods_price'] > 0 ? price_format($v['goods_price'], false) : __('免费'),
-					'is_commented'	=> $v['is_commented'],
-					'img' => array(
-							'small'	=> !empty($v['goods_thumb']) ? RC_Upload::upload_url($v['goods_thumb']) : '',
-							'thumb'	=> !empty($v['goods_img']) ? RC_Upload::upload_url($v['goods_img']) : '',
-							'url' 	=> !empty($v['original_img']) ? RC_Upload::upload_url($v['original_img']) : '',
-					)
+				'goods_id'		=> $v['goods_id'],
+				'name'			=> $v['goods_name'],
+				'goods_attr'	=> empty($attr) ? '' : $attr,
+				'goods_number'	=> $v['goods_number'],
+				'subtotal'		=> price_format($v['subtotal'], false),
+				'formated_shop_price' => $v['goods_price'] > 0 ? price_format($v['goods_price'], false) : __('免费'),
+				'is_commented'	=> $v['is_commented'],
+				'img' => array(
+					'small'	=> !empty($v['goods_thumb']) ? RC_Upload::upload_url($v['goods_thumb']) : '',
+					'thumb'	=> !empty($v['goods_img']) ? RC_Upload::upload_url($v['goods_img']) : '',
+					'url' 	=> !empty($v['original_img']) ? RC_Upload::upload_url($v['original_img']) : '',
+				)
 			);
-
 		}
 		$order['goods_list'] = $goods_list;
 
@@ -110,17 +109,16 @@ class detail_module extends api_front implements api_interface {
 		$order['order_status_log'] = array();
 		if (!empty($order_status_log)) {
 			$labe_order_status = array(
-					'place_order'	=> RC_Lang::get('orders::order.place_order'),//下单 
-					'unpay'			=> RC_Lang::get('orders::order.unpay'), 
-					'payed' 		=> RC_Lang::get('orders::order.payed'),
-					'merchant_process' => RC_Lang::get('orders::order.merchant_process'),//等待接单
-					'shipping' 		=> RC_Lang::get('orders::order.shipping'), 
-					'shipped' 		=> RC_Lang::get('orders::order.shipped'),
-					'express_user_pickup'	=> RC_Lang::get('orders::order.express_user_pickup'),
-					'cancel'		=> RC_Lang::get('orders::order.order_cancel'),
-					'confirm_receipt'	=> RC_Lang::get('orders::order.confirm_receipted'),
-					'finished'		=> RC_Lang::get('orders::order.order_finished')
-					
+				'place_order'	=> RC_Lang::get('orders::order.place_order'),//下单 
+				'unpay'			=> RC_Lang::get('orders::order.unpay'), 
+				'payed' 		=> RC_Lang::get('orders::order.payed'),
+				'merchant_process' => RC_Lang::get('orders::order.merchant_process'),//等待接单
+				'shipping' 		=> RC_Lang::get('orders::order.shipping'), 
+				'shipped' 		=> RC_Lang::get('orders::order.shipped'),
+				'express_user_pickup'	=> RC_Lang::get('orders::order.express_user_pickup'),
+				'cancel'		=> RC_Lang::get('orders::order.order_cancel'),
+				'confirm_receipt'	=> RC_Lang::get('orders::order.confirm_receipted'),
+				'finished'		=> RC_Lang::get('orders::order.order_finished')
 			);
 			
 			foreach ($order_status_log as $val) {
@@ -132,11 +130,8 @@ class detail_module extends api_front implements api_interface {
 				);
 			}
 		}
-		
-		
-
-
 		return array('data' => $order);
 	}
 }
+
 // end

@@ -115,4 +115,5 @@
 		},
 	};
 })(ecjia.merchant, jQuery);
+
 // end

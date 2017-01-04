@@ -1,5 +1,6 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * //订单统计汇总
  * @author will.chen
@@ -35,17 +36,16 @@ class order_sales_module extends api_admin implements api_interface {
 		}
 		return $response;
 	}
-	 
 }
-function orders_module($start_date, $end_date)
-{
+
+function orders_module($start_date, $end_date) {
 	$db_orderinfo_view = RC_Model::model('orders/order_info_viewmodel');
 	$db_orderinfo_view->view = array(
-			'order_goods' => array(
-					'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-					'alias'	=> 'og',
-					'on'	=> 'oi.order_id = og.order_id'
-			)
+		'order_goods' => array(
+			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+			'alias'	=> 'og',
+			'on'	=> 'oi.order_id = og.order_id'
+		)
 	);
 
 	$type = $start_date == $end_date ? 'time' : 'day';
@@ -74,18 +74,20 @@ function orders_module($start_date, $end_date)
 	$result = $db_orderinfo_view->join($join)->field($field)->where($where)->find();
 
 	$data = array(
-			'orders'				=> $result['count'],
-			'total_sales_volume'	=> $result['total_fee'],
-			'member_orders'			=> $result['member_orders'],
-			'anonymity_orders'		=> $result['count'] - $result['member_orders'],
-			'discount_money'		=> $result['discount'],
-			'bonus_money'			=> $result['bonus'],
-			'integral_money'		=> $result['integral_money'],
-			'formatted_total_sales_volume'	=> price_format($result['total_fee'], false),
-			'formatted_discount_money'		=> price_format($result['discount'], false),
-			'formatted_bouns_money'			=> price_format($result['bouns'], false),
-			'formatted_integral_money'		=> price_format($result['integral_money'], false),
+		'orders'				=> $result['count'],
+		'total_sales_volume'	=> $result['total_fee'],
+		'member_orders'			=> $result['member_orders'],
+		'anonymity_orders'		=> $result['count'] - $result['member_orders'],
+		'discount_money'		=> $result['discount'],
+		'bonus_money'			=> $result['bonus'],
+		'integral_money'		=> $result['integral_money'],
+		'formatted_total_sales_volume'	=> price_format($result['total_fee'], false),
+		'formatted_discount_money'		=> price_format($result['discount'], false),
+		'formatted_bouns_money'			=> price_format($result['bouns'], false),
+		'formatted_integral_money'		=> price_format($result['integral_money'], false),
 	);
 	
 	return $data;
 }
+
+//end

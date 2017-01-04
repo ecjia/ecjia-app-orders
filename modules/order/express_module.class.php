@@ -1,5 +1,6 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 订单快递查询
  * @author royalwang
@@ -40,9 +41,9 @@ class express_module extends api_front implements api_interface {
 
 		if (empty($data)) {
 			return array(
-    			    'content' => array('context'=>'无物流记录', 'time'=>''),
-    			    'shipping_name' => $order_info['shipping_name']
-			     );
+    			'content' => array('context'=>'无物流记录', 'time'=>''),
+    			'shipping_name' => $order_info['shipping_name']
+			);
 		} else {
 			$data['data'] = array_reverse($data['data']);
 		}
@@ -55,7 +56,6 @@ class express_module extends api_front implements api_interface {
 		return $out;		
 	}
 }
-
 
 function getComType($typeCom) {
 	if ($typeCom == 'AAE全球专递'){

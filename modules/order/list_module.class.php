@@ -1,5 +1,6 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 订单列表
  * @author royalwang
@@ -26,13 +27,12 @@ class list_module extends api_front implements api_interface {
 		}
 		
 		$pager = array(
-				'total' => $result['page']->total_records,
-				'count' => $result['page']->total_records,
-				'more'	=> $result['page']->total_pages <= $page ? 0 : 1,
+			'total' => $result['page']->total_records,
+			'count' => $result['page']->total_records,
+			'more'	=> $result['page']->total_pages <= $page ? 0 : 1,
 		);
-		
 		return array('data' => $result['order_list'], 'pager' => $pager);
-
 	 }	
 }
+
 // end

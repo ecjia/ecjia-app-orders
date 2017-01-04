@@ -1,11 +1,9 @@
 <?php
+defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
  * 订单统计
 */
-
-defined('IN_ECJIA') or exit('No permission resources.');
-
 class mh_order_stats extends ecjia_merchant {
 	private $db_order_info;
 	private $db_goods;
@@ -43,7 +41,6 @@ class mh_order_stats extends ecjia_merchant {
 		$this->db_orderinfo_view  = RC_Loader::load_app_model('order_order_infogoods_viewmodel', 'orders');
 
 		ecjia_merchant_screen::get_current_screen()->set_parentage('stats');
-
 	}
 
 	/**
@@ -473,4 +470,5 @@ class mh_order_stats extends ecjia_merchant {
 		return $order_info;
 	 }
 }
+
 // end

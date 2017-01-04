@@ -74,4 +74,5 @@
 		}
 	};
 })(ecjia.merchant, jQuery);
+
 // end

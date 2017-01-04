@@ -20,15 +20,15 @@
 
 				if (start_date == '') {
 					var data = {
-							message : "查询的开始时间不能为空！",
-							state : "error",
+						message : "查询的开始时间不能为空！",
+						state : "error",
 					};
 					ecjia.merchant.showmessage(data);
 					return false;
 				} else if(end_date == '') {
 					var data = {
-							message : "查询的结束时间不能为空！",
-							state : "error",
+						message : "查询的结束时间不能为空！",
+						state : "error",
 					};
 					ecjia.merchant.showmessage(data);
 					return false;
@@ -36,8 +36,8 @@
 				
 				if (start_date >= end_date && (start_date != '' && end_date !='')) {
 					var data = {
-							message : "查询的开始时间不能超于结束时间！",
-							state : "error",
+						message : "查询的开始时间不能超于结束时间！",
+						state : "error",
 					};
 					ecjia.merchant.showmessage(data);
 					return false;
@@ -47,5 +47,7 @@
 			});
 		},
 	};
+	
 })(ecjia.merchant, jQuery);
+
 // end

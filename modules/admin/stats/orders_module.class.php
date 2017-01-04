@@ -1,5 +1,6 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * //订单数量
  * @author luchongchong
@@ -34,17 +35,16 @@ class orders_module extends api_admin implements api_interface {
 		}
 		return $response;
 	}
-	 
 }
-function orders_module($start_date, $end_date)
-{
+
+function orders_module($start_date, $end_date) {
 	$db_orderinfo_view = RC_Model::model('orders/order_info_viewmodel');
 	$db_orderinfo_view->view = array(
-			'order_goods' => array(
-					'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-					'alias'	=> 'og',
-					'on'	=> 'oi.order_id = og.order_id'
-			)
+		'order_goods' => array(
+			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+			'alias'	=> 'og',
+			'on'	=> 'oi.order_id = og.order_id'
+		)
 	);
 
 	$type = $start_date == $end_date ? 'time' : 'day';
@@ -68,7 +68,6 @@ function orders_module($start_date, $end_date)
 	
 	$field = 'oi.order_id, oi.pay_time, oi.user_id';
 	
-	
 	/* 判断是否是入驻商*/
 	if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0 ) {
 		$join = array('order_goods');
@@ -90,10 +89,10 @@ function orders_module($start_date, $end_date)
 		}
 		$temp_total_orders = 0;
 		$result = $db_orderinfo_view->field($field)
-									->join($join)
-									->where(array_merge($where, array('oi.pay_time >="' .$temp_start_time. '" and oi.pay_time<="' .$temp_end_time. '"')))
-									->order(array('oi.pay_time' => 'asc'))
-									->select();
+			->join($join)
+			->where(array_merge($where, array('oi.pay_time >="' .$temp_start_time. '" and oi.pay_time<="' .$temp_end_time. '"')))
+			->order(array('oi.pay_time' => 'asc'))
+			->select();
 		if (!empty($result)) {
 			foreach ($result as $val) {
 				$temp_total_orders++;
@@ -104,17 +103,17 @@ function orders_module($start_date, $end_date)
 				}
 			}
 			$stats[] = array(
-					'time'				=> $temp_start_time,
-					'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s', $temp_start_time),
-					'orders'			=> $temp_total_orders,
-					'value'				=> $temp_total_orders,
+				'time'				=> $temp_start_time,
+				'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s', $temp_start_time),
+				'orders'			=> $temp_total_orders,
+				'value'				=> $temp_total_orders,
 			);
 		} else {
 			$stats[] = array(
-					'time'				=> $temp_start_time,
-					'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s', $temp_start_time),
-					'orders'			=> 0,
-					'value'				=> 0,
+				'time'				=> $temp_start_time,
+				'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s', $temp_start_time),
+				'orders'			=> 0,
+				'value'				=> 0,
 			);
 		}
 		$temp_start_time += $stats_scale;
@@ -126,14 +125,14 @@ function orders_module($start_date, $end_date)
 	while ($i <= 7) {
 		if ($i == 7) {
 			$group[] = array(
-					'time'				=> $end_date,
-					'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s', $end_date),
+				'time'				=> $end_date,
+				'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s', $end_date),
 			);
 			break;
 		}
 		$group[] = array(
-				'time'				=> $temp_group,
-				'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s', $temp_group),
+			'time'				=> $temp_group,
+			'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s', $temp_group),
 		);
 		$temp_group += $group_scale;
 		$i++;
@@ -148,14 +147,15 @@ function orders_module($start_date, $end_date)
 	$shipped_orders = $db_orderinfo_view->join($join)->where(array_merge($where, $order_query->order_shipped('oi.')))->count('oi.order_id');
 	
 	$data = array(
-			'stats'				=> $stats,
-			'group'				=> $group,
-			'payed_orders'		=> $payed_orders,
-			'wait_ship_orders'	=> $wait_ship_orders,
-			'shipped_orders'	=> $shipped_orders,
-			'member_orders'		=> $member_orders,
-			'anonymity_orders'	=> $anonymity_orders,
+		'stats'				=> $stats,
+		'group'				=> $group,
+		'payed_orders'		=> $payed_orders,
+		'wait_ship_orders'	=> $wait_ship_orders,
+		'shipped_orders'	=> $shipped_orders,
+		'member_orders'		=> $member_orders,
+		'anonymity_orders'	=> $anonymity_orders,
 	);
-
 	return $data;
 }
+
+//end

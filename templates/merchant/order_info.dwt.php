@@ -59,6 +59,39 @@ ecjia.merchant.order.info();
     </div>
 </div>
 
+<div class="panel panel-body">
+	<div class="order-status-base m_b20">
+		<ul class="">
+			<li class="step-first">
+				<div class="{if $time_key lt '2'}step-cur{else}step-done{/if}">
+					<div class="step-no">{if $time_key lt '2'}1{/if}</div>
+					<div class="m_t5">{lang key='orders::order.submit_order'}</div>
+					<div class="m_t5 ecjiafc-blue">{$order.formated_add_time}</div>
+				</div>
+			</li>
+			<li>
+				<div class="{if $time_key eq '2'}step-cur{elseif $time_key gt '2'}step-done{/if}">
+					<div class="step-no">{if $time_key lt '3'}2{/if}</div>
+					<div class="m_t5">{lang key='orders::order.pay_for_order'}</div>
+					<div class="m_t5 ecjiafc-blue">{$order.pay_time}</div>
+				</div>
+			</li>
+			<li>
+				<div class="{if $time_key eq '3'}step-cur{elseif $time_key gt '3'}step-done{/if}">
+					<div class="step-no">{if $time_key lt '4'}3{/if}</div>
+					<div class="m_t5">{lang key='orders::order.merchant_shipping'}</div>
+				</div>
+			</li>
+			<li class="step-last">
+				<div class="{if $time_key eq '4'}step-cur{elseif $time_key gt '4'}step-done{/if}">
+					<div class="step-no">{if $time_key lt '5'}4{/if}</div>
+					<div class="m_t5">{lang key='orders::order.confirm_receipt'}</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>
+
 <div class="row">
 	<div class="col-lg-12 panel-heading form-inline">
 		<div class="form-group"><h3>{$lang.label_order_sn}{$order.order_sn}</h3></div>

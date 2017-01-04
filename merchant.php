@@ -77,8 +77,9 @@ class merchant extends ecjia_merchant {
 		RC_Style::enqueue_style('aristo', RC_Uri::admin_url('statics/lib/jquery-ui/css/Aristo/Aristo.css'), array(), false, false);
 		
 		RC_Script::enqueue_script('jq_quicksearch', RC_Uri::admin_url('statics/lib/multi-select/js/jquery.quicksearch.js'), array('jquery'), false, true);
-		RC_Style::enqueue_style('orders', RC_App::apps_url('statics/css/merchant_orders.css', __FILE__), array(), false, false);
+		RC_Style::enqueue_style('merchant_orders', RC_App::apps_url('statics/css/merchant_orders.css', __FILE__), array(), false, false);
 		RC_Script::enqueue_script('order_delivery', RC_App::apps_url('statics/js/merchant_order_delivery.js', __FILE__));
+		RC_Style::enqueue_style('orders', RC_App::apps_url('statics/css/admin_orders.css', __FILE__), array());
 		
 		ecjia_merchant_screen::get_current_screen()->set_parentage('order', 'order/merchant.php');
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('订单管理'), RC_Uri::url('orders/merchant/init')));
@@ -200,6 +201,22 @@ class merchant extends ecjia_merchant {
 		$order['shipping_time']		= $order['shipping_time'] > 0 ? RC_Time::local_date(ecjia::config('time_format'), $order['shipping_time']) : RC_Lang::lang('ss/'.SS_UNSHIPPED);
 		$order['status']			= RC_Lang::get('orders::order.os.'.$order['order_status']) . ',' . RC_Lang::get('orders::order.ps.'.$order['pay_status']) . ',' . RC_Lang::get('orders::order.ss.'.$order['shipping_status']);
 		$order['invoice_no']		= $order['shipping_status'] == SS_UNSHIPPED || $order['shipping_status'] == SS_PREPARING ? RC_Lang::lang('ss/'.SS_UNSHIPPED) : $order['invoice_no'];
+		
+		//订单流程状态
+		if ($order['pay_time'] > 0) {
+			if ($order['shipping_time'] > 0) {
+				if ($order['shipping_status'] == 2) {
+					$time_key = 4;
+				} else {
+					$time_key = 3;
+				}
+			} else {
+				$time_key = 2;
+			}
+		} else {
+			$time_key = 1;
+		}
+		$this->assign('time_key', $time_key);
 		
 		/* 取得订单的来源 */
 		if ($order['from_ad'] == 0) {

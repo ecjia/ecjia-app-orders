@@ -342,6 +342,10 @@ class merchant extends ecjia_merchant {
 		}
 		$this->assign('action_list', $act_list);
 		
+		$express_info = RC_DB::table('express_order')->where('order_sn', $order['order_sn'])->orderBy('express_id', 'desc')->first();
+		$order['express_user'] = $express_info['express_user'];
+		$order['express_mobile'] = $express_info['express_mobile'];
+		
 		/* 判断是否为立即配送*/
 		$shipping_info = RC_DB::table('shipping')->where('shipping_id', $order['shipping_id'])->first();
 		if ($shipping_info['shipping_code'] == 'ship_o2o_express') {

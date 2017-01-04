@@ -104,7 +104,6 @@ class admin extends ecjia_admin {
 			$order_sn	= trim($_GET['order_sn']);
 			$order		= order_info(0, $order_sn);
 		}
-
 		if (empty($order)) {
 			return $this->showmessage(RC_Lang::get('orders::order.not_exist_order'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR, array('links' => array(array('text' => RC_Lang::get('orders::order.return_list'), 'href' => RC_Uri::url('orders/admin/init')))));
 		}
@@ -340,6 +339,10 @@ class admin extends ecjia_admin {
 			}
 		}
 		$this->assign('action_list', $act_list);
+		
+		$express_info = RC_DB::table('express_order')->where('order_sn', $order['order_sn'])->orderBy('express_id', 'desc')->first();
+		$order['express_user'] = $express_info['express_user'];
+		$order['express_mobile'] = $express_info['express_mobile'];
 		
 		/* 取得是否存在实体商品 */
 		$this->assign('exist_real_goods', exist_real_goods($order['order_id']));

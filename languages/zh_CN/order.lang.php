@@ -756,6 +756,7 @@ return array(
     
     'label_expect_shipping_time'=> '期望送达时间：',
     'label_express_user'		=> '配送员：',
+    'label_express_user_mobile'	=> '配送员电话：',
     
     'place_order'				=> '订单提交成功',
     'unpay'						=> '待付款',

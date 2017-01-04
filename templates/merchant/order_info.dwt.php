@@ -205,6 +205,15 @@ ecjia.merchant.order.info();
 								<td><div align="right"><strong>{$lang.from_order}</strong></div></td>
 								<td>{$order.referer}</td>
 							</tr>
+							
+							{if $order.express_user}
+							<tr>
+								<td><div align="right"><strong>{lang key='orders::order.label_express_user'}</strong></div></td>
+								<td>{$order.express_user}</span>&nbsp;
+								<td><div align="right"><strong>{lang key='orders::order.label_express_user_mobile'}</strong></div></td>
+								<td>{$order.express_mobile}</td>
+							</tr>
+							{/if}
 						</tbody>
 					</table>
 				</div>
@@ -259,16 +268,16 @@ ecjia.merchant.order.info();
 								<td><div align="right"><strong>{$lang.label_how_oos}</strong></div></td>
 								<td colspan="3">{$order.how_oos}</td>
 							</tr>
-							<tr>
-								<td><div align="right"><strong>{$lang.label_pack}</strong></div></td>
-								<td>{$order.pack_name}</td>
-								<td><div align="right"><strong>{$lang.label_card}</strong></div></td>
-								<td>{$order.card_name}</td>
-							</tr>
-							<tr>
-								<td><div align="right"><strong>{$lang.label_card_message}</strong></div></td>
-								<td colspan="3">{$order.card_message}</td>
-							</tr>
+<!-- 							<tr> -->
+<!-- 								<td><div align="right"><strong>{$lang.label_pack}</strong></div></td> -->
+<!-- 								<td>{$order.pack_name}</td> -->
+<!-- 								<td><div align="right"><strong>{$lang.label_card}</strong></div></td> -->
+<!-- 								<td>{$order.card_name}</td> -->
+<!-- 							</tr> -->
+<!-- 							<tr> -->
+<!-- 								<td><div align="right"><strong>{$lang.label_card_message}</strong></div></td> -->
+<!-- 								<td colspan="3">{$order.card_message}</td> -->
+<!-- 							</tr> -->
 							<tr>
 								<td><div align="right"><strong>{$lang.label_to_buyer}</strong></div></td>
 								<td colspan="3">{$order.to_buyer}</td>
@@ -294,27 +303,27 @@ ecjia.merchant.order.info();
 							<tr>
 								<td><div align="right"><strong>{$lang.label_consignee}</strong></div></td>
 								<td>{$order.consignee}</td>
-								<td><div align="right"><strong>{$lang.label_email}</strong></div></td>
-								<td>{$order.email}</td>
-							</tr>
-							<tr>
 								<td><div align="right"><strong>{$lang.label_address}</strong></div></td>
 								<td>[{$order.region}]{$order.address}</td>
-								<td><div align="right"><strong>{$lang.label_zipcode}</strong></div></td>
-								<td>{$order.zipcode}</td>
 							</tr>
+<!-- 							<tr> -->
+<!-- 								<td><div align="right"><strong>{$lang.label_email}</strong></div></td> -->
+<!-- 								<td>{$order.email}</td> -->
+<!-- 								<td><div align="right"><strong>{$lang.label_zipcode}</strong></div></td> -->
+<!-- 								<td>{$order.zipcode}</td> -->
+<!-- 							</tr> -->
 							<tr>
 								<td><div align="right"><strong>{$lang.label_tel}</strong></div></td>
 								<td>{$order.tel}</td>
 								<td><div align="right"><strong>{$lang.label_mobile}</strong></div></td>
 								<td>{$order.mobile}</td>
 							</tr>
-							<tr>
-								<td><div align="right"><strong>{$lang.label_sign_building}</strong></div></td>
-								<td>{$order.sign_building|escape}</td>
-								<td><div align="right"><strong>{lang key='orders::order.label_expect_shipping_time'}</strong></div></td>
-								<td>{$order.expect_shipping_time}</td>
-							</tr>
+<!-- 							<tr> -->
+<!-- 								<td><div align="right"><strong>{$lang.label_sign_building}</strong></div></td> -->
+<!-- 								<td>{$order.sign_building|escape}</td> -->
+<!-- 								<td><div align="right"><strong>{lang key='orders::order.label_expect_shipping_time'}</strong></div></td> -->
+<!-- 								<td>{$order.expect_shipping_time}</td> -->
+<!-- 							</tr> -->
 						</tbody>
 					</table>
                 </div>

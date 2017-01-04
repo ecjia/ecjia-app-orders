@@ -68,7 +68,7 @@ class detail_module extends api_front implements api_interface {
 		foreach ($goods_list as $k => $v) {
 			if ($k == 0) {
 				if ($v['store_id'] > 0) {
-					$seller_info = RC_DB::table('store_franchisee')->where(RC_DB::raw('store_id'), $v['store_id'])->lists('merchants_name', 'manage_mode');
+					$seller_info = RC_DB::table('store_franchisee')->where(RC_DB::raw('store_id'), $v['store_id'])->select('merchants_name', 'manage_mode')->first();
 				}
 
 				$order['seller_id']		= isset($v['store_id']) ? intval($v['store_id']) : 0;

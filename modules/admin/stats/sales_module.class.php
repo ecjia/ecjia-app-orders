@@ -40,11 +40,11 @@ function sales_module($start_date,$end_date) {
 	
 	$db_orderinfo_view = RC_Model::model('orders/order_info_viewmodel');
 	$db_orderinfo_view->view = array(
-			'order_goods' => array(
-					'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-					'alias'	=> 'og',
-					'on'	=> 'oi.order_id = og.order_id'
-			)
+		'order_goods' => array(
+			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+			'alias'	=> 'og',
+			'on'	=> 'oi.order_id = og.order_id'
+		)
 	);
 	
 	$type = $start_date == $end_date ? 'time' : 'day';
@@ -86,10 +86,10 @@ function sales_module($start_date,$end_date) {
 		
 		$temp_total_fee = 0;
 		$result = $db_orderinfo_view->field($field)
-									->join($join)
-									->where(array_merge($where, array('oi.pay_time >="' .$temp_start_time. '" and oi.pay_time<="' .$temp_end_time. '"')))
-									->order(array('oi.pay_time' => 'asc'))
-									->select();
+			->join($join)
+			->where(array_merge($where, array('oi.pay_time >="' .$temp_start_time. '" and oi.pay_time<="' .$temp_end_time. '"')))
+			->order(array('oi.pay_time' => 'asc'))
+			->select();
 		
 		if (!empty($result)) {
 			foreach ($result as $val) {
@@ -99,17 +99,17 @@ function sales_module($start_date,$end_date) {
 				$discount_fee += $val['discount'];
 			}
 			$stats[] = array(
-					'time'				=> $temp_end_time,
-					'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s', $temp_end_time),
-					'amount'			=> $temp_total_fee,
-					'value'				=> $temp_total_fee,
+				'time'				=> $temp_end_time,
+				'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s', $temp_end_time),
+				'amount'			=> $temp_total_fee,
+				'value'				=> $temp_total_fee,
 			);
 		} else {
 			$stats[] = array(
-					'time'				=> $temp_end_time,
-					'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s', $temp_end_time),
-					'amount'			=> 0,
-					'value'				=> 0,
+				'time'				=> $temp_end_time,
+				'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s', $temp_end_time),
+				'amount'			=> 0,
+				'value'				=> 0,
 			);
 		}
 		$temp_start_time += $stats_scale;
@@ -121,14 +121,14 @@ function sales_module($start_date,$end_date) {
 	while ($i <= 7) {
 		if ($i == 7) {
 			$group[] = array(
-					'time'				=> $end_date,
-					'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s', $end_date),
+				'time'				=> $end_date,
+				'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s', $end_date),
 			);
 			break;
 		}
 		$group[] = array(
-				'time'				=> $temp_group,
-				'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s', $temp_group),
+			'time'				=> $temp_group,
+			'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s', $temp_group),
 		);
 		$temp_group += $group_scale;
 		$i++;
@@ -139,12 +139,14 @@ function sales_module($start_date,$end_date) {
 	/* 平均值保留小数位2位*/
 	$average_sales_volume = round($total_fee/$day, 2);
 	$data = array(
-			'stats'					=> $stats,
-			'group'					=> $group,
-			'maximum_sales_volume'	=> $max_amount,
-			'total_sales_volume'	=> $total_fee,
-			'average_sales_volume'	=> $average_sales_volume,
-			'discount_sales_volume'	=> $discount_fee,
+		'stats'					=> $stats,
+		'group'					=> $group,
+		'maximum_sales_volume'	=> $max_amount,
+		'total_sales_volume'	=> $total_fee,
+		'average_sales_volume'	=> $average_sales_volume,
+		'discount_sales_volume'	=> $discount_fee,
 	);
 	return $data;
 }
+
+//end

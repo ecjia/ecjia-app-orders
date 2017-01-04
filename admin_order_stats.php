@@ -1,9 +1,9 @@
 <?php
+defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 订单统计
 */
-defined('IN_ECJIA') or exit('No permission resources.');
-
 class admin_order_stats extends ecjia_admin {
 	public function __construct() {
 		parent::__construct();
@@ -75,7 +75,6 @@ class admin_order_stats extends ecjia_admin {
 		        }
 		    }
 		}
-
 		$this->assign('start_date_arr', $start_date_arr);
 		$this->assign('order_stats', $order_stats);
 		$this->assign('page', 'init');
@@ -633,4 +632,5 @@ class admin_order_stats extends ecjia_admin {
 	 	return $arr;
 	 }
 }
+
 // end

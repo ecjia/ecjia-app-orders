@@ -21,15 +21,15 @@
 
 				if (start_date == '') {
 					var data = {
-							message : "查询的开始时间不能为空！",
-							state : "error",
+						message : "查询的开始时间不能为空！",
+						state : "error",
 					};
 					ecjia.merchant.showmessage(data);
 					return false;
 				} else if(end_date == '') {
 					var data = {
-							message : "查询的结束时间不能为空！",
-							state : "error",
+						message : "查询的结束时间不能为空！",
+						state : "error",
 					};
 					ecjia.merchant.showmessage(data);
 					return false;
@@ -40,21 +40,21 @@
 					date = myDate.getDate();
 					if(String(date).length < 2) date = '0'+date;
 					time = year + '-' + month + '-' + date;
-				if(start_date > time){
+				if (start_date > time){
 					var data = {
-							message : "查询的开始时间不能超于当前时间！",
-							state : "error",
+						message : "查询的开始时间不能超于当前时间！",
+						state : "error",
 					};
 					ecjia.merchant.showmessage(data);
 				}
 				if (start_date >= end_date && (start_date != '' && end_date !='')) {
 					var data = {
-							message : "查询的开始时间不能超于结束时间！",
-							state : "error",
+						message : "查询的开始时间不能超于结束时间！",
+						state : "error",
 					};
 					ecjia.merchant.showmessage(data);
 					return false;
-				}else{
+				} else {
 					ecjia.pjax(url + '&start_date=' + start_date + '&end_date=' +end_date);
 				}
 			});
@@ -75,18 +75,20 @@
 		        });
 		        if (year_month == '') {
 		        	var data = {
-							message : "查询的时间不能为空！",
-							state : "error",
+						message : "查询的时间不能为空！",
+						state : "error",
 					};
 					ecjia.merchant.showmessage(data);
 					return false;
 		        }
-				if(year_month       == 'undefind')year_month='';
-				if(url        		== 'undefind')url='';
-				if(is_multi        	== 'undefind')is_multi='';
+				if(year_month	== 'undefind')year_month='';
+				if(url      	== 'undefind')url='';
+				if(is_multi  	== 'undefind')is_multi='';
 				ecjia.pjax(url + '&year_month=' + year_month + '&is_multi=' + is_multi);
 			});
 		}
 	};
+	
 })(ecjia.merchant, jQuery);
+
 // end

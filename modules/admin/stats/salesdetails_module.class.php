@@ -1,5 +1,6 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * ##收益明细
  * @author luchongchong
@@ -26,11 +27,11 @@ class salesdetails_module extends api_admin implements api_interface {
 		
 		$db_orderinfo_view = RC_Model::model('orders/order_info_viewmodel');
 		$db_orderinfo_view->view = array(
-				'order_goods' => array(
-						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-						'alias'	=> 'og',
-						'on'	=> 'oi.order_id = og.order_id'
-				)
+			'order_goods' => array(
+				'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+				'alias'	=> 'og',
+				'on'	=> 'oi.order_id = og.order_id'
+			)
 		);
 	
 		$type = $start_date == $end_date ? 'time' : 'day';
@@ -52,9 +53,9 @@ class salesdetails_module extends api_admin implements api_interface {
 		/* 查询总数为0时直接返回  */
 		if ($count == 0) {
 			$pager = array(
-					'total' => 0,
-					'count' => 0,
-					'more'	=> 0,
+				'total' => 0,
+				'count' => 0,
+				'more'	=> 0,
 			);
 			return array('data' => array(), 'pager' => $pager);
 		}
@@ -69,32 +70,33 @@ class salesdetails_module extends api_admin implements api_interface {
 		$field = "oi.pay_time, oi.goods_amount - oi.discount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee AS total_fee";
 		
 		$result = $db_orderinfo_view->field($field)
-									->join($join)
-									->where($where)
-									->order('pay_time DESC')
-									->limit($page_row->limit())
-									->select();
+			->join($join)
+			->where($where)
+			->order('pay_time DESC')
+			->limit($page_row->limit())
+			->select();
 		$stats = array();
 		if (!empty($result)) {
 			foreach ($result as $k => $v) {
 				if($v['total_fee']!=0) {
 					$stats[] = array(
-							'time'				=> $v['pay_time'],
-							'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s',$v['pay_time']),
-							'amount'			=> $v['total_fee'],
-							'value'				=> $v['total_fee']
+						'time'				=> $v['pay_time'],
+						'formatted_time'	=> RC_Time::local_date('Y-m-d H:i:s',$v['pay_time']),
+						'amount'			=> $v['total_fee'],
+						'value'				=> $v['total_fee']
 					);
 				}
 			}
 		}
 		
 		$pager = array(
-				"total" => $page_row->total_records,
-				"count" => $page_row->total_records,
-				"more"	=> $page_row->total_pages <= $page ? 0 : 1,
+			"total" => $page_row->total_records,
+			"count" => $page_row->total_records,
+			"more"	=> $page_row->total_pages <= $page ? 0 : 1,
 		);
 		
 		return array('data' => $stats, 'pager' => $pager);
 	}
-	
 }
+
+//end

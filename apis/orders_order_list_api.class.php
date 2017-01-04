@@ -16,8 +16,8 @@ class orders_order_list_api extends Component_Event_Api {
             return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
         }
 
-        $user_id    = $_SESSION['user_id'];
-        $type        = !empty($options['type']) ? $options['type'] : '';
+        $user_id = $_SESSION['user_id'];
+        $type = !empty($options['type']) ? $options['type'] : '';
 
         $size = $options['size'];
         $page = $options['page'];
@@ -37,8 +37,7 @@ class orders_order_list_api extends Component_Event_Api {
      * @param   int         $start          列表起始位置
      * @return  array       $order_list     订单列表
      */
-    private function user_orders_list($user_id, $type = '', $page = 1, $size = 15)
-    {
+    private function user_orders_list($user_id, $type = '', $page = 1, $size = 15) {
         /**
          * await_pay 待付款
          * await_ship 待发货
@@ -84,7 +83,6 @@ class orders_order_list_api extends Component_Event_Api {
             foreach ($order_group as $val) {
                 $where['oi.order_id'][] = $val['order_id'];
             }
-
         }
 
         $field = 'oi.order_id, oi.order_sn, oi.order_status, oi.shipping_status, oi.pay_status, oi.add_time, (oi.goods_amount + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee + oi.tax - oi.integral_money - oi.bonus - oi.discount) AS total_fee, oi.discount, oi.integral_money, oi.bonus, oi.shipping_fee, oi.pay_id, oi.order_amount'.
@@ -239,6 +237,5 @@ class orders_order_list_api extends Component_Event_Api {
         return array('order_list' => $orders, 'page' => $page_row);
     }
 }
-
 
 // end

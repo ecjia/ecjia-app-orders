@@ -6,7 +6,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
  *
  */
 class orders_merchant_order_info_api extends Component_Event_Api {
-	
     /**
      * @param  $options['order_id'] 订单ID
      *         $options['order_sn'] 订单号
@@ -58,8 +57,6 @@ class orders_merchant_order_info_api extends Component_Event_Api {
 	    }
 	    return $order;
 	}
-	
 }
-
 
 // end

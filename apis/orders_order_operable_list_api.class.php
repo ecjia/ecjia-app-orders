@@ -28,8 +28,7 @@ class orders_order_operable_list_api extends Component_Event_Api {
 	 * @param   float    $money       支付接口返回的金额
 	 * @return  true
 	 */
-	private function operable_list($order)
-	{
+	private function operable_list($order) {
 	    /* 取得订单状态、发货状态、付款状态 */
 		$os = $order['order_status'];
 		$ss = $order['shipping_status'];
@@ -210,7 +209,6 @@ class orders_order_operable_list_api extends Component_Event_Api {
 		$list['after_service'] = true;
 		return $list;
 	}
-	
 }
 
 // end

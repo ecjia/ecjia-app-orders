@@ -248,7 +248,7 @@
 				}
 			});
 		},
-		
 	};
 })(ecjia.merchant, jQuery);
+
 // end

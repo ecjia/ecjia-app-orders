@@ -1,9 +1,9 @@
 <?php
+defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * ECJIA 订单-卖家催单
  */
-defined('IN_ECJIA') or exit('No permission resources.');
-
 class mh_reminder extends ecjia_merchant {
 	private $dbview_order_reminder;
 	
@@ -44,8 +44,8 @@ class mh_reminder extends ecjia_merchant {
 		
 		/* 查询 */
 		$db_order_reminder = RC_DB::table('order_reminder as r')
-		                      ->leftJoin('order_info as o', RC_DB::raw('o.order_id'), '=', RC_DB::raw('r.order_id'))
-		                      ->leftJoin('users as a', RC_DB::raw('o.user_id'), '=', RC_DB::raw('a.user_id'));
+			->leftJoin('order_info as o', RC_DB::raw('o.order_id'), '=', RC_DB::raw('r.order_id'))
+			->leftJoin('users as a', RC_DB::raw('o.user_id'), '=', RC_DB::raw('a.user_id'));
 		
 		isset($_SESSION['store_id']) ? $db_order_reminder->where(RC_DB::raw('r.store_id'), $_SESSION['store_id']) : '';
 		
@@ -59,10 +59,7 @@ class mh_reminder extends ecjia_merchant {
 		$count = $db_order_reminder->count();
 		$page = new ecjia_merchant_page($count, 10, 6);
 		
-		$result = $db_order_reminder
-            		->take(10)->skip($page->start_id-1)
-            		->get();
-		
+		$result = $db_order_reminder->take(10)->skip($page->start_id-1)->get();
 		$result_list = array('list' => $result, 'page' => $page->show(2), 'desc' => $page->page_desc(), 'keywords' => $keywords);
 
 		if (!empty($result_list['list'])) {
@@ -90,9 +87,7 @@ class mh_reminder extends ecjia_merchant {
 		$order_id = explode(',',$order_id);
 	
 		/* 记录日志 */
-		
 		RC_DB::table('order_reminder')->whereIn('order_id', $order_id)->delete();
-
 		return $this->showmessage(RC_Lang::lang('tips_back_del'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS,array('pjaxurl'=>RC_Uri::url('orders/mh_reminder/init')));
 	}
 }

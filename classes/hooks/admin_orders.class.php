@@ -169,6 +169,7 @@ class orders_admin_plugin {
 		}
 	}
 }
+
 RC_Hook::add_action( 'admin_dashboard_top', array('orders_admin_plugin', 'widget_admin_dashboard_shopchart'));
 RC_Hook::add_action( 'admin_dashboard_left', array('orders_admin_plugin', 'widget_admin_dashboard_ordersstat') );
 RC_Hook::add_action( 'admin_dashboard_left', array('orders_admin_plugin', 'widget_admin_dashboard_orderslist') );

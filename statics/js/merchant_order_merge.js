@@ -25,16 +25,16 @@
 				var from_order_sn = $("#from_order_sn").val();
 				if (to_order_sn == "" || from_order_sn == ""){
 					var data = {
-							message : "还没有选择完需要合并的订单哦！",
-							state : "error",
+						message : "还没有选择完需要合并的订单哦！",
+						state : "error",
 					};
 					ecjia.merchant.showmessage(data);
 					return false;
 				}
 				if (to_order_sn == from_order_sn){
 					var data = {
-							message : "要合并的两个订单号不能相同！",
-							state : "error",
+						message : "要合并的两个订单号不能相同！",
+						state : "error",
 					};
 					ecjia.merchant.showmessage(data);
 					return false;
@@ -45,12 +45,12 @@
 							dataType:"json",
 							success:function(data){
 									if (data.state == "success") {
-											var url = $("form[name='theForm']").attr('data-pjax-url');
-											ecjia.pjax(url , function(){
-												ecjia.merchant.showmessage(data);
-											});
-									} else {
+										var url = $("form[name='theForm']").attr('data-pjax-url');
+										ecjia.pjax(url , function(){
 											ecjia.merchant.showmessage(data);
+										});
+									} else {
+										ecjia.merchant.showmessage(data);
 									}	
 								}
 						});
@@ -59,7 +59,7 @@
 			});
 		},
 	};
+	
 })(ecjia.merchant, jQuery);
-
 
 // end

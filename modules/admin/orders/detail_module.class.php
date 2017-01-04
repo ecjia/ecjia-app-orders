@@ -1,5 +1,6 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 订单详情
  * @author will
@@ -76,16 +77,16 @@ class detail_module extends api_admin implements api_interface {
 							$goods_info = $goods_db->find(array('goods_id' => $v['goods_id']));
 
 							$goods_lists[] = array(
-									'id'	=> $v['goods_id'],
-									'name'	=> $v['goods_name'],
+									'id'			=> $v['goods_id'],
+									'name'			=> $v['goods_name'],
 									'seller_name'	=> !empty($seller_name) ? $seller_name : '自营',
 									'shop_price'	=> price_format($v['goods_price'], false),
 									'goods_sn'		=> $v['goods_sn'],
 									'number'		=> $v['goods_number'],
-									'img'	=> array(
-											'thumb'	=> !empty($goods_info['goods_img']) ? RC_Upload::upload_url($goods_info['goods_img']) : '',
-											'url'	=> !empty($goods_info['original_img']) ? RC_Upload::upload_url($goods_info['original_img']) : '',
-											'small'	=> !empty($goods_info['goods_thumb']) ? RC_Upload::upload_url($goods_info['goods_thumb']) : '',
+									'img' => array(
+										'thumb'	=> !empty($goods_info['goods_img']) ? RC_Upload::upload_url($goods_info['goods_img']) : '',
+										'url'	=> !empty($goods_info['original_img']) ? RC_Upload::upload_url($goods_info['original_img']) : '',
+										'small'	=> !empty($goods_info['goods_thumb']) ? RC_Upload::upload_url($goods_info['goods_thumb']) : '',
 									),
 							);
 						}
@@ -93,17 +94,17 @@ class detail_module extends api_admin implements api_interface {
 
 
 					$order['sub_orders'][] = array(
-							'order_id'	=> $val['order_id'],
-							'order_sn'	=> $val['order_sn'],
-							'total_fee' => $val['total_fee'],
-							'formated_total_fee' 		=> price_format($val['total_fee'], false),
-							'formated_integral_money'	=> price_format($val['integral_money'], false),
-							'formated_bonus'			=> price_format($val['bonus'], false),
-							'formated_shipping_fee'		=> price_format($val['shipping_fee'], false),
-							'formated_discount'			=> price_format($val['discount'], false),
-							'status'					=> $order_status.','.RC_Lang::lang('ps/'.$val['pay_status']).','.RC_Lang::lang('ss/'.$val['shipping_status']),
-							'create_time' 				=> RC_Time::local_date(ecjia::config('date_format'), $val['add_time']),
-							'goods_items' 				=> $goods_lists
+						'order_id'	=> $val['order_id'],
+						'order_sn'	=> $val['order_sn'],
+						'total_fee' => $val['total_fee'],
+						'formated_total_fee' 		=> price_format($val['total_fee'], false),
+						'formated_integral_money'	=> price_format($val['integral_money'], false),
+						'formated_bonus'			=> price_format($val['bonus'], false),
+						'formated_shipping_fee'		=> price_format($val['shipping_fee'], false),
+						'formated_discount'			=> price_format($val['discount'], false),
+						'status'					=> $order_status.','.RC_Lang::lang('ps/'.$val['pay_status']).','.RC_Lang::lang('ss/'.$val['shipping_status']),
+						'create_time' 				=> RC_Time::local_date(ecjia::config('date_format'), $val['add_time']),
+						'goods_items' 				=> $goods_lists
 					);
 				}
 			}
@@ -113,17 +114,17 @@ class detail_module extends api_admin implements api_interface {
 		if (!empty($goods_list)) {
 			foreach ($goods_list as $k =>$v) {
 				$goods_list[$k] = array(
-						'id'	=> $v['goods_id'],
-						'name'	=> $v['goods_name'],
-						'goods_number'	=> $v['goods_number'],
-						'subtotal'		=> price_format($v['subtotal'], false),
-						'goods_attr'	=> trim($v['goods_attr']),
-						'formated_shop_price' => price_format($v['goods_price'], false),
-						'img' => array(
-								'thumb'	=> !empty($v['goods_img']) ? RC_Upload::upload_url($v['goods_img']) : '',
-								'url'	=> !empty($v['original_img']) ? RC_Upload::upload_url($v['original_img']) : '',
-								'small'	=> !empty($v['goods_thumb']) ? RC_Upload::upload_url($v['goods_thumb']) : '',
-						)
+					'id'					=> $v['goods_id'],
+					'name'					=> $v['goods_name'],
+					'goods_number'			> $v['goods_number'],
+					'subtotal'				=> price_format($v['subtotal'], false),
+					'goods_attr'			=> trim($v['goods_attr']),
+					'formated_shop_price' 	=> price_format($v['goods_price'], false),
+					'img' => array(
+						'thumb'	=> !empty($v['goods_img']) ? RC_Upload::upload_url($v['goods_img']) : '',
+						'url'	=> !empty($v['original_img']) ? RC_Upload::upload_url($v['original_img']) : '',
+						'small'	=> !empty($v['goods_thumb']) ? RC_Upload::upload_url($v['goods_thumb']) : '',
+					)
 				);
 			}
 		}
@@ -154,9 +155,6 @@ class detail_module extends api_admin implements api_interface {
 		$order['action_logs']   = $act_list;
 		return $order;
 	}
-
-
 }
-
 
 // end

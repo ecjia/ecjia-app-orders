@@ -1,5 +1,6 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 取消订单
  * @author royalwang
@@ -82,9 +83,9 @@ function cancel_order ($order_id, $user_id = 0) {
         /* 退货用户余额、积分、红包 */
         if ($order['user_id'] > 0 && $order['surplus'] > 0) {
         	$options = array(
-        			'user_id'		=> $order['user_id'],
-        			'user_money'	=> $order['surplus'],
-        			'change_desc'	=> sprintf(RC_Lang::lang('return_surplus_on_cancel'), $order['order_sn'])
+        		'user_id'		=> $order['user_id'],
+        		'user_money'	=> $order['surplus'],
+        		'change_desc'	=> sprintf(RC_Lang::lang('return_surplus_on_cancel'), $order['order_sn'])
         	);
         	$result = RC_Api::api('user', 'account_change_log',$options);
         	if (is_ecjia_error($result)) {
@@ -93,9 +94,9 @@ function cancel_order ($order_id, $user_id = 0) {
         }
         if ($order['user_id'] > 0 && $order['integral'] > 0) {
             $options = array(
-            		'user_id'		=> $order['user_id'],
-            		'pay_points'	=> $order['integral'],
-            		'change_desc'	=> sprintf(RC_Lang::lang('return_integral_on_cancel'), $order['order_sn'])
+            	'user_id'		=> $order['user_id'],
+            	'pay_points'	=> $order['integral'],
+            	'change_desc'	=> sprintf(RC_Lang::lang('return_integral_on_cancel'), $order['order_sn'])
             );
             $result = RC_Api::api('user', 'account_change_log', $options);
             if (is_ecjia_error($result)) {
@@ -122,10 +123,10 @@ function cancel_order ($order_id, $user_id = 0) {
         );
         update_order($order['order_id'], $arr);
         RC_DB::table('order_status_log')->insert(array(
-		        'order_status'	=> RC_Lang::get('orders::order.order_cancel'),
-		        'order_id'		=> $order['order_id'],
-		        'message'		=> '您的订单已取消成功！',
-		        'add_time'		=> RC_Time::gmtime(),
+	        'order_status'	=> RC_Lang::get('orders::order.order_cancel'),
+	        'order_id'		=> $order['order_id'],
+	        'message'		=> '您的订单已取消成功！',
+	        'add_time'		=> RC_Time::gmtime(),
         ));
         return true;
     } else {

@@ -38,7 +38,6 @@ class orders_order_paid_api extends Component_Event_Api {
 		return false;
 	}
 	
-	
 	/**
 	 * 检查支付的金额是否与订单相符
 	 *
@@ -47,8 +46,7 @@ class orders_order_paid_api extends Component_Event_Api {
 	 * @param   float    $money       支付接口返回的金额
 	 * @return  true
 	 */
-	private function check_money($log_id, $money)
-	{
+	private function check_money($log_id, $money) {
 	    if (is_numeric($log_id)) {
 	        $amount = RC_DB::table('pay_log')->where('log_id', $log_id)->pluck('order_amount');
 	    } else {
@@ -72,8 +70,7 @@ class orders_order_paid_api extends Component_Event_Api {
 	 * @param   string  $note       备注
 	 * @return  void
 	 */
-	private function order_paid($log_id, $pay_status = PS_PAYED, $note = '')
-	{
+	private function order_paid($log_id, $pay_status = PS_PAYED, $note = '') {
 	    RC_Loader::load_app_func('admin_order', 'orders');
 	    /* 取得支付编号 */
 	    $log_id = intval($log_id);
@@ -143,18 +140,18 @@ class orders_order_paid_api extends Component_Event_Api {
 	                		$staff_user_ob = $orm_staff_user_db->find($staff_user['user_id']);
 	                
 	                		$order_data = array(
-	                				'title'	=> '客户付款',
-	                				'body'	=> '您有一笔新订单，订单号为：'.$order['order_sn'],
-	                				'data'	=> array(
-	                						'order_id'		=> $order['order_id'],
-	                						'order_sn'		=> $order['order_sn'],
-	                						'order_amount'	=> $order['order_amount'],
-	                						'formatted_order_amount' => price_format($order['order_amount']),
-	                						'consignee'		=> $order['consignee'],
-	                						'mobile'		=> $order['mobile'],
-	                						'address'		=> $order['address'],
-	                						'order_time'	=> RC_Time::local_date(ecjia::config('time_format'), $order['add_time']),
-	                				),
+                				'title'	=> '客户付款',
+                				'body'	=> '您有一笔新订单，订单号为：'.$order['order_sn'],
+                				'data'	=> array(
+                					'order_id'		=> $order['order_id'],
+                					'order_sn'		=> $order['order_sn'],
+                					'order_amount'	=> $order['order_amount'],
+                					'formatted_order_amount' => price_format($order['order_amount']),
+                					'consignee'		=> $order['consignee'],
+                					'mobile'		=> $order['mobile'],
+                					'address'		=> $order['address'],
+                					'order_time'	=> RC_Time::local_date(ecjia::config('time_format'), $order['add_time']),
+                				),
 	                		);
 	                
 	                		$push_order_pay = new OrderPay($order_data);
@@ -223,44 +220,8 @@ class orders_order_paid_api extends Component_Event_Api {
                         /* 支付流水记录*/
                         $db = RC_DB::table('payment_record');
                         $db->where('order_sn', $arr['order_sn'])->where('trade_type', 'deposit')->update(array('pay_time' => RC_Time::gmtime(), 'pay_status' => 1));
-                         
                     }
                 }
-            } else {
-	                /* 取得已发货的虚拟商品信息 */
-// 	                $post_virtual_goods = get_virtual_goods($pay_log['order_id'], true);
-	
-	                /* 有已发货的虚拟商品 */
-// 	                if (!empty($post_virtual_goods)) {
-// 	                    $msg = '';
-// 	                    /* 检查两次刷新时间有无超过12小时 */
-// 	                    $row = $db_order->field('pay_time, order_sn')->find(array('order_id' => $pay_log['order_id']));
-// 	                    $intval_time = RC_Time::gmtime() - $row['pay_time'];
-// 	                    if ($intval_time >= 0 && $intval_time < 3600 * 12) {
-// 	                        $virtual_card = array();
-// 	                        foreach ($post_virtual_goods as $code => $goods_list) {
-                            /* 只处理虚拟卡 */
-                            // 	                        if ($code == 'virtual_card') {
-                            // 	                            foreach ($goods_list as $goods) {
-                            // 	                                $info = virtual_card_result($row['order_sn'], $goods);
-                            // 	                                if ($info) {
-                            // 	                                    $virtual_card[] = array('goods_id'=>$goods['goods_id'], 'goods_name'=>$goods['goods_name'], 'info'=>$info);
-                            // 	                                }
-                            // 	                            }
-                            // 	                            ecjia::$view_object->assign('virtual_card', $virtual_card);
-                            // 	                        }
-//                             }
-//                         } else {
-//                             $msg = '<div>' .  $GLOBALS['_LANG']['please_view_order_detail'] . '</div>';
-//                         }
-//                         $GLOBALS['_LANG']['pay_success'] .= $msg;
-//                     }
-	
-                    /* 取得未发货虚拟商品 */
-//                     $virtual_goods = get_virtual_goods($pay_log['order_id'], false);
-//                     if (!empty($virtual_goods)) {
-//                         $GLOBALS['_LANG']['pay_success'] .= '<br />' . $GLOBALS['_LANG']['virtual_goods_ship_fail'];
-//                     }
             }
         }
     }

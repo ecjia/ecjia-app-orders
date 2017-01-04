@@ -661,8 +661,8 @@
 			if (eles.length>0) {
 				if (eles['goods_count'].value <= 0){
 					var data = {
-							message : "还没有添加商品哦！请搜索后加入订单！",
-							state : "error",
+						message : "还没有添加商品哦！请搜索后加入订单！",
+						state : "error",
 					};
 					ecjia.merchant.showmessage(data);
 					return false;
@@ -670,8 +670,8 @@
 				return true;
 			} else {
 				var data = {
-						message : "还没有添加商品哦！请搜索后加入订单！",
-						state : "error",
+					message : "还没有添加商品哦！请搜索后加入订单！",
+					state : "error",
 				};
 				ecjia.merchant.showmessage(data);
 				return false;
@@ -816,19 +816,19 @@
 		moneyForm : function() {
 			var $this = $("form[name='moneyForm']");
 			var option = {	    
-					submitHandler:function(){
-						$this.ajaxSubmit({
-							dataType:"json",
-							success:function(data){
-								if (data.state == "success") {
-									var url = data.url;
-									ecjia.pjax(url);
-								} else {
-									ecjia.merchant.showmessage(data);
-								}
+				submitHandler:function(){
+					$this.ajaxSubmit({
+						dataType:"json",
+						success:function(data){
+							if (data.state == "success") {
+								var url = data.url;
+								ecjia.pjax(url);
+							} else {
+								ecjia.merchant.showmessage(data);
 							}
-						});
-					}
+						}
+					});
+				}
 			}
 			var options = $.extend(ecjia.merchant.defaultOptions.validate, option);
 			$this.validate(options);
@@ -890,9 +890,7 @@
 			});
 		},		
 	};
-	
 		
 })(ecjia.merchant, jQuery);
-
 
 // end

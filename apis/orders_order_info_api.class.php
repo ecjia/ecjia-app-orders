@@ -6,7 +6,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
  *
  */
 class orders_order_info_api extends Component_Event_Api {
-
     /**
      * @param  $options['order_id'] 订单ID
      *         $options['order_sn'] 订单号
@@ -131,61 +130,6 @@ class orders_order_info_api extends Component_Event_Api {
 	        /* 其他信息初始化 */
 	        $order['how_oos_name'] = $order['how_oos'];
 	        $order['how_surplus_name'] = $order['how_surplus'];
-	        
-// 	        /* 虚拟商品付款后处理 */
-// 	        if ($order['pay_status'] != PS_UNPAYED) {
-// 	        	/* 取得已发货的虚拟商品信息 */
-// 	        	$virtual_goods = get_virtual_goods($order_id, true);
-// 	        	$virtual_card = array();
-// 	        	foreach ($virtual_goods as $code => $goods_list) {
-// 	        		/* 只处理虚拟卡 */
-// 	        		if ($code == 'virtual_card') {
-// 	        			foreach ($goods_list as $goods) {
-// 	        				$info = virtual_card_result($order['order_sn'], $goods);
-// 	        				if ($info) {
-// 	        					$virtual_card[] = array(
-// 	        							'goods_id' => $goods['goods_id'],
-// 	        							'goods_name' => $goods['goods_name'],
-// 	        							'info' => $info
-// 	        					);
-// 	        				}
-// 	        			}
-// 	        		}
-// 	        		/* 处理超值礼包里面的虚拟卡 */
-// 	        		if ($code == 'package_buy') {
-// 	        			foreach ($goods_list as $goods) {
-// 	        				// $sql = 'SELECT g.goods_id FROM ' . $GLOBALS['ecs']->table('package_goods') . ' AS pg, ' . $GLOBALS['ecs']->table('goods') . ' AS g ' .
-// 	        				// "WHERE pg.goods_id = g.goods_id AND pg.package_id = '" . $goods['goods_id'] . "' AND extension_code = 'virtual_card'";
-// 	        				// $vcard_arr = $GLOBALS['db']->getAll($sql);
-	        
-// 	        				// $dbview->view = array(
-// 	        				//     'goods' => array(
-// 	        				//         'type' => Component_Model_View::TYPE_LEFT_JOIN,
-// 	        				//         'alias' => 'g',
-// 	        				//         'field' => 'g.goods_id',
-// 	        				//         'on' => 'pg.goods_id = g.goods_id'
-// 	        				//     )
-// 	        				// );
-	        
-// 	        				$vcard_arr = $dbview->join('goods')->field('g.goods_id')->where('pg.package_id = ' . $goods['goods_id'] . ' AND extension_code = "virtual_card" ')->select();
-// 	        				if (! empty($vcard_arr)) {
-// 	        					foreach ($vcard_arr as $val) {
-// 	        						$info = virtual_card_result($order['order_sn'], $val);
-// 	        						if ($info) {
-// 	        							$virtual_card[] = array(
-// 	        									'goods_id' => $goods['goods_id'],
-// 	        									'goods_name' => $goods['goods_name'],
-// 	        									'info' => $info
-// 	        							);
-// 	        						}
-// 	        					}
-// 	        				}
-// 	        			}
-// 	        		}
-// 	        	}
-// 	        	$var_card = deleteRepeat($virtual_card);
-// 	        	ecjia_front::$controller->assign('virtual_card', $var_card);
-// 	        }
 	        
 	        /* 确认时间 支付时间 发货时间 */
 	        if ($order['confirm_time'] > 0 && ($order['order_status'] == OS_CONFIRMED || $order['order_status'] == OS_SPLITED || $order['order_status'] == OS_SPLITING_PART)) {

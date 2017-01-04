@@ -1,5 +1,6 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 订单列表
  * @author will
@@ -66,16 +67,16 @@ class list_module extends api_admin implements api_interface {
 			$result = ecjia_app::validate_application('store');
 			if (!is_ecjia_error($result)) {
 				$db_orderinfo_view->view = array(
-						'order_goods' => array(
-								'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-								'alias'	=> 'og',
-								'on'	=> 'oi.order_id = og.order_id'
-						),
-						'goods' => array(
-								'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-								'alias'	=> 'g',
-								'on'	=> 'g.goods_id = og.goods_id'
-						),
+					'order_goods' => array(
+						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+						'alias'	=> 'og',
+						'on'	=> 'oi.order_id = og.order_id'
+					),
+					'goods' => array(
+						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+						'alias'	=> 'g',
+						'on'	=> 'g.goods_id = og.goods_id'
+					),
 				);
 
 				if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
@@ -96,21 +97,20 @@ class list_module extends api_admin implements api_interface {
 					foreach ($order_id_group as $val) {
 						$where['oi.order_id'][] = $val['order_id'];
 					}
-					
 					$data = $db_orderinfo_view->field($field)->join(array('order_info', 'order_goods', 'goods'))->where($where)->order(array('oi.add_time' => 'desc'))->select();
 				}
 			} else {
 				$db_orderinfo_view->view = array(
-						'order_goods' => array(
-								'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-								'alias'	=> 'og',
-								'on'	=> 'oi.order_id = og.order_id'
-						),
-						'goods' => array(
-								'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-								'alias'	=> 'g',
-								'on'	=> 'g.goods_id = og.goods_id'
-						),
+					'order_goods' => array(
+						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+						'alias'	=> 'og',
+						'on'	=> 'oi.order_id = og.order_id'
+					),
+					'goods' => array(
+						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+						'alias'	=> 'g',
+						'on'	=> 'g.goods_id = og.goods_id'
+					),
 				);
 				/*获取记录条数*/
 				$record_count = $db_orderinfo_view->join(null)->where($where)->count('oi.order_id');
@@ -163,14 +163,14 @@ class list_module extends api_admin implements api_interface {
 					}
 					$goods_lists = array();
 					$goods_lists[] = array(
-							'goods_id'	=> $val['goods_id'],
-							'name'		=> $val['goods_name'],
-							'goods_number' => $val['goods_number'],
-							'img'		=> array(
-									'thumb'	=> (isset($val['goods_img']) && !empty($val['goods_img']))		 ? RC_Upload::upload_url($val['goods_img'])		: RC_Uri::admin_url('statics/images/nopic.png'),
-									'url'	=> (isset($val['original_img']) && !empty($val['original_img'])) ? RC_Upload::upload_url($val['original_img'])  : RC_Uri::admin_url('statics/images/nopic.png'),
-									'small'	=> (isset($val['goods_thumb']) && !empty($val['goods_thumb']))   ? RC_Upload::upload_url($val['goods_thumb'])   : RC_Uri::admin_url('statics/images/nopic.png')
-							)
+						'goods_id'		=> $val['goods_id'],
+						'name'			=> $val['goods_name'],
+						'goods_number' 	=> $val['goods_number'],
+						'img'		=> array(
+							'thumb'	=> (isset($val['goods_img']) && !empty($val['goods_img']))		 ? RC_Upload::upload_url($val['goods_img'])		: RC_Uri::admin_url('statics/images/nopic.png'),
+							'url'	=> (isset($val['original_img']) && !empty($val['original_img'])) ? RC_Upload::upload_url($val['original_img'])  : RC_Uri::admin_url('statics/images/nopic.png'),
+							'small'	=> (isset($val['goods_thumb']) && !empty($val['goods_thumb']))   ? RC_Upload::upload_url($val['goods_thumb'])   : RC_Uri::admin_url('statics/images/nopic.png')
+						)
 					);
 
 					if ($device_code == 8001) {
@@ -187,52 +187,49 @@ class list_module extends api_admin implements api_interface {
 
 					$goods_number = $val['goods_number'];
 					$order_list[$val['order_id']] = array(
-							'order_id'	=> $val['order_id'],
-							'order_sn'	=> $val['order_sn'],
-							'total_fee' => $val['total_fee'],
-							'pay_name'	=> $val['pay_name'],
-							'consignee' => $val['consignee'],
-							'mobile'	=> empty($val['mobile']) ? $val['tel'] : $val['mobile'],
-							'formated_total_fee' 		=> price_format($val['total_fee'], false),
-							'formated_integral_money'	=> price_format($val['integral_money'], false),
-							'formated_bonus'			=> price_format($val['bonus'], false),
-							'formated_shipping_fee'		=> price_format($val['shipping_fee'], false),
-							'formated_discount'			=> price_format($val['discount'], false),
-							'status'					=> $order_status.','.RC_Lang::lang('ps/'.$val['pay_status']).','.RC_Lang::lang('ss/'.$val['shipping_status']),
-							'label_order_status'		=> $label_order_status,
-							'goods_number'				=> intval($goods_number),
-							'create_time' 				=> RC_Time::local_date(ecjia::config('date_format'), $val['add_time']),
-							//'username' 					=> $val['username'],
-							'goods_items' 				=> $goods_lists
+						'order_id'	=> $val['order_id'],
+						'order_sn'	=> $val['order_sn'],
+						'total_fee' => $val['total_fee'],
+						'pay_name'	=> $val['pay_name'],
+						'consignee' => $val['consignee'],
+						'mobile'	=> empty($val['mobile']) ? $val['tel'] : $val['mobile'],
+						'formated_total_fee' 		=> price_format($val['total_fee'], false),
+						'formated_integral_money'	=> price_format($val['integral_money'], false),
+						'formated_bonus'			=> price_format($val['bonus'], false),
+						'formated_shipping_fee'		=> price_format($val['shipping_fee'], false),
+						'formated_discount'			=> price_format($val['discount'], false),
+						'status'					=> $order_status.','.RC_Lang::lang('ps/'.$val['pay_status']).','.RC_Lang::lang('ss/'.$val['shipping_status']),
+						'label_order_status'		=> $label_order_status,
+						'goods_number'				=> intval($goods_number),
+						'create_time' 				=> RC_Time::local_date(ecjia::config('date_format'), $val['add_time']),
+						//'username' 					=> $val['username'],
+						'goods_items' 				=> $goods_lists
 					);
 					$order_id = $val['order_id'];
 				} else {
 					$goods_number += $val['goods_number'];
 					$order_list[$val['order_id']]['goods_number'] = $goods_number;
 					$order_list[$val['order_id']]['goods_items'][] = array(
-							'goods_id'	=> $val['goods_id'],
-							'name'		=> $val['goods_name'],
-							'goods_number' => intval($val['goods_number']),
-							'img'		=> array(
-									'thumb'	=> (isset($val['goods_img']) && !empty($val['goods_img']))		 ? RC_Upload::upload_url($val['goods_img'])		: '',
-									'url'	=> (isset($val['original_img']) && !empty($val['original_img'])) ? RC_Upload::upload_url($val['original_img'])  : '',
-									'small'	=> (isset($val['goods_thumb']) && !empty($val['goods_thumb']))   ? RC_Upload::upload_url($val['goods_thumb'])   : ''
-							)
+						'goods_id'		=> $val['goods_id'],
+						'name'			=> $val['goods_name'],
+						'goods_number' 	=> intval($val['goods_number']),
+						'img' => array(
+							'thumb'	=> (isset($val['goods_img']) && !empty($val['goods_img']))		 ? RC_Upload::upload_url($val['goods_img'])		: '',
+							'url'	=> (isset($val['original_img']) && !empty($val['original_img'])) ? RC_Upload::upload_url($val['original_img'])  : '',
+							'small'	=> (isset($val['goods_thumb']) && !empty($val['goods_thumb']))   ? RC_Upload::upload_url($val['goods_thumb'])   : ''
+						)
 					);
 				}
 		    }
 		}
 		$order_list = array_merge($order_list);
 		$pager = array(
-				'total'	=> $page_row->total_records,
-				'count' => $page_row->total_records,
-				'more'	=> $page_row->total_pages <= $page ? 0 : 1,
+			'total'	=> $page_row->total_records,
+			'count' => $page_row->total_records,
+			'more'	=> $page_row->total_pages <= $page ? 0 : 1,
 		);
-
 		return array('data' => $order_list, 'pager' => $pager);
-
 	}
 }
-
 
 // end

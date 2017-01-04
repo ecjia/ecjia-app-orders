@@ -1,11 +1,9 @@
 <?php
+defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
  * 销售明细列表程序
 */
-
-defined('IN_ECJIA') or exit('No permission resources.');
-
 class mh_sale_list extends ecjia_merchant {
 	private $order_goods_view;
 	private $order_info_view;
@@ -31,7 +29,6 @@ class mh_sale_list extends ecjia_merchant {
         RC_Script::enqueue_script('sale_list',RC_App::apps_url('statics/js/merchant_sale_list.js',__FILE__), array('ecjia-merchant'), false, 1);
         
         ecjia_merchant_screen::get_current_screen()->set_parentage('stats');
-        
 	}
 	
 	/**
@@ -120,4 +117,5 @@ class mh_sale_list extends ecjia_merchant {
 	    return $arr;
 	}
 }
+
 // end

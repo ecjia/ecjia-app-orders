@@ -39,8 +39,7 @@ class orders_user_account_paid_api extends Component_Event_Api {
 	 * @param   integer $order_id 订单id
 	 * @return  void
 	 */
-	private function user_account_paid($user_id, $order_id)
-	{
+	private function user_account_paid($user_id, $order_id) {
 		RC_Loader::load_app_func('admin_order', 'orders');
 		
 		/* 订单详情 */
@@ -105,10 +104,10 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		
 		
 		RC_DB::table('order_status_log')->insert(array(
-							'order_status'	=> RC_Lang::get('cart::shopping_flow.merchant_process'),
-							'order_id'		=> $order_info['order_id'],
-							'message'		=> '订单已通知商家，等待商家处理',
-							'add_time'		=> RC_Time::gmtime(),
+			'order_status'	=> RC_Lang::get('cart::shopping_flow.merchant_process'),
+			'order_id'		=> $order_info['order_id'],
+			'message'		=> '订单已通知商家，等待商家处理',
+			'add_time'		=> RC_Time::gmtime(),
 		));
 		
 		
@@ -153,18 +152,18 @@ class orders_user_account_paid_api extends Component_Event_Api {
 				$staff_user_ob = $orm_staff_user_db->find($staff_user['user_id']);
 				
 				$order_data = array(
-						'title'	=> '客户付款',
-						'body'	=> '您有一笔新订单，订单号为：'.$order_info['order_sn'],
-						'data'	=> array(
-								'order_id'		=> $order_info['order_id'],
-								'order_sn'		=> $order_info['order_sn'],
-								'order_amount'	=> $order_info['order_amount'],
-								'formatted_order_amount' => price_format($order_info['order_amount']),
-								'consignee'		=> $order_info['consignee'],
-								'mobile'		=> $order_info['mobile'],
-								'address'		=> $order_info['address'],
-								'order_time'	=> RC_Time::local_date(ecjia::config('time_format'), $order_info['add_time']),
-						),
+					'title'	=> '客户付款',
+					'body'	=> '您有一笔新订单，订单号为：'.$order_info['order_sn'],
+					'data'	=> array(
+						'order_id'		=> $order_info['order_id'],
+						'order_sn'		=> $order_info['order_sn'],
+						'order_amount'	=> $order_info['order_amount'],
+						'formatted_order_amount' => price_format($order_info['order_amount']),
+						'consignee'		=> $order_info['consignee'],
+						'mobile'		=> $order_info['mobile'],
+						'address'		=> $order_info['address'],
+						'order_time'	=> RC_Time::local_date(ecjia::config('time_format'), $order_info['add_time']),
+					),
 				);
 				 
 				$push_order_pay = new OrderPay($order_data);

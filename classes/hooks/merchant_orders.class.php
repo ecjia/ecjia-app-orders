@@ -33,11 +33,10 @@ class orders_merchant_plugin {
         $order_await_ship = $db->field('oi.order_id')->where(array_merge($order_query->order_await_ship('oi.'), array('oi.store_id'  => $_SESSION['store_id'], 'oi.add_time' => array('gt'=> $new-3600*60*24, 'lt' => $new))))->group('oi.order_id')->select();;
         $order_await_ship = count($order_await_ship);
         
-        ecjia_admin::$controller->assign('month_order'			, $month_order);
-		ecjia_admin::$controller->assign('order_money'			, intval($num));
-		ecjia_admin::$controller->assign('order_unconfirmed'	, $order_unconfirmed);
-		ecjia_admin::$controller->assign('order_await_ship'		, $order_await_ship);
-		
+        ecjia_admin::$controller->assign('month_order', $month_order);
+		ecjia_admin::$controller->assign('order_money', intval($num));
+		ecjia_admin::$controller->assign('order_unconfirmed', $order_unconfirmed);
+		ecjia_admin::$controller->assign('order_await_ship', $order_await_ship);
 		
 	    $title = __('商城简报');
 	    
@@ -195,11 +194,11 @@ class orders_merchant_plugin {
 		$db_user_account = RC_Loader::load_app_model('user_account_model','user');
 		
 		$db->view = array(
-				'order_goods' => array(
-						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-						'alias'	=> 'g',
-						'on'	=> 'oi.order_id = g.order_id'
-				)
+			'order_goods' => array(
+				'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+				'alias'	=> 'g',
+				'on'	=> 'oi.order_id = g.order_id'
+			)
 		);
 		/* 全部订单 */
 		//TODO: 入驻商订单筛选条件
@@ -237,9 +236,7 @@ class orders_merchant_plugin {
 		 
 		ecjia_admin::$controller->assign_lang();
 		ecjia_admin::$controller->display(ecjia_app::get_app_template('library/widget_admin_dashboard_ordersstat.lbi', 'orders'));
-		
 	}
-	
 	
 	static public function orders_stats_admin_menu_api($menus) {
 	    $menu = array(

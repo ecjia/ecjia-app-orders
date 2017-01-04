@@ -77,8 +77,9 @@ class merchant extends ecjia_merchant {
 		RC_Style::enqueue_style('aristo', RC_Uri::admin_url('statics/lib/jquery-ui/css/Aristo/Aristo.css'), array(), false, false);
 		
 		RC_Script::enqueue_script('jq_quicksearch', RC_Uri::admin_url('statics/lib/multi-select/js/jquery.quicksearch.js'), array('jquery'), false, true);
-		RC_Style::enqueue_style('orders', RC_App::apps_url('statics/css/merchant_orders.css', __FILE__), array(), false, false);
+		RC_Style::enqueue_style('merchant_orders', RC_App::apps_url('statics/css/merchant_orders.css', __FILE__), array(), false, false);
 		RC_Script::enqueue_script('order_delivery', RC_App::apps_url('statics/js/merchant_order_delivery.js', __FILE__));
+		RC_Style::enqueue_style('orders', RC_App::apps_url('statics/css/admin_orders.css', __FILE__), array());
 		
 		ecjia_merchant_screen::get_current_screen()->set_parentage('order', 'order/merchant.php');
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('订单管理'), RC_Uri::url('orders/merchant/init')));
@@ -200,6 +201,22 @@ class merchant extends ecjia_merchant {
 		$order['shipping_time']		= $order['shipping_time'] > 0 ? RC_Time::local_date(ecjia::config('time_format'), $order['shipping_time']) : RC_Lang::lang('ss/'.SS_UNSHIPPED);
 		$order['status']			= RC_Lang::get('orders::order.os.'.$order['order_status']) . ',' . RC_Lang::get('orders::order.ps.'.$order['pay_status']) . ',' . RC_Lang::get('orders::order.ss.'.$order['shipping_status']);
 		$order['invoice_no']		= $order['shipping_status'] == SS_UNSHIPPED || $order['shipping_status'] == SS_PREPARING ? RC_Lang::lang('ss/'.SS_UNSHIPPED) : $order['invoice_no'];
+		
+		//订单流程状态
+		if ($order['pay_time'] > 0) {
+			if ($order['shipping_time'] > 0) {
+				if ($order['shipping_status'] == 2) {
+					$time_key = 4;
+				} else {
+					$time_key = 3;
+				}
+			} else {
+				$time_key = 2;
+			}
+		} else {
+			$time_key = 1;
+		}
+		$this->assign('time_key', $time_key);
 		
 		/* 取得订单的来源 */
 		if ($order['from_ad'] == 0) {
@@ -1705,8 +1722,10 @@ class merchant extends ecjia_merchant {
 			$refund_note	= $_POST['refund_note'];
 			$refund_amount	= $_POST['refund_amount'];
 			$order			= order_info($order_id);
-			order_refund($order, $refund_type, $refund_note, $refund_amount);
-		
+			$result = order_refund($order, $refund_type, $refund_note, $refund_amount);
+			if ($result == false) {
+				return false;
+			}
 			/* 修改应付款金额为0，已付款金额减少 $refund_amount */
 			update_order($order_id, array('order_amount' => 0, 'money_paid' => $order['money_paid'] - $refund_amount));
 		
@@ -3022,8 +3041,18 @@ class merchant extends ecjia_merchant {
 			/* 记录log */
 			order_action($order['order_sn'], $order['order_status'], SS_RECEIVED, $order['pay_status'], $action_note);
 		} elseif ('cancel' == $operation) {
-			
 			/* 取消 */
+
+			/* todo 处理退款 */
+			if ($order['money_paid'] > 0) {
+				$refund_type = $_POST['refund'];
+				$refund_note = $_POST['refund_note'];
+				$result = order_refund($order, $refund_type, $refund_note);
+				if ($result == false) {
+					return false;
+				}
+			}
+
 			/* 标记订单为“取消”，记录取消原因 */
 			$cancel_note = isset($_POST['cancel_note']) ? trim($_POST['cancel_note']) : '';
 			$arr = array(
@@ -3036,12 +3065,7 @@ class merchant extends ecjia_merchant {
 			);
 			update_order($order_id, $arr);
 		
-			/* todo 处理退款 */
-			if ($order['money_paid'] > 0) {
-				$refund_type = $_POST['refund'];
-				$refund_note = $_POST['refund_note'];
-				order_refund($order, $refund_type, $refund_note);
-			}
+
 			/* 记录日志 */
 			ecjia_merchant::admin_log('设为取消,订单号是'.$order['order_sn'], 'setup', 'order');
 			/* 记录log */

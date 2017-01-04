@@ -118,7 +118,7 @@ class detail_module extends api_front implements api_interface {
 					'shipped' 		=> RC_Lang::get('orders::order.shipped'),
 					'express_user_pickup'	=> RC_Lang::get('orders::order.express_user_pickup'),
 					'cancel'		=> RC_Lang::get('orders::order.order_cancel'),
-					'confirm_receipt'	=> RC_Lang::get('orders::order.confirm_receipt'),
+					'confirm_receipt'	=> RC_Lang::get('orders::order.confirm_receipted'),
 					'finished'		=> RC_Lang::get('orders::order.order_finished')
 					
 			);

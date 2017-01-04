@@ -27,7 +27,7 @@ class admin_sale_general extends ecjia_admin {
 
 		/*自定义*/
         RC_Script::enqueue_script('acharts-min', RC_App::apps_url('statics/js/acharts-min.js', __FILE__));
-        RC_Style::enqueue_style('orders-css', RC_App::apps_url('statics/css/orders.css', __FILE__));
+        RC_Style::enqueue_style('orders-css', RC_App::apps_url('statics/css/admin_orders.css', __FILE__));
         RC_Script::enqueue_script('sale_general', RC_App::apps_url('statics/js/sale_general.js', __FILE__));
         RC_Script::enqueue_script('sale_general_chart', RC_App::apps_url('statics/js/sale_general_chart.js', __FILE__));
 

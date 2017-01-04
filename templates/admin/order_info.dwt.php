@@ -87,7 +87,6 @@
 							<tbody class="first-td-no-leftbd">
 								<tr>
 									<td><div align="right"><strong>{lang key='orders::order.label_order_sn'}</strong></div></td>
-									<!-- TODO 团购链接赞不知，以后修改测试 -->
 									<td>
 										{$order.order_sn}
 										{if $order.extension_code eq "group_buy"}
@@ -198,16 +197,16 @@
 									<td><div align="right"><strong>{lang key='orders::order.label_how_oos'}</strong></div></td>
 									<td colspan="3">{$order.how_oos}</td>
 								</tr>
-								<tr>
-									<td><div align="right"><strong>{lang key='orders::order.label_pack'}</strong></div></td>
-									<td>{$order.pack_name}</td>
-									<td><div align="right"><strong>{lang key='orders::order.label_card'}</strong></div></td>
-									<td>{$order.card_name}</td>
-								</tr>
-								<tr>
-									<td><div align="right"><strong>{lang key='orders::order.label_card_message'}</strong></div></td>
-									<td colspan="3">{$order.card_message}</td>
-								</tr>
+<!-- 								<tr> -->
+<!-- 									<td><div align="right"><strong>{lang key='orders::order.label_pack'}</strong></div></td> -->
+<!-- 									<td>{$order.pack_name}</td> -->
+<!-- 									<td><div align="right"><strong>{lang key='orders::order.label_card'}</strong></div></td> -->
+<!-- 									<td>{$order.card_name}</td> -->
+<!-- 								</tr> -->
+<!-- 								<tr> -->
+<!-- 									<td><div align="right"><strong>{lang key='orders::order.label_card_message'}</strong></div></td> -->
+<!-- 									<td colspan="3">{$order.card_message}</td> -->
+<!-- 								</tr> -->
 								<tr>
 									<td><div align="right"><strong>{lang key='orders::order.label_to_buyer'}</strong></div></td>
 									<td colspan="3">{$order.to_buyer}</td>

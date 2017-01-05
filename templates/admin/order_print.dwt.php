@@ -24,11 +24,18 @@ body,td { font-size:13px; }
 		<td colspan="7">
 			[{$order.region}]&nbsp;{$order.address}&nbsp;<!-- 收货人地址 -->
 			{lang key='orders::order.label_consignee'}{$order.consignee}&nbsp;<!-- 收货人姓名 -->
-			{if $order.zipcode}{lang key='orders::order.label_zipcode'}{$order.zipcode}&nbsp;{/if}<!-- 邮政编码 -->
 			{if $order.tel}{lang key='orders::order.label_tel'}{$order.tel}&nbsp; {/if}<!-- 联系电话 -->
 			{if $order.mobile}{lang key='orders::order.label_mobile'}{$order.mobile}{/if}<!-- 手机号码 -->
 		</td>
 	</tr>
+	{if $order.express_user}
+	<tr>
+		<td>{lang key='orders::order.label_express_user'}</td>
+		<td colspan="7">
+			{$order.express_user} {$order.express_mobile}
+		</td>
+	</tr>
+	{/if}
 </table>
 <table width="100%" border="1" style="border-collapse:collapse;border-color:#000;">
 	<tr align="center">
@@ -125,7 +132,7 @@ body,td { font-size:13px; }
 
 	<tr><!-- 网店名称, 网店地址, 网店URL以及联系电话 -->
 		<td>
-			{$shop_name}（{$shop_url}）
+			{$shop_name}{if $shop_url}（{$shop_url}）{/if}
 			{lang key='orders::order.label_shop_address'}{$shop_address}&nbsp;&nbsp;{lang key='orders::order.label_service_phone'}{$service_phone}
 		</td>
 	</tr>

@@ -25,11 +25,18 @@ body,td { font-size:13px; }
 		<td colspan="7">
 			[{$order.region}]&nbsp;{$order.address}&nbsp;<!-- 收货人地址 -->
 			{$lang.label_consignee}{$order.consignee}&nbsp;<!-- 收货人姓名 -->
-			{if $order.zipcode}{$lang.label_zipcode}{$order.zipcode}&nbsp;{/if}<!-- 邮政编码 -->
 			{if $order.tel}{$lang.label_tel}{$order.tel}&nbsp; {/if}<!-- 联系电话 -->
 			{if $order.mobile}{$lang.label_mobile}{$order.mobile}{/if}<!-- 手机号码 -->
 		</td>
 	</tr>
+	{if $order.express_user}
+	<tr>
+		<td>{lang key='orders::order.label_express_user'}</td>
+		<td colspan="7">
+			{$order.express_user} {$order.express_mobile}
+		</td>
+	</tr>
+	{/if}
 </table>
 <table width="100%" border="1" style="border-collapse:collapse;border-color:#000;">
 	<tr align="center">

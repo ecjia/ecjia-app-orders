@@ -307,9 +307,9 @@ ecjia.merchant.order.info();
 								<td>[{$order.region}]{$order.address}</td>
 							</tr>
 <!-- 							<tr> -->
-<!-- 								<td><div align="right"><strong>{lang key='orders::order.label_email}</strong></div></td> -->
+<!-- 								<td><div align="right"><strong>{lang key='orders::order.label_email'}</strong></div></td> -->
 <!-- 								<td>{$order.email}</td> -->
-<!-- 								<td><div align="right"><strong>{lang key='orders::order.label_zipcode}</strong></div></td> -->
+<!-- 								<td><div align="right"><strong>{lang key='orders::order.label_zipcode'}</strong></div></td> -->
 <!-- 								<td>{$order.zipcode}</td> -->
 <!-- 							</tr> -->
 							<tr>

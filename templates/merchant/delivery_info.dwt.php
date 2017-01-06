@@ -64,7 +64,7 @@
 							</tr>
 							<tr>
 								<td><div align="right"><strong>{lang key='orders::order.label_shipping'}</strong></div></td>
-								<td>{if $exist_real_goods}{if $delivery_order.shipping_id gt 0}{$delivery_order.shipping_name}{else}{lang key='system::system.require_field'}{/if} {if $delivery_order.insure_fee gt 0}{lang key='orders.order.label_insure_fee'}{$delivery_order.formated_insure_fee}{/if}{/if}</td>
+								<td>{if $exist_real_goods}{if $delivery_order.shipping_id gt 0}{$delivery_order.shipping_name}{else}{lang key='system::system.require_field'}{/if} {if $delivery_order.insure_fee gt 0}{lang key='orders::order.label_insure_fee'}{$delivery_order.formated_insure_fee}{/if}{/if}</td>
 								<td><div align="right"><strong>{lang key='orders::order.label_shipping_fee'}</strong></div></td>
 								<td>{$delivery_order.shipping_fee}</td>
 							</tr>
@@ -241,9 +241,9 @@
 								<td><div align="right"><strong>{lang key='orders::order.label_operable_act'}</strong></div></td>
 								<td align="left">
 									{if $delivery_order.status eq 2}
-									<button class="btn btn-info" type="submit">{lang key='orders.order.op_ship'}</button>
+									<button class="btn btn-info" type="submit">{lang key='orders::order.op_ship'}</button>
 									{else}
-									<button class="btn btn-info" type="submit">{lang key='orders.order.op_cancel_ship'}</button>
+									<button class="btn btn-info" type="submit">{lang key='orders::order.op_cancel_ship'}</button>
 									{/if}
 									
 									<input name="order_id" type="hidden" value="{$delivery_order.order_id}">

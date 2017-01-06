@@ -1,12 +1,10 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
 * ECJIA 订单查询条件类文件
 */
-
-defined('IN_ECJIA') or exit('No permission resources.');
 RC_Loader::load_app_class('order','orders', false);
-
 class merchant_order_query extends order {
 
 	private $where = array();//where条件数组

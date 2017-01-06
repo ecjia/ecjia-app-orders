@@ -3,7 +3,7 @@ defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
  * 客户统计
-*/
+ */
 class admin_guest_stats extends ecjia_admin {
 	public function __construct() {
 		parent::__construct();

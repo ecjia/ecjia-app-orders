@@ -1,5 +1,4 @@
 // JavaScript Document
-
 ;(function(app, $) {
 	app.order_delivery = {
 		init : function() {

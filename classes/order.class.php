@@ -3,8 +3,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
  *  订单基类
- *
- * 
  */
 abstract class order {
 	/**
@@ -13,8 +11,6 @@ abstract class order {
     public function __construct() {
     	
     }
-
-    
 }
 
 // end

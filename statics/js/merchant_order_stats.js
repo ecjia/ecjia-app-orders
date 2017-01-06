@@ -1,6 +1,5 @@
 // JavaScript Document
-;
-(function(app, $) {
+;(function(app, $) {
 	app.order_stats = {
 		init : function() {
 			app.order_stats.searchForm();

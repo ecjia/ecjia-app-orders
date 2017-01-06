@@ -7,9 +7,6 @@ class users_model extends Component_Model_Model {
 		$this->table_name = 'users';
 		parent::__construct();
 	}
-
-
-
 }
 
 // end

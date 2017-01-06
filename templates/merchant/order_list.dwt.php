@@ -23,7 +23,6 @@ ecjia.merchant.order.init();
 </div>
 
 <!-- #BeginLibraryItem "/library/order_operate.lbi" --><!-- #EndLibraryItem -->
-
 <div class="row">
 	<div class="col-lg-12">
 	    <div class="panel">

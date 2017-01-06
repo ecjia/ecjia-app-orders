@@ -4,7 +4,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * 订单详情
  * @author will
- *
  */
 class delivery_module extends api_admin implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
@@ -40,7 +39,6 @@ class delivery_module extends api_admin implements api_interface {
 		}
 		return $delivery_list;
 	}
-
 }
 
 // end

@@ -5,7 +5,6 @@ use Ecjia\System\Notifications\ExpressFinished;
 /**
  * 订单确认收货
  * @author royalwang
- *
  */
 class affirmReceived_module extends api_front implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
@@ -38,7 +37,6 @@ class affirmReceived_module extends api_front implements api_interface {
  *            订单ID
  * @param int $user_id
  *            用户ID
- *
  * @return bool $bool
  */
 function affirm_received($order_id, $user_id = 0) {
@@ -91,34 +89,34 @@ function affirm_received($order_id, $user_id = 0) {
             	$express_order_info = $express_order_viewdb->field($field)->join(array('delivery_order', 'order_info', 'store_franchisee'))->where($where)->find();
             		
             	$express_data = array(
-            			'title'	=> '配送成功',
-            			'body'	=> '买家已成功确认收货！配送单号为：'.$express_order_info['express_id'],
-            			'data'	=> array(
-            				'express_id'			=> $express_order_info['express_id'],
-            				'express_sn'			=> $express_order_info['express_sn'],
-            				'express_type'			=> $express_order_info['from'],
-            				'label_express_type'	=> $express_order_info['from'] == 'assign' ? '系统派单' : '抢单',
-            				'order_sn'				=> $express_order_info['order_sn'],
-            				'payment_name'			=> $express_order_info['pay_name'],
-            				'express_from_address'	=> '【'.$express_order_info['merchants_name'].'】'. $express_order_info['merchant_address'],
-            				'express_from_location'	=> array(
-            					'longitude' => $express_order_info['merchant_longitude'],
-            					'latitude'	=> $express_order_info['merchant_latitude'],
-            				),
-            				'express_to_address'	=> $express_order_info['address'],
-            				'express_to_location'	=> array(
-            					'longitude' => $express_order_info['longitude'],
-            					'latitude'	=> $express_order_info['latitude'],
-            				),
-            				'distance'		=> $express_order_info['distance'],
-            				'consignee'		=> $express_order_info['consignee'],
-            				'mobile'		=> $express_order_info['mobile'],
-            				'order_time'	=> RC_Time::local_date(ecjia::config('time_format'), $express_order_info['add_time']),
-            				'pay_time'		=> empty($express_order_info['pay_time']) ? '' : RC_Time::local_date(ecjia::config('time_format'), $express_order_info['pay_time']),
-            				'best_time'		=> empty($express_order_info['best_time']) ? '' : RC_Time::local_date(ecjia::config('time_format'), $express_order_info['best_time']),
-            				'shipping_fee'	=> $express_order_info['shipping_fee'],
-            				'order_amount'	=> $express_order_info['order_amount'],
-            			),
+            		'title'     => '配送成功',
+            		'body'      => '买家已成功确认收货！配送单号为：'.$express_order_info['express_id'],
+            		'data'      => array(
+	            		'express_id'            => $express_order_info['express_id'],
+	            		'express_sn'         	=> $express_order_info['express_sn'],
+	            		'express_type'  		=> $express_order_info['from'],
+	            		'label_express_type'    => $express_order_info['from'] == 'assign' ? '系统派单' : '抢单',
+	            		'order_sn'           	=> $express_order_info['order_sn'],
+	            		'payment_name'        	=> $express_order_info['pay_name'],
+	            		'express_from_address'  => '【'.$express_order_info['merchants_name'].'】'. $express_order_info['merchant_address'],
+	            		'express_from_location' => array(
+	            			'longitude' => $express_order_info['merchant_longitude'],
+	            			'latitude'  => $express_order_info['merchant_latitude'],
+	 					),
+	          			'express_to_address'    => $express_order_info['address'],
+	            		'express_to_location'   => array(
+	            			'longitude' 		=> $express_order_info['longitude'],
+	            			'latitude'  		=> $express_order_info['latitude'],
+	            		),
+	            		'distance'        	=> $express_order_info['distance'],
+	            		'consignee'       	=> $express_order_info['consignee'],
+	            		'mobile'          	=> $express_order_info['mobile'],
+	            		'order_time'      	=> RC_Time::local_date(ecjia::config('time_format'), $express_order_info['add_time']),
+	            		'pay_time'       	=> empty($express_order_info['pay_time']) 	? '' : RC_Time::local_date(ecjia::config('time_format'), $express_order_info['pay_time']),
+	            		'best_time'       	=> empty($express_order_info['best_time']) 	? '' : RC_Time::local_date(ecjia::config('time_format'), $express_order_info['best_time']),
+	            		'shipping_fee'    	=> $express_order_info['shipping_fee'],
+	            		'order_amount'    	=> $express_order_info['order_amount'],
+            		),
             	);
             	$express_finished = new ExpressFinished($express_data);
             	RC_Notification::send($user, $express_finished);

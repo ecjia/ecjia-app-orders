@@ -1,4 +1,5 @@
 <!-- {extends file="ecjia-merchant.dwt.php"} -->
+
 <!-- {block name="footer"} -->
 <script type="text/javascript">
 	ecjia.merchant.sale_general.init();
@@ -9,6 +10,7 @@
 	{/if}
 </script>
 <!-- {/block} -->
+
 <!-- {block name="home-content"} -->
 <div class="alert alert-info">
 	<button type="button" class="close" data-dismiss="alert" aria-hidden="true"><i class="fa fa-times" data-original-title="" title=""></i></button>

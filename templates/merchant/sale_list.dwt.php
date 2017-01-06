@@ -1,9 +1,11 @@
 <!-- {extends file="ecjia-merchant.dwt.php"} -->
+
 <!-- {block name="footer"} -->
 <script type="text/javascript">
 ecjia.merchant.sale_list.init()
 </script>
 <!-- {/block} -->
+
 <!-- {block name="home-content"} -->
 <!--销售明细-->
 <div class="alert alert-info">

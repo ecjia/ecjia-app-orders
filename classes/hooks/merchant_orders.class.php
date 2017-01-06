@@ -255,14 +255,10 @@ class orders_merchant_plugin {
 	
 }
 
-RC_Hook::add_action( 'admin_dashboard_top', array('orders_merchant_plugin', 'widget_admin_dashboard_shopchart'), 21);
-
-RC_Hook::add_action( 'admin_dashboard_left', array('orders_merchant_plugin', 'widget_admin_dashboard_orderschart'));
-
-RC_Hook::add_action( 'admin_dashboard_left', array('orders_merchant_plugin', 'widget_admin_dashboard_ordersstat'), 11);
-
-RC_Hook::add_action( 'admin_dashboard_right', array('orders_merchant_plugin', 'widget_admin_dashboard_salechart'));
-
-RC_Hook::add_filter( 'stats_admin_menu_api', array('orders_merchant_plugin', 'orders_stats_admin_menu_api') );
+RC_Hook::add_action('admin_dashboard_top', array('orders_merchant_plugin', 'widget_admin_dashboard_shopchart'), 21);
+RC_Hook::add_action('admin_dashboard_left', array('orders_merchant_plugin', 'widget_admin_dashboard_orderschart'));
+RC_Hook::add_action('admin_dashboard_left', array('orders_merchant_plugin', 'widget_admin_dashboard_ordersstat'), 11);
+RC_Hook::add_action('admin_dashboard_right', array('orders_merchant_plugin', 'widget_admin_dashboard_salechart'));
+RC_Hook::add_filter('stats_admin_menu_api', array('orders_merchant_plugin', 'orders_stats_admin_menu_api'));
 
 // end

@@ -1,9 +1,9 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
-/**
- * ECSJIA 订单管理语言文件
- */
 
+/**
+ * ECJIA 订单管理语言文件
+ */
 $LANG['orders']            		= '订单';
 $LANG['orders_desc']       		= '订单功能描述';
 

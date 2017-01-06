@@ -63,10 +63,10 @@ class mh_reminder extends ecjia_merchant {
 		$result_list = array('list' => $result, 'page' => $page->show(2), 'desc' => $page->page_desc(), 'keywords' => $keywords);
 
 		if (!empty($result_list['list'])) {
-		      foreach ($result_list['list'] as $key => $val) {
-		          $result_list['list'][$key]['order_status'] = $val[order_status] == 1 ? RC_Lang::get('orders::order.processed') : RC_Lang::get('orders::order.untreated');
-	          	  $result_list['list'][$key]['confirm_time'] = RC_Time::local_date(ecjia::config('time_format'), $val['confirm_time']);
-		      }
+			foreach ($result_list['list'] as $key => $val) {
+		 		$result_list['list'][$key]['order_status'] = $val[order_status] == 1 ? RC_Lang::get('orders::order.processed') : RC_Lang::get('orders::order.untreated');
+	    		$result_list['list'][$key]['confirm_time'] = RC_Time::local_date(ecjia::config('time_format'), $val['confirm_time']);
+			}
 		} 
 
 		/* 模板赋值 */

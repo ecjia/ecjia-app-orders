@@ -4,7 +4,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * ECJIA 订单管理语言文件
  */
-
 return array(
 	/* 订单搜索 */
 	'order_sn' 		=> '订单号',

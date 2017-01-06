@@ -8,8 +8,7 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * @return  array   可执行的操作  confirm, pay, unpay, prepare, ship, unship, receive, cancel, invalid, return, drop
  * 格式 array('confirm' => true, 'pay' => true)
  */
-function merchant_operable_list($order)
-{
+function merchant_operable_list($order) {
     /* 取得订单状态、发货状态、付款状态 */
     $os = $order['order_status'];
     $ss = $order['shipping_status'];
@@ -217,8 +216,7 @@ function merchant_operable_list($order)
  * @param
  * @return void
  */
-function get_merchant_back_list()
-{
+function get_merchant_back_list() {
 	$args = $_GET;
 	/* 过滤信息 */
 	$filter['delivery_sn'] = empty($args['delivery_sn']) ? '' : trim($args['delivery_sn']);
@@ -276,8 +274,7 @@ function get_merchant_back_list()
  *
  * @return void
  */
-function get_merchant_delivery_list()
-{
+function get_merchant_delivery_list() {
 	$db_delivery_order = RC_DB::table('delivery_order as do')->leftJoin('order_info as oi', RC_DB::raw('do.order_id'), '=', RC_DB::raw('oi.order_id'));
 	isset($_SESSION['store_id']) ? $db_delivery_order->where(RC_DB::raw('do.store_id'), $_SESSION['store_id']) : '';
 	$args = $_GET;

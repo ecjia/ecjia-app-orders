@@ -4,7 +4,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * ECJIA 流量统计语言文件
  */
-
 return array(
 	'tab_general' 	=> '综合访问量',
 	'tab_area' 		=> '地区分布',

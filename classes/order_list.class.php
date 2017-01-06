@@ -1,11 +1,9 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * ECJIA 订单查询条件类文件
  */
-
-defined('IN_ECJIA') or exit('No permission resources.');
-
 class order_list{
 	/* 已完成订单 */
 	public static function order_finished($alias = '') {

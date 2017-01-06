@@ -2,7 +2,7 @@
 defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
- * //订单数量
+ * 订单数量
  * @author luchongchong
  *
  */

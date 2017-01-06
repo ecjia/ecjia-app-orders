@@ -4,7 +4,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * 订单详情
  * @author will
- *
  */
 class detail_module extends api_admin implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
@@ -77,17 +76,17 @@ class detail_module extends api_admin implements api_interface {
 							$goods_info = $goods_db->find(array('goods_id' => $v['goods_id']));
 
 							$goods_lists[] = array(
-									'id'			=> $v['goods_id'],
-									'name'			=> $v['goods_name'],
-									'seller_name'	=> !empty($seller_name) ? $seller_name : '自营',
-									'shop_price'	=> price_format($v['goods_price'], false),
-									'goods_sn'		=> $v['goods_sn'],
-									'number'		=> $v['goods_number'],
-									'img' => array(
-										'thumb'	=> !empty($goods_info['goods_img']) ? RC_Upload::upload_url($goods_info['goods_img']) : '',
-										'url'	=> !empty($goods_info['original_img']) ? RC_Upload::upload_url($goods_info['original_img']) : '',
-										'small'	=> !empty($goods_info['goods_thumb']) ? RC_Upload::upload_url($goods_info['goods_thumb']) : '',
-									),
+								'id'			=> $v['goods_id'],
+								'name'			=> $v['goods_name'],
+								'seller_name'	=> !empty($seller_name) ? $seller_name : '自营',
+								'shop_price'	=> price_format($v['goods_price'], false),
+								'goods_sn'		=> $v['goods_sn'],
+								'number'		=> $v['goods_number'],
+								'img' => array(
+									'thumb'	=> !empty($goods_info['goods_img']) ? RC_Upload::upload_url($goods_info['goods_img']) : '',
+									'url'	=> !empty($goods_info['original_img']) ? RC_Upload::upload_url($goods_info['original_img']) : '',
+									'small'	=> !empty($goods_info['goods_thumb']) ? RC_Upload::upload_url($goods_info['goods_thumb']) : '',
+								),
 							);
 						}
 					}

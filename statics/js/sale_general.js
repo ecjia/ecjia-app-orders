@@ -1,6 +1,5 @@
 // JavaScript Document
-;
-(function(app, $) {
+;(function(app, $) {
 	app.sale_general = {
 		init : function() {
 			app.sale_general.searchForm();
@@ -24,7 +23,7 @@
 					};
 					ecjia.admin.showmessage(data);
 					return false;
-				} else if(year_endYear == '') {
+				} else if (year_endYear == '') {
 					var data = {
                         message: js_lang.end_year_required,
                         state: "error",

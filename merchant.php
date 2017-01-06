@@ -3288,7 +3288,6 @@ class merchant extends ecjia_merchant {
 			return $this->showmessage(__('未找到相关会员信息'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 	}
-	
 }
 
 // end

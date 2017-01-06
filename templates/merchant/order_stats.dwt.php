@@ -1,4 +1,5 @@
 <!-- {extends file="ecjia-merchant.dwt.php"} -->
+
 <!-- {block name="footer"} -->
 <script type="text/javascript">
 	ecjia.merchant.order_stats.init();
@@ -17,6 +18,7 @@
 	{/if}
 </script>
 <!-- {/block} -->
+
 <!-- {block name="home-content"} -->
 	<!-- 订单统计 -->
 	<div class="alert alert-info">

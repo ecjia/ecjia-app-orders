@@ -1,6 +1,5 @@
 // JavaScript Document
-;
-(function(app, $) {
+;(function(app, $) {
 	app.sale_order = {
 		init : function() {
 			app.sale_order.sale_order();

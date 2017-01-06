@@ -1,6 +1,5 @@
 // JavaScript Document
-;
-(function(app, $) {
+;(function(app, $) {
 	app.chart = {
 		init : function() {
 			app.chart.order_general();
@@ -18,11 +17,11 @@
 				url: elem.attr("data-url"),
 				dataType: "json",
 				success: function(order_infos){
-					if(order_infos === null) {
+					if (order_infos === null) {
 						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>没有找到任何记录<\/div>";
 						elem.find(".ajax_loading").hide();
 						elem.append(nodata);
-					}else{
+					} else {
 						$.each(order_infos,function(key,value){
 							ticks.push(parseInt(value));
 					    });
@@ -141,11 +140,11 @@
 				url: elem.attr("data-url"),
 				dataType: "json",
 				success: function(ship_infos){
-					if(ship_infos === null) {
+					if (ship_infos === null) {
 						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>没有找到任何记录<\/div>";
 						elem.find(".ajax_loading").hide();
 						elem.append(nodata);
-					}else{
+					} else {
 						$.each(ship_infos,function(key,value){
 							tpl.push(parseInt(value));
 							dataset.push(key);
@@ -200,11 +199,11 @@
 				url: elem.attr("data-url"),
 				dataType: "json",
 				success: function(ship_infos){
-					if(ship_infos === null) {
+					if (ship_infos === null) {
 						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>没有找到任何记录<\/div>";
 						elem.find(".ajax_loading").hide();
 						elem.append(nodata);
-					}else{
+					} else {
 						$.each(ship_infos,function(key,val){
 							var ticks = [];
 							var categories = [];

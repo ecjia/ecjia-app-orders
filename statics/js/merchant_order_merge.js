@@ -1,5 +1,4 @@
 // JavaScript Document
-
 ;(function(app, $) {
 	app.order_merge = {
 		init : function() {
@@ -44,15 +43,15 @@
 						$("form[name='theForm']").ajaxSubmit({
 							dataType:"json",
 							success:function(data){
-									if (data.state == "success") {
-										var url = $("form[name='theForm']").attr('data-pjax-url');
-										ecjia.pjax(url , function(){
-											ecjia.merchant.showmessage(data);
-										});
-									} else {
+								if (data.state == "success") {
+									var url = $("form[name='theForm']").attr('data-pjax-url');
+									ecjia.pjax(url , function(){
 										ecjia.merchant.showmessage(data);
-									}	
-								}
+									});
+								} else {
+									ecjia.merchant.showmessage(data);
+								}	
+							}
 						});
 					}	
 				}, {ok:'确定', cancel:'取消'});

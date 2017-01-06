@@ -6,7 +6,7 @@
 		},
 		
 		search : function() {
-			$ ("form[name='searchForm']").on('submit',function(e) {
+			$ ("form[name='searchForm']").on('submit', function(e) {
 				e.preventDefault();
 				var cat_id = $("select[name='cat_id']").val();				//分类ID
 				var brand_id = $("select[name='brand_id']").val();			//品牌ID

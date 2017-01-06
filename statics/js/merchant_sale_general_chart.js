@@ -1,6 +1,5 @@
 // JavaScript Document
-;
-(function(app, $) {
+;(function(app, $) {
 	app.chart = {
 		init : function() {
 			app.chart.order_count();
@@ -16,11 +15,11 @@
 				url: elem.attr("data-url"),
 				dataType: "json",
 				success: function(templateCounts){
-					if(templateCounts === null) {
+					if (templateCounts === null) {
 						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>没有找到任何记录<\/div>";
 						elem.find(".ajax_loading").hide();
 						elem.append(nodata);
-					}else{
+					} else {
 					    $.each(templateCounts,function(index,tmp){
 					    	dataset.push(parseInt(tmp.order_count));
 					    	ticks.push(tmp.period);
@@ -70,11 +69,11 @@
 				url: elem.attr("data-url"),
 				dataType: "json",
 				success: function(templateCounts){
-					if(templateCounts === null) {
+					if (templateCounts === null) {
 						var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>没有找到任何记录<\/div>";
 						elem.find(".ajax_loading").hide();
 						elem.append(nodata);
-					}else{
+					} else {
 						$.each(templateCounts,function(index,tmp){
 					    	dataset.push(parseInt(tmp.order_amount));
 					    	ticks.push(tmp.period);

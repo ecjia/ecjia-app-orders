@@ -197,7 +197,7 @@
 			var $this = $("form[name='batchForm']");
 			var batchtype = $('.batchtype').val();
 			var order_id = [];
-			if($(".order_id").val() == undefined || $(".order_id").val() == "") {
+			if ($(".order_id").val() == undefined || $(".order_id").val() == "") {
 				$(".checkbox:checked").each(function () {
 					order_id.push($(this).val());
 				});
@@ -243,7 +243,7 @@
 			}
 			var batchtype = $("input[name='operation']").val();
 			var msg = $(".batch-operate-" + batchtype).attr("data-"+batchtype+"-msg");
-			if( msg != undefined) {
+			if (msg != undefined) {
 				var cannel_note = $("textarea[name='cancel_note']").val();
 				smoke.confirm(msg,function(e){
 					if (e) {
@@ -390,11 +390,8 @@
 //			app.order.consigneeForm();
 
 			app.order.toggle_address();
-
 			app.order.consigneelistForm();
-
 			app.order.shippingForm();
-
 			app.order.select_shipping();
 //			app.order.paymentForm();
 			app.order.otherForm();

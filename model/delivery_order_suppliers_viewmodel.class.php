@@ -2,7 +2,6 @@
 defined('IN_ECJIA') or exit('No permission resources.');
 
 class delivery_order_suppliers_viewmodel extends Component_Model_View {
-
 	public $table_name = '';
 	public $view = array();
 	public function __construct() {

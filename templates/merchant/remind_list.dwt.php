@@ -2,14 +2,12 @@
 <!-- {extends file="ecjia-merchant.dwt.php"} -->
 
 <!-- {block name="footer"} -->
-
 <script type="text/javascript">
 	ecjia.merchant.order_delivery.init();
 </script>
 <!-- {/block} -->
 
 <!-- {block name="home-content"} -->
-
 <div class="page-header">
 	<div class="pull-left">
 		<h2><!-- {if $ur_here}{$ur_here}{/if} --></h2>

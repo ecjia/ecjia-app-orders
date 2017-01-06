@@ -1,5 +1,4 @@
 // JavaScript Document
-
 ;(function(app, $) {
 	var html;
 	app.order = {
@@ -361,7 +360,6 @@
 						}
 					}
 				});
-				
 			});
 		},
 		
@@ -411,11 +409,8 @@
 //			app.order.consigneeForm();
 			
 			app.order.toggle_address();
-			
 			app.order.consigneelistForm();
-			
 			app.order.shippingForm();
-			
 			app.order.select_shipping();
 //			app.order.paymentForm();
 			app.order.otherForm();

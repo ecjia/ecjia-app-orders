@@ -4,7 +4,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * ECJIA 统计信息语言文件
  */
-
 return array(
 	/* 流量统计 */
 	'stats_off' 		=> '网站流量统计已被关闭。<BR>如有需要请到: 系统设置->商店设置->基本设置 开启站点流量统计服务。',

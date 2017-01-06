@@ -1,6 +1,5 @@
 <!-- {extends file="ecjia.dwt.php"} -->
-<!-- {block name="footer"} -->
-<!-- {/block} -->
+
 <!-- {block name="main_content"} -->
 <!--站外投放JS-->
 <div>

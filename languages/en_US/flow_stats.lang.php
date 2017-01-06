@@ -4,7 +4,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * ECJIA 流量统计语言文件
  */
-
 return array(
 	'tab_general'	=> 'General visitors count',
 	'tab_area'		=> 'Area',

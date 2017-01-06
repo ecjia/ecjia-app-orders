@@ -2,9 +2,8 @@
 defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
- * //订单统计汇总
+ * 订单统计汇总
  * @author will.chen
- *
  */
 class order_sales_module extends api_admin implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {

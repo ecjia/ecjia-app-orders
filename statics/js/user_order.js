@@ -1,6 +1,5 @@
 // JavaScript Document
-;
-(function(app, $) {
+;(function(app, $) {
 	app.user_order = {
 		init : function() {
 			app.user_order.theForm();

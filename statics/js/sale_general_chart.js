@@ -1,6 +1,5 @@
 // JavaScript Document
-;
-(function(app, $) {
+;(function(app, $) {
 	app.chart = {
 		init : function() {
 			app.chart.order_count();

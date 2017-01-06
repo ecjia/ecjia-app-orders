@@ -3,8 +3,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
  *  商家订单列表类
- *
- * 
  */
 class merchant_order_list {
 	

@@ -1,9 +1,9 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
-/**
- * ECSHOP 流量统计语言文件
- */
 
+/**
+ * ECJIA 流量统计语言文件
+ */
 $LANG['tab_general'] = '综合访问量';
 $LANG['tab_area'] = '地区分布';
 $LANG['tab_from'] = '来源网站';

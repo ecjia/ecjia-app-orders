@@ -1,6 +1,5 @@
 // JavaScript Document
-;
-(function(app, $) {
+;(function(app, $) {
 	app.sale_list = {
 		init : function() {
 			app.sale_list.theForm();
@@ -25,7 +24,7 @@
 					};
 					ecjia.merchant.showmessage(data);
 					return false;
-				} else if(end_date == '') {
+				} else if (end_date == '') {
 					var data = {
 						message : "查询的结束时间不能为空！",
 						state : "error",
@@ -41,7 +40,7 @@
 					};
 					ecjia.merchant.showmessage(data);
 					return false;
-				}else{
+				} else {
 					ecjia.pjax(url + '&start_date=' + start_date + '&end_date=' +end_date);
 				}
 			});

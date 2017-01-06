@@ -4,7 +4,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * 取消订单
  * @author royalwang
- *
  */
 class cancel_module extends api_front implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {	
@@ -36,7 +35,6 @@ class cancel_module extends api_front implements api_interface {
  *            订单ID
  * @param int $user_id
  *            用户ID
- *
  * @return void
  */
 function cancel_order ($order_id, $user_id = 0) {

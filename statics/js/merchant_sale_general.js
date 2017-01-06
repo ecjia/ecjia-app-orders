@@ -1,6 +1,5 @@
 // JavaScript Document
-;
-(function(app, $) {
+;(function(app, $) {
 	app.sale_general = {
 		init : function() {
 			app.sale_general.searchForm();
@@ -27,7 +26,7 @@
 					};
 					ecjia.merchant.showmessage(data);
 					return false;
-				} else if(year_endYear == '') {
+				} else if (year_endYear == '') {
 					var data = {
 						message : "查询的结束年份不能为空！",
 						state : "error",
@@ -43,7 +42,7 @@
 					};
 					ecjia.merchant.showmessage(data);
 					return false;
-				}else{
+				} else {
 					ecjia.pjax(url + '&query_by_year=' + query_by_year +'&year_beginYear=' + year_beginYear + '&year_endYear=' + year_endYear);
 				}
 			});
@@ -67,7 +66,7 @@
 					};
 					ecjia.merchant.showmessage(data);
 					return false;
-				}else{
+				} else {
 					ecjia.pjax(url+'&query_by_month='+query_by_month+'&month_beginYear='+month_beginYear+'&month_beginMonth='+month_beginMonth+'&month_endYear='+month_endYear+'&month_endMonth='+month_endMonth);
 				}
 			});

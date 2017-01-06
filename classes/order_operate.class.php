@@ -1,10 +1,9 @@
 <?php
+defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * ECJIA 订单操作
  */
-
-defined('IN_ECJIA') or exit('No permission resources.');
-
 class order_operate {
 	
 	public function operate($order, $operate, $note) {

@@ -1,5 +1,6 @@
 <?php defined('IN_ECJIA') or exit('No permission resources.');?>
 <!-- {extends file="ecjia.dwt.php"} -->
+
 <!-- {block name="footer"} -->
 <script type="text/javascript">
 	ecjia.admin.sale_general.init();
@@ -10,6 +11,7 @@
 	{/if}
 </script>
 <!-- {/block} -->
+
 <!-- {block name="main_content"} -->
 <div class="alert alert-info">
 	<a class="close" data-dismiss="alert">×</a>

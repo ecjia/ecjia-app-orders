@@ -4,7 +4,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * ECJIA 订单管理语言文件
  */
-
 return array(
 	/* Order search*/
 	'order_sn'		=> 'Order sn',
@@ -733,7 +732,6 @@ return array(
     'order_count'			=>	'This month the number of orders',
     'confirm_order'			=>	'Order today to be confirmed',
     'today_order'			=>	'Pending orders shipped today',
-    
 );
 
 //end

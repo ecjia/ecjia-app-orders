@@ -8,8 +8,7 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * @param   integer $n  颜色顺序
  * @return  void
  */
-function chart_color($n)
-{
+function chart_color($n) {
     /* 随机显示颜色代码 */
     $arr = array('33FF66', 'FF6600', '3399FF', '009966', 'CC3399', 'FFCC33', '6699CC', 'CC3366', '33FF66', 'FF6600', '3399FF');
     if ($n > 8) {
@@ -29,8 +28,7 @@ function chart_color($n)
  *        	级别
  * @return void
  */
-function cat_options($spec_cat_id, $arr)
-{
+function cat_options($spec_cat_id, $arr) {
     static $cat_options = array();
     if (isset($cat_options[$spec_cat_id])) {
         return $cat_options[$spec_cat_id];
@@ -146,8 +144,7 @@ function cat_options($spec_cat_id, $arr)
  *        	如果为true显示所有分类，如果为false隐藏不可见分类。
  * @return mix
  */
-function cat_list($cat_id = 0, $selected = 0, $re_type = true, $level = 0, $is_show_all = true)
-{
+function cat_list($cat_id = 0, $selected = 0, $re_type = true, $level = 0, $is_show_all = true) {
     // 加载方法
     $db_goods = RC_Loader::load_app_model('goods_model', 'orders');
     $db_category = RC_Loader::load_app_model('sys_category_viewmodel', 'orders');
@@ -249,8 +246,7 @@ function cat_list($cat_id = 0, $selected = 0, $re_type = true, $level = 0, $is_s
  *        	指定的分类ID
  * @return string
  */
-function get_children($cat = 0)
-{
+function get_children($cat = 0) {
     return 'g.cat_id ' . db_create_in(array_unique(array_merge(array($cat), array_keys(cat_list($cat, 0, false)))));
 }
 /**
@@ -258,8 +254,7 @@ function get_children($cat = 0)
  * @param   string  $alias  order表的别名（包括.例如 o.）
  * @return  string
  */
-function order_amount_field($alias = '')
-{
+function order_amount_field($alias = '') {
     return "   {$alias}goods_amount + {$alias}tax + {$alias}shipping_fee" . " + {$alias}insure_fee + {$alias}pay_fee + {$alias}pack_fee" . " + {$alias}card_fee ";
 }
 /**
@@ -268,8 +263,7 @@ function order_amount_field($alias = '')
  * @param   string  $alias  order表的别名（包括.例如 o.）
  * @return  string
  */
-function order_query_sql($type = 'finished', $alias = '')
-{
+function order_query_sql($type = 'finished', $alias = '') {
 	RC_Loader::load_app_func('global', 'goods');
     /* 已完成订单 */
     if ($type == 'finished') {
@@ -295,8 +289,7 @@ function order_query_sql($type = 'finished', $alias = '')
  * @param   bool    $is_cod 是否货到付款
  * @return  array
  */
-function payment_id_list($is_cod)
-{
+function payment_id_list($is_cod) {
     $db = RC_Loader::load_app_model('payment_model', 'orders');
     $where = '';
     if ($is_cod) {
@@ -316,8 +309,7 @@ function payment_id_list($is_cod)
  *
  * @return  string
  */
-function sub_str($str, $length = 0, $append = true)
-{
+function sub_str($str, $length = 0, $append = true) {
     $str = trim($str);
     $strlength = strlen($str);
     if ($length == 0 || $length >= $strlength) {
@@ -344,8 +336,7 @@ function sub_str($str, $length = 0, $append = true)
  * 取得状态列表
  * @param   string  $type   类型：all | order | shipping | payment
  */
-function get_status_list($type = 'all')
-{
+function get_status_list($type = 'all') {
     $list = array();
     if ($type == 'all' || $type == 'order') {
         $pre = $type == 'all' ? 'os_' : '';
@@ -371,8 +362,7 @@ function get_status_list($type = 'all')
  * 退回余额、积分、红包（取消、无效、退货时），把订单使用余额、积分、红包设为0
  * @param   array   $order  订单信息
  */
-function return_user_surplus_integral_bonus($order)
-{
+function return_user_surplus_integral_bonus($order) {
     /* 处理余额、积分、红包 */
     if ($order['user_id'] > 0 && $order['surplus'] > 0) {
         $surplus = $order['money_paid'] < 0 ? $order['surplus'] + $order['money_paid'] : $order['surplus'];
@@ -398,8 +388,7 @@ function return_user_surplus_integral_bonus($order)
  * @param   int     $order_id   订单id
  * @return  bool
  */
-function update_order_amount($order_id)
-{
+function update_order_amount($order_id) {
     return RC_DB::table('order_info')->where('order_id', $order_id)->decrement('order_amount', 'order_amount+' . order_due_field());
 }
 
@@ -409,8 +398,7 @@ function update_order_amount($order_id)
  * @param   array   $msgs   提示信息
  * @param   array   $links  链接信息
  */
-function handle_order_money_change($order, &$msgs, &$links)
-{
+function handle_order_money_change($order, &$msgs, &$links) {
     $order_id = $order['order_id'];
     if ($order['pay_status'] == PS_PAYED || $order['pay_status'] == PS_PAYING) {
         /* 应付款金额 */
@@ -432,8 +420,7 @@ function handle_order_money_change($order, &$msgs, &$links)
  * 如果未支付，修改支付金额；否则，生成新的支付log
  * @param   int     $order_id   订单id
  */
-function update_pay_log($order_id)
-{
+function update_pay_log($order_id) {
     $order_id = intval($order_id);
     if ($order_id > 0) {
         $order_amount = RC_DB::table('order_info')->where('order_id', $order_id)->pluck('order_amount');
@@ -456,8 +443,7 @@ function update_pay_log($order_id)
  * @param   array     $order  订单数组
  * @return array
  */
-function get_order_goods($order)
-{
+function get_order_goods($order) {
     $goods_list = array();
     $goods_attr = array();
     $data = RC_DB::table('order_goods as o')->leftJoin('products as p', RC_DB::raw('p.product_id'), '=', RC_DB::raw('o.product_id'))->leftJoin('goods as g', RC_DB::raw('o.goods_id'), '=', RC_DB::raw('g.goods_id'))->leftJoin('brand as b', RC_DB::raw('g.brand_id'), '=', RC_DB::raw('b.brand_id'))->selectRaw("o.*, g.suppliers_id AS suppliers_id, IF(o.product_id > 0, p.product_number, g.goods_number) AS storage, o.goods_attr, IFNULL(b.brand_name, '') AS brand_name, p.product_sn")->where(RC_DB::raw('o.order_id'), $order['order_id'])->get();
@@ -508,8 +494,7 @@ function get_order_goods($order)
  * @param   integer     $package_id  订单商品表礼包类商品id
  * @return array
  */
-function get_package_goods_list($package_id)
-{
+function get_package_goods_list($package_id) {
     $resource = RC_DB::table('package_goods as pg')->leftJoin('goods as g', RC_DB::raw('pg.goods_id'), '=', RC_DB::raw('g.goods_id'))->leftJoin('products as p', RC_DB::raw('pg.product_id'), '=', RC_DB::raw('p.product_id'))->selectRaw('pg.goods_id, g.goods_name, (CASE WHEN pg.product_id > 0 THEN p.product_number ELSE g.goods_number END) AS goods_number, p.goods_attr, p.product_id, pg.goods_number AS order_goods_number, g.goods_sn, g.is_real, p.product_sn')->where(RC_DB::raw('pg.package_id'), $package_id)->get();
     if (!$resource) {
         return array();
@@ -570,8 +555,7 @@ function get_package_goods_list($package_id)
  *
  * @return  int
  */
-function order_delivery_num($order_id, $goods_id, $product_id = 0)
-{
+function order_delivery_num($order_id, $goods_id, $product_id = 0) {
     $db_delivery_goods = RC_DB::table('delivery_goods as dg')->leftJoin('delivery_order as o', RC_DB::raw('o.delivery_id'), '=', RC_DB::raw('dg.delivery_id'));
     if ($product_id > 0) {
         $sum = $db_delivery_goods->whereRaw('o.status = 0 and o.order_id = "' . $order_id . '" and dg.extension_code <> "package_buy" and dg.goods_id = "' . $goods_id . '" and dg.product_id = "' . $product_id . '"')->sum(RC_DB::raw('dg.send_number'));
@@ -588,8 +572,7 @@ function order_delivery_num($order_id, $goods_id, $product_id = 0)
  * @param   int     $order_id  订单 id
  * @return  int     1，已发货；0，未发货
  */
-function order_deliveryed($order_id)
-{
+function order_deliveryed($order_id) {
     $return_res = 0;
     if (empty($order_id)) {
         return $return_res;
@@ -607,8 +590,7 @@ function order_deliveryed($order_id)
  * @param   array   $goods_list
  * @return  Bool
  */
-function update_order_goods($order_id, $_sended, $goods_list = array())
-{
+function update_order_goods($order_id, $_sended, $goods_list = array()) {
     if (!is_array($_sended) || empty($order_id)) {
         return false;
     }
@@ -656,8 +638,7 @@ function update_order_goods($order_id, $_sended, $goods_list = array())
  * @param   array   $virtual_goods  虚拟商品列表
  * @return  Bool
  */
-function update_order_virtual_goods($order_id, $_sended, $virtual_goods)
-{
+function update_order_virtual_goods($order_id, $_sended, $virtual_goods) {
     if (!is_array($_sended) || empty($order_id)) {
         return false;
     }
@@ -681,8 +662,7 @@ function update_order_virtual_goods($order_id, $_sended, $virtual_goods)
  * @param   int     $order_id  订单 id
  * @return  int     1，全部发货；0，未全部发货
  */
-function get_order_finish($order_id)
-{
+function get_order_finish($order_id) {
     $db_order_goods = RC_DB::table('order_goods');
     $return_res = 0;
     if (empty($order_id)) {
@@ -694,16 +674,14 @@ function get_order_finish($order_id)
     }
     return $return_res;
 }
-function trim_array_walk(&$array_value)
-{
+function trim_array_walk(&$array_value) {
     if (is_array($array_value)) {
         array_walk($array_value, 'trim_array_walk');
     } else {
         $array_value = trim($array_value);
     }
 }
-function intval_array_walk(&$array_value)
-{
+function intval_array_walk(&$array_value) {
     if (is_array($array_value)) {
         array_walk($array_value, 'intval_array_walk');
     } else {
@@ -715,8 +693,7 @@ function intval_array_walk(&$array_value)
  * @param   int     $order_id  订单 id
  * @return  int     1，成功；0，失败
  */
-function del_order_delivery($order_id)
-{
+function del_order_delivery($order_id) {
     $return_res = 0;
     if (empty($order_id)) {
         return $return_res;
@@ -738,8 +715,7 @@ function del_order_delivery($order_id)
  * @param   int     $action_array  操作列表 Array('delivery', 'back', ......)
  * @return  int     1，成功；0，失败
  */
-function del_delivery($order_id, $action_array)
-{
+function del_delivery($order_id, $action_array) {
     $return_res = 0;
     if (empty($order_id) || empty($action_array)) {
         return $return_res;
@@ -776,8 +752,7 @@ function del_delivery($order_id, $action_array)
  * @param   int     礼包ID
  * @return  array   格式化结果
  */
-function package_goods(&$package_goods, $goods_number, $order_id, $extension_code, $package_id)
-{
+function package_goods(&$package_goods, $goods_number, $order_id, $extension_code, $package_id) {
     $return_array = array();
     if (count($package_goods) == 0 || !is_numeric($goods_number)) {
         return $return_array;
@@ -811,8 +786,7 @@ function package_goods(&$package_goods, $goods_number, $order_id, $extension_cod
  *
  * @return  int     数值
  */
-function package_sended($package_id, $goods_id, $order_id, $extension_code, $product_id = 0)
-{
+function package_sended($package_id, $goods_id, $order_id, $extension_code, $product_id = 0) {
     $db_delivery_goods = RC_DB::table('delivery_goods as dg')->leftJoin('delivery_order as o', RC_DB::raw('o.delivery_id'), '=', RC_DB::raw('dg.delivery_id'));
     if (empty($package_id) || empty($goods_id) || empty($order_id) || empty($extension_code)) {
         return false;
@@ -832,8 +806,7 @@ function package_sended($package_id, $goods_id, $order_id, $extension_code, $pro
  * @param   array   $goods_list
  * @return  Bool
  */
-function change_order_goods_storage_split($order_id, $_sended, $goods_list = array())
-{
+function change_order_goods_storage_split($order_id, $_sended, $goods_list = array()) {
     /* 参数检查 */
     if (!is_array($_sended) || empty($order_id)) {
         return false;
@@ -876,16 +849,14 @@ function change_order_goods_storage_split($order_id, $_sended, $goods_list = arr
  * @access  private
  * @return  Bool
  */
-function get_site_root_url()
-{
+function get_site_root_url() {
     return 'http://' . $_SERVER['HTTP_HOST'] . str_replace('/' . '/order.php', '', PHP_SELF);
 }
 /**
  * 获取区域名
  * @param 订单id $order_id
  */
-function get_regions($order_id)
-{
+function get_regions($order_id) {
     $region = RC_DB::table('order_info as o')->leftJoin('region as c', RC_DB::raw('o.country'), '=', RC_DB::raw('c.region_id'))->leftJoin('region as p', RC_DB::raw('o.province'), '=', RC_DB::raw('p.region_id'))->leftJoin('region as t', RC_DB::raw('o.city'), '=', RC_DB::raw('t.region_id'))->leftJoin('region as d', RC_DB::raw('o.district'), '=', RC_DB::raw('d.region_id'))->select(RC_DB::raw("concat(IFNULL(c.region_name, ''), '  ', IFNULL(p.region_name, ''),'  ', IFNULL(t.region_name, ''), '  ', IFNULL(d.region_name, '')) AS region"))->where(RC_DB::raw('o.order_id'), $order_id)->first();
     return $region['region'];
 }
@@ -899,8 +870,7 @@ function get_regions($order_id)
  * @param   int     $back_id   退货单 id（如果 back_id > 0 就按 id 查，否则按 sn 查）
  * @return  array   退货单信息（金额都有相应格式化的字段，前缀是 formated_ ）
  */
-function back_order_info($back_id, $store_id)
-{
+function back_order_info($back_id, $store_id) {
     $return_order = array();
     if (empty($back_id) || !is_numeric($back_id)) {
         return $return_order;
@@ -927,8 +897,7 @@ function back_order_info($back_id, $store_id)
  * @param   string  $delivery_sn      发货单号
  * @return  array   发货单信息（金额都有相应格式化的字段，前缀是formated_）
  */
-function delivery_order_info($delivery_id, $delivery_sn = '')
-{
+function delivery_order_info($delivery_id, $delivery_sn = '') {
     $return_order = array();
     if (empty($delivery_id) || !is_numeric($delivery_id)) {
         return $return_order;
@@ -962,8 +931,7 @@ function delivery_order_info($delivery_id, $delivery_sn = '')
  *
  * @return  void
  */
-function delivery_return_goods($delivery_id, $delivery_order)
-{
+function delivery_return_goods($delivery_id, $delivery_order) {
     /* 查询：取得发货单商品 */
     $goods_list = RC_DB::table('delivery_goods')->where('delivery_id', $delivery_order['delivery_id'])->get();
     /* 更新： */
@@ -985,8 +953,7 @@ function delivery_return_goods($delivery_id, $delivery_order)
  *
  * @return  void
  */
-function del_order_invoice_no($order_id, $delivery_invoice_no)
-{
+function del_order_invoice_no($order_id, $delivery_invoice_no) {
     /* 查询：取得订单中的发货单号 */
     $order_invoice_no = RC_DB::table('order_info')->where('order_id', $order_id)->pluck('invoice_no');
     /* 如果为空就结束处理 */
@@ -1011,8 +978,7 @@ function del_order_invoice_no($order_id, $delivery_invoice_no)
  * @param   int     $order_id  订单 id
  * @return  int     1，全部发货；0，未全部发货；-1，部分发货；-2，完全没发货；
  */
-function get_all_delivery_finish($order_id)
-{
+function get_all_delivery_finish($order_id) {
     $db_delivery_order = RC_DB::table('delivery_order');
     $return_res = 0;
     if (empty($order_id)) {
@@ -1050,8 +1016,7 @@ function get_all_delivery_finish($order_id)
  * @param   string  $to_order_sn    主订单号
  * @return  成功返回true，失败返回错误信息
  */
-function merge_order($from_order_sn, $to_order_sn)
-{
+function merge_order($from_order_sn, $to_order_sn) {
     /* 订单号不能为空 */
     if (trim($from_order_sn) == '' || trim($to_order_sn) == '') {
         return ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.order_sn_not_null'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);

@@ -1,9 +1,9 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 订单详情接口
  * @author royalwang
- *
  */
 class orders_merchant_order_info_api extends Component_Event_Api {
     /**

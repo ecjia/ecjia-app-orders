@@ -1,10 +1,10 @@
 <?php
 use Ecjia\System\Notifications\OrderPay;
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 订单支付后处理订单的接口
  * @author royalwang
- *
  */
 class orders_order_paid_api extends Component_Event_Api {
 	

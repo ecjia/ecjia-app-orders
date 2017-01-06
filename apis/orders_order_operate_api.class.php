@@ -1,9 +1,9 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 订单支付后处理订单的接口
  * @author will.chen
- *
  */
 class orders_order_operate_api extends Component_Event_Api {
 	
@@ -32,7 +32,6 @@ class orders_order_operate_api extends Component_Event_Api {
 		
 		return $result;
 	}
-	
 }
 
 // end

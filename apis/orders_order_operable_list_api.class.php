@@ -1,9 +1,9 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 返回订单可执行操作的操作
  * @author will.chen
- *
  */
 class orders_order_operable_list_api extends Component_Event_Api {
 	

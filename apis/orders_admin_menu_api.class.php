@@ -1,9 +1,9 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * ECJIA 后台订单菜单API
  * @author royalwang
- *
  */
 class orders_admin_menu_api extends Component_Event_Api {
 	

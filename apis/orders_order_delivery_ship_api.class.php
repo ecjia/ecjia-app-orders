@@ -1,15 +1,14 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 订单发货接口
  * @author will.chen
- *
  */
 class orders_order_delivery_ship_api extends Component_Event_Api {
     /**
      * @param  $options['order_id'] 订单ID
      *         $options['order_sn'] 订单号
-     *
      * @return array
      */
 	public function call(&$options) {	

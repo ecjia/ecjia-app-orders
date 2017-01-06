@@ -1,9 +1,9 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 订单统计
  * @author will
- *
  */
 class orders_orders_stats_api extends Component_Event_Api {
 	

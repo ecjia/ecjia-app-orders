@@ -1,9 +1,9 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 订单通知
  * @author will
- *
  */
 class orders_remind_order_api extends Component_Event_Api {
 	

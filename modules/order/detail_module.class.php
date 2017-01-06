@@ -1,7 +1,7 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
 /**
- * 订单祥情
+ * 订单详情
  * @author royalwang
  *
  */

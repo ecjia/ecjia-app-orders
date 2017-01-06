@@ -35,21 +35,21 @@ ecjia.merchant.order.info();
 					<div class="span12">
 						<table class="table table-bordered">
 							<tr><td colspan="2"><strong>购货人信息</strong></td></tr>
-							<tr><td class="w200">{$lang.email}</td><td>{$user.email}</td></tr>
-							<tr><td>{$lang.user_money}</td><td>{$user.user_money}</td></tr>
-							<tr><td>{$lang.pay_points}</td><td>{$user.pay_points}</td></tr>
-							<tr><td>{$lang.rank_points}</td><td>{$user.rank_points}</td></tr>
-							<tr><td>{$lang.rank_name}</td><td>{$user.rank_name}</td></tr>
-							<tr><td>{$lang.bonus_count}</td><td>{$user.bonus_count}</td></tr>
+							<tr><td class="w200">{lang key='orders::order.email'}</td><td>{$user.email}</td></tr>
+							<tr><td>{lang key='orders::order.user_money'}</td><td>{$user.user_money}</td></tr>
+							<tr><td>{lang key='orders::order.pay_points'}</td><td>{$user.pay_points}</td></tr>
+							<tr><td>{lang key='orders::order.rank_points'}</td><td>{$user.rank_points}</td></tr>
+							<tr><td>{lang key='orders::order.rank_name'}</td><td>{$user.rank_name}</td></tr>
+							<tr><td>{lang key='orders::order.bonus_count'}</td><td>{$user.bonus_count}</td></tr>
 						</table>
 						<!-- {foreach from=$address_list item=address} -->
 						<table class="table table-bordered">
-							<tr><td colspan="2"><strong>{$lang.consignee}:{$order.consignee|default:$order.user_name}</strong></td></tr>
-							<tr><td class="w200">{$lang.email}</td><td>{$address.email}</td></tr>
-							<tr><td>{$lang.address}</td><td>{$address.address}{$address.address_info}</td></tr>
-							<tr><td>{$lang.zipcode}</td><td>{$address.zipcode}</td></tr>
-							<tr><td>{$lang.tel}</td><td>{$address.tel}</td></tr>
-							<tr><td>{$lang.mobile}</td><td>{$address.mobile}</td></tr>
+							<tr><td colspan="2"><strong>{lang key='orders::order.label_consignee'}{$order.consignee|default:$order.user_name}</strong></td></tr>
+							<tr><td class="w200">{lang key='orders::order.email'}</td><td>{$address.email}</td></tr>
+							<tr><td>{lang key='orders::order.address'}</td><td>{$address.address}{$address.address_info}</td></tr>
+							<tr><td>{lang key='orders::order.zipcode'}</td><td>{$address.zipcode}</td></tr>
+							<tr><td>{lang key='orders::order.tel'}</td><td>{$address.tel}</td></tr>
+							<tr><td>{lang key='orders::order.mobile'}</td><td>{$address.mobile}</td></tr>
 						</table>
 						<!-- {/foreach} -->
 					</div>
@@ -94,7 +94,7 @@ ecjia.merchant.order.info();
 
 <div class="row">
 	<div class="col-lg-12 panel-heading form-inline">
-		<div class="form-group"><h3>{$lang.label_order_sn}{$order.order_sn}</h3></div>
+		<div class="form-group"><h3>{lang key='orders::order.label_order_sn'}{$order.order_sn}</h3></div>
 
 		<div class="form-group order-info-search">
 			<input type="text" name="keywords" class="form-control" placeholder="请输入订单号或者订单id" />
@@ -105,18 +105,18 @@ ecjia.merchant.order.info();
 			{if $next_id}
 			<a class="data-pjax ecjiaf-tdn" href='{url path="orders/merchant/info" args="order_id={$next_id}"}'>
 			{/if}
-				<button class="btn btn-primary" type="button" {if !$next_id}disabled="disabled"{/if}>{$lang.prev}</button>
+				<button class="btn btn-primary" type="button" {if !$next_id}disabled="disabled"{/if}>{lang key='orders::order.prev'}</button>
 			{if $next_id}
 			</a>
 			{/if}
 			{if $prev_id}
 			<a class="data-pjax ecjiaf-tdn" href='{url path="orders/merchant/info" args="order_id={$prev_id}"}' >
 			{/if}
-				<button class="btn btn-primary" type="button" {if !$prev_id}disabled="disabled"{/if}>{$lang.next}</button>
+				<button class="btn btn-primary" type="button" {if !$prev_id}disabled="disabled"{/if}>{lang key='orders::order.next'}</button>
 			{if $prev_id}
 			</a>
 			{/if}
-			<button class="btn btn-primary" type="button" onclick="window.open('{url path="orders/merchant/info" args="order_id={$order.order_id}&print=1"}')">{$lang.print_order}</button>
+			<button class="btn btn-primary" type="button" onclick="window.open('{url path="orders/merchant/info" args="order_id={$order.order_id}&print=1"}')">{lang key='orders::order.print_order'}</button>
 		</div>
 	</div>
 </div>
@@ -127,7 +127,7 @@ ecjia.merchant.order.info();
 				<div class="panel-heading">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
                         <h4 class="panel-title">
-                            <strong>{$lang.base_info}</strong>
+                            <strong>{lang key='orders::order.base_info'}</strong>
                         </h4>
                     </a>
                 </div>
@@ -135,44 +135,44 @@ ecjia.merchant.order.info();
 					<table class="table table-oddtd m_b0">
 						<tbody class="first-td-no-leftbd">
 							<tr>
-								<td><div align="right"><strong>{$lang.label_order_sn}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.label_order_sn'}</strong></div></td>
 								<!-- TODO 团购链接赞不知，以后修改测试 -->
 								<td>
 									{$order.order_sn}
 									{if $order.extension_code eq "group_buy"}
-<!-- 										<a href="group_buy.php?act=edit&id={$order.extension_id}">{$lang.group_buy}</a> -->
+<!-- 										<a href="group_buy.php?act=edit&id={$order.extension_id}">{lang key='orders::order.group_buy'}</a> -->
 									{elseif $order.extension_code eq "exchange_goods"}
-<!-- 										<a href="exchange_goods.php?act=edit&id={$order.extension_id}">{$lang.exchange_goods}</a> -->
+<!-- 										<a href="exchange_goods.php?act=edit&id={$order.extension_id}">{lang key='orders::order.exchange_goods'}</a> -->
 									{/if}
 								</td>
-								<td><div align="right"><strong>{$lang.label_order_status}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.label_order_status'}</strong></div></td>
 								<td>{$order.status}</td>
 							</tr>
 							<tr>
-								<td><div align="right"><strong>{$lang.label_user_name}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.label_user_name'}</strong></div></td>
 								<td>
-									{$order.user_name|default:$lang.anonymous}
+									{$order.user_name|default:{lang key='orders::order.anonymous'}}
 									{if $order.user_id gt 0}
-									[ <a class="userInfo cursor_pointer" data-toggle="modal" data-target="#consigneeinfo" title="{$lang.display_buyer}">{$lang.display_buyer}</a> ]
+									[ <a class="userInfo cursor_pointer" data-toggle="modal" data-target="#consigneeinfo" title="{lang key='orders::order.display_buyer'}">{lang key='orders::order.display_buyer'}</a> ]
 									{/if}
 								</td>
-								<td><div align="right"><strong>{$lang.label_order_time}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.label_order_time'}</strong></div></td>
 								<td>{$order.formated_add_time}</td>
 							</tr>
 							<tr>
-								<td><div align="right"><strong>{$lang.label_payment}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.label_payment'}</strong></div></td>
 								<td>
 									{$order.pay_name}
 									{if $order.shipping_status neq 1 && !$invalid_order}
 									<a class="data-pjax" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=shipping"}'>{lang key='system::system.edit'}</a>
 									{/if}
-									({$lang.action_note}: <span >{if $order.pay_note}{$order.pay_note}{else}暂无{/if}</span>)
+									({lang key='orders::order.label_action_note'}<span>{if $order.pay_note}{$order.pay_note}{else}暂无{/if}</span>)
 								</td>
-								<td><div align="right"><strong>{$lang.label_pay_time}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.label_pay_time'}</strong></div></td>
 								<td>{$order.pay_time}</td>
 							</tr>
 							<tr>
-								<td><div align="right"><strong>{$lang.label_shipping}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.label_shipping'}</strong></div></td>
 								<td>
 									{if $exist_real_goods}
 									{if $order.shipping_id gt 0}
@@ -183,15 +183,15 @@ ecjia.merchant.order.info();
 									{if !$invalid_order}
 									<a class="data-pjax" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=shipping"}'>{lang key='system::system.edit'}</a>
 									{/if}
-									<input type="button" class="btn btn-primary" onclick="window.open('{url path="orders/merchant/info" args="order_id={$order.order_id}&shipping_print=1"}')" value="{$lang.print_shipping}">
-									{if $order.insure_fee gt 0}{$lang.label_insure_fee}{$order.formated_insure_fee}{/if}
+									<input type="button" class="btn btn-primary" onclick="window.open('{url path="orders/merchant/info" args="order_id={$order.order_id}&shipping_print=1"}')" value="{lang key='orders::order.print_shipping'}">
+									{if $order.insure_fee gt 0}{lang key='orders::order.label_insure_fee'}{$order.formated_insure_fee}{/if}
 									{/if}
 								</td>
-								<td><div align="right"><strong>{$lang.label_shipping_time}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.label_shipping_time'}</strong></div></td>
 								<td>{$order.shipping_time}</td>
 							</tr>
 							<tr>
-								<td><div align="right"><strong>{if $is_o2o_express}{lang key="orders::order.label_express_user"}{else}{$lang.label_invoice_no}{/if}</strong></div></td>
+								<td><div align="right"><strong>{if $is_o2o_express}{lang key="orders::order.label_express_user"}{else}{lang key='orders::order.label_invoice_no'}{/if}</strong></div></td>
 								<td>
 									{if is_o2o_express}
 										{$express_order.express_user}{if $express_order.express_mobile}（{$express_order.express_mobile}）{/if}
@@ -202,7 +202,7 @@ ecjia.merchant.order.info();
 										{/if}
 									{/if}
 								</td>
-								<td><div align="right"><strong>{$lang.from_order}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.from_order'}</strong></div></td>
 								<td>{$order.referer}</td>
 							</tr>
 							
@@ -233,13 +233,13 @@ ecjia.merchant.order.info();
                 	<table class="table table-oddtd m_b0">
 						<tbody class="first-td-no-leftbd">
 							<tr>
-								<td><div align="right"><strong>{$lang.label_inv_type}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.label_inv_type'}</strong></div></td>
 								<td colspan="3">{$order.inv_type}</td>
 							</tr>
 							<tr>
-								<td><div align="right"><strong>{$lang.label_inv_payee}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.label_inv_payee'}</strong></div></td>
 								<td>{$order.inv_payee}</td>
-								<td><div align="right"><strong>{$lang.label_inv_content}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.label_inv_content'}</strong></div></td>
 								<td>{$order.inv_content}</td>
 							</tr>
 						</tbody>
@@ -250,7 +250,7 @@ ecjia.merchant.order.info();
 				<div class="panel-heading accordion-group-heading-relative">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
                         <h4 class="panel-title">
-                            <strong>{$lang.other_info}</strong>
+                            <strong>{lang key='orders::order.other_info'}</strong>
                         </h4>
                     </a>
                     {if $order.shipping_status neq 1 && !$invalid_order}
@@ -261,25 +261,25 @@ ecjia.merchant.order.info();
                 	<table class="table table-oddtd m_b0">
 						<tbody class="first-td-no-leftbd">
 							<tr>
-								<td><div align="right"><strong>{$lang.label_postscript}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.label_postscript'}</strong></div></td>
 								<td colspan="3">{$order.postscript}</td>
 							</tr>
 							<tr>
-								<td><div align="right"><strong>{$lang.label_how_oos}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.label_how_oos'}</strong></div></td>
 								<td colspan="3">{$order.how_oos}</td>
 							</tr>
 <!-- 							<tr> -->
-<!-- 								<td><div align="right"><strong>{$lang.label_pack}</strong></div></td> -->
+<!-- 								<td><div align="right"><strong>{lang key='orders::order.label_pack'}</strong></div></td> -->
 <!-- 								<td>{$order.pack_name}</td> -->
-<!-- 								<td><div align="right"><strong>{$lang.label_card}</strong></div></td> -->
+<!-- 								<td><div align="right"><strong>{lang key='orders::order.label_card'}</strong></div></td> -->
 <!-- 								<td>{$order.card_name}</td> -->
 <!-- 							</tr> -->
 <!-- 							<tr> -->
-<!-- 								<td><div align="right"><strong>{$lang.label_card_message}</strong></div></td> -->
+<!-- 								<td><div align="right"><strong>{lang key='orders::order.label_card_message'}</strong></div></td> -->
 <!-- 								<td colspan="3">{$order.card_message}</td> -->
 <!-- 							</tr> -->
 							<tr>
-								<td><div align="right"><strong>{$lang.label_to_buyer}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.label_to_buyer'}</strong></div></td>
 								<td colspan="3">{$order.to_buyer}</td>
 							</tr>
 						</tbody>
@@ -290,7 +290,7 @@ ecjia.merchant.order.info();
 				<div class="panel-heading accordion-group-heading-relative">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
                         <h4 class="panel-title">
-                            <strong>{$lang.consignee_info}</strong>
+                            <strong>{lang key='orders::order.consignee_info'}</strong>
                         </h4>
                     </a>
                     {if $order.shipping_status neq 1 && !$invalid_order}
@@ -301,25 +301,25 @@ ecjia.merchant.order.info();
                 	<table class="table table-oddtd m_b0">
 						<tbody class="first-td-no-leftbd">
 							<tr>
-								<td><div align="right"><strong>{$lang.label_consignee}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.label_consignee'}</strong></div></td>
 								<td>{$order.consignee}</td>
-								<td><div align="right"><strong>{$lang.label_address}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.label_address'}</strong></div></td>
 								<td>[{$order.region}]{$order.address}</td>
 							</tr>
 <!-- 							<tr> -->
-<!-- 								<td><div align="right"><strong>{$lang.label_email}</strong></div></td> -->
+<!-- 								<td><div align="right"><strong>{lang key='orders::order.label_email}</strong></div></td> -->
 <!-- 								<td>{$order.email}</td> -->
-<!-- 								<td><div align="right"><strong>{$lang.label_zipcode}</strong></div></td> -->
+<!-- 								<td><div align="right"><strong>{lang key='orders::order.label_zipcode}</strong></div></td> -->
 <!-- 								<td>{$order.zipcode}</td> -->
 <!-- 							</tr> -->
 							<tr>
-								<td><div align="right"><strong>{$lang.label_tel}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.label_tel'}</strong></div></td>
 								<td>{$order.tel}</td>
-								<td><div align="right"><strong>{$lang.label_mobile}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.label_mobile'}</strong></div></td>
 								<td>{$order.mobile}</td>
 							</tr>
 <!-- 							<tr> -->
-<!-- 								<td><div align="right"><strong>{$lang.label_sign_building}</strong></div></td> -->
+<!-- 								<td><div align="right"><strong>{lang key='orders::order.label_sign_building'}</strong></div></td> -->
 <!-- 								<td>{$order.sign_building|escape}</td> -->
 <!-- 								<td><div align="right"><strong>{lang key='orders::order.label_expect_shipping_time'}</strong></div></td> -->
 <!-- 								<td>{$order.expect_shipping_time}</td> -->
@@ -332,7 +332,7 @@ ecjia.merchant.order.info();
 				<div class="panel-heading accordion-group-heading-relative">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
                         <h4 class="panel-title">
-                            <strong>{$lang.goods_info}</strong>
+                            <strong>{lang key='orders::order.goods_info'}</strong>
                         </h4>
                     </a>
                     {if $order.shipping_status neq 1}
@@ -344,14 +344,14 @@ ecjia.merchant.order.info();
 						<thead>
 							<tr class="table-list">
 								<th class="w130">{t}商品缩略图{/t}</th>
-								<th>{$lang.goods_name_brand}</th>
-								<th class="w80">{$lang.goods_sn}</th>
-								<th class="w70">{$lang.product_sn}</th>
-								<th class="w100">{$lang.goods_price}</th>
-								<th class="w50">{$lang.goods_number}</th>
-								<th class="w100">{$lang.goods_attr}</th>
-								<th class="w50">{$lang.storage}</th>
-								<th class="w100">{$lang.subtotal}</th>
+								<th>{lang key='orders::order.goods_name_brand'}</th>
+								<th class="w80">{lang key='orders::order.goods_sn'}</th>
+								<th class="w70">{lang key='orders::order.product_sn'}</th>
+								<th class="w100">{lang key='orders::order.goods_price'}</th>
+								<th class="w50">{lang key='orders::order.goods_number'}</th>
+								<th class="w100">{lang key='orders::order.goods_attr'}</th>
+								<th class="w50">{lang key='orders::order.storage'}</th>
+								<th class="w100">{lang key='orders::order.subtotal'}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -360,9 +360,9 @@ ecjia.merchant.order.info();
 								<td><img src="{$goods.goods_img}" width='50'/></td>
 								<td>
 									{if $goods.goods_id gt 0 and $goods.extension_code neq 'package_buy'}
-									<a href='{url path="goods/merchant/preview" args="id={$goods.goods_id}"}' target="_blank">{$goods.goods_name} {if $goods.brand_name}[ {$goods.brand_name} ]{/if}{if $goods.is_gift}{if $goods.goods_price gt 0}{$lang.remark_favourable}{else}{$lang.remark_gift}{/if}{/if}{if $goods.parent_id gt 0}{$lang.remark_fittings}{/if}</a>
+									<a href='{url path="goods/merchant/preview" args="id={$goods.goods_id}"}' target="_blank">{$goods.goods_name} {if $goods.brand_name}[ {$goods.brand_name} ]{/if}{if $goods.is_gift}{if $goods.goods_price gt 0}{lang key='orders::order.remark_favourable'}{else}{lang key='orders::order.remark_gift'}{/if}{/if}{if $goods.parent_id gt 0}{lang key='orders::order.remark_fittings'}{/if}</a>
 									{elseif $goods.goods_id gt 0 and $goods.extension_code eq 'package_buy'}
-									<!-- <a href="javascript:void(0)" onclick="setSuitShow({$goods.goods_id})">{$goods.goods_name}<span style="color:#FF0000;">{$lang.remark_package}</span></a> -->
+									<!-- <a href="javascript:void(0)" onclick="setSuitShow({$goods.goods_id})">{$goods.goods_name}<span style="color:#FF0000;">{lang key='orders::order.remark_package'}</span></a> -->
 									<!-- <div style="display:none">  -->
 									<!-- {foreach from=$goods.package_goods_list item=package_goods_list} -->
 									<!-- <a href='{url path="goods/merchant/preview" args="id={$package_goods_list.goods_id}"}' target="_blank">{$package_goods_list.goods_name}</a><br /> -->
@@ -385,11 +385,11 @@ ecjia.merchant.order.info();
 							</tr>
 							<!-- {/foreach} -->
 							<tr>
-								<td colspan="4">{if $order.total_weight}<div align="right"><strong>{$lang.label_total_weight}
+								<td colspan="4">{if $order.total_weight}<div align="right"><strong>{lang key='orders::order.label_total_weight'}
 								</strong></div>{/if}</td>
 								<td colspan="1">{if $order.total_weight}<div align="right">{$order.total_weight}
 								</div>{/if}</td>
-								<td colspan="3"><div align="right"><strong>{$lang.label_total}</strong></div></td>
+								<td colspan="3"><div align="right"><strong>{lang key='orders::order.label_total'}</strong></div></td>
 								<td><div align="right">{$order.formated_goods_amount}</div></td>
 							</tr>
 						</tbody>
@@ -400,7 +400,7 @@ ecjia.merchant.order.info();
 				<div class="panel-heading accordion-group-heading-relative">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseSix">
                         <h4 class="panel-title">
-                            <strong>{$lang.fee_info}</strong>
+                            <strong>{lang key='orders::order.fee_info'}</strong>
                         </h4>
                     </a>
                     {if $order.shipping_status neq 1 && !$invalid_order}
@@ -412,27 +412,27 @@ ecjia.merchant.order.info();
 						<tr>
 							<td>
 								<div align="right">
-									{$lang.label_goods_amount}<strong>{$order.formated_goods_amount}</strong>
-									- {$lang.label_discount}<strong>{$order.formated_discount}</strong>
-									+ {$lang.label_tax}<strong>{$order.formated_tax}</strong>
-									+ {$lang.label_shipping_fee}<strong>{$order.formated_shipping_fee}</strong>
-									+ {$lang.label_insure_fee}<strong>{$order.formated_insure_fee}</strong>
-									+ {$lang.label_pay_fee}<strong>{$order.formated_pay_fee}</strong>
-									+ {$lang.label_pack_fee}<strong>{$order.formated_pack_fee}</strong>
-									+ {$lang.label_card_fee}<strong>{$order.formated_card_fee}</strong>
+									{lang key='orders::order.label_goods_amount'}<strong>{$order.formated_goods_amount}</strong>
+									- {lang key='orders::order.label_discount'}<strong>{$order.formated_discount}</strong>
+									+ {lang key='orders::order.label_tax'}<strong>{$order.formated_tax}</strong>
+									+ {lang key='orders::order.label_shipping_fee'}<strong>{$order.formated_shipping_fee}</strong>
+									+ {lang key='orders::order.label_insure_fee'}<strong>{$order.formated_insure_fee}</strong>
+									+ {lang key='orders::order.label_pay_fee'}<strong>{$order.formated_pay_fee}</strong>
+									+ {lang key='orders::order.label_pack_fee'}<strong>{$order.formated_pack_fee}</strong>
+									+ {lang key='orders::order.label_card_fee'}<strong>{$order.formated_card_fee}</strong>
 								</div>
 							</td>
 						</tr>
 						<tr>
-							<td><div align="right"> = {$lang.label_order_amount}<strong>{$order.formated_total_fee}</strong></div></td>
+							<td><div align="right"> = {lang key='orders::order.label_order_amount'}<strong>{$order.formated_total_fee}</strong></div></td>
 						</tr>
 						<tr>
 							<td>
 								<div align="right">
-									- {$lang.label_money_paid}<strong>{$order.formated_money_paid}</strong>
-									- {$lang.label_surplus} <strong>{$order.formated_surplus}</strong>
-									- {$lang.label_integral} <strong>{$order.formated_integral_money}</strong>
-									- {$lang.label_bonus} <strong>{$order.formated_bonus}</strong>
+									- {lang key='orders::order.label_money_paid'}<strong>{$order.formated_money_paid}</strong>
+									- {lang key='orders::order.label_surplus'} <strong>{$order.formated_surplus}</strong>
+									- {lang key='orders::order.label_integral'} <strong>{$order.formated_integral_money}</strong>
+									- {lang key='orders::order.label_bonus'} <strong>{$order.formated_bonus}</strong>
 								</div>
 							</td>
 						</tr>
@@ -440,12 +440,12 @@ ecjia.merchant.order.info();
 							<td>
 								<div align="right">
 									= {if $order.order_amount >= 0}
-									{$lang.label_money_dues}<strong>{$order.formated_order_amount}</strong>
+									{lang key='orders::order.label_money_dues'}<strong>{$order.formated_order_amount}</strong>
 									{else}
-									{$lang.label_money_refund}<strong>{$order.formated_money_refund}</strong>
-									<input class="refund_click btn btn-info" type="button" data-href="{$refund_url}" value="{$lang.refund}">
+									{lang key='orders::order.label_money_refund'}<strong>{$order.formated_money_refund}</strong>
+									<input class="refund_click btn btn-info" type="button" data-href="{$refund_url}" value="{lang key='orders::order.refund'}">
 									{/if}
-									{if $order.extension_code eq "group_buy"}<br />{$lang.notice_gb_order_amount}{/if}
+									{if $order.extension_code eq "group_buy"}<br />{lang key='orders::order.notice_gb_order_amount'}{/if}
 								</div>
 							</td>
 						</tr>
@@ -465,11 +465,11 @@ ecjia.merchant.order.info();
 						<thead>
 							<tr>
 								<th class="w150"><strong>操作者</strong></th>
-								<th class="w180"><strong>{$lang.action_time}</strong></th>
-								<th class="w130"><strong>{$lang.order_status}</strong></th>
-								<th class="w130"><strong>{$lang.pay_status}</strong></th>
-								<th class="w130"><strong>{$lang.shipping_status}</strong></th>
-								<th class="ecjiafc-pre t_c"><strong>{$lang.action_note}</strong></th>
+								<th class="w180"><strong>{lang key='orders::order.action_time'}</strong></th>
+								<th class="w130"><strong>{lang key='orders::order.order_status'}</strong></th>
+								<th class="w130"><strong>{lang key='orders::order.pay_status'}</strong></th>
+								<th class="w130"><strong>{lang key='orders::order.shipping_status'}</strong></th>
+								<th class="ecjiafc-pre t_c"><strong>{lang key='orders::order.action_note'}</strong></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -504,65 +504,65 @@ ecjia.merchant.order.info();
                 	<table class="table table-oddtd m_b0">
 						<tbody class="first-td-no-leftbd">
 							<tr>
-								<td width="15%"><div align="right"><span class="input-must">*</span> <strong>{$lang.label_action_note}</strong></div></td>
+								<td width="15%"><div align="right"><span class="input-must">*</span> <strong>{lang key='orders::order.label_action_note'}</strong></div></td>
 								<td colspan="3"><textarea name="action_note" class="span12 action_note form-control" cols="60" rows="3"></textarea></td>
 							</tr>
 							<tr>
-								<td><div align="right"><strong>{$lang.label_operable_act}</strong></div></td>
+								<td><div align="right"><strong>{lang key='orders::order.label_operable_act'}</strong></div></td>
 								<td colspan="3">
 									<input type='hidden' class="operate_note" data-url='{url path="orders/merchant/operate_note"}'>
 
 									{if $operable_list.confirm}
-									<button class="btn operatesubmit btn-info" type="submit" name="confirm">{$lang.op_confirm}</button>
+									<button class="btn operatesubmit btn-info" type="submit" name="confirm">{lang key='orders::order.op_confirm'}</button>
 									{/if}
 
 									{if $operable_list.pay}
-									<button class="btn operatesubmit btn-info" type="submit" name="pay">{$lang.op_pay}</button>
+									<button class="btn operatesubmit btn-info" type="submit" name="pay">{lang key='orders::order.op_pay'}</button>
 									{/if}
 
 									{if $operable_list.unpay}
-									<button class="btn operatesubmit btn-info" type="submit" name="unpay">{$lang.op_unpay}</button>
+									<button class="btn operatesubmit btn-info" type="submit" name="unpay">{lang key='orders::order.op_unpay'}</button>
 									{/if}
 
 									{if $operable_list.prepare}
-									<button class="btn operatesubmit btn-info" type="submit" name="prepare">{$lang.op_prepare}</button>
+									<button class="btn operatesubmit btn-info" type="submit" name="prepare">{lang key='orders::order.op_prepare'}</button>
 									{/if}
 
 									{if $operable_list.split}
-									<button class="btn operatesubmit btn-info" type="submit" name="ship">{$lang.op_split}</button>
+									<button class="btn operatesubmit btn-info" type="submit" name="ship">{lang key='orders::order.op_split'}</button>
 									{/if}
 
 									{if $operable_list.unship}
-									<button class="btn operatesubmit btn-info" type="submit" name="unship">{$lang.op_unship}</button>
+									<button class="btn operatesubmit btn-info" type="submit" name="unship">{lang key='orders::order.op_unship'}</button>
 									{/if}
 
 <!-- 									{if $operable_list.receive} -->
-<!-- 									<button class="btn operatesubmit btn-info" type="submit" name="receive">{$lang.op_receive}</button> -->
+<!-- 									<button class="btn operatesubmit btn-info" type="submit" name="receive">{lang key='orders::order.op_receive'}</button> -->
 <!-- 									{/if}  -->
 
 									{if $operable_list.cancel}
-									<button class="btn operatesubmit btn-info" type="submit" name="cancel">{$lang.op_cancel}</button>
+									<button class="btn operatesubmit btn-info" type="submit" name="cancel">{lang key='orders::order.op_cancel'}</button>
 									{/if}
 
 									{if $operable_list.invalid}
-									<button class="btn operatesubmit btn-info" type="submit" name="invalid">{$lang.op_invalid}</button>
+									<button class="btn operatesubmit btn-info" type="submit" name="invalid">{lang key='orders::order.op_invalid'}</button>
 									{/if}
 
 									{if $operable_list.return}
-<!-- 									<button class="btn operatesubmit btn-info" type="submit" name="return">{$lang.op_return}</button> -->
+<!-- 									<button class="btn operatesubmit btn-info" type="submit" name="return">{lang key='orders::order.op_return'}</button> -->
 									{/if}
 
 									{if $operable_list.to_delivery}
-									<button class="btn operatesubmit btn-info" type="submit" name="to_delivery">{$lang.op_to_delivery}</button>
+									<button class="btn operatesubmit btn-info" type="submit" name="to_delivery">{lang key='orders::order.op_to_delivery'}</button>
 									<input name="order_sn" type="hidden" value="{$order.order_sn}" />
 									{/if}
 
-									<button class="btn operatesubmit btn-info" type="submit" name="after_service">{$lang.op_after_service}</button>
+									<button class="btn operatesubmit btn-info" type="submit" name="after_service">{lang key='orders::order.op_after_service'}</button>
 									{if $operable_list.remove}
-									<button class="btn operatesubmit btn-info" type="submit" name="remove">{$lang.remove}</button>
+									<button class="btn operatesubmit btn-info" type="submit" name="remove">{lang key='orders::order.remove'}</button>
 									{/if}
 
-									{if $order.extension_code eq "group_buy"}{$lang.notice_gb_ship}{/if}
+									{if $order.extension_code eq "group_buy"}{lang key='orders::order.notice_gb_ship'}{/if}
 									<input name="order_id" class="order_id" type="hidden" value="{$order.order_id}">
 								</td>
 							</tr>

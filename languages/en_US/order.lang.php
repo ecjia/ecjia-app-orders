@@ -9,6 +9,7 @@ return array(
 	/* Order search*/
 	'order_sn'		=> 'Order sn',
 	'consignee'		=> 'Consignee',
+	'label_consignee' => 'Consignee:',
 	'all_status'	=> 'Status',
 	'thumb_img' 	=> 'Thumbnails',//追加
 	
@@ -329,6 +330,7 @@ return array(
 	'admin'				=> 'Addition by administrator',
 	'search_goods'		=> 'Search by goods ID, name, No.:',
 	'category'			=> 'Category',
+	'label_category'	=> 'Category:',
 	'brand'				=> 'Brand',
 	'user_money_not_enough'	=> 'Customer blance shortage',
 	'pay_points_not_enough'	=> 'Customer points shortage',

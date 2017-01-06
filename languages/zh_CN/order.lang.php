@@ -9,6 +9,7 @@ return array(
 	/* 订单搜索 */
 	'order_sn' 		=> '订单号',
 	'consignee' 	=> '收货人',
+	'label_consignee' => '收货人：',
 	'all_status' 	=> '订单状态',
 	'thumb_img' 	=> '缩略图',
 		
@@ -334,6 +335,7 @@ return array(
 	'admin' 			=> '管理员添加',
 	'search_goods' 		=> '按商品编号或商品名称或商品货号搜索：',
 	'category' 			=> '分类',
+	'label_category' 	=> '分类：',
 	'brand' 			=> '品牌',
 	'user_money_not_enough' 	=> '用户余额不足',
 	'pay_points_not_enough' 	=> '用户积分不足',

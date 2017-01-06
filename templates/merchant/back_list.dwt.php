@@ -67,7 +67,7 @@
 					            <td class="hide-edit-area" >
 					                {$back.delivery_sn}
 					                <div class="edit-list">
-					                    <a class="data-pjax" href='{url path="orders/mh_back/back_info" args="back_id={$back.back_id}"}' title="{$lang.detail}">{t}{lang key='orders::order.check_info'}{/t}</a>&nbsp;|&nbsp;
+					                    <a class="data-pjax" href='{url path="orders/mh_back/back_info" args="back_id={$back.back_id}"}' title="{lang key='orders.order.detail'}">{t}{lang key='orders::order.check_info'}{/t}</a>&nbsp;|&nbsp;
 					                    <a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg='{t name="{$back.delivery_sn}"}您确定要删除退货单[ %1 ]吗？{/t}' href='{url path="orders/mh_back/remove" args="back_id={$back.back_id}"}' title="{t}移除{/t}">{t}{lang key='orders::order.remove'}{/t}</a>
 					                </div>
 					            </td>

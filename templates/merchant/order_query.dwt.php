@@ -27,13 +27,13 @@ ecjia.merchant.order_query.init();
 		<div class="row-fluid editpage-rightbar panel-heading">
 			<div class="left-bar">
 				<div class="form-group">
-					<label class="control-label col-lg-2">{$lang.label_order_sn}</label>
+					<label class="control-label col-lg-2">{lang key='orders::order.label_order_sn'}</label>
 					<div class="col-lg-6">
 						<input class="form-control" type="text" name="order_sn" />
 					</div>
 				</div>
 				<div class="form-group form-inline order-query">
-					<label class="control-label col-lg-2">{$lang.label_time}</label>
+					<label class="control-label col-lg-2">{lang key='orders::order.label_time'}</label>
 					<div class="col-lg-10"> 
 						<div class="form-group ">
 								<input name="start_time" class="date form-control w-form-control" type="text" placeholder="{t}开始时间{/t}"/>
@@ -45,7 +45,7 @@ ecjia.merchant.order_query.init();
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label col-lg-2">{$lang.label_order_status}</label>
+					<label class="control-label col-lg-2">{lang key='orders::order.label_order_status'}</label>
 					<div class="col-lg-6">
 						<select class="form-control" name="order_status" id="select9" >
 							<option value="-1">{lang key='system::system.select_please'}</option>
@@ -56,7 +56,7 @@ ecjia.merchant.order_query.init();
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label col-lg-2">{$lang.label_pay_status}</label>
+					<label class="control-label col-lg-2">{lang key='orders::order.label_pay_status'}</label>
 					<div class="col-lg-6">
 						<select class="form-control" name="pay_status" id="select11" >
 							<option value="-1">{lang key='system::system.select_please'}</option>
@@ -65,7 +65,7 @@ ecjia.merchant.order_query.init();
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label col-lg-2">{$lang.label_shipping_status}</label>
+					<label class="control-label col-lg-2">{lang key='orders::order.label_shipping_status'}</label>
 					<div class="col-lg-6">
 						<select class="form-control" name="shipping_status" id="select10">
 							<option value="-1">{lang key='system::system.select_please'}</option>
@@ -74,7 +74,7 @@ ecjia.merchant.order_query.init();
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label col-lg-2">{$lang.label_email}</label>
+					<label class="control-label col-lg-2">{lang key='orders::order.label_email'}</label>
 					<div class="col-lg-6">
 						<input class="form-control" type="text" name="email" autocomplete="off"/>
 					</div>
@@ -82,7 +82,7 @@ ecjia.merchant.order_query.init();
 				
 				<!--购货人-->
 				<div class="form-group">
-					<label class="control-label col-lg-2">{$lang.label_user_name}</label>
+					<label class="control-label col-lg-2">{lang key='orders::order.label_user_name'}</label>
 					<div class="col-lg-6">
 						<input class="form-control" type="text" name="user_name" autocomplete="off" />
 					</div>
@@ -90,20 +90,20 @@ ecjia.merchant.order_query.init();
 				
 				<!-- 收货人 -->
 				<div class="form-group">
-					<label class="control-label col-lg-2">{$lang.label_consignee}</label>
+					<label class="control-label col-lg-2">{lang key='orders::order.label_consignee'}</label>
 					<div class="col-lg-6">
 						<input class="form-control" type="text" name="consignee" />
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label col-lg-2">{$lang.label_tel}</label>
+					<label class="control-label col-lg-2">{lang key='orders::order.label_tel'}</label>
 					<div class="col-lg-6">
 						<input class="form-control" type="text" name="tel" />
 					</div>
 				</div>
 				
 				<div class="form-group">
-					<label class="control-label col-lg-2">{$lang.label_mobile}</label>
+					<label class="control-label col-lg-2">{lang key='orders::order.label_mobile'}</label>
 					<div class="col-lg-6">
 						<input class="form-control" type="text" name="mobile" />
 					</div>
@@ -129,7 +129,7 @@ ecjia.merchant.order_query.init();
 	                </div>
 	                <div class="accordion-body in collapse " id="collapseOne">
 	                	<div class="form-group first-form-group form-inline">
-							<label class="control-label col-lg-4">{$lang.label_address}</label>
+							<label class="control-label col-lg-4">{lang key='orders::order.label_address'}</label>
 							<div class="col-lg-7">
 								<input class="form-control" type="text" name="address"/>
 							</div>
@@ -170,7 +170,7 @@ ecjia.merchant.order_query.init();
 							</div>
 						</div>
 						<div class="form-group form-inline">
-							<label class="control-label col-lg-4">{$lang.label_zipcode}</label>
+							<label class="control-label col-lg-4">{lang key='orders::order.label_zipcode'}</label>
 							<div class="col-lg-7">
 								<input class="form-control" type="text" name="zipcode"  />
 							</div>
@@ -188,7 +188,7 @@ ecjia.merchant.order_query.init();
 	                </div>
 	                <div class="accordion-body in collapse " id="collapseTwo">
 	                	<div class="form-group first-form-group form-inline">
-							<label class="control-label col-lg-4">{$lang.label_shipping}</label>
+							<label class="control-label col-lg-4">{lang key='orders::order.label_shipping'}</label>
 							<div class="col-lg-7">
 								<select class="form-control" name="shipping_id" id="select4">
 									<option value="0">{lang key='system::system.select_please'}</option>
@@ -199,7 +199,7 @@ ecjia.merchant.order_query.init();
 							</div>
 						</div>
 						<div class="form-group form-inline">
-							<label class="control-label col-lg-4">{$lang.label_payment}</label>
+							<label class="control-label col-lg-4">{lang key='orders::order.label_payment'}</label>
 							<div class="col-lg-7">
 								<select class="form-control" name="pay_id" id="select5">
 									<option value="0">{lang key='system::system.select_please'}</option>

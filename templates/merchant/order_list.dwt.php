@@ -85,10 +85,10 @@ ecjia.merchant.order.init();
     							</div>
 				            </td>	
     						<td class="hide-edit-area">
-    							{$order.order_sn}{if $order.extension_code eq "group_buy"}{$lang.group_buy}{elseif $order.extension_code eq "exchange_goods"}{$lang.exchange_goods}{/if}
+    							{$order.order_sn}{if $order.extension_code eq "group_buy"}{lang key='orders::order.group_buy'}{elseif $order.extension_code eq "exchange_goods"}{lang key='orders::order.exchange_goods'}{/if}
     							{if $order.stet eq 1}<font style="color:#0e92d0;">(子订单)</font>{elseif $order.stet eq 2}<font style="color:#F00;"><span data-original-title="{foreach from=$order.children_order item=val}{$val};{/foreach}" data-toggle="tooltip">(主订单)</span></font>{/if}
     							<div class="edit-list">
-    								<a href='{url path="orders/merchant/info" args="order_id={$order.order_id}"}' class="data-pjax" title="{$lang.detail}">{t}查看详情{/t}</a>
+    								<a href='{url path="orders/merchant/info" args="order_id={$order.order_id}"}' class="data-pjax" title="{lang key='orders::order.detail'}">{t}查看详情{/t}</a>
     								{if $order.can_remove}
     								&nbsp;|&nbsp;
     								<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg='{t name="{$order.order_sn}"}您确定要删除订单[ %1 ]吗？{/t}' href='{url path="orders/merchant/remove_order" args="order_id={$order.order_id}"}' title="{t}移除{/t}">{t}移除{/t}</a>

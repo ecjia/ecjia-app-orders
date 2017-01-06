@@ -28,12 +28,12 @@
 			<div class="span12">
 				<table class="table table-bordered">
 					<tr><td colspan="2"><strong>{lang key='orders::order.buyer_info'}</strong></td></tr>
-					<tr><td class="w200">{$lang.email}</td><td>{$user.email}</td></tr>
-					<tr><td>{$lang.user_money}</td><td>{$user.user_money}</td></tr>
-					<tr><td>{$lang.pay_points}</td><td>{$user.pay_points}</td></tr>
-					<tr><td>{$lang.rank_points}</td><td>{$user.rank_points}</td></tr>
-					<tr><td>{$lang.rank_name}</td><td>{$user.rank_name}</td></tr>
-					<tr><td>{$lang.bonus_count}</td><td>{$user.bonus_count}</td></tr>
+					<tr><td class="w200">{lang key='orders::order.email'}</td><td>{$user.email}</td></tr>
+					<tr><td>{lang key='orders::order.user_money'}</td><td>{$user.user_money}</td></tr>
+					<tr><td>{lang key='orders::order.pay_points'}</td><td>{$user.pay_points}</td></tr>
+					<tr><td>{lang key='orders::order.rank_points'}</td><td>{$user.rank_points}</td></tr>
+					<tr><td>{lang key='orders::order.rank_name'}</td><td>{$user.rank_name}</td></tr>
+					<tr><td>{lang key='orders::order.bonus_count'}</td><td>{$user.bonus_count}</td></tr>
 				</table>
 				<!-- {foreach from=$address_list item=address} -->
 				<table class="table table-bordered">
@@ -122,9 +122,9 @@
 									<td>
 										{$order.order_sn}
 										{if $order.extension_code eq "group_buy"}
-										<a href='{url path="groupbuy/admin/edit" args="id={$order.extension_id}"}' target="_blank">{$lang.group_buy}</a>
+										<a href='{url path="groupbuy/admin/edit" args="id={$order.extension_id}"}' target="_blank">{lang key='orders::order.group_buy'}</a>
 										{elseif $order.extension_code eq "exchange_goods"}
-<!-- 										<a href="exchange_goods.php?act=edit&id={$order.extension_id}">{$lang.exchange_goods}</a> -->
+<!-- 										<a href="exchange_goods.php?act=edit&id={$order.extension_id}">{lang key='orders::order.exchange_goods'}</a> -->
 										{/if}
 									</td>
 									<td><div align="right"><strong>{lang key='orders::order.label_order_status'}</strong></div></td>
@@ -135,7 +135,7 @@
 									<td>
 										{$order.user_name|default:{lang key='orders::order.anonymous'}}
 										{if $order.user_id gt 0}
-										[ <a class="userInfo cursor_pointer" data-toggle="modal" href="#consigneeinfo" title="{$lang.display_buyer}">{lang key='orders::order.display_buyer'}</a> ]
+										[ <a class="userInfo cursor_pointer" data-toggle="modal" href="#consigneeinfo" title="{lang key='orders::order.display_buyer'}">{lang key='orders::order.display_buyer'}</a> ]
 										{/if}
 									</td>
 									<td><div align="right"><strong>{lang key='orders::order.label_order_time'}</strong></div></td>

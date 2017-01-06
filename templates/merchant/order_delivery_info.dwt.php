@@ -21,33 +21,33 @@
 			     <div class="panel-heading">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
                         <h4 class="panel-title">
-                            <strong>{$lang.base_info}</strong>
+                            <strong>{lang key='orders::order.base_info'}</strong>
                         </h4>
                     </a>
                 </div>
 				<div class="accordion-body in collapse" id="collapseOne">
 					<table class="table table-oddtd m_b0">
 						<tr>
-							<td><div align="right"><strong>{$lang.label_order_sn}</strong></div></td>
+							<td><div align="right"><strong>{lang key='orders::order.label_order_sn'}</strong></div></td>
 							<td>
 								{$order.order_sn}
 								<!-- {if $order.extension_code eq "group_buy"} -->
-<!-- <!-- 									<a href="group_buy.php?act=edit&id={$order.extension_id}">{$lang.group_buy}</a> --> -->
+<!-- <!-- 									<a href="group_buy.php?act=edit&id={$order.extension_id}">{lang key='orders::order.group_buy'}</a> --> -->
 								<!-- {elseif $order.extension_code eq "exchange_goods"}  -->
-<!-- <!-- 									<a href="exchange_goods.php?act=edit&id={$order.extension_id}">{$lang.exchange_goods}</a> --> -->
+<!-- <!-- 									<a href="exchange_goods.php?act=edit&id={$order.extension_id}">{lang key='orders::order.exchange_goods'}</a> --> -->
 								<!-- {/if}  -->
 							</td>
-							<td><div align="right"><strong>{$lang.label_order_time}</strong></div></td>
+							<td><div align="right"><strong>{lang key='orders::order.label_order_time'}</strong></div></td>
 							<td>{$order.formated_add_time}</td>
 						</tr>
 						<tr>
-							<td><div align="right"><strong>{$lang.label_user_name}</strong></div></td>
-							<td>{$order.user_name|default:$lang.anonymous}</td>
-							<td><div align="right"><strong>{$lang.label_how_oos}</strong></div></td>
+							<td><div align="right"><strong>{lang key='orders::order.label_user_name'}</strong></div></td>
+							<td>{$order.user_name|default:{lang key='orders::order.anonymous'}}</td>
+							<td><div align="right"><strong>{lang key='orders::order.label_how_oos'}</strong></div></td>
 							<td>{$order.how_oos}</td>
 						</tr>
 						<tr>
-							<td><div align="right"><strong>{$lang.label_shipping}</strong></div></td>
+							<td><div align="right"><strong>{lang key='orders::order.label_shipping'}</strong></div></td>
 							<td>
 								<!-- {if $exist_real_goods} -->
 									<!-- {if $order.shipping_id > 0} -->
@@ -56,22 +56,22 @@
 										{lang key='system::system.require_field'}
 									<!-- {/if} -->
 									<!-- {if $order.insure_fee > 0} -->
-										（{$lang.label_insure_fee}{$order.formated_insure_fee}）
+										（{lang key='orders::order.label_insure_fee'}{$order.formated_insure_fee}）
 									<!-- {/if} -->
 								<!-- {/if} -->
 							</td>
-							<td><div align="right"><strong>{$lang.label_shipping_fee}</strong></div></td>
+							<td><div align="right"><strong>{lang key='orders::order.label_shipping_fee'}</strong></div></td>
 							<td>{$order.shipping_fee}</td>
 						</tr>
 						<tr>
-							<td><div align="right"><strong>{$lang.label_insure_yn}</strong></div></td>
+							<td><div align="right"><strong>{lang key='orders::order.label_insure_yn'}</strong></div></td>
 							<td>{if $insure_yn}{lang key='system::system.yes'}{else}{lang key='system::system.no'}{/if}</td>
-							<td><div align="right"><strong>{$lang.label_insure_fee}</strong></div></td>
+							<td><div align="right"><strong>{lang key='orders::order.label_insure_fee'}</strong></div></td>
 							<td>{$order.insure_fee|default:0.00}</td>
 						</tr>
 						<!-- {if $exist_real_goods}-->
 <!-- 					  	<tr class="form-inline"> -->
-<!-- 							<td><div align="right"><strong>{$lang.label_invoice_no}</strong></div></td> -->
+<!-- 							<td><div align="right"><strong>{lang key='orders::order.label_invoice_no'}</strong></div></td> -->
 <!-- 							<td colspan="3"><input class="form-control " name="delivery[invoice_no]" type="text" id="invoice_no" value="" size="20"/><input name="delivery_hidden" type="hidden" value="{$exist_real_goods}" /></td> -->
 <!-- 					  	</tr> -->
 					  	<!-- {/if} -->
@@ -83,38 +83,38 @@
 			     <div class="panel-heading">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
                         <h4 class="panel-title">
-                            <strong>{$lang.consignee_info}</strong>
+                            <strong>{lang key='orders::order.consignee_info'}</strong>
                         </h4>
                     </a>
                 </div>
 				<div class="accordion-body in collapse" id="collapseTwo">
 					<table class="table table-oddtd m_b0">
 						<tr>
-							<td><div align="right"><strong>{$lang.label_consignee}</strong></div></td>
+							<td><div align="right"><strong>{lang key='orders::order.label_consignee'}</strong></div></td>
 							<td>{$order.consignee|escape}</td>
-							<td><div align="right"><strong>{$lang.label_email}</strong></div></td>
+							<td><div align="right"><strong>{lang key='orders::order.label_email'}</strong></div></td>
 							<td>{$order.email}</td>
 						</tr>
 						<tr>
-							<td><div align="right"><strong>{$lang.label_address}</strong></div></td>
+							<td><div align="right"><strong>{lang key='orders::order.label_address'}</strong></div></td>
 							<td>[{$order.region}] {$order.address|escape}</td>
-							<td><div align="right"><strong>{$lang.label_zipcode}</strong></div></td>
+							<td><div align="right"><strong>{lang key='orders::order.label_zipcode'}</strong></div></td>
 							<td>{$order.zipcode|escape}</td>
 						</tr>
 						<tr>
-							<td><div align="right"><strong>{$lang.label_tel}</strong></div></td>
+							<td><div align="right"><strong>{lang key='orders::order.label_tel'}</strong></div></td>
 							<td>{$order.tel}</td>
-							<td><div align="right"><strong>{$lang.label_mobile}</strong></div></td>
+							<td><div align="right"><strong>{lang key='orders::order.label_mobile'}</strong></div></td>
 							<td>{$order.mobile|escape}</td>
 						</tr>
 						<tr>
-							<td><div align="right"><strong>{$lang.label_sign_building}</strong></div></td>
+							<td><div align="right"><strong>{lang key='orders::order.label_sign_building'}</strong></div></td>
 							<td>{$order.sign_building|escape}</td>
-							<td><div align="right"><strong>{$lang.label_best_time}</strong></div></td>
+							<td><div align="right"><strong>{lang key='orders::order.label_best_time'}</strong></div></td>
 							<td>{$order.best_time|escape}</td>
 						</tr>
 						<tr>
-							<td><div align="right"><strong>{$lang.label_postscript}</strong></div></td>
+							<td><div align="right"><strong>{lang key='orders::order.label_postscript'}</strong></div></td>
 							<td colspan="3">{$order.postscript}</td>
 						</tr>
 					</table>
@@ -125,7 +125,7 @@
 			     <div class="panel-heading">
                     <a data-toggle="collapse" data-parent="#accordion" href=#collapseThree>
                         <h4 class="panel-title">
-                            <strong>{$lang.goods_info}</strong>
+                            <strong>{lang key='orders::order.goods_info'}</strong>
                         </h4>
                     </a>
                 </div>
@@ -133,17 +133,17 @@
 					<table class="table table-striped m_b0">
 						<thead>
 							<tr>
-								<th class="sorting"><div><strong>{$lang.goods_name_brand}</strong></div></th>
-								<th><div><strong>{$lang.goods_sn}</strong></div></th>
-								<th ckass="w110"><div><strong>{$lang.product_sn}</strong></div></th>
-								<th><strong>{$lang.goods_attr}</strong></th>
+								<th class="sorting"><div><strong>{lang key='orders::order.goods_name_brand'}</strong></div></th>
+								<th><div><strong>{lang key='orders::order.goods_sn'}</strong></div></th>
+								<th ckass="w110"><div><strong>{lang key='orders::order.product_sn'}</strong></div></th>
+								<th><strong>{lang key='orders::order.goods_attr'}</strong></th>
 								<!-- {if $suppliers_list neq 0} -->
-								<th><strong>{$lang.suppliers_name}</strong></th>
+								<th><strong>{lang key='orders::order.suppliers_name'}</strong></th>
 								<!-- {/if} -->
-								<th><strong>{$lang.storage}</strong></th>
-								<th><div><strong>{$lang.goods_number}</strong></div></th>
-								<th><div><strong>{$lang.goods_delivery}</strong></div></th>
-								<th class="w130"><div><strong>{$lang.goods_delivery_curr}</strong></div></th>
+								<th><strong>{lang key='orders::order.storage'}</strong></th>
+								<th><div><strong>{lang key='orders::order.goods_number'}</strong></div></th>
+								<th><div><strong>{lang key='orders::order.goods_delivery'}</strong></div></th>
+								<th class="w130"><div><strong>{lang key='orders::order.goods_delivery_curr'}</strong></div></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -151,7 +151,7 @@
 							<!--礼包-->
 							<!-- {if $goods.goods_id gt 0 && $goods.extension_code eq 'package_buy'} -->
 							<tr>
-								<td>{$goods.goods_name}<span class="ecjiafc-FF0000">{$lang.remark_package}</span></td>
+								<td>{$goods.goods_name}<span class="ecjiafc-FF0000">{lang key='orders::order.remark_package'}</span></td>
 								<td>{$goods.goods_sn}</td>
 								<td>&nbsp;<!--货品货号--></td>
 								<td>&nbsp;<!--属性--></td>
@@ -172,7 +172,7 @@
 								<td>{$package.product_sn}</td>
 								<td>{$package.goods_attr_str}</td>
 								<!-- {if $suppliers_list neq 0} -->
-								<td><div>{$suppliers_name[$package.suppliers_id]|default:$lang.restaurant}</div></td>
+								<td><div>{$suppliers_name[$package.suppliers_id]|default:{lang key='orders::order.restaurant'}}</div></td>
 								<!-- {/if} -->
 								<td><div>{$package.storage}</div></td>
 								<td><div>{$package.order_send_number}</div></td>
@@ -184,14 +184,14 @@
 							<tr>
 								<td>
 									<!-- {if $goods.goods_id gt 0 && $goods.extension_code neq 'package_buy'} -->
-									<a href='{url path="goods/merchant/preview" args="id={$goods.goods_id}"}' target="_blank">{$goods.goods_name} {if $goods.brand_name}[ {$goods.brand_name} ]{/if}{if $goods.is_gift}{if $goods.goods_price > 0}{$lang.remark_favourable}{else}{$lang.remark_gift}{/if}{/if}{if $goods.parent_id > 0}{$lang.remark_fittings}{/if}</a>
+									<a href='{url path="goods/merchant/preview" args="id={$goods.goods_id}"}' target="_blank">{$goods.goods_name} {if $goods.brand_name}[ {$goods.brand_name} ]{/if}{if $goods.is_gift}{if $goods.goods_price > 0}{lang key='orders::order.remark_favourable'}{else}{lang key='orders::order.remark_gift'}{/if}{/if}{if $goods.parent_id > 0}{lang key='orders::order.remark_fittings'}{/if}</a>
 									<!-- {/if} -->
 								</td>
 								<td>{$goods.goods_sn}</td>
 								<td>{$goods.product_sn}</td>
 								<td>{$goods.goods_attr|nl2br}</td>
 								<!-- {if $suppliers_list neq 0} -->
-								<td><div>{$suppliers_name[$goods.suppliers_id]|default:$lang.restaurant}</div></td>
+								<td><div>{$suppliers_name[$goods.suppliers_id]|default:{lang key='orders::order.restaurant'}}</div></td>
 								<!-- {/if} -->
 								<td><div>{$goods.storage}</div></td>
 								<td><div>{$goods.goods_number}</div></td>
@@ -209,7 +209,7 @@
 			     <div class="panel-heading">
                     <a data-toggle="collapse" data-parent="#accordion" href=#collapseFour>
                         <h4 class="panel-title">
-                            <strong>{$lang.action_info}</strong>
+                            <strong>{lang key='orders::order.action_info'}</strong>
                         </h4>
                     </a>
                 </div>
@@ -218,10 +218,10 @@
 						<tbody class="first-td-no-leftbd">
 							<!-- {if $suppliers_list neq 0} -->
 							<tr> 
-								<td width="15%"><div align="right"><strong>{$lang.label_suppliers}</strong></div></td> 
+								<td width="15%"><div align="right"><strong>{lang key='orders::order.label_suppliers'}</strong></div></td> 
 								<td colspan="3">
 									<select name="suppliers_id" id="suppliers_id">
-										<option value="0" selected="selected">{$lang.suppliers_no}</option>
+										<option value="0" selected="selected">{lang key='orders::order.suppliers_no'}</option>
 										<!-- {foreach from=$suppliers_list item=suppliers} -->
 										<option value="{$suppliers.suppliers_id}">{$suppliers.suppliers_name}</option>
 										<!-- {/foreach} -->
@@ -230,7 +230,7 @@
 							</tr>
 							<!-- {/if} -->
 							<tr>
-								<td><div align="right"><strong>{$lang.label_action_note}</strong></div></td> 
+								<td><div align="right"><strong>{lang key='orders::order.label_action_note'}</strong></div></td> 
 								<td colspan="3">
 									<textarea name="action_note" class="span10 form-control" cols="80" rows="3">{$action_note}</textarea>
 								</td>
@@ -238,7 +238,7 @@
 							<tr>
 								<td><div align="right"><strong>{t}当前可执行操作：{/t}</strong></div></td> 
 								<td colspan="3">
-									<button class="btn btn-info" type="submit" name="delivery_confirmed">{$lang.op_confirm}{$lang.op_split}</button>
+									<button class="btn btn-info" type="submit" name="delivery_confirmed">{lang key='orders::order.op_confirm'}{lang key='orders::order.op_split'}</button>
 									<a href='{url path="orders/merchant/info" args="order_id={$order_id}"}'>
 									<button class="btn btn-info" type="button">{lang key='system::system.cancel'}</button>
 									</a>

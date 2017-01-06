@@ -62,7 +62,7 @@
 
 							<tr>
 								<td><div align="right"><strong>{lang key='orders::order.print_buy_name'}</strong></div></td>
-								<td>{$back_order.user_name|default:$lang.anonymous}</td>
+								<td>{$back_order.user_name|default:{lang key='orders::order.anonymous'}}</td>
 								<td><div align="right"><strong>{lang key='orders::order.label_how_oos'}</strong></div></td>
 								<td>{$back_order.how_oos}</td>
 							</tr>
@@ -77,7 +77,7 @@
 									{lang key='system::system.require_field'}
 									{/if}
 									{if $back_order.insure_fee gt 0}
-									{$lang.label_insure_fee}{$back_order.formated_insure_fee}
+									{lang key='orders::order.label_insure_fee'}{$back_order.formated_insure_fee}
 									{/if}
 									{/if}
 								</td>

@@ -18,7 +18,7 @@
 
 <div class="row-fluid panel panel-body">
     <div class="alert alert-info">	
-    	<strong>{$lang.notice_order_sn}</strong>
+    	<strong>{lang key='orders::order.notice_order_sn'}</strong>
 		<button type="button" class="close" data-dismiss="alert" aria-hidden="true"><i class="fa fa-times" data-original-title="" title=""></i></button>
     	</div>
 	<div class="span12 ">
@@ -26,7 +26,7 @@
 			<fieldset>
 				<div class="control-group formSep">	
 					<div class="form-inline form-group">
-					   <label class="control-label col-lg-2">{$lang.to_order_sn}</label>
+					   <label class="control-label col-lg-2">{lang key='orders::order.to_order_sn'}</label>
 					   <input class="form-control " name="to_order_sn" type="text" id="to_order_sn" class="f_l m_r5"/>
 					   <div class="form-group order-query">
     					   <div class="col-lg-11">
@@ -39,13 +39,13 @@
     					   </div>
 					   <span class="input-must">{lang key='system::system.require_field'}</span>
 					   </div>
-					   <span class="help-block" {if $help_open}style="display:block" {else} style="display:none" {/if} id="noticeOrderSn">{$lang.notice_order_sn}</span>
+					   <span class="help-block" {if $help_open}style="display:block" {else} style="display:none" {/if} id="noticeOrderSn">{lang key='orders::order.notice_order_sn'}</span>
 			       </div>
 			   </div>
 			   
 				<div class="control-group formSep">
 				    <div class="form-inline form-group">
-    					<label class="control-label col-lg-2">{$lang.from_order_sn}</label>
+    					<label class="control-label col-lg-2">{lang key='orders::order.from_order_sn'}</label>
 						<input class="form-control" name="from_order_sn" type="text" id="from_order_sn" class="f_l m_r5"/>
 						<div class="form-group order-query">
     					   <div class="col-lg-11">
@@ -63,7 +63,7 @@
 				<div class="control-group formSep">
     				<div class="form-inline form-group">
     				   <label class="col-lg-2"></label>
-				       <button class="btn btn-info" type="submit">{$lang.merge}</button>
+				       <button class="btn btn-info" type="submit">{lang key='orders::order.merge'}</button>
     				</div>
 				</div>
 			</fieldset>

@@ -83,7 +83,7 @@
 								<td class="hide-edit-area">
 									{$delivery.delivery_sn}
 									<div class="edit-list">
-										<a class="data-pjax" href='{url path="orders/mh_delivery/delivery_info" args="delivery_id={$delivery.delivery_id}"}' title="{$lang.detail}">{t}{lang key='orders::order.detailed_information'}{/t}</a>&nbsp;|&nbsp;
+										<a class="data-pjax" href='{url path="orders/mh_delivery/delivery_info" args="delivery_id={$delivery.delivery_id}"}' title="{lang key='orders::order.detail'}">{t}{lang key='orders::order.detailed_information'}{/t}</a>&nbsp;|&nbsp;
 										<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg='{t name="{$delivery.delivery_sn}"}您确定要删除发货单[ %1 ]吗？{/t}' href='{url path="orders/mh_delivery/remove" args="delivery_id={$delivery.delivery_id}{if $smarty.get.type}&type={$smarty.get.type}{/if}"}' title="{t}移除{/t}">{t}{lang key='orders::order.remove'}{/t}</a>
 									</div>
 								</td>

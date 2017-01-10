@@ -44,8 +44,8 @@
 //
 //  ---------------------------------------------------------------------------------
 //
-use Ecjia\System\Notifications\OrderPay;
 defined('IN_ECJIA') or exit('No permission resources.');
+use Ecjia\System\Notifications\OrderPay;
 
 /**
  * 订单支付后处理订单的接口

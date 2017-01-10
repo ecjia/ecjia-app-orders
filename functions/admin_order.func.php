@@ -48,7 +48,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
  * 添加管理员记录日志操作对象
- *
  */
 function assign_orderlog_content() {
 	ecjia_admin_log::instance()->add_action('produce', RC_Lang::get('orders::order.produce'));

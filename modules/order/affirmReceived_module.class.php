@@ -44,8 +44,9 @@
 //
 //  ---------------------------------------------------------------------------------
 //
-defined('IN_ECJIA') or exit('No permission resources.');
 use Ecjia\System\Notifications\ExpressFinished;
+defined('IN_ECJIA') or exit('No permission resources.');
+
 
 /**
  * 订单确认收货

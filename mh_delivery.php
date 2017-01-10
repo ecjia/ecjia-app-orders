@@ -44,10 +44,11 @@
 //
 //  ---------------------------------------------------------------------------------
 //
-defined('IN_ECJIA') or exit('No permission resources.');
-
 use Ecjia\System\Notifications\ExpressAssign;
 use Ecjia\System\Notifications\OrderShipped;
+defined('IN_ECJIA') or exit('No permission resources.');
+
+
 /**
  * ECJIA 订单-发货单管理
  */

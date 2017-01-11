@@ -778,7 +778,7 @@ class admin extends ecjia_admin {
 					$order['country'], $order['province'], $order['city'], $order['district']
 				);
 				$shipping_method = RC_Loader::load_app_class("shipping_method", "shipping");
-				$shipping_list = $shipping_method->available_shipping_list($region_id_list);
+				$shipping_list = $shipping_method->available_shipping_list($region_id_list, $order['store_id']);
 				
 				/* 取得配送费用 */
 				$total = order_weight_price($order_id);
@@ -1063,7 +1063,7 @@ class admin extends ecjia_admin {
 				$order['country'], $order['province'], $order['city'], $order['district']
 			);
 			$shipping_method = RC_Loader::load_app_class("shipping_method","shipping");
-			$shipping_list = $shipping_method->available_shipping_list($region_id_list);
+			$shipping_list = $shipping_method->available_shipping_list($region_id_list, $order['store_id']);
 		
 			/* 取得配送费用 */
 			$total = order_weight_price($order_id);
@@ -1419,7 +1419,7 @@ class admin extends ecjia_admin {
 						$order['country'], $order['province'], $order['city'], $order['district']
 					);
 					$shipping_method = RC_Loader::load_app_class("shipping_method","shipping");
-					$shipping_list = $shipping_method->available_shipping_list($region_id_list);
+					$shipping_list = $shipping_method->available_shipping_list($region_id_list, $order['store_id']);
 		
 					/* 判断订单的配送是否在可用配送之内 */
 					$exist = false;

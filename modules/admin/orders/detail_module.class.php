@@ -92,11 +92,11 @@ class detail_module extends api_admin implements api_interface {
 		$order['district']	= $region_name[3]['region_name'];
 
 		RC_Lang::load('orders/order');
-		$order_status = ($order['order_status'] != '2' || $order['order_status'] != '3') ? RC_Lang::lang('os/'.$order['order_status']) : '';
+		$order_status = ($order['order_status'] != '2' || $order['order_status'] != '3') ? RC_Lang::get('orders::order.os.'.$order['order_status']) : '';
 		$order_status = $order['order_status'] == '2' ? __('已取消') : $order_status;
 		$order_status = $order['order_status'] == '3' ? __('无效') : $order_status;
 
-		$order['status'] =strip_tags($order_status.','.RC_Lang::lang('ps/'.$order['pay_status']).','.RC_Lang::lang('ss/'.$order['shipping_status']));
+		$order['status'] =strip_tags($order_status.','.RC_Lang::get('orders::order.ps.'.$order['pay_status']).','.RC_Lang::get('orders::order.ss.'.$order['shipping_status']));
 		$order['sub_orders'] = array();
 		$db_orderinfo_view = RC_Model::model('orders/order_info_viewmodel');
 		$total_fee = "(oi.goods_amount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) as total_fee";
@@ -110,7 +110,7 @@ class detail_module extends api_admin implements api_interface {
 					$seller_name = RC_Model::model('seller/seller_shopinfo_model')->where(array('id' => $val['seller_id']))->get_field('shop_name');
 					$order_goods = $db_order_goods->where(array('order_id' => $val['order_id']))->select();
 
-					$order_status = ($val['order_status'] != '2' || $val['order_status'] != '3') ? RC_Lang::lang('os/'.$val['order_status']) : '';
+					$order_status = ($val['order_status'] != '2' || $val['order_status'] != '3') ? RC_Lang::get('orders::order.os.'.$val['order_status']) : '';
 					$order_status = $val['order_status'] == '2' ? __('已取消') : $order_status;
 					$order_status = $val['order_status'] == '3' ? __('无效') : $order_status;
 
@@ -146,7 +146,7 @@ class detail_module extends api_admin implements api_interface {
 						'formated_bonus'			=> price_format($val['bonus'], false),
 						'formated_shipping_fee'		=> price_format($val['shipping_fee'], false),
 						'formated_discount'			=> price_format($val['discount'], false),
-						'status'					=> $order_status.','.RC_Lang::lang('ps/'.$val['pay_status']).','.RC_Lang::lang('ss/'.$val['shipping_status']),
+						'status'					=> $order_status.','.RC_Lang::get('orders::order.ps.'.$val['pay_status']).','.RC_Lang::get('orders::order.ss.'.$val['shipping_status']),
 						'create_time' 				=> RC_Time::local_date(ecjia::config('date_format'), $val['add_time']),
 						'goods_items' 				=> $goods_lists
 					);
@@ -182,9 +182,9 @@ class detail_module extends api_admin implements api_interface {
 		$data = $db_order_action->where(array('order_id' => $order['order_id']))->order(array('log_time' => 'asc' ,'action_id' => 'asc'))->select();
         if(!empty($data)) {
 			foreach ($data as $key => $row) {
-				$row['order_status']	= RC_Lang::lang('os/'.$row['order_status']);
-				$row['pay_status']		= RC_Lang::lang('ps/'.$row['pay_status']);
-				$row['shipping_status']	= RC_Lang::lang('ss/'.$row['shipping_status']);
+				$row['order_status']	= RC_Lang::get('orders::order.os.'.$row['order_status']);
+				$row['pay_status']		= RC_Lang::get('orders::order.ps.'.$row['pay_status']);
+				$row['shipping_status']	= RC_Lang::get('orders::order.ss.'.$row['shipping_status']);
 				$row['order_status']	= strip_tags($row['order_status']);//处理html标签
 				$row['action_time']		= RC_Time::local_date(ecjia::config('time_format'), $row['log_time']);
                 $act_list[]				= array(

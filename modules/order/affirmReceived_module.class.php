@@ -92,12 +92,12 @@ function affirm_received($order_id, $user_id = 0) {
 
     // 如果用户ID大于 0 。检查订单是否属于该用户
     if ($user_id > 0 && $order['user_id'] != $user_id) {
-        return new ecjia_error('no_priv', RC_Lang::lang('no_priv'));
+        return new ecjia_error('no_priv', RC_Lang::get('orders::order.no_priv'));
     }    /* 检查订单 */
     elseif ($order['shipping_status'] == SS_RECEIVED) {
-        return new ecjia_error('order_already_received', RC_Lang::lang('order_already_received'));
+        return new ecjia_error('order_already_received', RC_Lang::get('orders::order.order_already_received'));
     } elseif ($order['shipping_status'] != SS_SHIPPED) {
-        return new ecjia_error('order_invalid', RC_Lang::lang('order_invalid'));
+        return new ecjia_error('order_invalid', RC_Lang::get('orders::order.order_invalid'));
     }     /* 修改订单发货状态为“确认收货” */
     else {
         $data = array(

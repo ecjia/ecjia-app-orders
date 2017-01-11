@@ -95,7 +95,7 @@ class mh_reminder extends ecjia_merchant {
 		isset($_SESSION['store_id']) ? $db_order_reminder->where(RC_DB::raw('r.store_id'), $_SESSION['store_id']) : '';
 		
 		$keywords = $_GET['keywords'];
-		$keywords	= empty($keywords)		? '' : trim($keywords);
+		$keywords = empty($keywords) ? '' : trim($keywords);
 
 		if (!empty($keywords)) {
 		    $db_order_reminder->whereRaw('(o.order_sn like "%'.mysql_like_quote($keywords).'%" or o.consignee like "%'.mysql_like_quote($keywords).'%")');
@@ -116,7 +116,7 @@ class mh_reminder extends ecjia_merchant {
 
 		/* 模板赋值 */
 		$this->assign('ur_here', RC_Lang::get('orders::order.reminder_list'));
-		$this->assign('form_action'		, RC_Uri::url('orders/mh_reminder/remove&type=batch'));
+		$this->assign('form_action', RC_Uri::url('orders/mh_reminder/remove&type=batch'));
 		$this->assign('order_remind', $result_list['list']);
 		$this->assign('result_list', $result_list);
 		$this->display('remind_list.dwt');
@@ -126,14 +126,14 @@ class mh_reminder extends ecjia_merchant {
 	/* 催货单删除 */
 	public function remove() {
 		/* 检查权限 */
-		$this->admin_priv('order_os_edit' , ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
 	 
 		$order_id = !empty($_GET['order_id']) ? $_GET['order_id'] : $_POST['order_id'];
 		$order_id = explode(',',$order_id);
 	
 		/* 记录日志 */
 		RC_DB::table('order_reminder')->whereIn('order_id', $order_id)->delete();
-		return $this->showmessage(RC_Lang::lang('tips_back_del'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS,array('pjaxurl'=>RC_Uri::url('orders/mh_reminder/init')));
+		return $this->showmessage(RC_Lang::get('orders::order.tips_back_del'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('orders/mh_reminder/init')));
 	}
 }
 

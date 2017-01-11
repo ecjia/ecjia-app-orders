@@ -258,7 +258,7 @@ class orders_order_paid_api extends Component_Event_Api {
                         $options = array(
                         	'user_id'		=> $arr['user_id'],
                         	'user_money'	=> $arr['amount'],
-                        	'change_desc'	=> RC_Lang::lang('surplus_type_0'),
+                        	'change_desc'	=> RC_Lang::get('orders::order.surplus_type_0'),
                         	'change_type'	=> ACT_SAVING
                         );
                         RC_Api::api('user', 'account_change_log', $options);

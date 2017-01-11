@@ -10,7 +10,7 @@
 		</li>
 		<li class="span3">
 			<div class="bd ecjiaf-pre">{$order_unconfirmed}<span class="f_s14">{lang key='orders::order.monad'}</span></div>
-			<div class="ft"><i class="fontello-icon-doc-text-inv ecjiaf-fl"></i>{lang key='orders::order.confirm_order'}</div>
+			<div class="ft"><i class="fontello-icon-doc-text-inv ecjiaf-fl"></i>{lang key='orders::order.wait_confirm_order'}</div>
 		</li>
 		<li class="span3">
 			<div class="bd ecjiaf-pre">{$order_await_ship}<span class="f_s14">{lang key='orders::order.monad'}</span></div>

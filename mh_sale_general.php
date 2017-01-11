@@ -88,8 +88,8 @@ class mh_sale_general extends ecjia_merchant {
 		ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here('报表统计', RC_Uri::url('stats/mh_keywords_stats/init')));
 		ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('销售概况')));
 		
-		$this->assign('ur_here', __(RC_Lang::lang('report_sell')));
-		$this->assign('action_link', array('text' => RC_Lang::lang('down_sales_stats'), 'href' => RC_Uri::url('orders/mh_sale_general/download')));
+		$this->assign('ur_here', RC_Lang::get('orders::statistic.report_sell'));
+		$this->assign('action_link', array('text' => RC_Lang::get('orders::statistic.down_sales_stats'), 'href' => RC_Uri::url('orders/mh_sale_general/download')));
 		
 		if (empty($_GET['query_type'])) {
 			$query_type = 'month';
@@ -133,8 +133,8 @@ class mh_sale_general extends ecjia_merchant {
 		$this->admin_priv('sale_general_stats');
 		ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('销售概况')));
 	
-		$this->assign('ur_here', __(RC_Lang::lang('report_sell')));
-		$this->assign('action_link',array('text' => RC_Lang::lang('down_sales_stats'),'href' => RC_Uri::url('orders/mh_sale_general/download')));
+		$this->assign('ur_here', RC_Lang::get('orders::statistic.report_sell'));
+		$this->assign('action_link',array('text' => RC_Lang::get('orders::statistic.down_sales_stats'),'href' => RC_Uri::url('orders/mh_sale_general/download')));
 	
 		if (empty($_GET['query_type'])) {
 			$query_type = 'month';
@@ -255,13 +255,13 @@ class mh_sale_general extends ecjia_merchant {
 		$data_list = $this->db_order_info->field("DATE_FORMAT(FROM_UNIXTIME(shipping_time), '". $format ."') AS period, COUNT(DISTINCT order_sn) AS order_count, SUM(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee - discount) AS order_amount")
 		                                 ->where($where)->group('period')->select();
 		/* 文件名 */
-		$filename = RC_Lang::lang('sale_general_statement');
+		$filename = RC_Lang::get('orders::statistic.sale_general_statement');
 		
 		header("Content-type: application/vnd.ms-excel; charset=utf-8");
 		header("Content-Disposition: attachment; filename=$filename.xls");
 		
 		/* 文件标题 */
-		echo mb_convert_encoding($filename . RC_LANG::lang('sales_statistics'),'UTF-8', 'UTF-8') . "\t\n";
+		echo mb_convert_encoding($filename . RC_Lang::get('orders::statistic.sales_statistics'),'UTF-8', 'UTF-8') . "\t\n";
 		
 		/* 订单数量, 销售出商品数量, 销售金额 */
 		echo mb_convert_encoding(RC_LANG::lang('period'),'UTF-8', 'UTF-8') . "\t";

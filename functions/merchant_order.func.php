@@ -302,9 +302,9 @@ function get_merchant_back_list() {
 			$row[$key]['add_time'] = RC_Time::local_date(ecjia::config('time_format'), $value['add_time']);
 			$row[$key]['update_time'] = RC_Time::local_date(ecjia::config('time_format'), $value['update_time']);
 			if ($value['status'] == 1) {
-				$row[$key]['status_name'] = RC_Lang::lang('delivery_status/1');
+				$row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.1');
 			} else {
-				$row[$key]['status_name'] = RC_Lang::lang('delivery_status/0');
+				$row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.0');
 			}
 		}
 	}
@@ -382,11 +382,11 @@ function get_merchant_delivery_list() {
 			$row[$key]['add_time'] = RC_Time::local_date(ecjia::config('time_format'), $value['add_time']);
 			$row[$key]['update_time'] = RC_Time::local_date(ecjia::config('time_format'), $value['update_time']);
 			if ($value['status'] == 1) {
-				$row[$key]['status_name'] = RC_Lang::lang('delivery_status/1');
+				$row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.1');
 			} elseif ($value['status'] == 2) {
-				$row[$key]['status_name'] = RC_Lang::lang('delivery_status/2');
+				$row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.2');
 			} else {
-				$row[$key]['status_name'] = RC_Lang::lang('delivery_status/0');
+				$row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.0');
 			}
 		}
 	}

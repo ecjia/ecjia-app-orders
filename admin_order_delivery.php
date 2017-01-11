@@ -269,7 +269,7 @@ class admin_order_delivery extends ecjia_admin {
 
 					/* 操作失败 */
 					$links[] = array('text' => RC_Lang::get('orders::order.order_info'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info', 'delivery_id=' . $delivery_id));
-					return $this->showmessage(sprintf(RC_Lang::get('orders::order.act_good_vacancy'), $value['goods_name']), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
+					return $this->showmessage(sprintf(RC_Lang::get('orders::order.act_goods_vacancy'), $value['goods_name']), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
 				}
 
 				/* 虚拟商品列表 virtual_card */
@@ -295,7 +295,7 @@ class admin_order_delivery extends ecjia_admin {
 							(ecjia::config('use_storage') == '0' && $value['is_real'] == 0))) {
 						/* 操作失败 */
 						$links[] = array('text' => RC_Lang::get('orders::order.order_info'), 'href' => RC_Uri::url('orders/order_delilvery/delivery_info', array('delivery_id' => $delivery_id)));
-						return $this->showmessage(sprintf(RC_Lang::get('orders::order.act_good_vacancy'), $value['goods_name']), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
+						return $this->showmessage(sprintf(RC_Lang::get('orders::order.act_goods_vacancy'), $value['goods_name']), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
 						break;
 					}
 

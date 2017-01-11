@@ -197,7 +197,7 @@ class list_module extends api_admin implements api_interface {
 			foreach ($data as $val) {
 				if ($order_id == 0 || $val['order_id'] != $order_id ) {
 					$goods_number = 0;
-					$order_status = ($val['order_status'] != '2' || $val['order_status'] != '3') ? RC_Lang::lang('os/'.$val['order_status']) : '';
+					$order_status = ($val['order_status'] != '2' || $val['order_status'] != '3') ? RC_Lang::get('orders::order.os.'.$val['order_status']) : '';
 					$order_status = $val['order_status'] == '2' ? __('已取消') : $order_status;
 					$order_status = $val['order_status'] == '3' ? __('无效') : $order_status;
 
@@ -226,7 +226,7 @@ class list_module extends api_admin implements api_interface {
 							$label_order_status = '未支付';
 						}
 					} else {
-						$label_order_status = $order_status.','.RC_Lang::lang('ps/'.$val['pay_status']).','.RC_Lang::lang('ss/'.$val['shipping_status']);
+						$label_order_status = $order_status.','.RC_Lang::get('orders::order.ps.'.$val['pay_status']).','.RC_Lang::get('orders::order.ss.'.$val['shipping_status']);
 					}
 
 					$goods_number = $val['goods_number'];
@@ -242,7 +242,7 @@ class list_module extends api_admin implements api_interface {
 						'formated_bonus'			=> price_format($val['bonus'], false),
 						'formated_shipping_fee'		=> price_format($val['shipping_fee'], false),
 						'formated_discount'			=> price_format($val['discount'], false),
-						'status'					=> $order_status.','.RC_Lang::lang('ps/'.$val['pay_status']).','.RC_Lang::lang('ss/'.$val['shipping_status']),
+						'status'					=> $order_status.','.RC_Lang::get('orders::order.ps.'.$val['pay_status']).','.RC_Lang::get('orders::order.ss.'.$val['shipping_status']),
 						'label_order_status'		=> $label_order_status,
 						'goods_number'				=> intval($goods_number),
 						'create_time' 				=> RC_Time::local_date(ecjia::config('date_format'), $val['add_time']),

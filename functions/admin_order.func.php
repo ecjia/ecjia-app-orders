@@ -613,7 +613,7 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
     if ($refund_note) {
         $change_desc = $refund_note;
     } else {
-        $change_desc = sprintf(RC_Lang::lang('order_refund'), $order['order_sn']);
+        $change_desc = sprintf(RC_Lang::get('orders::order.order_refund'), $order['order_sn']);
     }
     /* 处理退款 */
     if (1 == $refund_type) {
@@ -627,7 +627,7 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
             RC_Api::api('user', 'account_change_log', $options);
         }
         /* user_account 表增加提款申请记录 */
-        $account = array('user_id' => $user_id, 'amount' => -1 * $amount, 'add_time' => RC_Time::gmtime(), 'user_note' => $refund_note, 'process_type' => SURPLUS_RETURN, 'admin_user' => isset($_SESSION['store_id']) ? $_SESSION['staff_name'] : $_SESSION['admin_name'], 'admin_note' => sprintf(RC_Lang::lang('order_refund'), $order['order_sn']), 'is_paid' => 0);
+        $account = array('user_id' => $user_id, 'amount' => -1 * $amount, 'add_time' => RC_Time::gmtime(), 'user_note' => $refund_note, 'process_type' => SURPLUS_RETURN, 'admin_user' => isset($_SESSION['store_id']) ? $_SESSION['staff_name'] : $_SESSION['admin_name'], 'admin_note' => sprintf(RC_Lang::get('orders::order.order_refund'), $order['order_sn']), 'is_paid' => 0);
         RC_DB::table('user_account')->insert($account);
         return true;
     } else {
@@ -1089,7 +1089,7 @@ function get_order_detail($order_id, $user_id = 0, $type) {
     $order['log_id'] = intval($pay_method->get_paylog_id($order['order_id'], $pay_type = PAY_ORDER));
     $order['user_name'] = $_SESSION['user_name'];
     /* 无配送时的处理 */
-    $order['shipping_id'] == -1 and $order['shipping_name'] = RC_Lang::lang('shipping_not_need');
+    $order['shipping_id'] == -1 and $order['shipping_name'] = RC_Lang::get('orders::order.shipping_not_need');
     /* 其他信息初始化 */
     $order['how_oos_name'] = $order['how_oos'];
     $order['how_surplus_name'] = $order['how_surplus'];
@@ -1501,9 +1501,9 @@ function get_back_list() {
 			$row[$key]['add_time'] = RC_Time::local_date(ecjia::config('time_format'), $value['add_time']);
 			$row[$key]['update_time'] = RC_Time::local_date(ecjia::config('time_format'), $value['update_time']);
 			if ($value['status'] == 1) {
-				$row[$key]['status_name'] = RC_Lang::lang('delivery_status/1');
+				$row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.1');
 			} else {
-				$row[$key]['status_name'] = RC_Lang::lang('delivery_status/0');
+				$row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.0');
 			}
 		}
 	}

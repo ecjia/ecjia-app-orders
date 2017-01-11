@@ -85,16 +85,13 @@ class mh_back extends ecjia_merchant {
 		$result = get_merchant_back_list();
         
 		/* 模板赋值 */
-		$this->assign('ur_here'			, RC_Lang::lang('10_back_order'));
-//		$this->assign('ur_here'			, RC_Lang::get('orders::orders.back_order_info'));
-		$this->assign('form_action', 		RC_Uri::url('order/admin_order_back/product_add_execute'));
-//		$this->assign('os_unconfirmed'	, OS_UNCONFIRMED);
-//		$this->assign('cs_await_pay'	, CS_AWAIT_PAY);
-//		$this->assign('cs_await_ship'	, CS_AWAIT_SHIP);
-		$this->assign('back_list'		, $result);
-		$this->assign('filter'			, $result['filter']);
-		$this->assign('form_action'		, RC_Uri::url('orders/mh_back/init'));
-		$this->assign('del_action'		, RC_Uri::url('orders/mh_back/remove'));
+		$this->assign('ur_here', 		RC_Lang::get('orders::orders.order_back_list'));
+		$this->assign('form_action', 	RC_Uri::url('order/admin_order_back/product_add_execute'));
+
+		$this->assign('back_list', 		$result);
+		$this->assign('filter', 		$result['filter']);
+		$this->assign('form_action', 	RC_Uri::url('orders/mh_back/init'));
+		$this->assign('del_action', 	RC_Uri::url('orders/mh_back/remove'));
 
 		$this->assign_lang();
 		$this->display('back_list.dwt');
@@ -183,7 +180,7 @@ class mh_back extends ecjia_merchant {
 		}
 		
 		$db_back_order->delete();
-		return $this->showmessage(RC_Lang::lang('tips_back_del'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS,array('pjaxurl'=>RC_Uri::url('orders/mh_back/init')));
+		return $this->showmessage(RC_Lang::get('orders::order.tips_back_del'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS,array('pjaxurl'=>RC_Uri::url('orders/mh_back/init')));
 	}
 
 	/*收货人信息*/

@@ -173,7 +173,7 @@ class admin_order_back extends ecjia_admin {
 	
 		/* 显示模板 */
 		$this->assign('ur_here', 		RC_Lang::get('orders::order.back_operate') . RC_Lang::get('orders::order.detail'));
-		$this->assign('action_link', 	array('href' => RC_Uri::url('orders/admin_order_back/init'), 'text' => RC_Lang::lang('10_back_order')));
+		$this->assign('action_link', 	array('href' => RC_Uri::url('orders/admin_order_back/init'), 'text' => RC_Lang::get('orders::order.order_back_list')));
 		
 		$this->display('back_info.dwt');
 	}

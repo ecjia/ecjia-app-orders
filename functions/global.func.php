@@ -385,19 +385,19 @@ function get_status_list($type = 'all') {
     $list = array();
     if ($type == 'all' || $type == 'order') {
         $pre = $type == 'all' ? 'os_' : '';
-        foreach (RC_Lang::lang('os') as $key => $value) {
+        foreach (RC_Lang::get('orders::order.os') as $key => $value) {
             $list[$pre . $key] = $value;
         }
     }
     if ($type == 'all' || $type == 'shipping') {
         $pre = $type == 'all' ? 'ss_' : '';
-        foreach (RC_Lang::lang('ss') as $key => $value) {
+        foreach (RC_Lang::get('orders::order.ss') as $key => $value) {
             $list[$pre . $key] = $value;
         }
     }
     if ($type == 'all' || $type == 'payment') {
         $pre = $type == 'all' ? 'ps_' : '';
-        foreach (RC_Lang::lang('ps') as $key => $value) {
+        foreach (RC_Lang::get('orders::order.ps') as $key => $value) {
             $list[$pre . $key] = $value;
         }
     }
@@ -411,13 +411,13 @@ function return_user_surplus_integral_bonus($order) {
     /* 处理余额、积分、红包 */
     if ($order['user_id'] > 0 && $order['surplus'] > 0) {
         $surplus = $order['money_paid'] < 0 ? $order['surplus'] + $order['money_paid'] : $order['surplus'];
-        $options = array('user_id' => $order['user_id'], 'user_money' => $surplus, 'change_desc' => sprintf(RC_Lang::lang('return_order_surplus'), $order['order_sn']));
+        $options = array('user_id' => $order['user_id'], 'user_money' => $surplus, 'change_desc' => sprintf(RC_Lang::get('orders::order.return_order_surplus'), $order['order_sn']));
         RC_Api::api('user', 'account_change_log', $options);
         $data = array('order_amount' => '0');
         RC_DB::table('order_info')->where('order_id', $order['order_id'])->update($data);
     }
     if ($order['user_id'] > 0 && $order['integral'] > 0) {
-        $options = array('user_id' => $order['user_id'], 'pay_points' => $order['integral'], 'change_desc' => sprintf(RC_Lang::lang('return_order_integral'), $order['order_sn']));
+        $options = array('user_id' => $order['user_id'], 'pay_points' => $order['integral'], 'change_desc' => sprintf(RC_Lang::get('orders::order.return_order_integral'), $order['order_sn']));
         RC_Api::api('user', 'account_change_log', $options);
     }
     if ($order['bonus_id'] > 0) {
@@ -451,12 +451,12 @@ function handle_order_money_change($order, &$msgs, &$links) {
         if ($money_dues > 0) {
             /* 修改订单为未付款 */
             update_order($order_id, array('pay_status' => PS_UNPAYED, 'pay_time' => 0));
-            $msgs[] = RC_Lang::lang('amount_increase');
-            $links[] = array('text' => RC_Lang::lang('order_info'), 'href' => RC_Uri::url('orders/admin/info', 'order_id=' . $order_id));
+            $msgs[] = RC_Lang::get('orders::order.amount_increase');
+            $links[] = array('text' => RC_Lang::get('orders::order.order_info'), 'href' => RC_Uri::url('orders/admin/info', 'order_id=' . $order_id));
         } elseif ($money_dues < 0) {
             $anonymous = $order['user_id'] > 0 ? 0 : 1;
-            $msgs[] = RC_Lang::lang('amount_decrease');
-            $links[] = array('text' => RC_Lang::lang('refund'), 'href' => RC_Uri::url('orders/admin/process', 'func=load_refund&anonymous=' . $anonymous . '&order_id=' . $order_id . '&refund_amount=' . abs($money_dues)));
+            $msgs[] = RC_Lang::get('orders::order.amount_decrease');
+            $links[] = array('text' => RC_Lang::get('orders::order.refund'), 'href' => RC_Uri::url('orders/admin/process', 'func=load_refund&anonymous=' . $anonymous . '&order_id=' . $order_id . '&refund_amount=' . abs($money_dues)));
         }
     }
 }
@@ -495,18 +495,6 @@ function get_order_goods($order) {
     $goods_list = array();
     if (!empty($data)) {
         foreach ($data as $key => $row) {
-            // 虚拟商品支持
-            // 			TODO:虚拟商品语言项
-            // 			if ($row['is_real'] == 0) {
-            // 				/* 取得语言项 */
-            // 				$filename = ROOT_PATH . 'plugins/' . $row['extension_code'] . '/languages/common_' . ecjia::config('lang') . '.php';
-            // 				if (file_exists($filename)) {
-            // 					include_once($filename);
-            // 					if (!empty($GLOBALS['_LANG'][$row['extension_code'].'_link'])) {
-            // 						$row['goods_name'] = $row['goods_name'] . sprintf(RC_Lang::lang($row['extension_code'].'_link'), $row['goods_id'], $order['order_sn']);
-            // 					}
-            // 				}
-            // 			}
             $row['formated_subtotal'] = price_format($row['goods_price'] * $row['goods_number']);
             $row['formated_goods_price'] = price_format($row['goods_price']);
             $goods_attr[] = explode(' ', trim($row['goods_attr']));
@@ -809,12 +797,12 @@ function package_goods(&$package_goods, $goods_number, $order_id, $extension_cod
         $return_array[$key]['send'] = $value['order_goods_number'] * $goods_number - $return_array[$key]['sended'];
         $return_array[$key]['storage'] = $value['goods_number'];
         if ($return_array[$key]['send'] <= 0) {
-            $return_array[$key]['send'] = RC_Lang::lang('act_good_delivery');
+            $return_array[$key]['send'] = RC_Lang::get('orders::order.act_good_delivery');
             $return_array[$key]['readonly'] = 'readonly="readonly"';
         }
         /* 是否缺货 */
         if ($return_array[$key]['storage'] <= 0 && ecjia::config('use_storage') == '1') {
-            $return_array[$key]['send'] = RC_Lang::lang('act_good_vacancy');
+            $return_array[$key]['send'] = RC_Lang::get('orders::order.act_good_vacancy');
             $return_array[$key]['readonly'] = 'readonly="readonly"';
         }
     }

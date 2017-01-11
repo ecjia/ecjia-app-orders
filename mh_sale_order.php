@@ -83,7 +83,7 @@ class mh_sale_order extends ecjia_merchant {
 		ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('销售排行')));
 		
 		/* 赋值到模板 */
-		$this->assign('ur_here', RC_Lang::lang('sell_stats'));
+		$this->assign('ur_here', RC_Lang::get('orders::statistic.sell_stats'));
 		$this->assign('action_link', array('text' => '销售排行报表下载', 'href' => RC_Uri::url('orders/mh_sale_order/download')));
 		
 		/*时间参数*/
@@ -124,13 +124,13 @@ class mh_sale_order extends ecjia_merchant {
 	    $filter['sort_order'] 	= empty($_GET['sort_order']) ? 'DESC' : trim($_GET['sort_order']);
 		
 		$goods_order_data = $this->get_sales_order(false,$filter);
-		$filename = RC_Lang::lang('sale_order_statement');
+		$filename = RC_Lang::get('orders::statistic.sale_order_statement');
 		
 		header("Content-type: application/vnd.ms-excel; charset=utf-8");
 		header("Content-Disposition: attachment; filename=$filename.xls");
 		
-		echo mb_convert_encoding($filename . RC_LANG::lang('sale_order_statement'),'UTF-8', 'UTF-8') . "\t\n";
-		$data = RC_Lang::lang('order_by')."\t".RC_Lang::lang('goods_name')."\t".RC_Lang::lang('goods_sn')."\t".RC_Lang::lang('sell_amount')."\t".RC_Lang::lang('sell_sum')."\t".RC_Lang::lang('percent_count')."\n";
+		echo mb_convert_encoding($filename . RC_Lang::get('orders::statistic.sale_order_statement'),'UTF-8', 'UTF-8') . "\t\n";
+		$data = RC_Lang::get('orders::statistic.order_by')."\t".RC_Lang::get('orders::statistic.goods_name')."\t".RC_Lang::get('orders::statistic.goods_sn')."\t".RC_Lang::get('orders::statistic.sell_amount')."\t".RC_Lang::get('orders::statistic.sell_sum')."\t".RC_Lang::get('orders::statistic.percent_count')."\n";
 		foreach ($goods_order_data['item'] as $k => $v) {
 			$order_by = $k + 1;
 			$data .= "$order_by\t$v[goods_name]\t$v[goods_sn]\t$v[goods_num]\t$v[turnover]\t$v[wvera_price]\n";

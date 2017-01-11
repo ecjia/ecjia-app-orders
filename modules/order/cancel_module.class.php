@@ -88,33 +88,33 @@ function cancel_order ($order_id, $user_id = 0) {
     $order = $db->field('user_id, order_id, order_sn , surplus , integral , bonus_id, order_status, shipping_status, pay_status')->find(array('order_id' => $order_id));
 
     if (empty($order)) {
-        return new ecjia_error('order_exist', RC_Lang::lang('order_exist'));
+        return new ecjia_error('order_exist', RC_Lang::get('orders::order.order_not_exist'));
     }
 
     // 如果用户ID大于0，检查订单是否属于该用户
     if ($user_id > 0 && $order['user_id'] != $user_id) {
-        return new ecjia_error('no_priv', RC_Lang::lang('no_priv'));
+        return new ecjia_error('no_priv', RC_Lang::get('orders::order.no_priv'));
     }
 
     //TODO:未付款前都可取消，付款后取消暂不考虑
     // 订单状态只能是“未确认”或“已确认”
 //     if ($order['order_status'] != OS_UNCONFIRMED && $order['order_status'] != OS_CONFIRMED) {
-//         return new ecjia_error('current_os_not_unconfirmed', RC_Lang::lang('current_os_not_unconfirmed'));
+//         return new ecjia_error('current_os_not_unconfirmed', RC_Lang::get('orders::order.current_os_not_unconfirmed'));
 //     }
 
     // 订单一旦确认，不允许用户取消
 //     if ($order['order_status'] == OS_CONFIRMED) {
-//         return new ecjia_error('current_os_already_confirmed', RC_Lang::lang('current_os_already_confirmed'));
+//         return new ecjia_error('current_os_already_confirmed', RC_Lang::get('orders::order.current_os_already_confirmed'));
 //     }
 
     // 发货状态只能是“未发货”
     if ($order['shipping_status'] != SS_UNSHIPPED) {
-        return new ecjia_error('current_ss_not_cancel', RC_Lang::lang('current_ss_not_cancel'));
+        return new ecjia_error('current_ss_not_cancel', RC_Lang::get('orders::order.current_ss_not_cancel'));
     }
 
     // 如果付款状态是“已付款”、“付款中”，不允许取消，要取消和商家联系
     if ($order['pay_status'] != PS_UNPAYED) {
-        return new ecjia_error('current_ps_not_cancel', RC_Lang::lang('current_ps_not_cancel'));
+        return new ecjia_error('current_ps_not_cancel', RC_Lang::get('orders::order.current_ps_not_cancel'));
     }
 
     // 将用户订单设置为取消
@@ -122,13 +122,13 @@ function cancel_order ($order_id, $user_id = 0) {
     if ($query) {
         RC_Loader::load_app_func('admin_order', 'orders');
         /* 记录log */
-        order_action($order['order_sn'], OS_CANCELED, $order['shipping_status'], PS_UNPAYED, RC_Lang::lang('buyer_cancel'), 'buyer');
+        order_action($order['order_sn'], OS_CANCELED, $order['shipping_status'], PS_UNPAYED, RC_Lang::get('orders::order.buyer_cancel'), 'buyer');
         /* 退货用户余额、积分、红包 */
         if ($order['user_id'] > 0 && $order['surplus'] > 0) {
         	$options = array(
         		'user_id'		=> $order['user_id'],
         		'user_money'	=> $order['surplus'],
-        		'change_desc'	=> sprintf(RC_Lang::lang('return_surplus_on_cancel'), $order['order_sn'])
+        		'change_desc'	=> sprintf(RC_Lang::get('orders::order.return_surplus_on_cancel'), $order['order_sn'])
         	);
         	$result = RC_Api::api('user', 'account_change_log',$options);
         	if (is_ecjia_error($result)) {
@@ -139,7 +139,7 @@ function cancel_order ($order_id, $user_id = 0) {
             $options = array(
             	'user_id'		=> $order['user_id'],
             	'pay_points'	=> $order['integral'],
-            	'change_desc'	=> sprintf(RC_Lang::lang('return_integral_on_cancel'), $order['order_sn'])
+            	'change_desc'	=> sprintf(RC_Lang::get('orders::order.return_integral_on_cancel'), $order['order_sn'])
             );
             $result = RC_Api::api('user', 'account_change_log', $options);
             if (is_ecjia_error($result)) {

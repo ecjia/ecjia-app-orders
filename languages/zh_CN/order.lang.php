@@ -115,7 +115,7 @@ return array(
 	'op_cancel' 	=> '取消',
 	'op_invalid' 	=> '无效',
 	'op_return' 	=> '退货',
-	'already_shipped'	=>	'已发货',
+	'already_shipped' => '已发货',
 	'op_unpay' 		=> '设为未付款',
 	'op_unship' 	=> '未发货',
 	
@@ -127,6 +127,7 @@ return array(
 	'act_false' 		=> '操作失败',
 	'act_ship_num' 		=> '此单发货数量不能超出订单商品数量',
 	'act_good_vacancy' 	=> '商品已缺货',
+	'act_goods_vacancy' => '商品 %s 已缺货',
 	'act_good_delivery' => '货已发完',
 	'notice_gb_ship' 	=> '备注：团购活动未处理为成功前，不能发货',
 	'op_remove' 		=> '删除',
@@ -320,7 +321,7 @@ return array(
 	'invalid_order' 	=> '有订单无法设置为无效',
 	'cancel_order' 		=> '有订单无法取消',
 	'remove_order' 		=> '有订单无法被移除',
-	'remove'			=>	'移除',
+	'remove'			=> '移除',
 	'check_info' 		=> '查看详情',
 	
 	/* 编辑订单打印模板 */
@@ -783,7 +784,7 @@ return array(
     'monad'					=> '单',
     'order_money'			=> '本月订单总额',
     'order_count'			=> '本月订单数量',
-    'confirm_order'			=> '今日待确认订单',
+    'wait_confirm_order'	=> '今日待确认订单',
     'today_order'			=> '今日待发货订单',
     'produce'				=> '生成',
     'back_sn'				=> '退货单',
@@ -819,6 +820,21 @@ return array(
     'pay_for_order'				=> '支付订单',
     'merchant_shipping'			=> '商家发货',
     'confirm_receipt'			=> '确认收货',
+    'surplus_type_0'			=> '充值',
+    'time_format' 				=> '时间格式',
+    'virtual_card_oos' 			=> '虚拟卡已缺货',
+    'no_priv' 					=> '你没有权限操作他人订单',
+    'order_already_received' 	=> '此订单已经确认过了，感谢您在本站购物，欢迎再次光临。',
+    'order_invalid'          	=> '您提交的订单不正确。',
+    'order_not_exist' 		 	=> '该订单不存在！',
+    
+    'current_ss_not_cancel' 		=> '只有在未发货状态下才能取消，你可以与店主联系。',
+    'current_ps_not_cancel' 		=> '只有未付款状态才能取消，要取消请联系店主。',
+    'current_os_not_unconfirmed' 	=> '当前订单状态不是“未确认”。',
+    'current_os_already_confirmed' 	=> '当前订单已经被确认，无法取消，请与店主联系。',
+    'return_surplus_on_cancel' 		=> '取消订单 %s，退回支付订单时使用的预付款',
+    'return_integral_on_cancel' 	=> '取消订单 %s，退回支付订单时使用的积分',
+    'buyer_cancel' 					=> '用户取消',
 );
 
 // end

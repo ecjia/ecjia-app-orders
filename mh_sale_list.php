@@ -83,10 +83,10 @@ class mh_sale_list extends ecjia_merchant {
 		/* 权限判断 */ 
 		$this->admin_priv('sale_list_stats');
 		ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here('报表统计', RC_Uri::url('stats/mh_keywords_stats/init')));
-		ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::lang('sales_list')));
+		ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::statistic.sales_list')));
 		
-		$this->assign('ur_here',RC_Lang::lang('sale_list'));
-		$this->assign('action_link', array('text' => RC_Lang::lang('down_sales'), 'href' => RC_Uri::url('orders/mh_sale_list/download')));
+		$this->assign('ur_here', RC_Lang::get('orders::statistic.sales_list'));
+		$this->assign('action_link', array('text' => RC_Lang::get('orders::statistic.down_sales'), 'href' => RC_Uri::url('orders/mh_sale_list/download')));
 		
 		/* 时间参数 */
 		$start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date(ecjia::config('date_format'),RC_Time::local_strtotime('-7 days'));
@@ -112,18 +112,18 @@ class mh_sale_list extends ecjia_merchant {
 		/* 检查权限 */
 		$this->admin_priv('sale_list_stats');
 		/* 时间参数 */
-		$start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date(ecjia::config('date_format'),RC_Time::local_strtotime('-7 days'));
-		$end_date = !empty($_GET['end_date']) ? $_GET['end_date'] : RC_Time::local_date(ecjia::config('date_format'),RC_Time::local_strtotime('today'));
+		$start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date(ecjia::config('date_format'), RC_Time::local_strtotime('-7 days'));
+		$end_date = !empty($_GET['end_date']) ? $_GET['end_date'] : RC_Time::local_date(ecjia::config('date_format'), RC_Time::local_strtotime('today'));
 
 		/*文件名*/
-		$file_name = RC_Lang::lang('sales_list');
+		$file_name = RC_Lang::get('orders::statistic.sales_list');
 		$goods_sales_list = $this->get_sale_list(false);
 		/*强制下载,下载类型EXCEL*/
 		header("Content-type: application/vnd.ms-excel; charset=utf-8");
 		header("Content-Disposition: attachment; filename=$file_name.xls");
 		
 		echo mb_convert_encoding($filename . RC_LANG::lang('sales_list_statement'),'UTF-8', 'UTF-8') . "\t\n";
-		$data = RC_Lang::lang('goods_name')."\t".RC_Lang::lang('order_sn')."\t".RC_Lang::lang('amount')."\t".RC_Lang::lang('sell_price')."\t".RC_Lang::lang('sell_date')."\n";
+		$data = RC_Lang::get('orders::statistic.goods_name')."\t".RC_Lang::get('orders::statistic.order_sn')."\t".RC_Lang::get('orders::statistic.amount')."\t".RC_Lang::get('orders::statistic.sell_price')."\t".RC_Lang::get('orders::statistic.sell_date')."\n";
 		
 		foreach ($goods_sales_list as $row) {
 			foreach ($row as $v) {

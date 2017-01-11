@@ -60,8 +60,8 @@
 			</div>
 		</li>
 		<li>
-			<div class="{if $time_key eq '2'}step-cur{elseif $time_key gt '2'}step-done{/if}">
-				<div class="step-no">{if $time_key lt '3'}2{/if}</div>
+			<div class="{if $time_key eq '2'}step-cur{elseif $time_key gt '2' && $pay_key}step-done{else}step-pay{/if}">
+				<div class="step-no">{if $time_key eq '2' || !$pay_key}2{/if}</div>
 				<div class="m_t5">{lang key='orders::order.pay_for_order'}</div>
 				<div class="m_t5 ecjiafc-blue">{$order.pay_time}</div>
 			</div>

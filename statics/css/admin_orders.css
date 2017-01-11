@@ -208,6 +208,10 @@
 	background-position: 50% 0;
 }
 
+.order-status-base .step-pay .step-no {
+	background-position: 50% -102px;
+}
+
 .order-status-base .step-last .step-no {
 	background-position: 50% -136px;
 }

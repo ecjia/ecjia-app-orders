@@ -91,17 +91,24 @@ class orders_admin_plugin {
 			)
 		);
 		
+		//本月开始时间
+		$start_month = mktime(0,0,0,date('m'),1,date('Y'))-8*3600;
+		
+		//今日开始时间
+		$start_time = mktime(0,0,0,date('m'),date('d'),date('Y'))-8*3600;
+		
 		$month_order = RC_DB::table('order_info as oi')
 			->leftJoin('order_goods as g', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('g.order_id'))
-			->where(RC_DB::raw('oi.add_time'), '>=', RC_Time::gmtime() - 2592000)
+			->where(RC_DB::raw('oi.add_time'), '>=', $start_month)
 			->count(RC_DB::raw('distinct oi.order_id'));
 			
-		$new = RC_Time::gmtime();
+		//当前时间戳
+		$now = RC_Time::gmtime();
 		$order_money = RC_DB::table('order_info as oi')
 			->leftJoin('pay_log as pl', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('pl.order_id'))
 			->selectRaw('pl.order_amount')
-			->where(RC_DB::raw('oi.add_time'), '>=', $new-3600*24*30)
-			->where(RC_DB::raw('oi.add_time'), '<=', $new)
+			->where(RC_DB::raw('oi.add_time'), '>=', $start_month)
+			->where(RC_DB::raw('oi.add_time'), '<=', $now)
 			->where(RC_DB::raw('pl.is_paid'), 1)
 			->groupBy(RC_DB::raw('oi.order_id'))
 			->get();
@@ -109,20 +116,27 @@ class orders_admin_plugin {
 		$num = 0;
 		if (!empty($order_money)) {
 			foreach($order_money as $val){
-				$num += intval($val['order_amount']);
+				$num += $val['order_amount'];
 			}
 		}
-
-		$order_unconfirmed = $db->field('oi.order_id')->where(array('oi.order_status' => 0, 'oi.add_time' => array('gt'=> $new-3600*60*24, 'lt' => $new)))->group('oi.order_id')->select();
+		$order_unconfirmed = $db->field('oi.order_id')->where(array('oi.order_status' => 0, 'oi.add_time' => array('gt'=> $start_time, 'lt' => $now)))->group('oi.order_id')->select();
 		$order_unconfirmed = count($order_unconfirmed);
 	
-		$order_await_ship = $db->field('oi.order_id')->where(array_merge($order_query->order_await_ship('oi.'), array('oi.add_time' => array('gt' => $new-3600*60*24, 'lt' => $new))))->group('oi.order_id')->select();
+		$order_await_ship = $db->field('oi.order_id')->where(array_merge($order_query->order_await_ship('oi.'), array('oi.add_time' => array('gt' => $start_time, 'lt' => $now))))->group('oi.order_id')->select();
 		$order_await_ship = count($order_await_ship);
 	
-		ecjia_admin::$controller->assign('month_order', 		$month_order);
-		ecjia_admin::$controller->assign('order_money', 		intval($num));
-		ecjia_admin::$controller->assign('order_unconfirmed', 	$order_unconfirmed);
-		ecjia_admin::$controller->assign('order_await_ship', 	$order_await_ship);
+		ecjia_admin::$controller->assign('order_money', 		$num);					//本月订单总额
+		ecjia_admin::$controller->assign('month_order', 		$month_order);			//本月订单数量
+		ecjia_admin::$controller->assign('order_unconfirmed', 	$order_unconfirmed);	//今日待确认订单
+		ecjia_admin::$controller->assign('order_await_ship', 	$order_await_ship);		//今日待发货订单
+		
+		ecjia_admin::$controller->assign('month_start_time', RC_Time::local_date('Y-m-d', $start_month));	//本月开始时间
+		ecjia_admin::$controller->assign('month_end_time', RC_Time::local_date('Y-m-d', $now));				//本月结束时间
+		
+		ecjia_admin::$controller->assign('today_start_time', RC_Time::local_date('Y-m-d H:i:s', $start_time));				//今天开始时间
+		ecjia_admin::$controller->assign('today_end_time', RC_Time::local_date('Y-m-d H:i:s', $start_time+24*3600-1));		//今天结束时间
+		ecjia_admin::$controller->assign('wait_ship', CS_AWAIT_SHIP);		//待发货
+		ecjia_admin::$controller->assign('unconfirmed', OS_UNCONFIRMED);	//待确认
 	
 		ecjia_admin::$controller->display(ecjia_app::get_app_template('library/widget_admin_dashboard_shopchart.lbi', 'orders'));
 	}

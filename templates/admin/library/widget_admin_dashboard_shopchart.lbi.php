@@ -2,19 +2,27 @@
 	<ul class="list-mod list-mod-briefing move-mod-head">
 		<li class="span3">
 			<div class="bd ecjiaf-pre"><span class="f_s14">￥</span>{$order_money}<span class="f_s14">{lang key='orders::order.yuan'}</span></div>
-			<div class="ft"><i class="fontello-icon-doc-text-inv ecjiaf-fl"></i>{lang key='orders::order.order_money'}</div>
+			<a target="__blank" href='{url path="orders/admin_order_stats/init" args="start_date={$month_start_time}&end_date={$month_end_time}"}'>
+				<div class="ft"><i class="fontello-icon-doc-text-inv ecjiaf-fl"></i>{lang key='orders::order.order_money'}</div>
+			</a>
 		</li>
 		<li class="span3">
 			<div class="bd ecjiaf-pre">{$month_order}<span class="f_s14">{lang key='orders::order.monad'}</span></div>
-			<div class="ft"><i class="fontello-icon-doc-text-inv ecjiaf-fl"></i>{lang key='orders::order.order_count'}</div>
+			<a target="__blank" href='{url path="orders/admin_order_stats/init" args="start_date={$month_start_time}&end_date={$month_end_time}"}'>
+				<div class="ft"><i class="fontello-icon-doc-text-inv ecjiaf-fl"></i>{lang key='orders::order.order_count'}</div>
+			</a>
 		</li>
 		<li class="span3">
 			<div class="bd ecjiaf-pre">{$order_unconfirmed}<span class="f_s14">{lang key='orders::order.monad'}</span></div>
-			<div class="ft"><i class="fontello-icon-doc-text-inv ecjiaf-fl"></i>{lang key='orders::order.wait_confirm_order'}</div>
+			<a target="__blank" href='{url path="orders/admin/init" args="start_time={$today_start_time}&end_time={$today_end_time}&composite_status={$unconfirmed}"}'>
+				<div class="ft"><i class="fontello-icon-doc-text-inv ecjiaf-fl"></i>{lang key='orders::order.wait_confirm_order'}</div>
+			</a>
 		</li>
 		<li class="span3">
 			<div class="bd ecjiaf-pre">{$order_await_ship}<span class="f_s14">{lang key='orders::order.monad'}</span></div>
-			<div class="ft"><i class="fontello-icon-doc-text-inv ecjiaf-fl"></i>{lang key='orders::order.today_order'}</div>
+			<a target="__blank" href='{url path="orders/admin/init" args="start_time={$today_start_time}&end_time={$today_end_time}&composite_status={$wait_ship}"}'>
+				<div class="ft"><i class="fontello-icon-doc-text-inv ecjiaf-fl"></i>{lang key='orders::order.today_order'}</div>
+			</a>
 		</li>
 	</ul>
 	<!-- <div class="ecjiaf-tar"><a href="{RC_Uri::url('@admin_logs/init')}" title="{t}查看更多{/t}">{t}查看更多{/t}</a></div> -->

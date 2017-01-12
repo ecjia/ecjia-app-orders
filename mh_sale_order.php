@@ -83,7 +83,7 @@ class mh_sale_order extends ecjia_merchant {
 		ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('销售排行')));
 		
 		/* 赋值到模板 */
-		$this->assign('ur_here', RC_Lang::get('orders::statistic.sell_stats'));
+		$this->assign('ur_here', RC_Lang::get('orders::order.sale_order_stats'));
 		$this->assign('action_link', array('text' => '销售排行报表下载', 'href' => RC_Uri::url('orders/mh_sale_order/download')));
 		
 		/*时间参数*/

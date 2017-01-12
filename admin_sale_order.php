@@ -76,7 +76,7 @@ class admin_sale_order extends ecjia_admin {
 		/* 权限检查 */
 		$this->admin_priv('sale_order_stats', ecjia::MSGTYPE_JSON);
 
-		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('system::system.sell_stats')));
+		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.sale_order_stats')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
 			'id'		=> 'overview',
 			'title'		=> RC_Lang::get('orders::statistic.overview'),
@@ -89,7 +89,7 @@ class admin_sale_order extends ecjia_admin {
 		);
 
 		/* 赋值到模板 */
-		$this->assign('ur_here', RC_Lang::get('system::system.sell_stats'));
+		$this->assign('ur_here', RC_Lang::get('orders::order.sale_order_stats'));
 		$this->assign('action_link', array('text' => RC_Lang::get('orders::statistic.download_sale_sort'), 'href' => RC_Uri::url('orders/admin_sale_order/download')));
 
 		/*时间参数*/
@@ -119,7 +119,7 @@ class admin_sale_order extends ecjia_admin {
 
 		if ($_REQUEST['store_id']) {
 			$store_info = RC_DB::table('store_franchisee')->where('store_id', $_GET['store_id'])->first();
-		    $this->assign('ur_here', $store_info['merchants_name'] . ' - ' . RC_Lang::get('system::system.sell_stats'));
+		    $this->assign('ur_here', $store_info['merchants_name'] . ' - ' . RC_Lang::get('orders::order.sale_order_stats'));
         }
 		$goods_order_data = $this->get_sales_order(true, $filter);
 

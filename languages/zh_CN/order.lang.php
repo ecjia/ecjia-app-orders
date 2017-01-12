@@ -62,6 +62,7 @@ return array(
 		CS_AWAIT_PAY 	=> '待付款',
 		CS_AWAIT_SHIP 	=> '待发货',
 		CS_FINISHED 	=> '已完成',
+	    CS_RECEIVED     => '收货确认',
 		PS_PAYING 		=> '付款中',
 		OS_CANCELED 	=> '取消',
 		OS_INVALID 		=> '无效',

@@ -61,7 +61,7 @@ class order_query extends order {
 	public function order_finished($alias = '') {
 		$where = array();
     	$where[$alias.'order_status'] = array(OS_CONFIRMED, OS_SPLITED);
-		$where[$alias.'shipping_status'] = array(SS_SHIPPED, SS_RECEIVED);
+		$where[$alias.'shipping_status'] = array(SS_SHIPPED);
 		$where[$alias.'pay_status'] = array(PS_PAYED, PS_PAYING);
 		$where[$alias.'is_delete'] = 0;
 		return $where;
@@ -97,6 +97,15 @@ class order_query extends order {
     	$where[$alias.'order_status'] = array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART);
 		$where[$alias.'shipping_status'] = array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING);
 		$where[] = "( {$alias}pay_status in (" . PS_PAYED .",". PS_PAYING.") OR {$alias}pay_id in (" . $payment_id . "))";
+		$where[$alias.'is_delete'] = 0;
+		return $where;
+	}
+	/* 收货确认订单 */
+	public function order_received($alias = '') {
+		$where = array();
+    	$where[$alias.'order_status'] = array(OS_SPLITED);
+		$where[$alias.'shipping_status'] = array(SS_RECEIVED);
+		$where[$alias.'pay_status'] = array(PS_PAYED, PS_PAYING);
 		$where[$alias.'is_delete'] = 0;
 		return $where;
 	}
@@ -299,9 +308,13 @@ class order_query extends order {
             case CS_AWAIT_SHIP :
 				$this->where = array_merge($this->where,$this->order_await_ship());
                 break;
-
+                
             case CS_FINISHED :
 				$this->where = array_merge($this->where,$this->order_finished());
+                break;
+
+            case CS_RECEIVED :
+                $this->where = array_merge($this->where,$this->order_received());
                 break;
 
             case PS_PAYING :

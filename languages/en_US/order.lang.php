@@ -62,6 +62,7 @@ return array(
 		CS_AWAIT_PAY	=> 'Await pay',
 		CS_AWAIT_SHIP	=> 'Await ship',
 		CS_FINISHED		=> 'Finished',
+	    CS_RECEIVED     => 'Received',
 		PS_PAYING		=> 'Payment',
 		OS_CANCELED		=> 'Returned',
 		OS_INVALID		=> 'Invalid',

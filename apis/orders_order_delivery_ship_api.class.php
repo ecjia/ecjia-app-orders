@@ -188,8 +188,8 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 		
 		if (!$result) {
 			/* 操作失败 */
-			$links[] = array('text' => RC_Lang::get('orders::orders.delivery_sn') . RC_Lang::get('orders::orders.detail'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info','delivery_id=' . $delivery_id));
-			return $this->showmessage(RC_Lang::get('orders::orders.act_false'), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR, array('links' => $links));
+			$links[] = array('text' => RC_Lang::get('orders::order.delivery_sn') . RC_Lang::get('orders::order.detail'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info','delivery_id=' . $delivery_id));
+			return $this->showmessage(RC_Lang::get('orders::order.act_false'), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR, array('links' => $links));
 		}
 		
 		/* 标记订单为已确认 “已发货” */

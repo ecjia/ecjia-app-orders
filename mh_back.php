@@ -85,7 +85,7 @@ class mh_back extends ecjia_merchant {
 		$result = get_merchant_back_list();
         
 		/* 模板赋值 */
-		$this->assign('ur_here', 		RC_Lang::get('orders::orders.order_back_list'));
+		$this->assign('ur_here', 		RC_Lang::get('orders::order.order_back_list'));
 		$this->assign('form_action', 	RC_Uri::url('order/admin_order_back/product_add_execute'));
 
 		$this->assign('back_list', 		$result);

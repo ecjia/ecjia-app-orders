@@ -137,13 +137,11 @@ class mh_order_stats extends ecjia_merchant {
 				if (!empty($tmp[$i])) {
 					$tmp_time 			= RC_Time::local_strtotime($tmp[$i] . '-1');
 					$start_date_arr[$i]	= $tmp_time;
-					$end_date_arr[$i]   = RC_Time::local_strtotime($tmp[$i] . '-' . date('t', $tmp_time));
 				}
 			}
 		} else {
 			$tmp_time 			= RC_Time::local_strtotime(RC_Time::local_date('Y-m-d'));
 			$start_date_arr[] 	= RC_Time::local_strtotime(RC_Time::local_date('Y-m') . '-1');
-			$end_date_arr[]   	= RC_Time::local_strtotime(RC_Time::local_date('Y-m') . '-31');
 		}
 
 		for ($i = 0; $i < 4; $i++) {

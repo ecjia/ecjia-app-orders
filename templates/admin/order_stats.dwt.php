@@ -85,29 +85,28 @@
 <div class="row-fluid">
 	<div class="choose_list f_r">
 		<form action="{$form_action}" method="post" name="selectForm">
-		<span>{lang key='orders::statistic.select_month_lable'}</span>
-		<!-- {foreach from=$start_date_arr item=sta key=k} -->
+			<span>{lang key='orders::statistic.select_month_lable'}</span>
+			<!-- {foreach from=$start_date_arr item=sta key=k} -->
 			<input type="text" name="year_month" value="{$sta}" class="year_month w110 f_r"/>
-			 <!-- {if $k < 4} --><span class="f_r">-</span><!-- {/if} -->
-		<!-- {/foreach} -->
-				<input type="hidden" name="is_multi" value="1" />
-    			<input type="submit" name="submit" value="{lang key='orders::statistic.query'}" class="btn screen-btn1" />
-			</form>
-		</div>
+			<!-- {if $k < 4} --><span class="f_r">-</span><!-- {/if} -->
+			<!-- {/foreach} -->
+			<input type="hidden" name="is_multi" value="1" />
+    		<input type="submit" name="submit" value="{lang key='orders::statistic.query'}" class="btn screen-btn1" />
+		</form>
 	</div>
+</div>
 	
-	<div class="row-fluid edit-page">
-		<div class="span12">
-			<div class="tabbable">
-				<ul class="nav nav-tabs">
-					<li class="{if $page eq 'init'}active{/if}"><a class="data-pjax" href='{url path="orders/admin_order_stats/init"}{if $start_date}&start_date={$start_date}{/if}&end_date={$end_date}&is_multi={$is_multi}{if $year_month}&year_month={$year_month}{/if}'>{lang key='orders::statistic.order_circs'}</a></li>
-					<li class="{if $page eq 'shipping_status'}active{/if}"><a class="data-pjax" href='{url path="orders/admin_order_stats/shipping_status"}{if $start_date}&start_date={$start_date}{/if}&end_date={$end_date}&is_multi={$is_multi}{if $year_month}&year_month={$year_month}{/if}'>{lang key='orders::statistic.shipping_method'}</a></li>
-					<li class="{if $page eq 'pay_status'}active{/if}"><a class="data-pjax" href='{url path="orders/admin_order_stats/pay_status"}{if $start_date}&start_date={$start_date}{/if}&end_date={$end_date}&is_multi={$is_multi}{if $year_month}&year_month={$year_month}{/if}'>{lang key='orders::statistic.pay_method'}</a></li>
-				</ul>
-				<form class="form-horizontal">
-					<div class="tab-content">
-						
-						<!-- {if $page eq 'init'} -->
+<div class="row-fluid edit-page">
+	<div class="span12">
+		<div class="tabbable">
+			<ul class="nav nav-tabs">
+				<li class="{if $page eq 'init'}active{/if}"><a class="data-pjax" href='{url path="orders/admin_order_stats/init"}{if $start_date}&start_date={$start_date}{/if}&end_date={$end_date}&is_multi={$is_multi}{if $year_month}&year_month={$year_month}{/if}'>{lang key='orders::statistic.order_circs'}</a></li>
+				<li class="{if $page eq 'shipping_status'}active{/if}"><a class="data-pjax" href='{url path="orders/admin_order_stats/shipping_status"}{if $start_date}&start_date={$start_date}{/if}&end_date={$end_date}&is_multi={$is_multi}{if $year_month}&year_month={$year_month}{/if}'>{lang key='orders::statistic.shipping_method'}</a></li>
+				<li class="{if $page eq 'pay_status'}active{/if}"><a class="data-pjax" href='{url path="orders/admin_order_stats/pay_status"}{if $start_date}&start_date={$start_date}{/if}&end_date={$end_date}&is_multi={$is_multi}{if $year_month}&year_month={$year_month}{/if}'>{lang key='orders::statistic.pay_method'}</a></li>
+			</ul>
+			<form class="form-horizontal">
+				<div class="tab-content">
+					<!-- {if $page eq 'init'} -->
 					<div class="tab-pane active" id="tab1">
 						<!-- {if $is_multi eq ''} -->
 						<div class="order_general">
@@ -153,7 +152,6 @@
 						<!-- {/if} -->
 					</div>
 					<!--{/if}-->
-					
 				</div>
 			</form>
 		</div>

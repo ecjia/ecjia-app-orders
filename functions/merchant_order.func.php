@@ -149,7 +149,11 @@ function merchant_operable_list($order) {
                         $list['receive'] = true;
                         // 收货确认
                     }
-                    $list['unship'] = true;
+                    if(SS_RECEIVED != $ss) {
+                        $list['unship'] = true;
+                        //已收货后不能设未发货
+                    }
+//                     $list['unship'] = true;
                     // 设为未发货
                     if ($priv_list['os']) {
                         $list['return'] = true;
@@ -194,7 +198,10 @@ function merchant_operable_list($order) {
                         // 收货确认
                     }
                     if (!$is_cod) {
-                        $list['unship'] = true;
+                        if(SS_RECEIVED != $ss) {
+                            $list['unship'] = true;
+                            //已收货后不能设未发货
+                        }
                         // 设为未发货
                     }
                 }

@@ -65,17 +65,18 @@ class mh_order_stats extends ecjia_merchant {
 		RC_Script::enqueue_script('smoke');
 		RC_Script::enqueue_script('jquery-uniform');
 		RC_Style::enqueue_style('uniform-aristo');
-
+		
 		//时间控件
-		RC_Style::enqueue_style('datepicker', RC_Uri::admin_url('statics/lib/datepicker/datepicker.css'));
 		RC_Script::enqueue_script('bootstrap-datepicker', RC_Uri::admin_url('statics/lib/datepicker/bootstrap-datepicker.min.js'));
-
+		RC_Style::enqueue_style('datepicker', RC_Uri::admin_url('statics/lib/datepicker/datepicker.css'));
+				
 		/*加载自定义js*/
 		RC_Script::enqueue_script('acharts-min', RC_App::apps_url('statics/js/acharts-min.js', __FILE__), array('ecjia-merchant'), false, 1);
 		RC_Script::enqueue_script('order_stats', RC_App::apps_url('statics/js/merchant_order_stats.js', __FILE__), array('ecjia-merchant'), false, 1);
 		RC_Script::enqueue_script('order_stats_chart', RC_App::apps_url('statics/js/merchant_order_stats_chart.js', __FILE__), array('ecjia-merchant'), false, 1);
 		RC_Style::enqueue_style('orders-css', RC_App::apps_url('statics/css/merchant_orders.css', __FILE__));
 		RC_Style::enqueue_style('stats-css', RC_App::apps_url('statics/css/merchant_stats.css', __FILE__));
+		
 		RC_Lang::load('statistic');
 		RC_Loader::load_app_func('global','orders');
 

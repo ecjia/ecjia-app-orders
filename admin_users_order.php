@@ -63,10 +63,10 @@ class admin_users_order extends ecjia_admin {
 		RC_Style::enqueue_style('chosen');
 		RC_Script::enqueue_script('jquery-uniform');
 		RC_Style::enqueue_style('uniform-aristo');
-		RC_Script::enqueue_script('bootstrap-editable-script', RC_Uri::admin_url('statics/lib/x-editable/bootstrap-editable/js/bootstrap-editable.min.js'));
-		RC_Style::enqueue_style('bootstrap-editable-css', RC_Uri::admin_url('statics/lib/x-editable/bootstrap-editable/css/bootstrap-editable.css'));
-		RC_Style::enqueue_style('datepicker', RC_Uri::admin_url('statics/lib/datepicker/datepicker.css'));
+		
+		//时间控件
 		RC_Script::enqueue_script('bootstrap-datepicker', RC_Uri::admin_url('statics/lib/datepicker/bootstrap-datepicker.min.js'));
+		RC_Style::enqueue_style('datepicker', RC_Uri::admin_url('statics/lib/datepicker/datepicker.css'));
 
 		RC_Script::enqueue_script('user_order', RC_App::apps_url('statics/js/user_order.js', __FILE__));
 		RC_Script::localize_script('user_order', 'js_lang', RC_Lang::get('orders::statistic.js_lang'));

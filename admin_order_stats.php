@@ -63,11 +63,11 @@ class admin_order_stats extends ecjia_admin {
 		RC_Style::enqueue_style('chosen');
 		RC_Script::enqueue_script('jquery-uniform');
 		RC_Style::enqueue_style('uniform-aristo');
-		RC_Script::enqueue_script('bootstrap-editable-script', RC_Uri::admin_url('statics/lib/x-editable/bootstrap-editable/js/bootstrap-editable.min.js'));
-		RC_Style::enqueue_style('bootstrap-editable-css', RC_Uri::admin_url('statics/lib/x-editable/bootstrap-editable/css/bootstrap-editable.css'));
-		RC_Style::enqueue_style('datepicker', RC_Uri::admin_url('statics/lib/datepicker/datepicker.css'));
+		
+		//时间控件
 		RC_Script::enqueue_script('bootstrap-datepicker', RC_Uri::admin_url('statics/lib/datepicker/bootstrap-datepicker.min.js'));
-
+		RC_Style::enqueue_style('datepicker', RC_Uri::admin_url('statics/lib/datepicker/datepicker.css'));
+		
 		RC_Script::enqueue_script('acharts-min', RC_App::apps_url('statics/js/acharts-min.js', __FILE__));
 		RC_Script::enqueue_script('order_stats', RC_App::apps_url('statics/js/order_stats.js', __FILE__));
 		RC_Script::enqueue_script('order_stats_chart', RC_App::apps_url('statics/js/order_stats_chart.js', __FILE__));
@@ -181,14 +181,27 @@ class admin_order_stats extends ecjia_admin {
 
 		$year_month = !empty($_GET['year_month']) ? $_GET['year_month'] : '';
 
-	   if (!empty($year_month)) {
-		    $start_date_arr	= explode('.', $year_month);
-		    
-		    for ($i = 0; $i < 6; $i++) {
-		        if (empty($start_date_arr[$i])) {
-		            unset($start_date_arr[$i]);
-		        }
-		    }
+		if (!empty($year_month)) {
+			$filter	= explode('.', $year_month);
+			$arr 	= array_filter($filter);
+			$tmp 	= $arr;
+		
+			for ($i = 0; $i < count($tmp); $i++) {
+				if (!empty($tmp[$i])) {
+					$tmp_time 			= RC_Time::local_strtotime($tmp[$i] . '-1');
+					$start_date_arr[$i]	= $tmp_time;
+				}
+			}
+		} else {
+			$start_date_arr[] 	= RC_Time::local_strtotime(RC_Time::local_date('Y-m') . '-1');
+		}
+		
+		for ($i = 0; $i < 4; $i++) {
+			if (isset($start_date_arr[$i])) {
+				$start_date_arr[$i] = RC_Time::local_date('Y-m', $start_date_arr[$i]);
+			} else {
+				$start_date_arr[$i] = null;
+			}
 		}
 
 		$this->assign('start_date_arr', $start_date_arr);
@@ -238,14 +251,27 @@ class admin_order_stats extends ecjia_admin {
 
 		$year_month = !empty($_GET['year_month']) ? $_GET['year_month'] : '';
 
-	    if (!empty($year_month)) {
-		    $start_date_arr	= explode('.', $year_month);
-		    
-		    for ($i = 0; $i < 6; $i++) {
-		        if (empty($start_date_arr[$i])) {
-		            unset($start_date_arr[$i]);
-		        }
-		    }
+		if (!empty($year_month)) {
+			$filter	= explode('.', $year_month);
+			$arr 	= array_filter($filter);
+			$tmp 	= $arr;
+
+			for ($i = 0; $i < count($tmp); $i++) {
+				if (!empty($tmp[$i])) {
+					$tmp_time 			= RC_Time::local_strtotime($tmp[$i] . '-1');
+					$start_date_arr[$i]	= $tmp_time;
+				}
+			}
+		} else {
+			$start_date_arr[] 	= RC_Time::local_strtotime(RC_Time::local_date('Y-m') . '-1');
+		}
+		
+		for ($i = 0; $i < 4; $i++) {
+			if (isset($start_date_arr[$i])) {
+				$start_date_arr[$i] = RC_Time::local_date('Y-m', $start_date_arr[$i]);
+			} else {
+				$start_date_arr[$i] = null;
+			}
 		}
 
 		$this->assign('start_date_arr', $start_date_arr);

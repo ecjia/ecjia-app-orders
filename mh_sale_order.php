@@ -63,8 +63,8 @@ class mh_sale_order extends ecjia_merchant {
 		RC_Style::enqueue_style('uniform-aristo');
 		
 		//时间控件
-		RC_Style::enqueue_style('datepicker', RC_Uri::admin_url('statics/lib/datepicker/datepicker.css'));
 		RC_Script::enqueue_script('bootstrap-datepicker', RC_Uri::admin_url('statics/lib/datepicker/bootstrap-datepicker.min.js'));
+		RC_Style::enqueue_style('datepicker', RC_Uri::admin_url('statics/lib/datepicker/datepicker.css'));
 		
 		/*自定义js*/
 		RC_Script::enqueue_script('sale_order',RC_App::apps_url('statics/js/merchant_sale_order.js',__FILE__), array('ecjia-merchant'), false, 1);

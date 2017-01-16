@@ -54,8 +54,8 @@ class mh_sale_list extends ecjia_merchant {
 	private $order_info_view;
 	public function __construct() {
 		parent::__construct();
+		
 		RC_Loader::load_app_func('global','orders');
-		RC_Lang::load('statistic');
 		$this->order_info_view = RC_Loader::load_app_model('order_info_viewmodel','orders');
 		$this->order_goods_view = RC_Loader::load_app_model('order_goods_viewmodel','orders');
 		/* 加载所有全局 js/css */
@@ -67,9 +67,9 @@ class mh_sale_list extends ecjia_merchant {
 		RC_Style::enqueue_style('uniform-aristo');
 		
 		//时间控件
+		RC_Script::enqueue_script('bootstrap-datepicker', RC_Uri::admin_url('statics/lib/datepicker/bootstrap-datepicker.min.js'));
 		RC_Style::enqueue_style('datepicker', RC_Uri::admin_url('statics/lib/datepicker/datepicker.css'));
-        RC_Script::enqueue_script('bootstrap-datepicker',RC_Uri::admin_url('statics/lib/datepicker/bootstrap-datepicker.min.js'), array('ecjia-merchant'), false, 1);
-        
+		
         /*自定义js*/
         RC_Script::enqueue_script('sale_list',RC_App::apps_url('statics/js/merchant_sale_list.js',__FILE__), array('ecjia-merchant'), false, 1);
         

@@ -149,14 +149,14 @@ class mh_back extends ecjia_merchant {
 			}
 		}
 		/* 模板赋值 */
-		$this->assign('back_order'			, $back_order);
-		$this->assign('ur_here'				, RC_Lang::get('orders::order.return_look'));
+		$this->assign('back_order', $back_order);
+		$this->assign('ur_here', RC_Lang::get('orders::order.return_look'));
 		
-		$this->assign('exist_real_goods'	, exist_real_goods);
-		$this->assign('goods_list'			, $goods_list);
-		$this->assign('back_id'				, $back_id); // 发货单id
+		$this->assign('exist_real_goods', exist_real_goods);
+		$this->assign('goods_list', $goods_list);
+		$this->assign('back_id', $back_id); // 发货单id
 		/* 显示模板 */
-		$this->assign('action_link'			, array('href' => RC_Uri::url('orders/mh_back/init'), 'text' => RC_Lang::get('system::system.10_back_order')));
+		$this->assign('action_link', array('href' => RC_Uri::url('orders/mh_back/init'), 'text' => RC_Lang::get('system::system.10_back_order')));
 		
 		$this->assign_lang();
 		$this->display('back_info.dwt');

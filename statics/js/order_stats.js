@@ -9,7 +9,7 @@
         
         searchForm: function () {
             $(".start_date,.end_date").datepicker({
-                format: "yyyy-mm-dd"
+                format: "yyyy-mm-dd",
             });
             
             $('.screen-btn').on('click', function (e) {
@@ -52,7 +52,8 @@
         
         selectForm: function () {
             $(".year_month").datepicker({
-                format: "yyyy-mm"
+				format: "yyyy-mm",
+			    minViewMode: 1,
             });
             $('.screen-btn1').on('click', function (e) {
                 e.preventDefault();

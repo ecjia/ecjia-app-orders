@@ -61,6 +61,7 @@
 		selectForm : function () {
 			$(".year_month").datepicker({
 				format: "yyyy-mm",
+			    minViewMode: 1,
 			});
 			$('.screen-btn1').on('click', function(e) {
 				e.preventDefault();

@@ -115,8 +115,8 @@ class merchant extends ecjia_merchant {
 		RC_Script::enqueue_script('smoke');
 
 		//时间控件
-		RC_Style::enqueue_style('datepicker', RC_Uri::admin_url('statics/lib/datepicker/datepicker.css'));
 		RC_Script::enqueue_script('bootstrap-datepicker', RC_Uri::admin_url('statics/lib/datepicker/bootstrap-datepicker.min.js'));
+		RC_Style::enqueue_style('datepicker', RC_Uri::admin_url('statics/lib/datepicker/datepicker.css'));
 
 		RC_Script::enqueue_script('order_list', RC_App::apps_url('statics/js/merchant_orders.js', __FILE__));
 		RC_Style::enqueue_style('aristo', RC_Uri::admin_url('statics/lib/jquery-ui/css/Aristo/Aristo.css'), array(), false, false);

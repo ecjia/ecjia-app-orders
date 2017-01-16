@@ -3,7 +3,8 @@
 	app.order_query = {
 		init : function() {
 			$(".date").datepicker({
-				format: "yyyy-mm-dd"
+				format: "yyyy-mm-dd",
+				container : '.main_content',
 			});
 			app.order_query.theFormsubmit();
 		},

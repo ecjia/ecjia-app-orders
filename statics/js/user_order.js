@@ -7,7 +7,8 @@
 		
 		theForm : function () {
 			$(".start_date,.end_date").datepicker({
-				format: "yyyy-mm-dd"
+				format: "yyyy-mm-dd",
+                container : '.main_content',
 			});
 			
 			$('.screen-btn').on('click', function(e) {

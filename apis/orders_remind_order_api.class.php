@@ -58,8 +58,8 @@ class orders_remind_order_api extends Component_Event_Api {
 			return array('new_orders' => 0, 'new_paid' => 0);
 		}
 		
-		$arr['new_orders'] = RC_DB::table('order_info')->where('add_time', '<=', $_SESSION['last_check'])->count();
-		$arr['new_paid'] = RC_DB::table('order_info')->where('pay_time', '<=', $_SESSION['last_check'])->count();
+		$arr['new_orders'] = RC_DB::table('order_info')->where('add_time', '<=', $_SESSION['last_check'])->where('is_delete', 0)->count();
+		$arr['new_paid'] = RC_DB::table('order_info')->where('pay_time', '<=', $_SESSION['last_check'])->where('is_delete', 0)->count();
 		
 		$_SESSION['last_check'] = RC_Time::gmtime();
 		if (!(is_numeric($arr['new_orders']) && is_numeric($arr['new_paid']))) {

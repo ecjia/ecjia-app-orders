@@ -207,7 +207,7 @@ ecjia.merchant.order.addedit();
 								{lang key='orders::order.label_tel'}{$val.tel}<br/>
 								{lang key='orders::order.label_mobile'}{$val.mobile}
 							</td>
-							<!-- <td>{lang key='orders::order.label_best_time'}{$val.best_time|escape}<br/>{lang key='orders::order.label_sign_building}{$val.sign_building|escape}<br/>email：{$val.email}</td> -->
+							<!-- <td>{lang key='orders::order.label_best_time'}{$val.best_time|escape}<br/>{lang key='orders::order.label_sign_building'}{$val.sign_building|escape}<br/>email：{$val.email}</td> -->
 						</tr>
 						<!-- {/foreach} -->
 						<tr>
@@ -469,7 +469,7 @@ ecjia.merchant.order.addedit();
 			<p align="center">
 				<button class="btn btn-info" type="submit" name="finish">{lang key='orders::order.button_submit'}</button>
 				<a class="cancel_order" data-href='{url path="orders/merchant/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn btn-info" type="button">{lang key='orders::order.button_cancel'}</button></a>
-				<input name="finish" type="hidden" value="{lang key='orders::order.button_submit}" />
+				<input name="finish" type="hidden" value="{lang key='orders::order.button_submit'}" />
 			</p>
 		</form>
 	</div>
@@ -563,7 +563,7 @@ ecjia.merchant.order.addedit();
 			<p align="center">
 				<button class="btn btn-info" type="submit" name="finish">{lang key='orders::order.button_finish'}</button>&nbsp;&nbsp;&nbsp;
 				<a class="cancel_order" data-href='{url path="orders/merchant/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn btn-info" type="button">{lang key='orders::order.button_cancel'}</button></a>
-				<input class="btn-info" name="finish" type="hidden" value="{lang key='orders::order.button_finish}" />
+				<input class="btn-info" name="finish" type="hidden" value="{lang key='orders::order.button_finish'}" />
 			</p>
 		</form>
 	</div>
@@ -609,7 +609,7 @@ ecjia.merchant.order.addedit();
 	</div>
 	<p align="center">
 		<button class="btn btn-info" type="submit" name="finish">{lang key='orders::order.button_submit'}</button>
-		<input name="finish" type="hidden" value="{lang key='orders::order.button_finish}" />
+		<input name="finish" type="hidden" value="{lang key='orders::order.button_finish'}" />
 		<a class="data-pjax" href='{url path="orders/merchant/info" args="order_id={$order_id}"}'><button class="btn btn-info" type="button">{lang key='orders::order.button_cancel'}</button></a>
 	</p>
 </form>

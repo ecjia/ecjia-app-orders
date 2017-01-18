@@ -1867,10 +1867,25 @@ class merchant extends ecjia_merchant {
 		/* 检查权限 */
 		$this->admin_priv('order_os_edit' , ecjia::MSGTYPE_JSON);
 		$order_id = '';
-
+		/* 取得订单id（可能是多个，多个sn）和操作备注（可能没有） */
+		if (isset($_POST['order_id'])) {
+		    /* 判断是一个还是多个 */
+		    if (is_array($_POST['order_id'])) {
+		        $order_id = implode(',', $_POST['order_id']);
+		    } else {
+		        $order_id = $_POST['order_id'];
+		    }
+		}
+		
+		$batch			= isset($_GET['batch']);		// 是否批处理
+		$action_note	= isset($_POST['action_note']) 	? trim($_POST['action_note']) 	: '';
+		$operation		= isset($_POST['operation']) 	? $_POST['operation'] 			: '';			// 订单操作
+		
 		/* 判断备注是否填写*/
 		if (empty($_POST['action_note'])) {
-		    return $this->showmessage(__('请填写备注信息！') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		    if ($batch != 1){
+		       return $this->showmessage(__('请填写备注信息！') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		    }
 		}
 		if (!empty($_REQUEST['order_id'])) {
 			$order_id = $_REQUEST['order_id'];

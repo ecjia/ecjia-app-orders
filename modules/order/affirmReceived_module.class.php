@@ -100,9 +100,14 @@ function affirm_received($order_id, $user_id = 0) {
         return new ecjia_error('order_invalid', RC_Lang::get('orders::order.order_invalid'));
     }     /* 修改订单发货状态为“确认收货” */
     else {
-        $data = array(
-            'shipping_status' => SS_RECEIVED
-        );
+        $data['shipping_status'] = SS_RECEIVED;
+        //如果货到付款，修改付款状态为已付款
+        if ($order['pay_id']) {
+            $payment = RC_DB::table('payment')->where('pay_id', $order['pay_id'])->first();
+            if ($payment['is_cod'] == 1) {
+                $data['pay_status'] = PS_PAYED;
+            }
+        }
         $query = $db->where(array('order_id' => $order_id))->update($data);
         if ($query) {
         	$db_order_status_log = RC_Model::model('orders/order_status_log_model');

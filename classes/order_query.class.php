@@ -61,7 +61,7 @@ class order_query extends order {
 	public function order_finished($alias = '') {
 		$where = array();
     	$where[$alias.'order_status'] = array(OS_CONFIRMED, OS_SPLITED);
-		$where[$alias.'shipping_status'] = array(SS_SHIPPED);
+		$where[$alias.'shipping_status'] = array(SS_SHIPPED, SS_RECEIVED);
 		$where[$alias.'pay_status'] = array(PS_PAYED, PS_PAYING);
 		$where[$alias.'is_delete'] = 0;
 		return $where;

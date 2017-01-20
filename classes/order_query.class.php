@@ -316,6 +316,10 @@ class order_query extends order {
             case CS_RECEIVED :
                 $this->where = array_merge($this->where,$this->order_received());
                 break;
+                
+            case CS_SHIPPED : 
+            	$this->where = array_merge($this->where,$this->order_shipped());
+            	break;
 
             case PS_PAYING :
                 if ($filter['composite_status'] != -1) {

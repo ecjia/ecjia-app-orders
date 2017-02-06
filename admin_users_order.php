@@ -99,7 +99,7 @@ class admin_users_order extends ecjia_admin {
 		$end_date 	= !empty($_GET['end_date']) 	? $_GET['end_date'] 	: RC_Time::local_date(ecjia::config('date_format'));
 
 		$filter['start_date'] 	= RC_Time::local_strtotime($start_date);
-		$filter['end_date'] 	= RC_Time::local_strtotime($end_date);
+		$filter['end_date'] 	= RC_Time::local_strtotime($end_date) + 24*3600;
 		$filter['sort_by'] 		= empty($_GET['sort_by']) 		? 'order_num' 	: trim($_GET['sort_by']);
 		$filter['sort_order'] 	= empty($_GET['sort_order']) 	? 'DESC' 		: trim($_GET['sort_order']);
 
@@ -126,8 +126,8 @@ class admin_users_order extends ecjia_admin {
 		$end_date 	= !empty($_GET['end_date']) 	? $_GET['end_date'] 	: RC_Time::local_date(ecjia::config('date_format'),RC_Time::local_strtotime('today'));
 
 		$filter['start_date'] 	= RC_Time::local_strtotime($start_date);
-		$filter['end_date'] 	= RC_Time::local_strtotime($end_date);
-
+		$filter['end_date'] 	= RC_Time::local_strtotime($end_date) + 24*3600;
+		
 		$filter['sort_by'] 		= empty($_GET['sort_by']) 		? 'order_num' 	: trim($_GET['sort_by']);
 		$filter['sort_order'] 	= empty($_GET['sort_order']) 	? 'DESC' 		: trim($_GET['sort_order']);
 
@@ -181,6 +181,7 @@ class admin_users_order extends ecjia_admin {
     	$users_order_data = $db_users
     		->select(RC_DB::raw('u.user_id, u.user_name, COUNT(*) AS order_num, SUM(o.goods_amount + o.tax + o.shipping_fee + o.insure_fee + o.pay_fee + o.pack_fee + o.card_fee) AS turnover'))
     		->orderby($filter['sort_by'], $filter['sort_order'])
+    		->orderby(turnover, 'desc')
     		->groupby(RC_DB::raw('u.user_id'))
     		->get();
 

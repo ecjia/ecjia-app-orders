@@ -369,11 +369,11 @@ class order_query extends order {
         $db_order_info->where(RC_DB::raw('o.is_delete'), 0);
         
         $filter_count = $db_order_info
-	        ->select(RC_DB::raw('count(*) as count'), RC_DB::raw('SUM(IF(o.store_id > 0, 1, 0)) as merchant'))
+	        ->select(RC_DB::raw('count(*) as count'), RC_DB::raw('SUM(IF(s.manage_mode = "self", 1, 0)) as self'))
 	        ->first();
         
         if (!empty($filter['type'])) {
-        	$db_order_info->where(RC_DB::raw('o.store_id'), '>', 0);
+        	$db_order_info->where(RC_DB::raw('s.manage_mode'), 'self');
         }
         
         $count = $db_order_info->count();

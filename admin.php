@@ -201,8 +201,8 @@ class admin extends ecjia_admin {
 				}
 			}
 		}
-		$getlast = $this->db_order_info->where(array_merge(array('order_id' => array('lt' => $order_id)), $where))->max('order_id');
-		$getnext = $this->db_order_info->where(array_merge(array('order_id' => array('gt' => $order_id)), $where))->min('order_id');
+		$getlast = $this->db_order_info->where(array_merge(array('order_id' => array('lt' => $order_id), 'is_delete' => array('eq' => '0')), $where))->max('order_id');
+		$getnext = $this->db_order_info->where(array_merge(array('order_id' => array('gt' => $order_id), 'is_delete' => array('eq' => '0')), $where))->min('order_id');
 		
 		$this->assign('prev_id', $getlast);
 		$this->assign('next_id', $getnext);

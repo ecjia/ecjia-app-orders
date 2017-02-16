@@ -59,7 +59,7 @@ class orders_module extends api_admin implements api_interface {
 		    return new ecjia_error(100, 'Invalid session');
 		}
 		
-		$result = $this->admin_priv('order_stats');
+		$result = $this->admin_priv('order_stats', ecjia::MSGTYPE_JSON);
 		if (is_ecjia_error($result)) {
 			return $result;
 		}

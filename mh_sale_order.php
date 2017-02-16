@@ -79,6 +79,7 @@ class mh_sale_order extends ecjia_merchant {
 	public function init() {
 		/* 权限检查 */ 
 		$this->admin_priv('sale_order_stats');
+
 		ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here('报表统计', RC_Uri::url('stats/mh_keywords_stats/init')));
 		ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('销售排行')));
 		
@@ -113,7 +114,8 @@ class mh_sale_order extends ecjia_merchant {
 	 */
 	public function download() {
 		/* 检查权限 */
-		$this->admin_priv('sale_order_stats');
+		$this->admin_priv('sale_order_stats', ecjia::MSGTYPE_JSON);
+		
 		/*时间参数*/
 		$start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date(ecjia::config('date_format'),RC_Time::local_strtotime('-1 month'));
 		$end_date   = !empty($_GET['end_date']) ? $_GET['end_date'] : RC_Time::local_date(ecjia::config('date_format'),RC_Time::local_strtotime('+1 day'));

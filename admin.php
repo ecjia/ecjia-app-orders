@@ -1870,7 +1870,7 @@ class admin extends ecjia_admin {
 	/*生成发货单*/
 	public function go_shipping() {
 		/* 查询：检查权限 */
-		$this->admin_priv('order_ss_edit', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_ss_edit');
 		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.order_operating')));
 		$order_id = $_GET['order_id'];
@@ -1888,9 +1888,9 @@ class admin extends ecjia_admin {
 		
 		/* 查询：根据订单是否完成 检查权限 */
 		if (order_finished($order)) {
-			$this->admin_priv('order_view_finished', ecjia::MSGTYPE_JSON);
+			$this->admin_priv('order_view_finished');
 		} else {
-			$this->admin_priv('order_view', ecjia::MSGTYPE_JSON);
+			$this->admin_priv('order_view');
 		}
 		
 		/* 查询：取得用户名 */

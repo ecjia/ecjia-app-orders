@@ -74,7 +74,7 @@ class admin_sale_order extends ecjia_admin {
 
 	public function init() {
 		/* 权限检查 */
-		$this->admin_priv('sale_order_stats', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('sale_order_stats');
 
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.sale_order_stats')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(

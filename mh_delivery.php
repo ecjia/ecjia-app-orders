@@ -101,8 +101,8 @@ class mh_delivery extends ecjia_merchant {
 	 */
 	public function init() {
 		/* 检查权限 */
+		$this->admin_priv('delivery_view');
 
-		$this->admin_priv('delivery_view', ecjia::MSGTYPE_JSON);
 		ecjia_screen::get_current_screen()->remove_last_nav_here();
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.order_delivery_list')));
 
@@ -128,7 +128,8 @@ class mh_delivery extends ecjia_merchant {
 	 */
 	public function delivery_info() {
 		/* 检查权限 */
-		$this->admin_priv('delivery_view', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('delivery_view');
+
 		$delivery_id = intval(trim($_GET['delivery_id']));
 		/* 根据发货单id查询发货单信息 */
 		if (!empty($delivery_id)) {
@@ -238,7 +239,8 @@ class mh_delivery extends ecjia_merchant {
 	 */
 	public function delivery_ship() {
 		/* 检查权限 */
-		$this->admin_priv('delivery_view' , ecjia::MSGTYPE_JSON);
+		$this->admin_priv('delivery_view', ecjia::MSGTYPE_JSON);
+		
 		$db_delivery = RC_Loader::load_app_model('delivery_viewmodel','orders');
 		/* 定义当前时间 */
 		define('GMTIME_UTC', RC_Time::gmtime()); // 获取 UTC 时间戳
@@ -399,31 +401,31 @@ class mh_delivery extends ecjia_merchant {
 			$staff_id = isset($_POST['staff_id']) ? intval($_POST['staff_id']) : 0;
 			$express_from = !empty($staff_id) ? 'assign' : 'grab';
 			$express_data = array(
-					'express_sn' 	=> date('YmdHis') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT),
-					'order_sn'		=> $delivery_order['order_sn'],
-					'order_id'		=> $delivery_order['order_id'],
-					'delivery_id'	=> $delivery_order['delivery_id'],
-					'delivery_sn'	=> $delivery_order['delivery_sn'],
-					'store_id'		=> $delivery_order['store_id'],
-					'user_id'		=> $delivery_order['user_id'],
-					'consignee'		=> $delivery_order['consignee'],
-					'address'		=> $delivery_order['address'],
-					'country'		=> $delivery_order['country'],
-					'province'		=> $delivery_order['province'],
-					'city'			=> $delivery_order['city'],
-					'district'		=> $delivery_order['district'],
-					'email'			=> $delivery_order['email'],
-					'mobile'		=> $delivery_order['mobile'],
-					'best_time'		=> $delivery_order['best_time'],
-					'remark'		=> '',
-					'shipping_fee'	=> '5.00',
-					'commision'		=> '',
-					'add_time'		=> RC_Time::gmtime(),
-					'longitude'		=> $delivery_order['longitude'],
-					'latitude'		=> $delivery_order['latitude'],
-					'from'			=> $express_from,
-					'status'		=> $express_from == 'grab' ? 0 : 1,
-					'staff_id'		=> $staff_id,
+				'express_sn' 	=> date('YmdHis') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT),
+				'order_sn'		=> $delivery_order['order_sn'],
+				'order_id'		=> $delivery_order['order_id'],
+				'delivery_id'	=> $delivery_order['delivery_id'],
+				'delivery_sn'	=> $delivery_order['delivery_sn'],
+				'store_id'		=> $delivery_order['store_id'],
+				'user_id'		=> $delivery_order['user_id'],
+				'consignee'		=> $delivery_order['consignee'],
+				'address'		=> $delivery_order['address'],
+				'country'		=> $delivery_order['country'],
+				'province'		=> $delivery_order['province'],
+				'city'			=> $delivery_order['city'],
+				'district'		=> $delivery_order['district'],
+				'email'			=> $delivery_order['email'],
+				'mobile'		=> $delivery_order['mobile'],
+				'best_time'		=> $delivery_order['best_time'],
+				'remark'		=> '',
+				'shipping_fee'	=> '5.00',
+				'commision'		=> '',
+				'add_time'		=> RC_Time::gmtime(),
+				'longitude'		=> $delivery_order['longitude'],
+				'latitude'		=> $delivery_order['latitude'],
+				'from'			=> $express_from,
+				'status'		=> $express_from == 'grab' ? 0 : 1,
+				'staff_id'		=> $staff_id,
 			);
 				
 			if ($staff_id > 0) {
@@ -634,7 +636,7 @@ class mh_delivery extends ecjia_merchant {
 	 */
 	public function delivery_cancel_ship() {
 		/* 检查权限 */
-		$this->admin_priv('delivery_view' , ecjia::MSGTYPE_JSON);
+		$this->admin_priv('delivery_view', ecjia::MSGTYPE_JSON);
 
 		/* 取得参数 */
 		$delivery				= '';
@@ -803,7 +805,7 @@ class mh_delivery extends ecjia_merchant {
 
 	/*收货人信息*/
 	public function consignee_info(){
-		$this->admin_priv('delivery_view' ,ecjia::MSGTYPE_JSON);
+		$this->admin_priv('delivery_view', ecjia::MSGTYPE_JSON);
 
 		$id = $_GET['delivery_id'];
 		if (!empty($id)) {

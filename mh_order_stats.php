@@ -172,7 +172,8 @@ class mh_order_stats extends ecjia_merchant {
 	 */
 	public function get_order_general() {
 	    /* 判断权限 */
-	    $this->admin_priv('order_stats');
+	    $this->admin_priv('order_stats', ecjia::MSGTYPE_JSON);
+
 		$is_multi = empty($_GET['is_multi']) ? false : true;
 		if (!$is_multi) {
 			/*时间参数*/
@@ -208,7 +209,8 @@ class mh_order_stats extends ecjia_merchant {
 	 */
 	public function get_order_status() {
 	    /* 判断权限 */
-	    $this->admin_priv('order_stats');
+	    $this->admin_priv('order_stats', ecjia::MSGTYPE_JSON);
+
 		if (!empty($_GET['year_month'])) {
 			$filter	= explode('.',$_GET['year_month']);
 			$arr 	= array_filter(json_decode(json_encode($filter),true));
@@ -254,7 +256,8 @@ class mh_order_stats extends ecjia_merchant {
 	 */
 	public function get_ship_status() {
 	    /* 判断权限 */
-	    $this->admin_priv('order_stats');
+	    $this->admin_priv('order_stats', ecjia::MSGTYPE_JSON);
+
 		$is_multi = empty($_GET['is_multi']) ? false : true;
 		if (!$is_multi) {
 			/*时间参数*/
@@ -280,7 +283,7 @@ class mh_order_stats extends ecjia_merchant {
 	 */
 	public function get_ship_stats() {
 	    /* 判断权限 */
-	    $this->admin_priv('order_stats');
+	    $this->admin_priv('order_stats', ecjia::MSGTYPE_JSON);
 		if (!empty($_GET['year_month'])) {
 			$filter	= explode('.', $_GET['year_month']);
 			$arr 	= array_filter(json_decode(json_encode($filter),true));
@@ -363,92 +366,6 @@ class mh_order_stats extends ecjia_merchant {
 
 			echo json_encode($format_ship_info);
 		}
-		/* array(
-		    [2015-12] => Array
-		    (
-		        [0] => Array
-		        (
-		            [ship_name] => 运费到付
-		            [order_num] => 2
-		            [shipping_time] => 2015-12
-		        )
-		        [1] => Array
-		        (
-		            [ship_name] => 圆通
-		            [order_num] => 55
-		            [shipping_time] => 2015-12
-		        )
-		        [2] => Array
-		        (
-		            [ship_name] => 申通通
-		            [order_num] => 15
-		            [shipping_time] => 2015-12
-		        )
-		    )
-
-		    [2015-09] => Array
-		    (
-		        [0] => Array
-		        (
-		            [ship_name] => 运费到付
-		            [order_num] => 2
-		            [shipping_time] => 2015-09
-		        )
-		        [1] => Array
-		        (
-		            [ship_name] => 圆通
-		            [order_num] => 55
-		            [shipping_time] => 2015-09
-		        )
-		        [2] => Array
-		        (
-		            [ship_name] => 申通通
-		            [order_num] => 15
-		            [shipping_time] => 2015-09
-		        )
-
-		    )
-
-		    [2016-10] => Array
-		    (
-		        [0] => Array
-		        (
-		            [ship_name] => 运费到付
-		            [order_num] => 2
-		            [shipping_time] => 2015-10
-		        )
-		        [1] => Array
-		        (
-		            [ship_name] => 圆通
-		            [order_num] => 55
-		            [shipping_time] => 2015-10
-		        )
-		        [2] => Array
-		        (
-		            [ship_name] => 申通通
-		            [order_num] => 15
-		            [shipping_time] => 2015-10
-		        )
-
-		    )
-		) */
-		/* array(
-		    '圆通' => array(
-		        '2015-01' => 10,
-		        '2015-03' => 10,
-		        '2015-04' => 40,
-		    ),
-		    '中通' => array(
-		        '2015-01' => 10,
-		        '2015-03' => 10,
-		        '2015-04' => 40,
-		    ),
-		    '韵达' => array(
-		        '2015-01' => 10,
-		        '2015-03' => 10,
-		        '2015-04' => 40,
-		    ),
-		); */
 	}
 
 	/**
@@ -456,7 +373,7 @@ class mh_order_stats extends ecjia_merchant {
 	 */
 	public function download() {
 		/* 判断权限 */
-		$this->admin_priv('order_stats');
+		$this->admin_priv('order_stats', ecjia::MSGTYPE_JSON);
 
 		/* 时间参数 */
 		$start_date = RC_Time::local_strtotime($_GET['start_date']);

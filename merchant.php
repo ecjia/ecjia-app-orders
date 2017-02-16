@@ -135,7 +135,7 @@ class merchant extends ecjia_merchant {
 	 */
 	public function init() {
 		/* 检查权限 */
-		$this->admin_priv('order_view', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_view');
 	    ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('订单列表')));
 		RC_Script::enqueue_script('order_query', RC_App::apps_url('statics/js/merchant_order_query.js', __FILE__));
 		
@@ -544,7 +544,7 @@ class merchant extends ecjia_merchant {
 	 * 根据订单号与订单id查询
 	 */
 	public function query_info() {
-		$this->admin_priv('order_view' , ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_view', ecjia::MSGTYPE_JSON);
 		$keywords = is_numeric($_POST['keywords']) ? $_POST['keywords'] : 0;
 		$ordercount = "order_id = ".$keywords ." OR order_sn = ".$keywords."";
 		$query = RC_DB::table('order_info')->whereRaw($ordercount)->first();
@@ -565,7 +565,7 @@ class merchant extends ecjia_merchant {
 	 */
 	public function order_query() {
 		/* 检查权限 */
-		$this->admin_priv('order_view', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_view');
 		
 	    ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('订单查询')));
 		RC_Script::enqueue_script('order_query', RC_App::apps_url('statics/js/merchant_order_query.js', __FILE__));
@@ -603,7 +603,7 @@ class merchant extends ecjia_merchant {
 	 * 合并订单
 	 */
 	public function merge() {
-		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_os_edit');
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('合并订单')));
 		RC_Script::enqueue_script('order_merge', RC_App::apps_url('statics/js/merchant_order_merge.js', __FILE__));
 
@@ -646,7 +646,7 @@ class merchant extends ecjia_merchant {
 	 * 合并订单操作 
 	 */
 	public function ajax_merge_order() {
-		$this->admin_priv('order_os_edit' , ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
 		$from_order_sn	= empty($_POST['from_order_sn'])	? '' : $_POST['from_order_sn'];
 		$to_order_sn	= empty($_POST['to_order_sn'])		? '' : $_POST['to_order_sn'];
 		
@@ -673,7 +673,7 @@ class merchant extends ecjia_merchant {
 	 */
 	public function edit() {
 		/* 检查权限 */
-		$this->admin_priv('order_edit', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_edit');
 		
 		/* 取得参数 order_id */
 		$order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
@@ -1585,7 +1585,7 @@ class merchant extends ecjia_merchant {
 		/* 删除订单商品 */
 		if ('drop_order_goods' == $func) {
 			/* 检查权限 */
-			$this->admin_priv('order_edit' , ecjia::MSGTYPE_JSON);
+			$this->admin_priv('order_edit', ecjia::MSGTYPE_JSON);
 		
 			/* 取得参数 */
 			$rec_id		= intval($_GET['rec_id']);
@@ -1653,7 +1653,7 @@ class merchant extends ecjia_merchant {
 	
 	public function go_shipping() {
 		/* 查询：检查权限 */
-		$this->admin_priv('order_ss_edit', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_ss_edit');
 		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here('订单操作：生成发货单'));
 		$order_id = $_GET['order_id'];
@@ -1865,7 +1865,7 @@ class merchant extends ecjia_merchant {
 	 */
 	public function operate() {
 		/* 检查权限 */
-		$this->admin_priv('order_os_edit' , ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
 		$order_id = '';
 		/* 取得订单id（可能是多个，多个sn）和操作备注（可能没有） */
 		if (isset($_POST['order_id'])) {
@@ -1924,14 +1924,14 @@ class merchant extends ecjia_merchant {
 		} elseif (isset($_GET['pay'])) {
 			/* 付款 */
 			/* 检查权限 */
-			$this->admin_priv('order_ps_edit');
+			$this->admin_priv('order_ps_edit', ecjia::MSGTYPE_JSON);
 			$require_note	= ecjia::config('order_pay_note') == 1;
 			$action			= RC_Lang::get('orders::order.op_pay');
 			$operation		= 'pay';
 		} elseif (isset($_GET['unpay'])) {
 			/* 未付款 */
 			/* 检查权限 */
-			$this->admin_priv('order_ps_edit');
+			$this->admin_priv('order_ps_edit', ecjia::MSGTYPE_JSON);
 		
 			$require_note	= ecjia::config('order_unpay_note') == 1;
 			$order			= order_info($order_id);
@@ -1954,7 +1954,7 @@ class merchant extends ecjia_merchant {
 		} elseif (isset($_GET['unship'])) {
 			/* 未发货 */
 			/* 检查权限 */
-			$this->admin_priv('order_ss_edit');
+			$this->admin_priv('order_ss_edit', ecjia::MSGTYPE_JSON);
 			$require_note	= ecjia::config('order_unship_note') == 1;
 			$action			= RC_Lang::get('orders::order.op_unship');
 			$operation		= 'unship';
@@ -2139,7 +2139,7 @@ class merchant extends ecjia_merchant {
 	 */
 	public function batch_operate_post() {
 		/* 检查权限 */
-		$this->admin_priv('order_os_edit' , ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
 		
 		/* 取得参数 */
 		$order_id_list	= $_POST['order_id'];		// 订单id（逗号格开的多个订单id）
@@ -2829,7 +2829,7 @@ class merchant extends ecjia_merchant {
 		} elseif ('unship' == $operation) {
 			/* 设为未发货 */
 			/* 检查权限 */
-			$this->admin_priv('order_ss_edit');
+			$this->admin_priv('order_ss_edit', ecjia::MSGTYPE_JSON);
 		
 			/* 标记订单为“未发货”，更新发货时间, 订单状态为“确认” */
 			update_order($order_id, array('shipping_status' => SS_UNSHIPPED, 'shipping_time' => 0, 'invoice_no' => '', 'order_status' => OS_CONFIRMED));
@@ -3186,7 +3186,7 @@ class merchant extends ecjia_merchant {
 	 */
 	public function remove_order() {
 		/* 检查权限 */
-		$this->admin_priv('order_edit',ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_edit', ecjia::MSGTYPE_JSON);
 		$order_id = intval($_REQUEST['order_id']);
 				
 		/* 检查订单是否允许删除操作 */
@@ -3217,7 +3217,7 @@ class merchant extends ecjia_merchant {
 	 */
 	public function search_users() {
 		/* 检查权限 */
-		$this->admin_priv('order_edit',ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_edit', ecjia::MSGTYPE_JSON);
 		$id_name = empty($_POST['id_name']) ? '' : trim($_POST['id_name']);
 
 		$result = array();
@@ -3305,8 +3305,6 @@ class merchant extends ecjia_merchant {
 			'pay_note' => $no
 		);
 		$query = $this->db_order_info->where(array('order_id' => $order_id))->update($data);
-		
-
 		if ($query) {
 			if (empty($no)) {
 				return $this->showmessage('N/A', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
@@ -3322,7 +3320,7 @@ class merchant extends ecjia_merchant {
 	 */
 	public function user_info() {
 		/* 检查权限 */
-		$this->admin_priv('order_edit');
+		$this->admin_priv('order_edit', ecjia::MSGTYPE_JSON);
 		$id = $_POST['user_id'];
 		$db_user = RC_Loader::load_app_model('users_model','user');
 		$row = $db_user->find(array('user_id' => $id));

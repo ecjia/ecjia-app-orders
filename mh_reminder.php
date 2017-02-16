@@ -72,7 +72,7 @@ class mh_reminder extends ecjia_merchant {
 	 * 发货提醒列表
 	 */
 	public function init() {
-		$this->admin_priv('delivery_view', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('delivery_view');
 
 		ecjia_screen::get_current_screen()->remove_last_nav_here();
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.reminder_list')));

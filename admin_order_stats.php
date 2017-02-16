@@ -81,7 +81,7 @@ class admin_order_stats extends ecjia_admin {
 	 * 订单统计
 	 */
 	public function init() {
-		$this->admin_priv('order_stats', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_stats');
 
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::statistic.order_stats')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
@@ -149,7 +149,7 @@ class admin_order_stats extends ecjia_admin {
 	 * 配送方式
 	 */
 	public function shipping_status() {
-		$this->admin_priv('order_stats', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_stats');
 
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::statistic.order_stats')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
@@ -219,7 +219,7 @@ class admin_order_stats extends ecjia_admin {
 	 * 支付方式
 	 */
 	public function pay_status() {
-		$this->admin_priv('order_stats', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_stats');
 
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::statistic.order_stats')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(

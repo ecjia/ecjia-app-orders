@@ -85,6 +85,7 @@ class mh_sale_general extends ecjia_merchant {
 	public function init() {
 		/*权限判断 */ 
 		$this->admin_priv('sale_general_stats');
+
 		ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here('报表统计', RC_Uri::url('stats/mh_keywords_stats/init')));
 		ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('销售概况')));
 		
@@ -131,6 +132,7 @@ class mh_sale_general extends ecjia_merchant {
 	public function sales_trends() {
 		/*权限判断 */
 		$this->admin_priv('sale_general_stats');
+		
 		ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('销售概况')));
 	
 		$this->assign('ur_here', RC_Lang::get('orders::statistic.report_sell'));
@@ -175,7 +177,7 @@ class mh_sale_general extends ecjia_merchant {
 	 */
 	public function get_order_status () {
 	    /* 权限判断 */
-	    $this->admin_priv('sale_general_stats');
+	    $this->admin_priv('sale_general_stats', ecjia::MSGTYPE_JSON);
 		$query_type = $_GET['query_type'] == 'year' ? 'year' : 'month';
 		if ($query_type =='year') {
 			/*时间参数*/
@@ -217,7 +219,7 @@ class mh_sale_general extends ecjia_merchant {
 	 */
 	public function download() {
 		/* 权限判断 */ 
-		$this->admin_priv('sale_general_stats');
+		$this->admin_priv('sale_general_stats', ecjia::MSGTYPE_JSON);
 		
 		$start_time = RC_Time::local_strtotime($_GET['start_time']);
 		$end_time   = RC_Time::local_strtotime($_GET['end_time']);

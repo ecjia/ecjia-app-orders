@@ -75,7 +75,7 @@ class mh_back extends ecjia_merchant {
 	 */
 	public function init() {
 		/* 检查权限 */
-		$this->admin_priv('back_view', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('back_view');
 
 		ecjia_screen::get_current_screen()->remove_last_nav_here();
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.order_back_list')));
@@ -102,7 +102,7 @@ class mh_back extends ecjia_merchant {
 	 */
 	public function back_info() {
 		/* 检查权限 */
-		$this->admin_priv('back_view', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('back_view');
 
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.return_look')));
         $store_id = $_SESSION['store_id'];
@@ -165,7 +165,7 @@ class mh_back extends ecjia_merchant {
 	/* 退货单删除 */
 	public function remove() {
 		/* 检查权限 */
-		$this->admin_priv('order_os_edit' , ecjia::MSGTYPE_JSON);
+		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
 		$back_id = $_REQUEST['back_id'];
 		/* 记录日志 */
 		ecjia_admin_log::instance()->add_object('order_back', RC_Lang::get('orders::order.back_sn'));
@@ -185,7 +185,7 @@ class mh_back extends ecjia_merchant {
 
 	/*收货人信息*/
 	public function consignee_info(){
-		$this->admin_priv('back_view' ,ecjia::MSGTYPE_JSON);
+		$this->admin_priv('back_view', ecjia::MSGTYPE_JSON);
 		$id = $_GET['back_id'];
 		if (!empty($id)) {
 			$field = array('order_id', 'consignee', 'address', 'country', 'province', 'city', 'district', 'sign_building', 'email', 'zipcode', 'tel', 'mobile', 'best_time');

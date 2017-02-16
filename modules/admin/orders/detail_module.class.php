@@ -57,7 +57,7 @@ class detail_module extends api_admin implements api_interface {
         if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
             return new ecjia_error(100, 'Invalid session');
         }
-		$result = $this->admin_priv('order_view', ecjia::MSGTYPE_JSON);
+		$result = $this->admin_priv('order_view');
  		if (is_ecjia_error($result)) {
  			return $result;
  		}

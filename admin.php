@@ -234,7 +234,7 @@ class admin extends ecjia_admin {
 			$this->assign('pay_key', true);
 		}
 		if ($order['shipping_time'] > 0) {
-			if ($order['shipping_status'] == 2) {
+			if ($order['shipping_status'] == SS_RECEIVED) {
 				$time_key = 4;
 			} else {
 				$time_key = 3;

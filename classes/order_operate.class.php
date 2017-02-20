@@ -438,7 +438,7 @@ class order_operate {
 		if ($this->update_order($order['order_id'], $arr)) {
 		    /* 记录log */
 		    $this->order_action($order['order_sn'], $order['order_status'], SS_RECEIVED, $order['pay_status'], $note['action_note']);
-		    RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => 1, 'order_id' => $order_id, 'order_amount' => $order['order_amount']));
+		    RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => 1, 'order_id' => $order['order_id'], 'order_amount' => $order['order_amount']));
 		    return true;
 		} else {
 		    return false;
@@ -487,7 +487,7 @@ class order_operate {
 	 */
 	private function order_action($order_sn, $order_status, $shipping_status, $pay_status, $note = '', $username = null, $place = 0) {
 		if (is_null ( $username )) {
-			$username = $_SESSION ['admin_name'];
+			$username = empty($_SESSION ['admin_name']) ? '系统' : $_SESSION ['admin_name'];
 		}
 	
 		$row = RC_DB::table('order_info')->where('order_sn', $order_sn)->first();

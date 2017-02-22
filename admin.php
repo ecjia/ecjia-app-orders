@@ -641,219 +641,219 @@ class admin extends ecjia_admin {
 	/**
 	 * 添加订单（载入页面）
 	 */
-	public function add() {
-		/* 检查权限 */
-		$this->admin_priv('order_edit');
+// 	public function add() {
+// 		/* 检查权限 */
+// 		$this->admin_priv('order_edit');
 		
-		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('system::system.08_add_order')));
-		ecjia_screen::get_current_screen()->add_help_tab(array(
-			'id'		=> 'overview',
-			'title'		=> RC_Lang::get('orders::order.overview'),
-			'content'	=> '<p>' . RC_Lang::get('orders::order.add_order_help') . '</p>'
-		));
+// 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('system::system.08_add_order')));
+// 		ecjia_screen::get_current_screen()->add_help_tab(array(
+// 			'id'		=> 'overview',
+// 			'title'		=> RC_Lang::get('orders::order.overview'),
+// 			'content'	=> '<p>' . RC_Lang::get('orders::order.add_order_help') . '</p>'
+// 		));
 		
-		ecjia_screen::get_current_screen()->set_help_sidebar(
-			'<p><strong>' . RC_Lang::get('orders::order.more_info') . '</strong></p>' .
-			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:添加订单" target="_blank">'. RC_Lang::get('orders::order.about_add_order') .'</a>') . '</p>'
-		);
+// 		ecjia_screen::get_current_screen()->set_help_sidebar(
+// 			'<p><strong>' . RC_Lang::get('orders::order.more_info') . '</strong></p>' .
+// 			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:添加订单" target="_blank">'. RC_Lang::get('orders::order.about_add_order') .'</a>') . '</p>'
+// 		);
 		
-		/* 取得参数 order_id */
-		$order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
+// 		/* 取得参数 order_id */
+// 		$order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
 
-		/* 取得参数 step */
-		$step_list	= array('user_select','user', 'goods', 'consignee', 'shipping', 'payment', 'other', 'money');
-		$step		= isset($_GET['step']) && in_array($_GET['step'], $step_list) ? $_GET['step'] : 'user_select';
+// 		/* 取得参数 step */
+// 		$step_list	= array('user_select','user', 'goods', 'consignee', 'shipping', 'payment', 'other', 'money');
+// 		$step		= isset($_GET['step']) && in_array($_GET['step'], $step_list) ? $_GET['step'] : 'user_select';
 		
-		$key = array_search($step, $step_list);
-		$this->assign('time_key', $key);
-		/* 取得参数 act */
-		$act = ROUTE_A; 
-		$this->assign('order_id', $order_id);
-		$this->assign('step', $step);
-		$this->assign('step_act', $act);
-		/* 取得订单信息 */
-		if ($order_id > 0) {
-			$order = order_info($order_id);
-			/* 发货单格式化 */
-			$order['invoice_no'] = str_replace('<br>', ',', $order['invoice_no']);
+// 		$key = array_search($step, $step_list);
+// 		$this->assign('time_key', $key);
+// 		/* 取得参数 act */
+// 		$act = ROUTE_A; 
+// 		$this->assign('order_id', $order_id);
+// 		$this->assign('step', $step);
+// 		$this->assign('step_act', $act);
+// 		/* 取得订单信息 */
+// 		if ($order_id > 0) {
+// 			$order = order_info($order_id);
+// 			/* 发货单格式化 */
+// 			$order['invoice_no'] = str_replace('<br>', ',', $order['invoice_no']);
 			
-			if ($order['user_id'] > 0) {
-				$user_info = RC_Api::api('user', 'user_info', array('user_id' => $order['user_id']));
+// 			if ($order['user_id'] > 0) {
+// 				$user_info = RC_Api::api('user', 'user_info', array('user_id' => $order['user_id']));
 
-				$this->assign('user_name', $user_info['user_name']);
-			} else {
-				$this->assign('user_name', RC_Lang::get('orders::order.anonymous'));
-			}
-			$this->assign('order', $order);
-		} 
+// 				$this->assign('user_name', $user_info['user_name']);
+// 			} else {
+// 				$this->assign('user_name', RC_Lang::get('orders::order.anonymous'));
+// 			}
+// 			$this->assign('order', $order);
+// 		} 
 		
-		if ($step == 'user_select') {
-			$ur_here = RC_Lang::get('orders::order.pls_add_orders_user_type');
-		}
-		/* 选择会员 */
-		if ('user' == $step) {
-			$ur_here = RC_Lang::get('orders::order.pls_add_orders_user');
-			// 无操作
-		} elseif ('goods' == $step) {
-			/* 增删改商品 */
-			$ur_here = RC_Lang::get('orders::order.add_order_goods_info');
-			/* 取得订单商品 */
-			$goods_list = order_goods($order_id);
+// 		if ($step == 'user_select') {
+// 			$ur_here = RC_Lang::get('orders::order.pls_add_orders_user_type');
+// 		}
+// 		/* 选择会员 */
+// 		if ('user' == $step) {
+// 			$ur_here = RC_Lang::get('orders::order.pls_add_orders_user');
+// 			// 无操作
+// 		} elseif ('goods' == $step) {
+// 			/* 增删改商品 */
+// 			$ur_here = RC_Lang::get('orders::order.add_order_goods_info');
+// 			/* 取得订单商品 */
+// 			$goods_list = order_goods($order_id);
 
-			if (!empty($goods_list)) {
-				foreach ($goods_list AS $key => $goods) {
-					/* 计算属性数 */
-					$attr = $goods['goods_attr'];
-					if ($attr == '') {
-						$goods_list[$key]['rows'] = 1;
-					} else {
-						$goods_list[$key]['rows'] = count(explode(chr(13), $attr));
-					}
-				}
-			}
-			$this->assign('goods_list', $goods_list);
-			/* 取得商品总金额 */
-			$this->assign('goods_amount', price_format(order_amount($order_id)));
-		} elseif ('consignee' == $step) {
-			// 设置收货人
-			$ur_here = RC_Lang::get('orders::order.confirm_shipping_address');
-			/* 查询是否存在实体商品 */
-			$exist_real_goods = exist_real_goods($order_id);
-			$this->assign('exist_real_goods', $exist_real_goods);
+// 			if (!empty($goods_list)) {
+// 				foreach ($goods_list AS $key => $goods) {
+// 					/* 计算属性数 */
+// 					$attr = $goods['goods_attr'];
+// 					if ($attr == '') {
+// 						$goods_list[$key]['rows'] = 1;
+// 					} else {
+// 						$goods_list[$key]['rows'] = count(explode(chr(13), $attr));
+// 					}
+// 				}
+// 			}
+// 			$this->assign('goods_list', $goods_list);
+// 			/* 取得商品总金额 */
+// 			$this->assign('goods_amount', price_format(order_amount($order_id)));
+// 		} elseif ('consignee' == $step) {
+// 			// 设置收货人
+// 			$ur_here = RC_Lang::get('orders::order.confirm_shipping_address');
+// 			/* 查询是否存在实体商品 */
+// 			$exist_real_goods = exist_real_goods($order_id);
+// 			$this->assign('exist_real_goods', $exist_real_goods);
 			
-			/* 取得收货地址列表 */
-			if ($order['user_id'] > 0) {
-				$address_info = RC_DB::table('user_address as ua')
-					->leftJoin('users as u', RC_DB::raw('ua.address_id'), '=', RC_DB::raw('u.address_id'))
-					->where(RC_DB::raw('u.user_id'), $order['user_id'])
-					->select(RC_DB::raw('ua.*'))
-					->first();
+// 			/* 取得收货地址列表 */
+// 			if ($order['user_id'] > 0) {
+// 				$address_info = RC_DB::table('user_address as ua')
+// 					->leftJoin('users as u', RC_DB::raw('ua.address_id'), '=', RC_DB::raw('u.address_id'))
+// 					->where(RC_DB::raw('u.user_id'), $order['user_id'])
+// 					->select(RC_DB::raw('ua.*'))
+// 					->first();
 
-				if (empty($address_info)) {
-					$field = "ua.*, IFNULL(c.region_name, '') as country_name, IFNULL(p.region_name, '') as province_name, IFNULL(t.region_name, '') as city_name,IFNULL(d.region_name, '') as district_name";
-					$orderby = 'ua.address_id desc';
-				} else {
-					$field = "ua.*, IF(address_id=".$address_info['address_id'].",1,0) as default_address, IFNULL(c.region_name, '') as country_name, IFNULL(p.region_name, '') as province_name, IFNULL(t.region_name, '') as city_name, IFNULL(d.region_name, '') as district_name";
-					$orderby = 'default_address desc';
-				}
+// 				if (empty($address_info)) {
+// 					$field = "ua.*, IFNULL(c.region_name, '') as country_name, IFNULL(p.region_name, '') as province_name, IFNULL(t.region_name, '') as city_name,IFNULL(d.region_name, '') as district_name";
+// 					$orderby = 'ua.address_id desc';
+// 				} else {
+// 					$field = "ua.*, IF(address_id=".$address_info['address_id'].",1,0) as default_address, IFNULL(c.region_name, '') as country_name, IFNULL(p.region_name, '') as province_name, IFNULL(t.region_name, '') as city_name, IFNULL(d.region_name, '') as district_name";
+// 					$orderby = 'default_address desc';
+// 				}
 				
-				$row = RC_DB::table('user_address as ua')
-					->leftJoin('region as c', RC_DB::raw('c.region_id'), '=', RC_DB::raw('ua.country'))
-					->leftJoin('region as p', RC_DB::raw('p.region_id'), '=', RC_DB::raw('ua.province'))
-					->leftJoin('region as t', RC_DB::raw('t.region_id'), '=', RC_DB::raw('ua.city'))
-					->leftJoin('region as d', RC_DB::raw('d.region_id'), '=', RC_DB::raw('ua.district'))
-					->selectRaw($field)
-					->orderbyRaw($orderby)
-					->where('user_id', $order['user_id'])
-					->get();
+// 				$row = RC_DB::table('user_address as ua')
+// 					->leftJoin('region as c', RC_DB::raw('c.region_id'), '=', RC_DB::raw('ua.country'))
+// 					->leftJoin('region as p', RC_DB::raw('p.region_id'), '=', RC_DB::raw('ua.province'))
+// 					->leftJoin('region as t', RC_DB::raw('t.region_id'), '=', RC_DB::raw('ua.city'))
+// 					->leftJoin('region as d', RC_DB::raw('d.region_id'), '=', RC_DB::raw('ua.district'))
+// 					->selectRaw($field)
+// 					->orderbyRaw($orderby)
+// 					->where('user_id', $order['user_id'])
+// 					->get();
 					
-				$this->assign('address_list', $row);
-			}
-			if ($exist_real_goods) {
-				/* 取得国家 */
-				$this->assign('country_list', $this->get_regions());
-				if ($order['country'] > 0) {
-					/* 取得省份 */
-					$this->assign('province_list', $this->get_regions(1, $order['country']));
-					if ($order['province'] > 0) {
-						/* 取得城市 */
-						$this->assign('city_list', $this->get_regions(2, $order['province']));
-						if ($order['city'] > 0) {
-							/* 取得区域 */
-							$this->assign('district_list', $this->get_regions(3, $order['city']));
-						}
-					}
-				}
-			}
-		} elseif ('shipping' == $step) {
-			/* 查询是否存在实体商品 */
-			$exist_real_goods = exist_real_goods($order_id);
+// 				$this->assign('address_list', $row);
+// 			}
+// 			if ($exist_real_goods) {
+// 				/* 取得国家 */
+// 				$this->assign('country_list', $this->get_regions());
+// 				if ($order['country'] > 0) {
+// 					/* 取得省份 */
+// 					$this->assign('province_list', $this->get_regions(1, $order['country']));
+// 					if ($order['province'] > 0) {
+// 						/* 取得城市 */
+// 						$this->assign('city_list', $this->get_regions(2, $order['province']));
+// 						if ($order['city'] > 0) {
+// 							/* 取得区域 */
+// 							$this->assign('district_list', $this->get_regions(3, $order['city']));
+// 						}
+// 					}
+// 				}
+// 			}
+// 		} elseif ('shipping' == $step) {
+// 			/* 查询是否存在实体商品 */
+// 			$exist_real_goods = exist_real_goods($order_id);
 
-			if ($exist_real_goods) {
-				// 选择配送方式
-				$ur_here = RC_Lang::get('orders::order.add_order_shipping');
-				/* 取得可用的配送方式列表 */
-				$region_id_list = array(
-					$order['country'], $order['province'], $order['city'], $order['district']
-				);
-				$shipping_method = RC_Loader::load_app_class("shipping_method", "shipping");
-				$shipping_list = $shipping_method->available_shipping_list($region_id_list, $order['store_id']);
+// 			if ($exist_real_goods) {
+// 				// 选择配送方式
+// 				$ur_here = RC_Lang::get('orders::order.add_order_shipping');
+// 				/* 取得可用的配送方式列表 */
+// 				$region_id_list = array(
+// 					$order['country'], $order['province'], $order['city'], $order['district']
+// 				);
+// 				$shipping_method = RC_Loader::load_app_class("shipping_method", "shipping");
+// 				$shipping_list = $shipping_method->available_shipping_list($region_id_list, $order['store_id']);
 				
-				/* 取得配送费用 */
-				$total = order_weight_price($order_id);
-				if (!empty($shipping_list)) {
-					foreach ($shipping_list AS $key => $shipping) {
-						$shipping_fee = $shipping_method->shipping_fee($shipping['shipping_code'], unserialize($shipping['configure']), $total['weight'], $total['amount'], $total['number']);
-						$shipping_list[$key]['shipping_fee']		= $shipping_fee;
-						$shipping_list[$key]['format_shipping_fee']	= price_format($shipping_fee);
-						$shipping_list[$key]['free_money']			= price_format($shipping['configure']['free_money']);
-					}
-				}
+// 				/* 取得配送费用 */
+// 				$total = order_weight_price($order_id);
+// 				if (!empty($shipping_list)) {
+// 					foreach ($shipping_list AS $key => $shipping) {
+// 						$shipping_fee = $shipping_method->shipping_fee($shipping['shipping_code'], unserialize($shipping['configure']), $total['weight'], $total['amount'], $total['number']);
+// 						$shipping_list[$key]['shipping_fee']		= $shipping_fee;
+// 						$shipping_list[$key]['format_shipping_fee']	= price_format($shipping_fee);
+// 						$shipping_list[$key]['free_money']			= price_format($shipping['configure']['free_money']);
+// 					}
+// 				}
 				
-				$this->assign('shipping_list', $shipping_list);
-			}
+// 				$this->assign('shipping_list', $shipping_list);
+// 			}
 			
-			// 选择支付方式
-			$ur_heres = RC_Lang::get('orders::order.add_order_payment');
-			/* 取得可用的支付方式列表 */
-			$payment_method = RC_Loader::load_app_class('payment_method','payment');
-			if (exist_real_goods($order_id)) {
-				$shipping_method = RC_Loader::load_app_class('shipping_method','shipping');
-				/* 存在实体商品 */
-				$region_id_list = array(
-					$order['country'], $order['province'], $order['city'], $order['district']
-				);
-				$shipping_area	= $shipping_method->shipping_area_info($order['shipping_id'], $region_id_list);
-				$pay_fee		= ($shipping_area['support_cod'] == 1) ? $shipping_area['pay_fee'] : 0;
-				$payment_list	= $payment_method->available_payment_list(true, $pay_fee);
-			} else {
-				/* 不存在实体商品 */
-				$payment_list = $payment_method->available_payment_list(false);
-			}
-			/* 过滤掉使用余额支付 */
-			foreach ($payment_list as $key => $payment) {
-				if ($payment['pay_code'] == 'balance' ||$payment['pay_code'] == 'pay_balance') {
-					unset($payment_list[$key]);
-				}
-			}
-			$this->assign('ur_heres', $ur_heres);
-			$this->assign('exist_real_goods', $exist_real_goods);
-			$this->assign('payment_list', $payment_list);
-		} elseif ('other' == $step) {
-			// 选择包装、贺卡
-			$ur_here = RC_Lang::get('orders::order.add_order_other_info');
-			/* 查询是否存在实体商品 */
-			$exist_real_goods = exist_real_goods($order_id);
-			$this->assign('exist_real_goods', $exist_real_goods);
-		} elseif ('money' == $step) {
-			// 费用
-			$ur_here = RC_Lang::get('orders::order.add_order_money_info');
-			/* 查询是否存在实体商品 */
-			$exist_real_goods = exist_real_goods($order_id);
-			$this->assign('exist_real_goods', $exist_real_goods);
+// 			// 选择支付方式
+// 			$ur_heres = RC_Lang::get('orders::order.add_order_payment');
+// 			/* 取得可用的支付方式列表 */
+// 			$payment_method = RC_Loader::load_app_class('payment_method','payment');
+// 			if (exist_real_goods($order_id)) {
+// 				$shipping_method = RC_Loader::load_app_class('shipping_method','shipping');
+// 				/* 存在实体商品 */
+// 				$region_id_list = array(
+// 					$order['country'], $order['province'], $order['city'], $order['district']
+// 				);
+// 				$shipping_area	= $shipping_method->shipping_area_info($order['shipping_id'], $region_id_list);
+// 				$pay_fee		= ($shipping_area['support_cod'] == 1) ? $shipping_area['pay_fee'] : 0;
+// 				$payment_list	= $payment_method->available_payment_list(true, $pay_fee);
+// 			} else {
+// 				/* 不存在实体商品 */
+// 				$payment_list = $payment_method->available_payment_list(false);
+// 			}
+// 			/* 过滤掉使用余额支付 */
+// 			foreach ($payment_list as $key => $payment) {
+// 				if ($payment['pay_code'] == 'balance' ||$payment['pay_code'] == 'pay_balance') {
+// 					unset($payment_list[$key]);
+// 				}
+// 			}
+// 			$this->assign('ur_heres', $ur_heres);
+// 			$this->assign('exist_real_goods', $exist_real_goods);
+// 			$this->assign('payment_list', $payment_list);
+// 		} elseif ('other' == $step) {
+// 			// 选择包装、贺卡
+// 			$ur_here = RC_Lang::get('orders::order.add_order_other_info');
+// 			/* 查询是否存在实体商品 */
+// 			$exist_real_goods = exist_real_goods($order_id);
+// 			$this->assign('exist_real_goods', $exist_real_goods);
+// 		} elseif ('money' == $step) {
+// 			// 费用
+// 			$ur_here = RC_Lang::get('orders::order.add_order_money_info');
+// 			/* 查询是否存在实体商品 */
+// 			$exist_real_goods = exist_real_goods($order_id);
+// 			$this->assign('exist_real_goods', $exist_real_goods);
 		
-			/* 取得用户信息 */
-			if ($order['user_id'] > 0) {
-				$user = user_info($order['user_id']);
-				/* 计算可用余额 */
-				$this->assign('available_user_money', $order['surplus'] + $user['user_money']);
-				/* 计算可用积分 */
-				$this->assign('available_pay_points', $order['integral'] + $user['pay_points']);
-				/* 取得用户可用红包 */
-				RC_Loader::load_app_func('admin_bonus', 'bonus');
-				$user_bonus = user_bonus($order['user_id'], $order['goods_amount']);
+// 			/* 取得用户信息 */
+// 			if ($order['user_id'] > 0) {
+// 				$user = user_info($order['user_id']);
+// 				/* 计算可用余额 */
+// 				$this->assign('available_user_money', $order['surplus'] + $user['user_money']);
+// 				/* 计算可用积分 */
+// 				$this->assign('available_pay_points', $order['integral'] + $user['pay_points']);
+// 				/* 取得用户可用红包 */
+// 				RC_Loader::load_app_func('admin_bonus', 'bonus');
+// 				$user_bonus = user_bonus($order['user_id'], $order['goods_amount']);
 				
-				if ($order['bonus_id'] > 0) {
-					$bonus			= bonus_info($order['bonus_id']);
-					$user_bonus[]	= $bonus;
-				}
-				$this->assign('available_bonus', $user_bonus);
-			}
-		} 
-		$this->assign('ur_here', $ur_here);
-		$this->assign_lang();
-		$this->display('order_step.dwt');
-	}
+// 				if ($order['bonus_id'] > 0) {
+// 					$bonus			= bonus_info($order['bonus_id']);
+// 					$user_bonus[]	= $bonus;
+// 				}
+// 				$this->assign('available_bonus', $user_bonus);
+// 			}
+// 		} 
+// 		$this->assign('ur_here', $ur_here);
+// 		$this->assign_lang();
+// 		$this->display('order_step.dwt');
+// 	}
 	
 	/**
 	 * 修改订单（载入页面）
@@ -1100,7 +1100,7 @@ class admin extends ecjia_admin {
 		$step_act = isset($_GET['step_act']) ? $_GET['step_act'] : 'add';
 		
 		/* 插入订单信息 */
-		if ('user' == $step || ('user_select'==$step && $_GET['user']=='0')) {
+		if ('user' == $step || ('user_select' == $step && $_GET['user']=='0')) {
 			/* 取得参数：user_id */
 			$user_id = (!empty($_POST['anonymous']) && $_POST['anonymous'] == 1) ? 0 : intval($_POST['user']);
 			
@@ -1135,7 +1135,6 @@ class admin extends ecjia_admin {
 			$url = RC_Uri::url('orders/admin/'.$step_act,"order_id=" . $order_id . "&step=goods");
 			return $this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('url' => $url));
 		} elseif ('edit_goods' == $step) {
-			
 			/* 编辑商品信息 */
 			if (isset($_POST['rec_id'])) {
 				foreach ($_POST['rec_id'] AS $key => $rec_id) {
@@ -1670,7 +1669,6 @@ class admin extends ecjia_admin {
 					}
 				}
 			}
-		
 			update_order($order_id, $order);
 		
 			/* 更新 pay_log */

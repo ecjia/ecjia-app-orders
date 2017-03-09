@@ -134,6 +134,7 @@ class detail_module extends api_front implements api_interface {
 			}
 
 			$goods_list[$k] = array(
+			    'rec_id'		=> $v['rec_id'],
 				'goods_id'		=> $v['goods_id'],
 				'name'			=> $v['goods_name'],
 				'goods_attr'	=> empty($attr) ? '' : $attr,
@@ -141,6 +142,9 @@ class detail_module extends api_front implements api_interface {
 				'subtotal'		=> price_format($v['subtotal'], false),
 				'formated_shop_price' => $v['goods_price'] > 0 ? price_format($v['goods_price'], false) : __('免费'),
 				'is_commented'	=> $v['is_commented'],
+			    'comment_rank'  => $v['comment_rank'],
+			    'comment_content' => $v['comment_content'],
+			    'comment_picture' => array(),
 				'img' => array(
 					'small'	=> !empty($v['goods_thumb']) ? RC_Upload::upload_url($v['goods_thumb']) : '',
 					'thumb'	=> !empty($v['goods_img']) ? RC_Upload::upload_url($v['goods_img']) : '',

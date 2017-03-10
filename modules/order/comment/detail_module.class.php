@@ -58,51 +58,44 @@ class detail_module  extends api_front implements api_interface {
 		if ($_SESSION['user_id'] < 1) {
 			return new ecjia_error(100, 'Invalid session');
 		}
+
+		$rec_id = $this->requestData('rec_id', 0);
+		if (empty($rec_id)) {
+			return new ecjia_error('invalid_parameter', RC_Lang::get('system::system.invalid_parameter'));
+		}
+		$field = 'oi.order_id, og.rec_id, og.goods_name, og.goods_price, c.comment_id, c.content, c.comment_rank, c.has_image';
 		
-// 		$rec_id = _POST('rec_id', 0);
+		$comment_result = RC_DB::table('order_info as oi')
+			->leftJoin('order_goods as og', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('og.order_id'))
+			->leftJoin('comment as c', RC_DB::raw('og.rec_id'), '=', RC_DB::raw('c.rec_id'))
+			->leftJoin('term_attachment as t', RC_DB::raw('c.comment_id'), '=', RC_DB::raw('t.object_id'))
+			->selectRaw($field)
+			->where(RC_DB::raw('oi.user_id'), $_SESSION['user_id'])
+			->where(RC_DB::raw('og.rec_id'), $rec_id)
+			->where(RC_DB::raw('oi.shipping_status'), SS_RECEIVED)
+			->first();
+			
+		if (empty($comment_result)) {
+			return new ecjia_error('order_error', '订单信息不存在！');
+		}
 		
-// 		$order_db = RC_Model::model('orders/order_order_infogoods_viewmodel');
-// 		$order_db->view = array(
-// 				'order_goods' => array(
-// 						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-// 						'alias'	=> 'og',
-// 						'on'	=> 'oi.order_id = og.order_id'
-// 				),
-// 				'comment' => array(
-// 						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-// 						'alias'	=> 'c',
-// 						'on'	=> 'og.rec_id = c.rec_id'
-// 				),
-// 				'comment_img' => array(
-// 						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-// 						'alias'	=> 'ci',
-// 						'on'	=> 'c.comment_id = ci.comment_id'
-// 				),
-// 		);
+		$comment_info = array(
+			'comment_goods'		=> $comment_result['comment_rank'],
+			'comment_content'	=> $comment_result['content'],
+			'comment_image'		=> array(),
+		);
 		
-// 		$field = 'oi.order_id, og.rec_id, og.goods_name, og.goods_price, c.comment_id, c.content, c.comment_rank';
-// 		$comment_result = $order_db->field($field)->where(array('oi.user_id' => $_SESSION['user_id'], 'og.rec_id' => $rec_id, 'oi.shipping_status' => SS_RECEIVED))->find();
-		
-// 		if (empty($comment_result)) {
-// 			return new ecjia_error('order_error', '订单信息不存在！');
-// 		}
-		
-// 		$comment_info = array(
-// 							'comment_goods'		=> $comment_result['comment_rank'],
-// 							'comment_content'	=> $comment_result['content'],
-// 							'comment_image'		=> array(),
-// 		);
-// 		if (!empty($comment_result['comment_rank']) && !empty($comment_result['content'])) {
-// 			$comment_image = RC_Model::model('orders/comment_img_model')->where(array('comment_id' => $comment_result['comment_id']))->select();
-// 			if (!empty($comment_image)) {
-// 				foreach ($comment_image as $val) {
-// 					$comment_info['comment_image'][] = RC_Upload::upload_url($val['comment_img']);
-// 				}
-// 			}
-// 		}
-		
-// 		return $comment_info;
-		return array();
+		if ($comment_result['has_image'] == 1) {
+			$comment_image = RC_DB::table('term_attachment')->where('object_id', $comment_result['comment_id'])->get();
+			if (!empty($comment_image)) {
+				foreach ($comment_image as $val) {
+					if (!empty($val['file_path'])) {
+						$comment_info['comment_image'][] = RC_Upload::upload_url($val['file_path']);
+					}
+				}
+			}
+		}
+		return $comment_info;
 	}
 }
 

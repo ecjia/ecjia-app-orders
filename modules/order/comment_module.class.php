@@ -54,64 +54,49 @@ defined('IN_ECJIA') or exit('No permission resources.');
 class comment_module extends api_front implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
 
+//         $user_id = 26;
+//         $order_id = 1937;
+        
 		$user_id = $_SESSION['user_id'];
 		if ($user_id < 1 ) {
 			return new ecjia_error(100, 'Invalid session');
 		}
-		$order_id = _POST('order_id', 0);
+		$order_id = $this->requestData('order_id', 0);
+		if (empty($order_id)) {
+		    return new ecjia_error('invalid_parameter', RC_Lang::get('system::system.invalid_parameter'));
+		}
 		
-// 		$order_db = RC_Model::model('orders/order_order_infogoods_viewmodel');
-// 		$order_db->view = array(
-// 				'order_info' => array(
-// 						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-// 						'alias'	=> 'oii',
-// 						'on'	=> 'oi.order_id = oii.main_order_id'
-// 				),
-// 				'order_goods' => array(
-// 						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-// 						'alias'	=> 'og',
-// 						'on'	=> 'oi.order_id = og.order_id'
-// 				),
-// 				'goods' => array(
-// 						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-// 						'alias'	=> 'g',
-// 						'on'	=> 'og.goods_id = g.goods_id'
-// 				),
-// 				'comment' => array(
-// 						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-// 						'alias'	=> 'c',
-// 						'on'	=> 'og.rec_id = c.rec_id'
-// 				),
-// 				'comment_img' => array(
-// 						'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-// 						'alias'	=> 'ci',
-// 						'on'	=> 'c.comment_id = ci.comment_id'
-// 				),
-// 		);
-		
-// 		$field = 'oi.order_id, og.rec_id, og.goods_name, og.goods_price, g.goods_thumb, g.goods_img, g.original_img, c.comment_id, ci.id';
-// 		$comment_result = $order_db->field($field)->where(array('oi.user_id' => $_SESSION['user_id'], 'oi.order_id' => $order_id, 'oi.shipping_status' => SS_RECEIVED, 'oii.order_id is null'))->group(array('og.rec_id'))->select();
+		$field = 'oi.order_id, og.rec_id, og.goods_name, og.goods_price, g.goods_thumb, g.goods_img, g.original_img, c.comment_id';
+		$comment_result = RC_DB::table('order_info as oi')
+    		->leftJoin('order_goods as og', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('og.order_id'))
+    		->leftJoin('goods as g', RC_DB::raw('g.goods_id'), '=', RC_DB::raw('og.goods_id'))
+    		->leftJoin('comment as c', RC_DB::raw('og.rec_id'), '=', RC_DB::raw('c.rec_id'))
+    		->selectRaw($field)
+    		->where(RC_DB::raw('oi.user_id'), $user_id)
+    		->where(RC_DB::raw('oi.order_id'), $order_id)
+    		->where(RC_DB::raw('oi.shipping_status'), SS_RECEIVED)
+    		->get();
 		
 		$comment_list = array();
-// 		if (!empty($comment_result)) {
-// 			foreach ($comment_result as $val) {
-// 				$comment_list['comment_order_list'][] = array(
-// 						'rec_id'		=> $val['rec_id'],
-// 						'goods_name'	=> $val['goods_name'],
-// 						'goods_price'	=> price_format($val['goods_price']),
-// 						'img'			=> array(
-// 								'small' => substr($val['goods_thumb'], 0, 4) == 'http' ? $val['goods_thumb'] : RC_Upload::upload_url($val['goods_thumb']),
-// 								'url'	=> substr($val['original_img'], 0, 4) == 'http' ? $val['original_img'] : RC_Upload::upload_url($val['original_img']),
-// 								'thumb' => substr($val['goods_img'], 0, 4) == 'http' ? $val['goods_img'] : RC_Upload::upload_url($val['goods_img']),
-// 						),
-// 						'is_commented'	=> empty($val['comment_id']) ? 0 : 1,
-// 						'is_showorder'	=> empty($val['id']) ? 0 : 1,
-// 				);
-// 			}
-// 			return $comment_list;
-// 		} else {
-// 			return new ecjia_error('order_error', '订单信息不存在！');
-// 		}
+		if (!empty($comment_result)) {
+			foreach ($comment_result as $val) {
+				$comment_list['comment_order_list'][] = array(
+						'rec_id'		=> $val['rec_id'],
+						'goods_name'	=> $val['goods_name'],
+						'goods_price'	=> price_format($val['goods_price']),
+						'img'			=> array(
+								'small' => substr($val['goods_thumb'], 0, 4) == 'http' ? $val['goods_thumb'] : RC_Upload::upload_url($val['goods_thumb']),
+								'url'	=> substr($val['original_img'], 0, 4) == 'http' ? $val['original_img'] : RC_Upload::upload_url($val['original_img']),
+								'thumb' => substr($val['goods_img'], 0, 4) == 'http' ? $val['goods_img'] : RC_Upload::upload_url($val['goods_img']),
+						),
+						'is_commented'	=> empty($val['comment_id']) ? 0 : 1,
+						'is_showorder'	=> empty($val['has_image']) ? 0 : 1,
+				);
+			}
+			return $comment_list;
+		} else {
+			return new ecjia_error('order_error', '订单信息不存在！');
+		}
 		
 		
 	}

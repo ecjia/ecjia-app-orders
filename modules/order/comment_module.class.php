@@ -66,7 +66,7 @@ class comment_module extends api_front implements api_interface {
 		    return new ecjia_error('invalid_parameter', RC_Lang::get('system::system.invalid_parameter'));
 		}
 		
-		$field = 'oi.order_id, og.rec_id, og.goods_name, og.goods_price, g.goods_thumb, g.goods_img, g.original_img, c.comment_id';
+		$field = 'oi.order_id, og.rec_id, og.goods_id, og.goods_name, og.goods_price, g.goods_thumb, g.goods_img, g.original_img, c.comment_id';
 		$comment_result = RC_DB::table('order_info as oi')
     		->leftJoin('order_goods as og', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('og.order_id'))
     		->leftJoin('goods as g', RC_DB::raw('g.goods_id'), '=', RC_DB::raw('og.goods_id'))
@@ -82,6 +82,7 @@ class comment_module extends api_front implements api_interface {
 			foreach ($comment_result as $val) {
 				$comment_list['comment_order_list'][] = array(
 						'rec_id'		=> $val['rec_id'],
+				        'goods_id'		=> $val['goods_id'],
 						'goods_name'	=> $val['goods_name'],
 						'goods_price'	=> price_format($val['goods_price']),
 						'img'			=> array(

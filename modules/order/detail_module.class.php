@@ -53,6 +53,9 @@ defined('IN_ECJIA') or exit('No permission resources.');
 class detail_module extends api_front implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
     	
+//         $order_id = 2964;
+//         $user_id =1036;
+        
     	$user_id = $_SESSION['user_id'];
     	if ($user_id < 1 ) {
     	    return new ecjia_error(100, 'Invalid session');
@@ -121,7 +124,7 @@ class detail_module extends api_front implements api_interface {
 				$order['manage_mode']	= $seller_info['manage_mode'];
 				$order['service_phone']		= RC_DB::table('merchants_config')->where(RC_DB::raw('store_id'), $v['store_id'])->where(RC_DB::raw('code'), 'shop_kf_mobile')->pluck('value');
 			}
-			$attr = array();
+			/* $attr = array();
 			if (!empty($v['goods_attr'])) {
 				$goods_attr = explode("\n", $v['goods_attr']);
 				$goods_attr = array_filter($goods_attr);
@@ -131,13 +134,13 @@ class detail_module extends api_front implements api_interface {
 						$attr[] = array('name'=>$a[0], 'value'=>$a[1]);
 					}
 				}
-			}
+			} */
 
 			$goods_list[$k] = array(
 			    'rec_id'		=> $v['rec_id'],
 				'goods_id'		=> $v['goods_id'],
 				'name'			=> $v['goods_name'],
-				'goods_attr'	=> empty($attr) ? '' : $attr,
+				'goods_attr'	=> $v['goods_attr'],
 				'goods_number'	=> $v['goods_number'],
 				'subtotal'		=> price_format($v['subtotal'], false),
 				'formated_shop_price' => $v['goods_price'] > 0 ? price_format($v['goods_price'], false) : __('免费'),

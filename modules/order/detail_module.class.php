@@ -144,7 +144,6 @@ class detail_module extends api_front implements api_interface {
 				'is_commented'	=> $v['is_commented'],
 			    'comment_rank'  => $v['comment_rank'],
 			    'comment_content' => $v['comment_content'],
-			    'comment_picture' => array(),
 				'img' => array(
 					'small'	=> !empty($v['goods_thumb']) ? RC_Upload::upload_url($v['goods_thumb']) : '',
 					'thumb'	=> !empty($v['goods_img']) ? RC_Upload::upload_url($v['goods_img']) : '',

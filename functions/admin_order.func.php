@@ -1205,8 +1205,9 @@ function EM_order_goods($order_id, $page = 1, $pagesize = 10) {
     $db_view = RC_DB::table('order_goods as og')
         ->leftJoin('goods as g', RC_DB::raw('og.goods_id'), '=', RC_DB::raw('g.goods_id'))
         ->leftJoin('comment as c', RC_DB::raw('og.rec_id'), '=', RC_DB::raw('c.rec_id'));
-    $res = $db_view->selectRaw($field)->where(RC_DB::raw('og.order_id'), $order_id)->take($pagesize)
-		->skip(($page-1)*$pagesize)
+    $res = $db_view->selectRaw($field)->where(RC_DB::raw('og.order_id'), $order_id)
+        ->groupBy(RC_DB::raw('og.rec_id'))
+        ->take($pagesize)->skip(($page-1)*$pagesize)
 		->get();
 
     if (!empty($res)) {

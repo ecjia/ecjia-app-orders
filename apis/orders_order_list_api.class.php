@@ -236,7 +236,7 @@ class orders_order_list_api extends Component_Event_Api {
                             array(
                                 'goods_id'              => isset($row['goods_id'])? $row['goods_id'] : 0,
                                 'name'                  => isset($row['goods_name'])? $row['goods_name']: '',
-                                'goods_attr'            => empty($attr)? '' : $attr,
+                                'goods_attr'            => $attr,
                                 'goods_number'          => isset($row['goods_number'])? $row['goods_number']: 0,
                                 'subtotal'              => isset($row['subtotal'])? price_format($row['subtotal'], false): 0,
                                 'formated_shop_price'   => isset($row['goods_price']) ? price_format($row['goods_price'], false) : 0,

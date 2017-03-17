@@ -66,7 +66,7 @@ class comment_module extends api_front implements api_interface {
 		    return new ecjia_error('invalid_parameter', RC_Lang::get('system::system.invalid_parameter'));
 		}
 		
-		$field = 'oi.order_id, og.rec_id, og.goods_id, og.goods_name, og.goods_price, g.goods_thumb, g.goods_img, g.original_img, c.comment_id, c.has_image';
+		$field = 'oi.order_id, og.rec_id, og.goods_id, og.goods_name, og.goods_price, og.goods_attr, g.goods_thumb, g.goods_img, g.original_img, c.comment_id, c.has_image';
 		$comment_result = RC_DB::table('order_info as oi')
     		->leftJoin('order_goods as og', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('og.order_id'))
     		->leftJoin('goods as g', RC_DB::raw('g.goods_id'), '=', RC_DB::raw('og.goods_id'))
@@ -85,11 +85,23 @@ class comment_module extends api_front implements api_interface {
 		$comment_list = array();
 		if (!empty($comment_result)) {
 			foreach ($comment_result as $val) {
+			    $attr = array();
+			    if (!empty($val['goods_attr'])) {
+			        $goods_attr = explode("\n", $val['goods_attr']);
+			        $goods_attr = array_filter($goods_attr);
+			        foreach ($goods_attr as  $val_attr) {
+			            $a = explode(':',$val_attr);
+			            if (!empty($a[0]) && !empty($a[1])) {
+			                $attr[] = array('name'=>$a[0], 'value'=>$a[1]);
+			            }
+			        }
+			    }
 				$comment_list['comment_order_list'][] = array(
 						'rec_id'		=> $val['rec_id'],
 				        'goods_id'		=> $val['goods_id'],
 						'goods_name'	=> $val['goods_name'],
 						'goods_price'	=> price_format($val['goods_price']),
+				        'goods_attr'    => $attr,
 						'img'			=> array(
 								'small' => substr($val['goods_thumb'], 0, 4) == 'http' ? $val['goods_thumb'] : RC_Upload::upload_url($val['goods_thumb']),
 								'url'	=> substr($val['original_img'], 0, 4) == 'http' ? $val['original_img'] : RC_Upload::upload_url($val['original_img']),

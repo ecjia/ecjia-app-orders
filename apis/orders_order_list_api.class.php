@@ -136,7 +136,7 @@ class orders_order_list_api extends Component_Event_Api {
         }
 
         $field = 'oi.order_id, oi.order_sn, oi.order_status, oi.shipping_status, oi.pay_status, oi.add_time, (oi.goods_amount + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee + oi.tax - oi.integral_money - oi.bonus - oi.discount) AS total_fee, oi.discount, oi.integral_money, oi.bonus, oi.shipping_fee, oi.pay_id, oi.order_amount'.
-        ', og.goods_id, og.goods_name, og.goods_attr, og.goods_price, og.goods_number, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, ssi.store_id, ssi.merchants_name, ssi.manage_mode, c.comment_id, c.has_image';
+        ', og.goods_id, og.goods_name, og.goods_attr, og.goods_attr_id, og.goods_price, og.goods_number, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, ssi.store_id, ssi.merchants_name, ssi.manage_mode, c.comment_id, c.has_image';
         $res = $dbview_order_info->join(array('order_goods', 'goods', 'store_franchisee', 'comment'))->field($field)->where($where)->group('og.rec_id')->order(array('oi.order_id' => 'desc'))->select();
         RC_Lang::load('orders/order');
 
@@ -241,6 +241,7 @@ class orders_order_list_api extends Component_Event_Api {
                             array(
                                 'goods_id'              => isset($row['goods_id'])? $row['goods_id'] : 0,
                                 'name'                  => isset($row['goods_name'])? $row['goods_name']: '',
+                                'goods_attr_id'         => $row['goods_attr_id'],
                                 'goods_attr'            => $attr,
                                 'goods_number'          => isset($row['goods_number'])? $row['goods_number']: 0,
                                 'subtotal'              => isset($row['subtotal'])? price_format($row['subtotal'], false): 0,

@@ -50,42 +50,42 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * @author will
  *
  */
-class delivery_module implements ecjia_interface {
-	
-	public function run(ecjia_api & $api) {
-		$ecjia = RC_Loader::load_app_class('api_admin', 'api');
-		$ecjia->authadminSession();
-		if ($_SESSION['admin_id'] <= 0 && $_SESSION['ru_id'] <= 0) {
-			EM_Api::outPut(100);
+class delivery_module extends api_admin implements api_interface {
+    public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
+		$this->authadminSession();
+
+        if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
+			return new ecjia_error(100, 'Invalid session');
 		}
-		$result_view = $ecjia->admin_priv('order_view'); 
-		$result_edit = $ecjia->admin_priv('order_ss_edit');
+		
+		$result_view = $this->requestData('order_view'); 
+		$result_edit = $this->requestData('order_ss_edit');
 		if (is_ecjia_error($result_view)) {
-			EM_Api::outPut($result_view);
+			return $result_view;
 		} elseif (is_ecjia_error($result_edit)) {
-			EM_Api::outPut($result_edit);
+			return $result_edit;
 		}
 
-		$order_id		= _POST('order_id', 0);
-		$invoice_no		= _POST('invoice_no');
+		$order_id		= $this->requestData('order_id', 0);
+		$invoice_no		= $this->requestData('invoice_no');
 		/* 发货数量*/
-		$send_number	= _POST('send_number');//array('123' => 1);
+		$send_number	= $this->requestData('send_number');//array('123' => 1);
 
-		$action_note	= _POST('action_note');
+		$action_note	= $this->requestData('action_note');
 		if (empty($order_id)) {
-			EM_Api::outPut(101);
+			return new ecjia_error(100, 'Invalid session');
 		}
 		/*验证订单是否属于此入驻商*/
-		if (isset($_SESSION['ru_id']) && $_SESSION['ru_id'] > 0) {
-			$ru_id_group = RC_Model::model('orders/order_goods_model')->group('ru_id')->where(array('order_id' => $order_id))->get_field('ru_id', true);
-			if (count($ru_id_group) > 1 || $ru_id_group[0] != $_SESSION['ru_id']) {
-				return new ecjia_error('no_authority', '对不起，您没权限对此订单进行操作！');
-			}
+        if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
+		    $ru_id_group = RC_Model::model('orders/order_info_model')->where(array('order_id' => $order_id))->group('store_id')->get_field('store_id', true);
+		    if (count($ru_id_group) > 1 || $ru_id_group[0] != $_SESSION['store_id']) {
+		        return new ecjia_error('no_authority', '对不起，您没权限对此订单进行操作！');
+		    }
 		}
 		
 		$order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));
 		if (empty($order_info)) {
-			EM_Api::outPut(101);
+			return new ecjia_error(100, 'Invalid session');
 		}
 		
 		/* 订单是否已全部分单检查 */
@@ -505,7 +505,7 @@ function delivery_order($delivery_id, $order) {
 				ecjia::$controller->assign('send_time'		, RC_Time::local_date(ecjia::config('time_format')));
 				ecjia::$controller->assign('shop_name'		, ecjia::config('shop_name'));
 				ecjia::$controller->assign('send_date'		, RC_Time::local_date(ecjia::config('date_format')));
-				ecjia::$controller->assign('confirm_url'		, SITE_URL . 'receive.php?id=' . $order['order_id'] . '&con=' . rawurlencode($order['consignee']));
+				ecjia::$controller->assign('confirm_url'	, SITE_URL . 'receive.php?id=' . $order['order_id'] . '&con=' . rawurlencode($order['consignee']));
 				ecjia::$controller->assign('send_msg_url'	, SITE_URL . RC_Uri::url('user/admin/message_list','order_id=' . $order['order_id']));
 				
 				$content = ecjia::$controller->fetch_string($tpl['template_content']);

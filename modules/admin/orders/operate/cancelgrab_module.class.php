@@ -50,25 +50,24 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * @author will
  *
  */
-class cancelgrab_module implements ecjia_interface {
-	
-	public function run(ecjia_api & $api) {
-		$ecjia = RC_Loader::load_app_class('api_admin', 'api');
-		$ecjia->authadminSession();
-		if ($_SESSION['admin_id'] <= 0 && $_SESSION['ru_id'] <= 0) {
-			EM_Api::outPut(100);
+class cancelgrab_module extends api_admin implements api_interface {
+    public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
+		$this->authadminSession();
+		
+        if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
+			return new ecjia_error(100, 'Invalid session');
 		}
 		
-		$order_id = _POST('order_id', 0);
+		$order_id = $this->requestData('order_id', 0);
 		
 		if ($order_id <= 0) {
-			EM_Api::outPut(101);
+			return new ecjia_error(101, '参数错误');
 		}
 		
 		/*验证订单是否属于此入驻商*/
-		if (isset($_SESSION['ru_id']) && $_SESSION['ru_id'] > 0) {
-			$ru_id_group = RC_Model::model('orders/order_goods_model')->where(array('order_id' => $order_id))->group('ru_id')->get_field('ru_id', true);
-			if (count($ru_id_group) > 1 || $ru_id_group[0] != $_SESSION['ru_id']) {
+		if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
+			$ru_id_group = RC_Model::model('orders/order_info_model')->where(array('order_id' => $order_id))->group('store_id')->get_field('store_id', true);
+			if (count($ru_id_group) > 1 || $ru_id_group[0] != $_SESSION['store_id']) {
 				return new ecjia_error('no_authority', '对不起，您没权限对此订单进行操作！');
 			}
 		}

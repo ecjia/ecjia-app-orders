@@ -50,26 +50,25 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * @author will
  *
  */
-class setgrab_module implements ecjia_interface {
-	
-	public function run(ecjia_api & $api) {
-		$ecjia = RC_Loader::load_app_class('api_admin', 'api');
-		$ecjia->authadminSession();
-		if ($_SESSION['admin_id'] <= 0 && $_SESSION['ru_id'] <= 0) {
-			EM_Api::outPut(100);
+class setgrab_module extends api_admin implements api_interface {
+    public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
+		$this->authadminSession();
+
+        if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
+			return new ecjia_error(100, 'Invalid session');
 		}
 		
-		$order_id = _POST('order_id', 0);
-		$store_id = _POST('store_id');
+		$order_id = $this->requestData('order_id', 0);
+		$store_id = $this->requestData('store_id');
 		
 		if ($order_id <= 0 || empty($store_id)) {
-			EM_Api::outPut(101);
+			return new ecjia_error(100, 'Invalid session');
 		}
 		
 		
 		//$ru_id = get_ru_id($order_id);
 		
-		$store_order_info = get_store_order_info($order_id, $_SESSION['ru_id']);
+		$store_order_info = get_store_order_info($order_id, $_SESSION['store_id']);
 		
 		if (empty($store_order_info)) {
 			RC_Model::model('orders/store_order_model')->insert(array(
@@ -100,9 +99,9 @@ function get_ru_id($order_id = 0)
 }
 
 /* 获取记录信息*/
-function get_store_order_info($order_id = 0, $ru_id=0)
+function get_store_order_info($order_id = 0, $store_id=0)
 {
-	$store_order_info = RC_Model::model('orders/store_order_model')->where(array('order_id' => $order_id, 'ru_id' => $ru_id))->find();
+	$store_order_info = RC_Model::model('orders/order_info_model')->where(array('order_id' => $order_id, 'store_id' => $store_id))->find();
 	return $store_order_info;
 }
 

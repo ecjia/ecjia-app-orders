@@ -50,38 +50,37 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * @author will
  *
  */
-class cancel_module implements ecjia_interface {
-	
-	public function run(ecjia_api & $api) {
-		$ecjia = RC_Loader::load_app_class('api_admin', 'api');
-		$ecjia->authadminSession();
-		if ($_SESSION['admin_id'] <= 0 && $_SESSION['ru_id'] <= 0) {
-			EM_Api::outPut(100);
+class cancel_module extends api_admin implements api_interface {
+    public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
+		$this->authadminSession();
+		
+	    if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
+			return new ecjia_error(100, 'Invalid session');
 		}
-		$result_view = $ecjia->admin_priv('order_view');
-		$result_edit = $ecjia->admin_priv('order_os_edit');
+		$result_view = $this->admin_priv('order_view');
+		$result_edit = $this->admin_priv('order_os_edit');
 		if (is_ecjia_error($result_view)) {
-			EM_Api::outPut($result_view);
+			return $result_view;
 		} elseif (is_ecjia_error($result_edit)) {
-			EM_Api::outPut($result_edit);
+			return $result_edit;
 		}
-		$order_id		= _POST('order_id', 0);
-		$cancel_note	= _POST('cancel_note');
+		$order_id		= $this->requestData('order_id', 0);
+		$cancel_note	= $this->requestData('cancel_note');
 		
 		if (empty($order_id) || empty($cancel_note)) {
-			EM_Api::outPut(101);
+			return new ecjia_error(101, '参数错误');
 		}
 		/*验证订单是否属于此入驻商*/
 		if (isset($_SESSION['ru_id']) && $_SESSION['ru_id'] > 0) {
-			$ru_id_group = RC_Model::model('orders/order_goods_model')->where(array('order_id' => $order_id))->group('ru_id')->get_field('ru_id', true);
-			if (count($ru_id_group) > 1 || $ru_id_group[0] != $_SESSION['ru_id']) {
+			$ru_id_group = RC_Model::model('orders/order_info_model')->where(array('order_id' => $order_id))->get_field('store_id', true);
+			if (count($ru_id_group) > 1 || $ru_id_group[0] != $_SESSION['store_id']) {
 				return new ecjia_error('no_authority', '对不起，您没权限对此订单进行操作！');
 			}
 		}
 		
 		$order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));
 		if (empty($order_info)) {
-			EM_Api::outPut(101);
+			return new ecjia_error('order_no_exists', '订单信息不存在');
 		}
 		
 		RC_Loader::load_app_func('order', 'orders');
@@ -102,8 +101,8 @@ class cancel_module implements ecjia_interface {
 		/* todo 处理退款 */
 		if ($order_info['money_paid'] > 0) {
 			$refund_type = 1;
-// 			$refund_type = $_POST['refund'];
-// 			$refund_note = $_POST['refund_note'];
+// 			$refund_type = $$this->requestData['refund'];
+// 			$refund_note = $$this->requestData['refund_note'];
 			order_refund($order_info, $refund_type, $cancel_note);
 		}
 		

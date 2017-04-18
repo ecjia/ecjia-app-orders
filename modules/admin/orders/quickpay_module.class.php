@@ -46,9 +46,13 @@
 //
 defined('IN_ECJIA') or exit('No permission resources.');
 
-class quickpay_module implements ecjia_interface {
+class quickpay_module extends api_admin implements api_interface {
+    public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
+		$this->authadminSession();
 
-	public function run(ecjia_api & $api) {
+        if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
+			return new ecjia_error(100, 'Invalid session');
+		}
 		/**
 		 * bonus 0 //红包
 		 * how_oos 0 //缺货处理
@@ -61,14 +65,12 @@ class quickpay_module implements ecjia_interface {
 		 * inv_payee 发票抬头
 		 * inv_content 发票内容
 		 */
-		$ecjia = RC_Loader::load_app_class('api_admin', 'api');
-		$ecjia->authadminSession();
 
 		RC_Loader::load_app_func('cart','cart');
 		RC_Loader::load_app_func('order','orders');
 
-		$pay_id = _POST('pay_id');
-		$amount = _POST('amount');
+		$pay_id = $this->requestData('pay_id');
+		$amount = $this->requestData('amount');
 		
 		if (empty($pay_id) || $pay_id <= 0) {
 			return new ecjia_error(100, '错误的参数提交');
@@ -187,9 +189,9 @@ class quickpay_module implements ecjia_interface {
 					'goods_attr' 	=> '',
 					'is_real' 		=> '1',
 			);
-			if ($_SESSION['ru_id'] > 0) {
-				$arr['ru_id'] = $_SESSION['ru_id'];
-			}
+// 			if ($_SESSION['store_id'] > 0) {
+// 				$arr['store_id'] = $_SESSION['store_id'];
+// 			}
 			$order_goods_id = $db_order_goods->insert($arr);
 		}
 		
@@ -221,7 +223,7 @@ class quickpay_module implements ecjia_interface {
 						'order_sn' 		=> $order['order_sn']
 				)
 		);
-		EM_Api::outPut($out);
+		return $out;
 	}
 }
 

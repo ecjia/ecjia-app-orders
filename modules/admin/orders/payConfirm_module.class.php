@@ -50,25 +50,28 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * @author will
  *
  */
-class payConfirm_module implements ecjia_interface {
-	
-	public function run(ecjia_api & $api) {
-		$ecjia = RC_Loader::load_app_class('api_admin', 'api');
-		$ecjia->authadminSession();
-		$result = $ecjia->admin_priv('order_stats');
+class payConfirm_module extends api_admin implements api_interface {
+    public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
+		$this->authadminSession();
+		
+		if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
+		    return new ecjia_error(100, 'Invalid session');
+		}
+		
+		$result = $this->admin_priv('order_stats');
 		if (is_ecjia_error($result)) {
-			EM_Api::outPut($result);
+			return $result;
 		}
 
 		$order_id = _POST('order_id');
 		if (empty($order_id)) {
-			EM_Api::outPut(101);
+			return new ecjia_error(101, '参数错误');
 		}
 		
 		/* 查询订单信息 */
 		$order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => ''));
 		if (empty($order)) {
-			EM_Api::outPut(13);
+			return new ecjia_error(13, '不存在的信息');
 		}
 		
 		$payment_method	= RC_Loader::load_app_class('payment_method', 'payment');
@@ -77,7 +80,7 @@ class payConfirm_module implements ecjia_interface {
 		
 		/* 判断是否有支付方式以及是否为现金支付和酷银*/
 		if (!$payment) {
-			EM_Api::outPut(8);
+			return new ecjia_error(8, '处理失败');
 		}
 		$payment->set_orderinfo($order);
 		

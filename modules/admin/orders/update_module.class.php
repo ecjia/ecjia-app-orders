@@ -50,22 +50,24 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * @author royalwang
  *
  */
-class update_module implements ecjia_interface {
-	
-	public function run(ecjia_api & $api) {
+class update_module extends api_admin implements api_interface {
+    public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
+		$this->authadminSession();
 
- 		$ecjia = RC_Loader::load_app_class('api_admin', 'api');
-		$ecjia->authadminSession();
- 		$order_id	= _POST('order_id', 0);
-		$pay_id		= _POST('pay_id',0);
+        if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
+			return new ecjia_error(100, 'Invalid session');
+		}
+		
+ 		$order_id	= $this->requestData('order_id', 0);
+		$pay_id		= $this->requestData('pay_id',0);
 		if (!$order_id || !$pay_id) {
-			EM_Api::outPut(101);
+			return new ecjia_error(101, '参数错误');
 		}
 		$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
 		$payment_info = $payment_method->payment_info($pay_id);
 		
 		if (empty($payment_info)) {
-			EM_Api::outPut(8);
+			return new ecjia_error(8, '处理失败');
 		} else {
 			RC_Loader::load_app_func('order','orders');
 			$order_info = get_order_detail($order_id);
@@ -86,9 +88,9 @@ class update_module implements ecjia_interface {
 			$db_order = RC_Loader::load_app_model('order_info_model','orders');
 			$result = $db_order->where($where)->update($data);
 			if ($result) {
-				EM_Api::outPut(array());
+				return array();
 			} else {
-				EM_Api::outPut(8);
+				return new ecjia_error(8, '处理失败');
 			}
 		}
 	}

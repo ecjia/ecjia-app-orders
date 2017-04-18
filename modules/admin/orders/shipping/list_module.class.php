@@ -50,25 +50,24 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * @author will
  *
  */
-class list_module implements ecjia_interface {
-	
-	public function run(ecjia_api & $api) {
-		$ecjia = RC_Loader::load_app_class('api_admin', 'api');
-		$ecjia->authadminSession();
-		if ($_SESSION['admin_id'] <= 0 && $_SESSION['ru_id'] <= 0) {
-			EM_Api::outPut(100);
+class list_module extends api_admin implements api_interface {
+    public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
+		$this->authadminSession();
+
+        if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
+			return new ecjia_error(100, 'Invalid session');
 		}
 		
-		$result_view = $ecjia->admin_priv('order_view');
-		$result_edit = $ecjia->admin_priv('order_edit');
+		$result_view = $this->admin_priv('order_view');
+		$result_edit = $this->admin_priv('order_edit');
 		if (is_ecjia_error($result_view)) {
-			EM_Api::outPut($result_view);
+			return $result_view;
 		} elseif (is_ecjia_error($result_edit)) {
-			EM_Api::outPut($result_edit);
+			return $result_edit;
 		}
-		$order_id	= _POST('order_id', 0);
+		$order_id	= $this->requestData('order_id', 0);
 		if ($order_id <= 0) {
-			EM_Api::outPut(101);
+			return new ecjia_error(101, '参数错误');
 		}
 		
 		/*验证订单是否属于此入驻商*/

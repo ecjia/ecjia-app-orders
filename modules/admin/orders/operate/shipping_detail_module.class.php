@@ -144,17 +144,18 @@ class shipping_detail_module extends api_admin implements api_interface {
 			}
 			/* 设置订单商品信息*/
 			$delivery_info['order_goods'][$key] = array(
-					'rec_id'		=> $val['rec_id'],
-					'goods_id'		=> $val['goods_id'], 
-					'goods_name'	=> $val['goods_name'], 
-					'product_id'	=> $val['product_id'],
-					'goods_price'	=> $val['goods_price'],
-					'goods_number'	=> $val['goods_number'],
-					'img'			=> array(
-							'small'	=> !empty($val['goods_thumb']) ? RC_Upload::upload_url($val['goods_thumb']) : '',
-							'thumb'	=> !empty($val['goods_img']) ? RC_Upload::upload_url($val['goods_img']) : '',
-							'url'	=> !empty($val['original_img']) ? RC_Upload::upload_url($val['original_img']) : '',
-					)
+				'rec_id'		=> $val['rec_id'],
+				'goods_id'		=> $val['goods_id'], 
+				'goods_name'	=> $val['goods_name'], 
+				'product_id'	=> $val['product_id'],
+				'goods_price'	=> $val['goods_price'],
+				'goods_number'	=> $val['goods_number'],
+			    'goods_attr'    => trim($val['goods_attr']),
+				'img'			=> array(
+						'small'	=> !empty($val['goods_thumb']) ? RC_Upload::upload_url($val['goods_thumb']) : '',
+						'thumb'	=> !empty($val['goods_img']) ? RC_Upload::upload_url($val['goods_img']) : '',
+						'url'	=> !empty($val['original_img']) ? RC_Upload::upload_url($val['original_img']) : '',
+				)
 			);
 			
 			/* 判断订单商品的发货情况*/

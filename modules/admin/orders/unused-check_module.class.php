@@ -90,8 +90,7 @@ public function run(ecjia_api & $api) {
 
 
 function delivery_ship($order_id, $delivery_id) {
-	RC_Loader::load_app_func('function', 'orders');
-	RC_Loader::load_app_func('order', 'orders');
+	RC_Loader::load_app_func('admin_order', 'orders');
 	$db_delivery = RC_Loader::load_app_model('delivery_viewmodel','orders');
 	$db_delivery_order		= RC_Loader::load_app_model('delivery_order_model','orders');
 	$db_goods				= RC_Loader::load_app_model('goods_model','goods');

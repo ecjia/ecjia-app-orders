@@ -96,7 +96,7 @@ class list_module extends api_admin implements api_interface {
 				'district'		=> $order_info['district'],
 		);
 		
-		RC_Loader::load_app_func('order', 'orders');
+		RC_Loader::load_app_func('admin_order', 'orders');
 		$goods_list = order_goods($order_id);
 		
 		/* 取得配送费用 */

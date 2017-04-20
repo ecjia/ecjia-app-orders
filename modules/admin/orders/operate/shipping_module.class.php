@@ -87,8 +87,7 @@ class shipping_module extends api_admin implements api_interface {
 			return new ecjia_error(101, '参数错误');
 		}
 		
-		RC_Loader::load_app_func('order', 'orders');
-		RC_Loader::load_app_func('function', 'orders');
+		RC_Loader::load_app_func('admin_order', 'orders');
 		/* 保存配送信息 */
 		/* 取得订单信息 */
 		$region_id_list = array($order_info['country'], $order_info['province'], $order_info['city'], $order_info['district']);

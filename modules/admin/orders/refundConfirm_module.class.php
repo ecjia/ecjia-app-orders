@@ -131,7 +131,7 @@ class refundConfirm_module extends api_admin implements api_interface {
 		}
 		
 		if ($pay_info['pay_code'] == 'pay_balance') {
-			RC_Loader::load_app_func('order', 'orders');
+			RC_Loader::load_app_func('admin_order', 'orders');
 			/* 标记订单为未付款，更新付款时间和已付款金额 */
 			$arr = array(
 					'pay_status'	=> PS_UNPAYED,

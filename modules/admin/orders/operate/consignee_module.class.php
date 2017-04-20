@@ -92,7 +92,7 @@ class consignee_module extends api_admin implements api_interface {
 			return new ecjia_error('not_exitst', '订单信息不存在');
 		}
 		
-		RC_Loader::load_app_func('order', 'orders');
+		RC_Loader::load_app_func('admin_order', 'orders');
 		/* 判断是非为会员购买*/
 		if ($address_id > 0 && $order_info['user_id'] > 0) {
 			$db_address = RC_Model::model('user/user_address_model');

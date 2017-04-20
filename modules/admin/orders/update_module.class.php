@@ -69,7 +69,7 @@ class update_module extends api_admin implements api_interface {
 		if (empty($payment_info)) {
 			return new ecjia_error(8, '处理失败');
 		} else {
-			RC_Loader::load_app_func('order','orders');
+			RC_Loader::load_app_func('admin_order','orders');
 			$order_info = get_order_detail($order_id);
 			/*重新处理订单的配送费用*/
 			$payfee_change = $payment_info['pay_fee'] - $order_info['pay_fee'];

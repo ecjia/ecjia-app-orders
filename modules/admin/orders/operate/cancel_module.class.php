@@ -83,8 +83,7 @@ class cancel_module extends api_admin implements api_interface {
 			return new ecjia_error('order_no_exists', '订单信息不存在');
 		}
 		
-		RC_Loader::load_app_func('order', 'orders');
-		RC_Loader::load_app_func('function', 'orders');
+		RC_Loader::load_app_func('admin_order', 'orders');
 		
 		/* 取消 */
 		/* 标记订单为“取消”，记录取消原因 */

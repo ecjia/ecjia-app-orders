@@ -94,7 +94,7 @@ class delivery_module extends api_admin implements api_interface {
 		}
 		
 		RC_Loader::load_app_func('function', 'orders');
-		RC_Loader::load_app_func('order', 'orders');
+		RC_Loader::load_app_func('admin_order', 'orders');
 		/* 取得订单商品 */
 		$_goods = get_order_goods(array('order_id' => $order_id));
 		$goods_list = $_goods['goods_list'];

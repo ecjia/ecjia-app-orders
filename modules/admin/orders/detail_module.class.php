@@ -72,6 +72,13 @@ class detail_module extends api_admin implements api_interface {
 		/* 订单详情 */
 		$order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => $order_sn, 'store_id' => $_SESSION['store_id']));
 
+		$order['label_order_source'] = '';
+		/*订单来源返回处理*/
+		if (!empty($order['referer'])) {
+		    $order['label_order_source'] = $order['referer'];
+		    unset($order['referer']);
+		}
+		
 		if ($order === false) {
 			return new ecjia_error(8, 'fail');
 		}
@@ -89,14 +96,43 @@ class detail_module extends api_admin implements api_interface {
 		$order['country']	= $region_name[0]['region_name'];
 		$order['province']	= $region_name[1]['region_name'];
 		$order['city']		= $region_name[2]['region_name'];
-		$order['district']	= $region_name[3]['region_name'];
+		$order['district']	= isset($region_name[3]) ? $region_name[3]['region_name'] : '';
 
-		RC_Lang::load('orders/order');
-		$order_status = ($order['order_status'] != '2' || $order['order_status'] != '3') ? RC_Lang::get('orders::order.os.'.$order['order_status']) : '';
-		$order_status = $order['order_status'] == '2' ? __('已取消') : $order_status;
-		$order_status = $order['order_status'] == '3' ? __('无效') : $order_status;
-
-		$order['status'] =strip_tags($order_status.','.RC_Lang::get('orders::order.ps.'.$order['pay_status']).','.RC_Lang::get('orders::order.ss.'.$order['shipping_status']));
+		if (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED)) &&
+		    in_array($order['shipping_status'], array(SS_RECEIVED)) &&
+		    in_array($order['pay_status'], array(PS_PAYED, PS_PAYING)))
+		{
+		    $label_order_status = '已完成';
+		    $status_code = 'finished';
+		}
+		elseif (in_array($order['shipping_status'], array(SS_SHIPPED)))
+		{
+		    $label_order_status = '已发货';
+		    $status_code = 'shipped';
+		}
+		elseif (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) &&
+		    in_array($order['pay_status'], array(PS_UNPAYED)) &&
+		    (in_array($order['shipping_status'], array(SS_SHIPPED, SS_RECEIVED)) || !$payment['is_cod']))
+		{
+		    $label_order_status = '待付款';
+		    $status_code = 'await_pay';
+		}
+		elseif (in_array($order['order_status'], array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
+		    in_array($order['shipping_status'], array(SS_UNSHIPPED, SS_SHIPPED_PART, SS_PREPARING, SS_SHIPPED_ING, OS_SHIPPED_PART)) &&
+		    (in_array($order['pay_status'], array(PS_PAYED, PS_PAYING)) || $payment['is_cod']))
+		{
+		    $label_order_status = '待发货';
+		    $status_code = 'await_ship';
+		}
+		elseif (in_array($order['order_status'], array(OS_CANCELED))) {
+		    $label_order_status = '已关闭';
+		    $status_code = 'canceled';
+		}
+		
+		$order['label_order_status']	= $label_order_status;
+		$order['order_status_code']		= $status_code;
+		$order['invoice_no']            = !empty($order['invoice_no']) ? explode('<br>', $order['invoice_no']) : array();
+		
 		$order['sub_orders'] = array();
 		$db_orderinfo_view = RC_Model::model('orders/order_info_viewmodel');
 		$total_fee = "(oi.goods_amount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) as total_fee";

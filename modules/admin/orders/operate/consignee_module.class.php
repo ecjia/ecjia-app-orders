@@ -57,8 +57,8 @@ class consignee_module extends api_admin implements api_interface {
 			return new ecjia_error(100, 'Invalid session');
 		}
 		
-		$result_edit = $ecjia->admin_priv('order_edit');
-		$result_view = $ecjia->admin_priv('order_view');
+		$result_edit = $this->admin_priv('order_edit');
+		$result_view = $this->admin_priv('order_view');
 		if (is_ecjia_error($result_edit)) {
 			return $result_edit;
 		} elseif (is_ecjia_error($result_view)) {

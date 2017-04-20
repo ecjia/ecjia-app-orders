@@ -84,7 +84,7 @@ class pay_module extends api_admin implements api_interface {
 			return new ecjia_error('not_exitst', '订单信息不存在');
 		}
 		
-		RC_Loader::load_app_func('order', 'orders');
+		RC_Loader::load_app_func('admin_order', 'orders');
 		/* 标记订单为已确认、已付款，更新付款时间和已支付金额，如果是货到付款，同时修改订单为“收货确认” */
 		if ($order_info['order_status'] != OS_CONFIRMED) {
 			$arr['order_status']	= OS_CONFIRMED;

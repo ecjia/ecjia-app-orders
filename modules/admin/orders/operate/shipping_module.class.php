@@ -88,6 +88,7 @@ class shipping_module extends api_admin implements api_interface {
 		}
 		
 		RC_Loader::load_app_func('admin_order', 'orders');
+		RC_Loader::load_app_func('global', 'orders');
 		/* 保存配送信息 */
 		/* 取得订单信息 */
 		$region_id_list = array($order_info['country'], $order_info['province'], $order_info['city'], $order_info['district']);

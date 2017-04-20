@@ -104,6 +104,7 @@ class money_module extends api_admin implements api_interface {
 								- $order_info['integral_money']
 								- $order_info['bonus'];
 		RC_Loader::load_app_func('admin_order', 'orders');
+		RC_Loader::load_app_func('global', 'orders');
 		
 		/* 暂不支持产生退款费用*/
 		if ($order['order_amount'] < 0) {

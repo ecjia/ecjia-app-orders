@@ -84,6 +84,7 @@ class cancel_module extends api_admin implements api_interface {
 		}
 		
 		RC_Loader::load_app_func('admin_order', 'orders');
+		RC_Loader::load_app_func('global', 'orders');
 		
 		/* 取消 */
 		/* 标记订单为“取消”，记录取消原因 */

@@ -93,7 +93,7 @@ class delivery_module extends api_admin implements api_interface {
 			return new ecjia_error('already_splited', '订单已全部发货！');
 		}
 		
-		RC_Loader::load_app_func('function', 'orders');
+		RC_Loader::load_app_func('global', 'orders');
 		RC_Loader::load_app_func('admin_order', 'orders');
 		/* 取得订单商品 */
 		$_goods = get_order_goods(array('order_id' => $order_id));

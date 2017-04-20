@@ -195,6 +195,7 @@ class payConfirm_module extends api_admin implements api_interface {
 
 function delivery_ship($order_id, $delivery_id) {
 	RC_Logger::getLogger('error')->info('订单发货处理【订单id|'.$order_id.'】');
+	RC_Loader::load_app_func('global', 'orders');
 	RC_Loader::load_app_func('admin_order', 'orders');
 	$db_delivery = RC_Loader::load_app_model('delivery_viewmodel','orders');
 	$db_delivery_order		= RC_Loader::load_app_model('delivery_order_model','orders');

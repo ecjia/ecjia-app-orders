@@ -125,7 +125,12 @@ class shipping_module extends api_admin implements api_interface {
 // 			$sn .= sprintf('订单总金额由 %s 变为 %s', $order_info['total_fee'], $new_order_info['total_fee']).'，';
 // 		}
 		$sn .= '订单号是 '.$order_info['order_sn'];
-		ecjia_admin::admin_log($sn, 'edit', 'order');
+		// 记录管理员操作
+		if ($_SESSION['store_id'] > 0) {
+		    RC_Api::api('merchant', 'admin_log', array('text' => $sn.'【来源掌柜】', 'action' => 'edit', 'object' => 'order'));
+		} else {
+		    ecjia_admin::admin_log($sn.'【来源掌柜】', 'edit', 'order'); // 记录日志
+		}
 		
 		return array();
 	} 

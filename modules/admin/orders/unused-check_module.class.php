@@ -235,7 +235,12 @@ function delivery_ship($order_id, $delivery_id) {
 
 	/* 发货单发货记录log */
 	order_action($order['order_sn'], OS_CONFIRMED, $shipping_status, $order['pay_status'], $action_note, null, 1);
-	ecjia_admin::admin_log('发货，订单号是'.$order['order_sn'], 'setup', 'order');
+	// 记录管理员操作
+	if ($_SESSION['store_id'] > 0) {
+	    RC_Api::api('merchant', 'admin_log', array('text' => '发货，订单号是'.$order['order_sn'].'【来源掌柜】', 'action' => 'setup', 'object' => 'order'));
+	} else {
+	    ecjia_admin::admin_log('发货，订单号是'.$order['order_sn'].'【来源掌柜】', 'setup', 'order'); // 记录日志
+	}
 
 	/* 如果当前订单已经全部发货 */
 	if ($order_finish) {

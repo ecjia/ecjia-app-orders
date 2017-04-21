@@ -71,7 +71,7 @@ class delivery_module extends api_admin implements api_interface {
 		/* 发货数量*/
 		$send_number	= $this->requestData('send_number');//array('123' => 1);
 
-		$action_note	= $this->requestData('action_note');
+		$action_note	= $this->requestData('action_note', '');
 		if (empty($order_id)) {
 			return new ecjia_error(100, 'Invalid session');
 		}
@@ -472,7 +472,7 @@ function delivery_order($delivery_id, $order) {
 	update_order($order['order_id'], $arr);
 	
 	/* 发货单发货记录log */
-	order_action($order['order_sn'], OS_CONFIRMED, $shipping_status, $order['pay_status'], '', null, 1);
+	order_action($order['order_sn'], OS_CONFIRMED, $shipping_status, $order['pay_status'], '', '', 1);
 	ecjia_admin::admin_log('发货，订单号是'.$order['order_sn'], 'setup', 'order');
 	
 	/* 如果当前订单已经全部发货 */

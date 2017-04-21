@@ -65,7 +65,7 @@ class cancel_module extends api_admin implements api_interface {
 			return $result_edit;
 		}
 		$order_id		= $this->requestData('order_id', 0);
-		$cancel_note	= $this->requestData('cancel_note');
+		$cancel_note	= $this->requestData('cancel_note', '');
 		
 		if (empty($order_id) || empty($cancel_note)) {
 			return new ecjia_error(101, '参数错误');

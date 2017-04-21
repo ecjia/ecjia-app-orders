@@ -66,7 +66,7 @@ class pay_module extends api_admin implements api_interface {
 			return $result_edit;
 		}
 		$order_id		= $this->requestData('order_id', 0);
-		$action_note	= $this->requestData('action_note');
+		$action_note	= $this->requestData('action_note', '');
 		
 		if (empty($order_id) || empty($action_note)) {
 			return new ecjia_error(101, '参数错误');

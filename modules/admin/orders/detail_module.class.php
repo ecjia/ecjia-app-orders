@@ -98,39 +98,6 @@ class detail_module extends api_admin implements api_interface {
 		$order['city']		= $region_name[2]['region_name'];
 		$order['district']	= isset($region_name[3]) ? $region_name[3]['region_name'] : '';
 
-		if (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED)) &&
-		    in_array($order['shipping_status'], array(SS_RECEIVED)) &&
-		    in_array($order['pay_status'], array(PS_PAYED, PS_PAYING)))
-		{
-		    $label_order_status = '已完成';
-		    $status_code = 'finished';
-		}
-		elseif (in_array($order['shipping_status'], array(SS_SHIPPED)))
-		{
-		    $label_order_status = '已发货';
-		    $status_code = 'shipped';
-		}
-		elseif (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) &&
-		    in_array($order['pay_status'], array(PS_UNPAYED)) &&
-		    (in_array($order['shipping_status'], array(SS_SHIPPED, SS_RECEIVED)) || !$payment['is_cod']))
-		{
-		    $label_order_status = '待付款';
-		    $status_code = 'await_pay';
-		}
-		elseif (in_array($order['order_status'], array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
-		    in_array($order['shipping_status'], array(SS_UNSHIPPED, SS_SHIPPED_PART, SS_PREPARING, SS_SHIPPED_ING, OS_SHIPPED_PART)) &&
-		    (in_array($order['pay_status'], array(PS_PAYED, PS_PAYING)) || $payment['is_cod']))
-		{
-		    $label_order_status = '待发货';
-		    $status_code = 'await_ship';
-		}
-		elseif (in_array($order['order_status'], array(OS_CANCELED))) {
-		    $label_order_status = '已关闭';
-		    $status_code = 'canceled';
-		}
-		
-		$order['label_order_status']	= $label_order_status;
-		$order['order_status_code']		= $status_code;
 		$order['invoice_no']            = !empty($order['invoice_no']) ? explode('<br>', $order['invoice_no']) : array();
 		
 		$order['sub_orders'] = array();

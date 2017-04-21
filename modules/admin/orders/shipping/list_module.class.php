@@ -72,7 +72,7 @@ class list_module extends api_admin implements api_interface {
 		
 		/*验证订单是否属于此入驻商*/
 		if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
-			$store_id_group = RC_Model::model('orders/order_goods_model')->where(array('order_id' => $order_id))->group('store_id')->get_field('store_id', true);
+			$store_id_group = RC_Model::model('orders/order_info_model')->where(array('order_id' => $order_id))->group('store_id')->get_field('store_id', true);
 			if (count($store_id_group) > 1 || $store_id_group[0] != $_SESSION['store_id']) {
 				return new ecjia_error('no_authority', '对不起，您没权限对此订单进行操作！');
 			}

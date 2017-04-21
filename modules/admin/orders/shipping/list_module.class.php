@@ -80,7 +80,7 @@ class list_module extends api_admin implements api_interface {
 		
 		$order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));
 		/* 获取订单store_id*/
-		$order_info['store_id'] = RC_Model::model('orders/order_goods_model')->where(array('order_id' => $order_id))->get_field('store_id');
+		$order_info['store_id'] = RC_Model::model('orders/order_info_model')->where(array('order_id' => $order_id))->get_field('store_id');
 		/* 取得可用的配送方式列表 */
 		$region_id_list = array(
 				$order_info['country'], $order_info['province'], $order_info['city'], $order_info['district']
@@ -157,12 +157,9 @@ class list_module extends api_admin implements api_interface {
 							'free_money'	=> $shipping_list[$key]['free_money'],
 								
 					);
-					
 				}
 			}
-			
 		}
-		
 			
 		return $new_shipping_list;
 	} 

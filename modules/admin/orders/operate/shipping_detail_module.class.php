@@ -90,7 +90,7 @@ class shipping_detail_module extends api_admin implements api_interface {
 						'on'    =>	'og.goods_id = g.goods_id ',
 				),
 		);
-		$field = 'oi.order_id, order_sn, consignee, country, province, city, district, address, mobile, shipping_id, shipping_name, oi.add_time, pay_time, og.rec_id, og.goods_id, og.product_id, og.goods_name, og.goods_price, og.goods_number, goods_thumb, goods_img, original_img';
+		$field = 'oi.order_id, order_sn, consignee, country, province, city, district, address, mobile, shipping_id, shipping_name, oi.add_time, pay_time, og.rec_id, og.goods_id, og.product_id, og.goods_name, og.goods_price, og.goods_number, og.goods_attr, goods_thumb, goods_img, original_img';
 		$order_list = $order_dbview->join(array('order_goods', 'goods'))->field($field)->where(array('oi.order_id' => $order_id))->select();
 		if (empty($order_list)) {
 			return new ecjia_error('orders_empty', '订单信息不存在！');

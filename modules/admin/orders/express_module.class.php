@@ -5,28 +5,26 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * @author will
  *
  */
-class express_module implements ecjia_interface {
-	
-	public function run(ecjia_api & $api) {
-		
-		$ecjia = RC_Loader::load_app_class('api_admin', 'api');
-		$ecjia->authadminSession();
-		if ($_SESSION['admin_id'] <= 0 && $_SESSION['ru_id'] <= 0) {
-			EM_Api::outPut(100);
+class express_module extends api_admin implements api_interface {
+    public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
+
+		$this->authadminSession();
+		if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
+			return new ecjia_error(100, 'Invalid session');
 		}
-		$result = $ecjia->admin_priv('order_view');
-		if (is_ecjia_error($result)) {
-			EM_Api::outPut($result);
+    	$result = $this->admin_priv('order_view');
+        if (is_ecjia_error($result)) {
+			return $result;
 		}
 		
-		$order_id = _POST('order_id');
+		$order_id = $this->requestData('order_id');
 		if (empty($order_id)) {
 			EM_Api::outPut(101);
 		}
 		
-		if (isset($_SESSION['ru_id']) && $_SESSION['ru_id'] > 0) {
-			$ru_id_group = RC_Model::model('orders/order_goods_model')->where(array('order_id' => $order_id))->group('ru_id')->get_field('ru_id', true);
-			if (count($ru_id_group) > 1 || $ru_id_group[0] != $_SESSION['ru_id']) {
+		if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
+			$ru_id_group = RC_Model::model('orders/order_info_model')->where(array('order_id' => $order_id))->group('store_id')->get_field('store_id', true);
+			if (count($ru_id_group) > 1 || $ru_id_group[0] != $_SESSION['store_id']) {
 				return new ecjia_error('no_authority', '对不起，您没权限查看此订单相关信息！');
 			}
 		}
@@ -35,7 +33,6 @@ class express_module implements ecjia_interface {
 		
 		$delivery_list = array();
 		if (!empty($delivery_result)) {
-			$AppKey = '3b9fdc7e57c597ab';
 			$delivery_goods_db = RC_Model::model('orders/delivery_viewmodel');
 			$delivery_goods_db->view = array(
 					'goods' => array(
@@ -50,9 +47,18 @@ class express_module implements ecjia_interface {
 // 				$typeCom = getComType('天天');//快递公司类型
 				if (!empty($typeCom) && !empty($val['invoice_no'])) {
 // 					$val['invoice_no'] = '667296821017';
-					$url	= 'http://api.kuaidi100.com/api?id='.$AppKey.'&com='.$typeCom.'&nu='.$val['invoice_no'].'&show=0&muti=1&order=desc';
-					$json	=  file_get_contents($url);
-					$data = json_decode($json, true);
+
+				    $url = 'https://cloud.ecjia.com/sites/api/?url=express/track';
+// 				    $url = 'http://cloud.ecjia.dev/sites/api/?url=express/track';
+				    $params = array(
+				        'api_key' => '6b66e21a4f50aa0282229f3873ac6dbd',
+				        'api_token' => '6b66e21a4f50aa0282229f3873ac6dbd',
+				        'company' => $typeCom,
+				        'number' => $val['invoice_no'],
+				        'order' => 'desc',
+				    );
+				    $data = curl($url, $params, 'POST');
+				    $data = $data['data'];
 				}
 				
 // 				0：在途，即货物处于运输过程中；
@@ -63,7 +69,7 @@ class express_module implements ecjia_interface {
 // 				5：派件，即快递正在进行同城派件；
 // 				6：退回，货物正处于退回发件人的途中；
 				
-				if (isset($data['state'])) {
+				/* if (isset($data['state'])) {
 					switch ($data['state']) {
 						case 0 :
 							$label_shipping_status = '即货物处于运输过程中';
@@ -92,8 +98,7 @@ class express_module implements ecjia_interface {
 					}
 				} else {
 					$label_shipping_status = '暂无配送信息';
-				}
-				
+				} */
 				
 				$delivery_goods = $delivery_goods_db->where(array('delivery_id' => $val['delivery_id']))->select();
 				
@@ -112,13 +117,14 @@ class express_module implements ecjia_interface {
 					);
 				}
 				
-				
 				$delivery_list[] = array(
-						'shipping_name'		=> $val['shipping_name'],
-						'shipping_number'	=> $val['invoice_no'],
-						'label_shipping_status' => $label_shipping_status,
-						'content'			=> !empty($data['data']) ? $data['data'] : array(),
-						'goods_items'		=> $goods_lists,
+					'shipping_name'		=> $val['shipping_name'],
+					'shipping_number'	=> $val['invoice_no'],
+				    'shipping_status' => !empty($data['shipping_status']) ? $data['shipping_status'] : '',
+					'label_shipping_status' => !empty($data['state_label']) ? $data['state_label'] : '',
+				    'sign_time_formated' => !empty($data['sign_time_formated']) ? $data['sign_time_formated'] : '',
+					'content'			=> !empty($data['content']) ? $data['content'] : array(),
+					'goods_items'		=> $goods_lists,
 				);
 				
 			}
@@ -277,6 +283,33 @@ function getComType($typeCom)
 		$typeCom = '';
 	}
 	return $typeCom;
+}
+
+function curl($url, $post) {
+    $postBody = http_build_query($post);
+    
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $postBody);
+    $result = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlErrNo = curl_errno($ch);
+    $curlErr = curl_error($ch);
+    curl_close($ch);
+    
+    if ($httpCode == "0") //time out
+        throw new Exception("Curl error number:" . $curlErrNo . " , Curl error details:" . $curlErr . "\r\n");
+    else if ($httpCode != "200") //we did send the notifition out and got a non-200 response
+        throw new Exception("http code:" . $httpCode . " details:" . $result . "\r\n");
+    $returnData = json_decode($result, TRUE);
+    if ($returnData["ret"] == "FAIL")
+        throw new Exception("Failed to upload file, details:" . $result . "\r\n");
+    
+    return $returnData;
 }
 
 

@@ -65,6 +65,7 @@ class delivery_module extends api_admin implements api_interface {
 		}
 		
 		$delivery_result = RC_DB::table('delivery_order')->where('store_id', $_SESSION['store_id'])->where('order_id', $order_id)->get();
+		
 		$delivery_list = array();
 		if (!empty($delivery_result)) {
 			foreach ($delivery_result as $val) {
@@ -79,11 +80,38 @@ class delivery_module extends api_admin implements api_interface {
 					'mobile'		=> $val['mobile'],
 					'status'		=> $val['status'] == 0 ? 'shipped' : 'shipping',
 					'label_status'	=> $val['status'] == 0 ? '已发货' : '发货中', 
+				    'goods_items'   => get_delivery_goods_list($val['delivery_id']),
 				);
 			}
 		}
 		return $delivery_list;
 	}
+}
+
+function get_delivery_goods_list($delivery_id) {
+    $goods_list = RC_DB::table('delivery_goods as dg')
+    ->leftJoin('goods as g', RC_DB::raw('dg.goods_id'), '=', RC_DB::raw('g.goods_id'))
+    ->selectRaw('dg.goods_id, dg.goods_name, dg.send_number, dg.goods_attr, g.goods_thumb, g.goods_img, g.original_img')
+    ->where(RC_DB::raw('dg.delivery_id'), $delivery_id)->get();
+    
+    $goods_items = array();
+    if ($goods_list) {
+        foreach ($goods_list as $goods) {
+            $goods_items[] = array(
+                'goods_id' => $goods['goods_id'],
+                'goods_name' => $goods['goods_name'],
+                'send_number' => $goods['send_number'],
+                'goods_attr' => $goods['goods_attr'],
+                'img' => array(
+                    'thumb'	=> (isset($goods['goods_img']) && !empty($goods['goods_img']))		 ? RC_Upload::upload_url($goods['goods_img'])		: '',
+                    'url'	=> (isset($goods['original_img']) && !empty($goods['original_img'])) ? RC_Upload::upload_url($goods['original_img'])  : '',
+                    'small'	=> (isset($goods['goods_thumb']) && !empty($goods['goods_thumb']))   ? RC_Upload::upload_url($goods['goods_thumb'])   : ''
+                )
+            );
+        }
+    }
+    
+    return $goods_items;
 }
 
 // end

@@ -48,17 +48,28 @@ class express_module extends api_admin implements api_interface {
 				if (!empty($typeCom) && !empty($val['invoice_no'])) {
 // 					$val['invoice_no'] = '667296821017';
 
-				    $url = 'https://cloud.ecjia.com/sites/api/?url=express/track';
-// 				    $url = 'http://cloud.ecjia.dev/sites/api/?url=express/track';
-				    $params = array(
-				        'api_key' => '6b66e21a4f50aa0282229f3873ac6dbd',
-				        'api_token' => '6b66e21a4f50aa0282229f3873ac6dbd',
-				        'company' => $typeCom,
-				        'number' => $val['invoice_no'],
-				        'order' => 'desc',
-				    );
-				    $data = curl($url, $params, 'POST');
-				    $data = $data['data'];
+				    $cloud_express_key = ecjia::config('cloud_express_key');
+				    $cloud_express_secret = ecjia::config('cloud_express_secret');
+				    if (!empty($cloud_express_key) && !empty($cloud_express_secret)) {
+				        $url = 'https://cloud.ecjia.com/sites/api/?url=express/track';
+//     				    $url = 'http://cloud.ecjia.dev/sites/api/?url=express/track';
+				        $params = array(
+    				        'app_key' => $cloud_express_key,
+    				        'app_secret' => $cloud_express_secret,
+    				        'company' => $typeCom,
+    				        'number' => $val['invoice_no'],
+    				        'order' => 'desc',
+				        );
+				        $data = curl($url, $params, 'POST');
+				        
+				        if ($data['status']['succeed'] != 1) {
+				            $data = array('content' => $data['status']['error_desc']);
+				        } else {
+				            $data = $data['data'];
+				        }
+				    } else {
+				        $data = array('content' => '物流跟踪未配置');
+				    }
 				}
 				
 // 				0：在途，即货物处于运输过程中；

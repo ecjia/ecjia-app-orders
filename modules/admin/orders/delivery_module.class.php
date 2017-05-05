@@ -81,6 +81,7 @@ class delivery_module extends api_admin implements api_interface {
 					'status'		=> $val['status'] == 0 ? 'shipped' : 'shipping',
 					'label_status'	=> $val['status'] == 0 ? '已发货' : '发货中', 
 				    'goods_items'   => get_delivery_goods_list($val['delivery_id']),
+				    'send_time'     => RC_Time::local_date(ecjia::config('date_format'), $val['update_time']),
 				);
 			}
 		}
@@ -91,7 +92,7 @@ class delivery_module extends api_admin implements api_interface {
 function get_delivery_goods_list($delivery_id) {
     $goods_list = RC_DB::table('delivery_goods as dg')
     ->leftJoin('goods as g', RC_DB::raw('dg.goods_id'), '=', RC_DB::raw('g.goods_id'))
-    ->selectRaw('dg.goods_id, dg.goods_name, dg.send_number, dg.goods_attr, g.goods_thumb, g.goods_img, g.original_img')
+    ->selectRaw('dg.goods_id, dg.goods_name, dg.send_number, dg.goods_attr, g.goods_thumb, g.shop_price, g.goods_img, g.original_img')
     ->where(RC_DB::raw('dg.delivery_id'), $delivery_id)->get();
     
     $goods_items = array();
@@ -100,6 +101,8 @@ function get_delivery_goods_list($delivery_id) {
             $goods_items[] = array(
                 'goods_id' => $goods['goods_id'],
                 'goods_name' => $goods['goods_name'],
+                'shop_price' => $goods['shop_price'],
+                'formated_shop_price' => price_format($goods['shop_price'], false),
                 'send_number' => $goods['send_number'],
                 'goods_attr' => $goods['goods_attr'],
                 'img' => array(

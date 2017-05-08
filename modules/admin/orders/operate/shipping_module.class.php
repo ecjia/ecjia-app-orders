@@ -75,7 +75,7 @@ class shipping_module extends api_admin implements api_interface {
 		}
 		
 		/*验证订单是否属于此入驻商*/
-     if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
+        if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
 		    $ru_id_group = RC_Model::model('orders/order_info_model')->where(array('order_id' => $order_id))->group('store_id')->get_field('store_id', true);
 		    if (count($ru_id_group) > 1 || $ru_id_group[0] != $_SESSION['store_id']) {
 		        return new ecjia_error('no_authority', '对不起，您没权限对此订单进行操作！');
@@ -94,7 +94,10 @@ class shipping_module extends api_admin implements api_interface {
 		$region_id_list = array($order_info['country'], $order_info['province'], $order_info['city'], $order_info['district']);
 		/* 保存订单 */
 		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
-		$shipping		= $shipping_method->shipping_area_info($shipping_id, $region_id_list);
+		$shipping		= $shipping_method->shipping_area_info($shipping_id, $region_id_list, $order_info['store_id']);
+		if (empty($shipping)) {
+		    return ecjia_error('shipping_fail', '配送方式获取失败');
+		}
 		if (strpos($shipping['shipping_code'], 'ship') === false) {
 			$shipping['shipping_code'] = 'ship_'.$shipping['shipping_code'];
 		}

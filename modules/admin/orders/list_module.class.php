@@ -86,30 +86,31 @@ class list_module extends api_admin implements api_interface {
 		if ($device_code != '8001') {
 			switch ($type) {
 				case 'await_pay':
-					$where = $order_query->order_await_pay('oi.');
+					$where_query = $order_query->order_await_pay('oi.');
 					break;
 				case 'payed' :
-				    $where = $order_query->order_await_ship('oi.');
+				    $where_query = $order_query->order_await_ship('oi.');
 				    break;
 				case 'await_ship':
-					$where = $order_query->order_await_ship('oi.');
+					$where_query = $order_query->order_await_ship('oi.');
 					break;
 				case 'shipped':
-					$where = $order_query->order_shipped('oi.');
+					$where_query = $order_query->order_shipped('oi.');
 					break;
 				case 'finished':
-					$where = $order_query->order_finished('oi.');
+					$where_query = $order_query->order_finished('oi.');
 					break;
 				case 'refund':
-					$where = $order_query->order_refund('oi.');
+					$where_query = $order_query->order_refund('oi.');
 					break;
 				case 'closed' :
-					$where = array_merge($order_query->order_invalid('oi.'),$order_query->order_canceled('oi.'));
+					$where_query = array_merge($order_query->order_invalid('oi.'),$order_query->order_canceled('oi.'));
 					break;
 				case 'whole':
 					break;
 			}
-
+			
+			$where = array_merge($where, $where_query);
 
 			$total_fee = "(oi.goods_amount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) as total_fee";
 			$field = 'oi.order_id, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time, og.goods_number, og.goods_id, og.goods_name, g.goods_thumb, g.goods_img, g.original_img, oi.integral, oi.money_paid, oi.surplus, oi.order_amount';

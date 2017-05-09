@@ -229,7 +229,7 @@ class delivery_module extends api_admin implements api_interface {
 		
 		/* 过滤字段项 */
 		$filter_fileds = array(
-				'order_sn', 'add_time', 'user_id', 'how_oos', 'shipping_id', 'shipping_name', 'shipping_fee',
+				'order_sn', 'add_time', 'store_id', 'how_oos', 'shipping_id', 'shipping_name', 'shipping_fee',
 				'consignee', 'address', 'country', 'province', 'city', 'district', 'sign_building',
 				'email', 'zipcode', 'tel', 'mobile', 'best_time', 'postscript', 'insure_fee',
 				'agency_id', 'delivery_sn', 'action_user', 'update_time',

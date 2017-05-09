@@ -63,8 +63,11 @@ class delivery_module extends api_admin implements api_interface {
  		if (empty($order_id)) {
  			return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
 		}
-		
-		$delivery_result = RC_DB::table('delivery_order')->where('store_id', $_SESSION['store_id'])->where('order_id', $order_id)->get();
+		$db_table = RC_DB::table('delivery_order');
+		if ($_SESSION['store_id']) {
+		    $db_table->where('store_id', $_SESSION['store_id']);
+		}
+		$delivery_result = $db_table->where('order_id', $order_id)->get();
 		
 		$delivery_list = array();
 		if (!empty($delivery_result)) {

@@ -63,12 +63,12 @@ class express_module extends api_admin implements api_interface {
 				        $data = curl($url, $params, 'POST');
 				        
 				        if ($data['status']['succeed'] != 1) {
-				            $data = array('content' => $data['status']['error_desc']);
+				            $data = array('content' => array('time' => 'error', 'context' => $data['status']['error_desc']));
 				        } else {
 				            $data = $data['data'];
 				        }
 				    } else {
-				        $data = array('content' => '物流跟踪未配置');
+				        $data = array('content' => array('time' => 'error', 'context' => '物流跟踪未配置'));
 				    }
 				}
 				
@@ -134,14 +134,12 @@ class express_module extends api_admin implements api_interface {
 				    'shipping_status' => !empty($data['shipping_status']) ? $data['shipping_status'] : '',
 					'label_shipping_status' => !empty($data['state_label']) ? $data['state_label'] : '',
 				    'sign_time_formated' => !empty($data['sign_time_formated']) ? $data['sign_time_formated'] : '',
-					'content'			=> !empty($data['content']) ? $data['content'] : array(),
+					'content'			=> !empty($data['content']) ? $data['content'] : array('time' => 'error', 'context' => '暂无物流信息'),
 					'goods_items'		=> $goods_lists,
 				);
 				
 			}
 		}
-		
-		
 		
 		return $delivery_list;
 	}

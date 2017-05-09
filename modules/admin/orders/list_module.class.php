@@ -88,6 +88,9 @@ class list_module extends api_admin implements api_interface {
 				case 'await_pay':
 					$where = $order_query->order_await_pay('oi.');
 					break;
+				case 'payed' :
+				    $where = $order_query->order_await_ship('oi.');
+				    break;
 				case 'await_ship':
 					$where = $order_query->order_await_ship('oi.');
 					break;

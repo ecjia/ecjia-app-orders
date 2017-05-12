@@ -58,8 +58,8 @@ class delivery_module extends api_admin implements api_interface {
 			return new ecjia_error(100, 'Invalid session');
 		}
 		
-		$result_view = $this->requestData('order_view'); 
-		$result_edit = $this->requestData('order_ss_edit');
+		$result_view = $this->admin_priv('order_view'); 
+		$result_edit = $this->admin_priv('order_ss_edit');
 		if (is_ecjia_error($result_view)) {
 			return $result_view;
 		} elseif (is_ecjia_error($result_edit)) {
@@ -69,11 +69,11 @@ class delivery_module extends api_admin implements api_interface {
 		$order_id		= $this->requestData('order_id', 0);
 		$invoice_no		= $this->requestData('invoice_no');
 		/* 发货数量*/
-		$send_number	= $this->requestData('send_number');//array('123' => 1);
+		$send_number	= $this->requestData('send_number');//array('123' => 1);rec_id,num
 
 		$action_note	= $this->requestData('action_note', '');
 		if (empty($order_id)) {
-			return new ecjia_error(100, 'Invalid session');
+			return new ecjia_error('invalid_parameter', '参数错误');
 		}
 		/*验证订单是否属于此入驻商*/
         if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
@@ -85,7 +85,7 @@ class delivery_module extends api_admin implements api_interface {
 		
 		$order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));
 		if (empty($order_info)) {
-			return new ecjia_error(100, 'Invalid session');
+			return new ecjia_error('invalid_parameter', '参数错误');
 		}
 		
 		/* 订单是否已全部分单检查 */
@@ -98,7 +98,6 @@ class delivery_module extends api_admin implements api_interface {
 		/* 取得订单商品 */
 		$_goods = get_order_goods(array('order_id' => $order_id));
 		$goods_list = $_goods['goods_list'];
-		
 		
 		/* 检查此单发货数量填写是否正确 合并计算相同商品和货品 */
 		if (!empty($send_number) && !empty($goods_list)) {
@@ -118,7 +117,11 @@ class delivery_module extends api_admin implements api_interface {
 		
 					//去除
 					if ($send_number[$value['rec_id']] <= 0) {
-						unset($send_number[$value['rec_id']], $goods_list[$key]);
+					    if ($send_number[$value['rec_id']]) {
+					        unset($send_number[$value['rec_id']], $goods_list[$key]);
+					    } else {
+					        unset($goods_list[$key]);
+					    }
 						continue;
 					}
 				} else {
@@ -510,14 +513,14 @@ function delivery_order($delivery_id, $order) {
 			$tpl_name = 'deliver_notice';
 			$tpl   = RC_Api::api('mail', 'mail_template', $tpl_name);
 			if (empty($tpl)) {
-				ecjia::$controller->assign('order'			, $order);
-				ecjia::$controller->assign('send_time'		, RC_Time::local_date(ecjia::config('time_format')));
-				ecjia::$controller->assign('shop_name'		, ecjia::config('shop_name'));
-				ecjia::$controller->assign('send_date'		, RC_Time::local_date(ecjia::config('date_format')));
-				ecjia::$controller->assign('confirm_url'	, SITE_URL . 'receive.php?id=' . $order['order_id'] . '&con=' . rawurlencode($order['consignee']));
-				ecjia::$controller->assign('send_msg_url'	, SITE_URL . RC_Uri::url('user/admin/message_list','order_id=' . $order['order_id']));
+				ecjia_api::$controller->assign('order'			, $order);
+				ecjia_api::$controller->assign('send_time'		, RC_Time::local_date(ecjia::config('time_format')));
+				ecjia_api::$controller->assign('shop_name'		, ecjia::config('shop_name'));
+				ecjia_api::$controller->assign('send_date'		, RC_Time::local_date(ecjia::config('date_format')));
+				ecjia_api::$controller->assign('confirm_url'	, SITE_URL . 'receive.php?id=' . $order['order_id'] . '&con=' . rawurlencode($order['consignee']));
+				ecjia_api::$controller->assign('send_msg_url'	, SITE_URL . RC_Uri::url('user/admin/message_list','order_id=' . $order['order_id']));
 				
-				$content = ecjia::$controller->fetch_string($tpl['template_content']);
+				$content = ecjia_api::$controller->fetch_string($tpl['template_content']);
 				
 				RC_Mail::send_mail($order['consignee'], $order['email'] , $tpl['template_subject'], $content, $tpl['is_html']);
 			}
@@ -531,12 +534,12 @@ function delivery_order($delivery_id, $order) {
 				$tpl_name = 'order_shipped_sms';
 				$tpl   = RC_Api::api('sms', 'sms_template', $tpl_name);
 				if (!empty($tpl)) {
-					ecjia::$controller->assign('order_sn', $order['order_sn']);
-					ecjia::$controller->assign('shipped_time', RC_Time::local_date(ecjia::config('time_format'), $arr['shipping_time']));
-					ecjia::$controller->assign('mobile', $order['mobile']);
-					ecjia::$controller->assign('order', $order);
+					ecjia_api::$controller->assign('order_sn', $order['order_sn']);
+					ecjia_api::$controller->assign('shipped_time', RC_Time::local_date(ecjia::config('time_format'), $arr['shipping_time']));
+					ecjia_api::$controller->assign('mobile', $order['mobile']);
+					ecjia_api::$controller->assign('order', $order);
 	
-					$content = ecjia::$controller->fetch_string($tpl['template_content']);
+					$content = ecjia_api::$controller->fetch_string($tpl['template_content']);
 	
 					$options = array(
 							'mobile' 		=> $order['mobile'],

@@ -130,7 +130,7 @@ class orders_order_list_api extends Component_Event_Api {
             }
         }
 
-        $record_count = $dbview_order_info->join(array('order_goods', 'goods', 'comment'))->where($where)->count('*');
+        $record_count = $dbview_order_info->join(array('order_goods', 'goods', 'comment'))->where($where)->count('DISTINCT oi.order_id');
         //实例化分页
         $page_row = new ecjia_page($record_count, $size, 6, '', $page);
 

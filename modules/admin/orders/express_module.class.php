@@ -299,6 +299,23 @@ function getComType($typeCom)
 	return $typeCom;
 }
 
+function getExpressComCode($shipping_code)
+{
+    $express_code = array(
+        'ship_yto' => 'yuantong',
+        'ship_sto_express' => 'shentong',
+        'ship_zto' => 'zhongtong',
+        'ship_ems' => 'ems',
+        'ship_sf_express' => 'shunfeng',
+    );
+    
+    if (isset($express_code[$shipping_code])) {
+        return $express_code[$shipping_code];
+    } else {
+        return false;
+    }
+}
+
 function curl($url, $post) {
     $postBody = http_build_query($post);
     

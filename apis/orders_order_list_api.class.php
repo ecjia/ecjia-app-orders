@@ -57,7 +57,7 @@ class orders_order_list_api extends Component_Event_Api {
      * @return  array
      */
     public function call (&$options) {
-        if (!is_array($options) || !isset($options['type'])) {
+        if (!is_array($options) ) {
             return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
         }
 
@@ -101,7 +101,6 @@ class orders_order_list_api extends Component_Event_Api {
                 'alias'     => 'g',
                 'on'        => 'og.goods_id = g.goods_id'
             ),
-            
             'store_franchisee' => array(
                 'type'      => Component_Model_View::TYPE_LEFT_JOIN,
                 'alias'     => 'ssi',
@@ -110,7 +109,7 @@ class orders_order_list_api extends Component_Event_Api {
             'comment' => array(
                 'type'      => Component_Model_View::TYPE_LEFT_JOIN,
                 'alias'     => 'c',
-                'on'        => 'c.id_value = g.goods_id and c.rec_id = og.rec_id and c.comment_type = 0 and c.parent_id = 0'
+                'on'        => 'c.id_value = og.goods_id and c.rec_id = og.rec_id and c.order_id = oi.order_id and c.comment_type = 0 and c.parent_id = 0'
             ),
         );
 
@@ -118,28 +117,36 @@ class orders_order_list_api extends Component_Event_Api {
         $where = array('oi.user_id' => $user_id, 'oi.is_delete' => 0);
 
         if (!empty($type)) {
-            $order_type = 'order_'.$type;
-            $where = array_merge($where, order_list::$order_type('oi.'));
-        }
-
-        $record_count = $dbview_order_info->join(null)->where($where)->count('*');
-        //实例化分页
-        $page_row = new ecjia_page($record_count, $size, 6, '', $page);
-
-        $order_group = $dbview_order_info->join(null)->field('oi.order_id')->where($where)->order(array('oi.add_time' => 'desc'))->limit($page_row->limit())->select();
-        if (empty($order_group)) {
-            return array('order_list' => array(), 'page' => $page_row);
-        } else {
-            foreach ($order_group as $val) {
-                $where['oi.order_id'][] = $val['order_id'];
+            if ($type == 'allow_comment') {
+                $where[] = 'comment_id is null';
+                $order_type = 'order_finished';
+                $where = array_merge($where, order_list::$order_type('oi.'));
+            } else {
+                $order_type = 'order_'.$type;
+                $where = array_merge($where, order_list::$order_type('oi.'));
             }
         }
 
+        $record_count = $dbview_order_info->join(array('order_goods', 'goods', 'comment'))->where($where)->count('*');
+        //实例化分页
+        $page_row = new ecjia_page($record_count, $size, 6, '', $page);
+
+//         $order_group = $dbview_order_info->join(array('order_goods', 'goods', 'comment'))->field('oi.order_id')->where($where)->order(array('oi.add_time' => 'desc'))->limit($page_row->limit())->select();
+//         if (empty($order_group)) {
+//             return array('order_list' => array(), 'page' => $page_row);
+//         } else {
+//             foreach ($order_group as $val) {
+//                 $where['oi.order_id'][] = $val['order_id'];
+//             }
+//         }
+
         $field = 'oi.order_id, oi.order_sn, oi.order_status, oi.shipping_status, oi.pay_status, oi.add_time, (oi.goods_amount + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee + oi.tax - oi.integral_money - oi.bonus - oi.discount) AS total_fee, oi.discount, oi.integral_money, oi.bonus, oi.shipping_fee, oi.pay_id, oi.order_amount'.
         ', og.goods_id, og.goods_name, og.goods_attr, og.goods_attr_id, og.goods_price, og.goods_number, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, ssi.store_id, ssi.merchants_name, ssi.manage_mode, c.comment_id, c.has_image';
-        $res = $dbview_order_info->join(array('order_goods', 'goods', 'store_franchisee', 'comment'))->field($field)->where($where)->group('og.rec_id')->order(array('oi.order_id' => 'desc'))->select();
+        $res = $dbview_order_info->join(array('order_goods', 'goods', 'store_franchisee', 'comment'))->field($field)->where($where)->group('og.rec_id')->order(array('oi.order_id' => 'desc'))->limit($page_row->limit())->select();
         RC_Lang::load('orders/order');
 
+//         _dump($dbview_order_info->last_sql());
+//         _dump($res,1);
         /* 取得订单列表 */
         $orders = array();
         if (!empty($res)) {

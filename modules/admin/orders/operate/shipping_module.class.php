@@ -86,6 +86,21 @@ class shipping_module extends api_admin implements api_interface {
 		if (empty($order_info)) {
 			return new ecjia_error(101, '参数错误');
 		}
+		RC_Logger::getLogger('info')->info(array('shipping' => $shipping_id));
+		//无需物流方式
+		if ($shipping_id == 0) {
+		    $noexpress_data = RC_DB::table('shipping')
+		    ->where('shipping_code', 'ship_no_express')
+		    ->first();
+		    if (empty($noexpress_data['enabled'])) {
+		        return new ecjia_error('no_express', '该插件未安装');
+		    }
+		    if ($noexpress_data['enabled'] != 1) {
+		        return new ecjia_error('no_express', '该插件未启用');
+		    }
+		    $shipping_id = $noexpress_data['shipping_id'];
+		}
+		RC_Logger::getLogger('info')->info(array('shipping' => $shipping_id));
 		
 		RC_Loader::load_app_func('admin_order', 'orders');
 		RC_Loader::load_app_func('global', 'orders');
@@ -96,7 +111,7 @@ class shipping_module extends api_admin implements api_interface {
 		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
 		$shipping		= $shipping_method->shipping_area_info($shipping_id, $region_id_list, $order_info['store_id']);
 		if (empty($shipping)) {
-		    return ecjia_error('shipping_fail', '配送方式获取失败');
+		    return new ecjia_error('shipping_fail', '配送方式获取失败');
 		}
 		if (strpos($shipping['shipping_code'], 'ship') === false) {
 			$shipping['shipping_code'] = 'ship_'.$shipping['shipping_code'];

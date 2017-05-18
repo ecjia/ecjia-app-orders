@@ -67,7 +67,7 @@ class list_module extends api_front implements api_interface {
 		$page = $this->requestData('pagination.page', 1);
 		$keywords = $this->requestData('keywords');
 		
-		$type == 'whole' ? '' : $type;
+		$type = $type == 'whole' ? '' : $type;
 		$options = array('type' => $type, 'page' => $page, 'size' => $size, 'keywords'=> $keywords);
 		$result = RC_Api::api('orders', 'order_list', $options);
 		if (is_ecjia_error($result)) {

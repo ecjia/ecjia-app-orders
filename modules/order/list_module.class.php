@@ -65,9 +65,10 @@ class list_module extends api_front implements api_interface {
 		//type whole全部，await_pay待付款，await_ship待发货，shipped待收货，allow_comment待评价
 		$size = $this->requestData('pagination.count', 15);
 		$page = $this->requestData('pagination.page', 1);
+		$keywords = $this->requestData('keywords');
 		
 		$type == 'whole' ? '' : $type;
-		$options = array('type' => $type, 'page' => $page, 'size' => $size);
+		$options = array('type' => $type, 'page' => $page, 'size' => $size, 'keywords'=> $keywords);
 		$result = RC_Api::api('orders', 'order_list', $options);
 		if (is_ecjia_error($result)) {
 			return $result;

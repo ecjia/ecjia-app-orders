@@ -66,9 +66,9 @@ class orders_order_list_api extends Component_Event_Api {
 
         $size = $options['size'];
         $page = $options['page'];
+        $keywords = $options['keywords'];
 
-
-        $orders = $this->user_orders_list($user_id, $type, $page, $size);
+        $orders = $this->user_orders_list($user_id, $type, $page, $size, $keywords);
 
         return $orders;
     }
@@ -82,7 +82,7 @@ class orders_order_list_api extends Component_Event_Api {
      * @param   int         $start          列表起始位置
      * @return  array       $order_list     订单列表
      */
-    private function user_orders_list($user_id, $type = '', $page = 1, $size = 15) {
+    private function user_orders_list($user_id, $type = '', $page = 1, $size = 15, $keywords = '') {
         /**
          * await_pay 待付款
          * await_ship 待发货
@@ -115,6 +115,9 @@ class orders_order_list_api extends Component_Event_Api {
 
         RC_Loader::load_app_class('order_list', 'orders', false);
         $where = array('oi.user_id' => $user_id, 'oi.is_delete' => 0);
+        if (!empty($keywords)) {
+            $where[] = "((og.goods_name LIKE '%" . $keywords ."%') or (oi.order_sn LIKE '%" . $keywords ."%'))";
+        }
 
         if (!empty($type)) {
             if ($type == 'allow_comment') {

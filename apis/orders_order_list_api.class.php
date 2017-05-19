@@ -92,9 +92,9 @@ class orders_order_list_api extends Component_Event_Api {
         $dbview_order_info = RC_Model::model('orders/order_info_viewmodel');
         $dbview_order_info->view = array(
             'order_goods' => array(
-                'type'      =>    Component_Model_View::TYPE_LEFT_JOIN,
-                'alias'     =>    'og',
-                'on'        =>    'oi.order_id = og.order_id ',
+                'type'      => Component_Model_View::TYPE_LEFT_JOIN,
+                'alias'     => 'og',
+                'on'        => 'oi.order_id = og.order_id ',
             ),
             'goods' => array(
                 'type'      => Component_Model_View::TYPE_LEFT_JOIN,
@@ -130,7 +130,7 @@ class orders_order_list_api extends Component_Event_Api {
             }
         }
 
-        $record_count = $dbview_order_info->join(array('order_goods', 'goods', 'comment'))->where($where)->count('DISTINCT oi.order_id');
+        $record_count = $dbview_order_info->join(array('order_goods', 'goods','store_franchisee', 'comment'))->where($where)->count('DISTINCT oi.order_id');
         //实例化分页
         $page_row = new ecjia_page($record_count, $size, 6, '', $page);
 
@@ -145,7 +145,7 @@ class orders_order_list_api extends Component_Event_Api {
 
         $field = 'oi.order_id, oi.order_sn, oi.order_status, oi.shipping_status, oi.pay_status, oi.add_time, (oi.goods_amount + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee + oi.tax - oi.integral_money - oi.bonus - oi.discount) AS total_fee, oi.discount, oi.integral_money, oi.bonus, oi.shipping_fee, oi.pay_id, oi.order_amount'.
         ', og.goods_id, og.goods_name, og.goods_attr, og.goods_attr_id, og.goods_price, og.goods_number, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, ssi.store_id, ssi.merchants_name, ssi.manage_mode, c.comment_id, c.has_image';
-        $res = $dbview_order_info->join(array('order_goods', 'goods', 'store_franchisee', 'comment'))->field($field)->where($where)->group('og.rec_id')->order(array('oi.order_id' => 'desc'))->limit($page_row->limit())->select();
+        $res = $dbview_order_info->join(array('order_goods', 'goods', 'store_franchisee', 'comment'))->field($field)->where($where)->group('oi.order_id')->order(array('oi.order_id' => 'desc'))->limit($page_row->limit())->select();
         RC_Lang::load('orders/order');
 
 //         _dump($dbview_order_info->last_sql());
@@ -155,6 +155,7 @@ class orders_order_list_api extends Component_Event_Api {
         if (!empty($res)) {
             $order_id = $goods_number = $goods_type_number = 0;
             $payment_method = RC_Loader::load_app_class('payment_method', 'payment');
+            RC_Loader::load_app_func('global', 'orders');
             foreach ($res as $row) {
                 $attr = array();
                 if (isset($row['goods_attr']) && !empty($row['goods_attr'])) {
@@ -266,7 +267,40 @@ class orders_order_list_api extends Component_Event_Api {
                             )
                         );
                     }
-
+                    
+                    $goods_list = get_order_goods_base($row['order_id']);
+                    if (!empty($goods_list)) {
+                        foreach ($goods_list as $k =>$v) {
+                            $attr = array();
+                            if (!empty($v['goods_attr'])) {
+                                $goods_attr = explode("\n", $v['goods_attr']);
+                                $goods_attr = array_filter($goods_attr);
+                                foreach ($goods_attr as  $val) {
+                                    $a = explode(':',$val);
+                                    if (!empty($a[0]) && !empty($a[1])) {
+                                        $attr[] = array('name'=>$a[0], 'value'=>$a[1]);
+                                    }
+                                }
+                            }
+                            $goods_list[$k] = array(
+                                'goods_id'				=> $v['goods_id'],
+                                'name'					=> $v['goods_name'],
+                                'goods_attr_id'         => $v['goods_attr_id'],
+                                'goods_attr'            => $attr,
+                                'goods_number'			=> $v['goods_number'],
+                                'subtotal'				=> price_format($v['subtotal'], false),
+                                'formated_shop_price' 	=> price_format($v['goods_price'], false),
+                                'is_commented'   => $v['is_commented'],
+                                'is_showorder'	 => $v['has_image'],
+                                'img' => array(
+                                    'thumb'	=> !empty($v['goods_img']) ? RC_Upload::upload_url($v['goods_img']) : '',
+                                    'url'	=> !empty($v['original_img']) ? RC_Upload::upload_url($v['original_img']) : '',
+                                    'small'	=> !empty($v['goods_thumb']) ? RC_Upload::upload_url($v['goods_thumb']) : '',
+                                ),
+                            );
+                        }
+                    }
+                    $orders[$row['order_id']]['goods_list'] = $goods_list;
 
                     $order_id = $row['order_id'];
                 } else {

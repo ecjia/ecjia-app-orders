@@ -86,7 +86,6 @@ class shipping_module extends api_admin implements api_interface {
 		if (empty($order_info)) {
 			return new ecjia_error(101, '参数错误');
 		}
-		RC_Logger::getLogger('info')->info(array('shipping' => $shipping_id));
 		//无需物流方式
 		if ($shipping_id == 0) {
 		    $noexpress_data = RC_DB::table('shipping')
@@ -100,7 +99,6 @@ class shipping_module extends api_admin implements api_interface {
 		    }
 		    $shipping_id = $noexpress_data['shipping_id'];
 		}
-		RC_Logger::getLogger('info')->info(array('shipping' => $shipping_id));
 		
 		RC_Loader::load_app_func('admin_order', 'orders');
 		RC_Loader::load_app_func('global', 'orders');

@@ -122,8 +122,11 @@ class orders_order_list_api extends Component_Event_Api {
         if (!empty($type)) {
             if ($type == 'allow_comment') {
                 $where[] = 'comment_id is null';
-                $order_type = 'order_finished';
-                $where = array_merge($where, order_list::$order_type('oi.'));
+//                 $order_type = 'order_finished';
+//                 $where = array_merge($where, order_list::$order_type('oi.'));
+                $where['oi.order_status'] = array(OS_CONFIRMED, OS_SPLITED);
+                $where['oi.shipping_status'] = array(SS_RECEIVED);
+                $where['oi.pay_status'] = array(PS_PAYED, PS_PAYING);
             } else {
                 $order_type = 'order_'.$type;
                 $where = array_merge($where, order_list::$order_type('oi.'));

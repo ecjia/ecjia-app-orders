@@ -66,6 +66,7 @@ class list_module extends api_front implements api_interface {
 		$size = $this->requestData('pagination.count', 15);
 		$page = $this->requestData('pagination.page', 1);
 		$keywords = $this->requestData('keywords');
+		$keywords = trim($keywords);
 		
 		$type = $type == 'whole' ? '' : $type;
 		$options = array('type' => $type, 'page' => $page, 'size' => $size, 'keywords'=> $keywords);

@@ -268,12 +268,12 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 // 						);
 // 						$response = RC_Api::api('sms', 'sms_send', $options);
 // 					}
-
+					$user_name = RC_DB::TABLE('users')->where('user_id', $order['user_id'])->pluck('user_name');
 					$options = array(
 						'mobile' => $order['mobile'],
 						'event'	 => 'sms_order_shipped',
 						'value'  =>array(
-							'user_name'    => '会员名称',//@宋倩倩
+							'user_name'    => $user_name,
 							'consignee'    => $order['consignee'],
 							'service_phone'=> ecjia::config('service_phone'),
 						),

@@ -287,23 +287,38 @@ function delivery_ship($order_id, $delivery_id) {
 		if (!is_ecjia_error($result)) {
 			/* 如果需要，发短信 */
 			if (ecjia::config('sms_order_shipped') == '1' && $order['mobile'] != '') {
+				
+				
 				//发送短信
-				$tpl_name = 'order_shipped_sms';
-				$tpl   = RC_Api::api('sms', 'sms_template', $tpl_name);
-				if (!empty($tpl)) {
-					ecjia_admin::$controller->assign('order_sn', $order['order_sn']);
-					ecjia_admin::$controller->assign('shipped_time', RC_Time::local_date(RC_Lang::lang('sms_time_format')));
-					ecjia_admin::$controller->assign('mobile', $order['mobile']);
+// 				$tpl_name = 'order_shipped_sms';
+// 				$tpl   = RC_Api::api('sms', 'sms_template', $tpl_name);
+// 				if (!empty($tpl)) {
+// 					ecjia_admin::$controller->assign('order_sn', $order['order_sn']);
+// 					ecjia_admin::$controller->assign('shipped_time', RC_Time::local_date(RC_Lang::lang('sms_time_format')));
+// 					ecjia_admin::$controller->assign('mobile', $order['mobile']);
 
-					$content = ecjia_admin::$controller->fetch_string($tpl['template_content']);
+// 					$content = ecjia_admin::$controller->fetch_string($tpl['template_content']);
 
-					$options = array(
-							'mobile' 		=> $order['mobile'],
-							'msg'			=> $content,
-							'template_id' 	=> $tpl['template_id'],
-					);
-					$response = RC_Api::api('sms', 'sms_send', $options);
-				}
+// 					$options = array(
+// 							'mobile' 		=> $order['mobile'],
+// 							'msg'			=> $content,
+// 							'template_id' 	=> $tpl['template_id'],
+// 					);
+// 					$response = RC_Api::api('sms', 'sms_send', $options);
+// 				}
+				
+				$options = array(
+					'mobile' => $order['mobile'],
+					'event'	 => 'sms_order_shipped',
+					'value'  =>array(
+						'user_name'    => '会员名称',//@宋倩倩
+						'consignee'    => '收货人',//@宋倩倩
+						'service_phone'=> ecjia::config('service_phone'),
+					),
+				);
+				$response = RC_Api::api('sms', 'send_event_sms', $options);
+				
+				
 			}
 		}
 	}

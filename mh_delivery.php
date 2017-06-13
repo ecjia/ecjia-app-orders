@@ -598,6 +598,7 @@ class mh_delivery extends ecjia_merchant {
 						'event'	 => 'sms_order_shipped',
 						'value'  =>array(
 							'user_name'    => $user_name,
+							'order_sn'     => $order['order_sn'],
 							'consignee'    => $order['consignee'],
 							'service_phone'=> ecjia::config('service_phone'),
 						),

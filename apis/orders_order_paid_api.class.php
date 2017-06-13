@@ -239,13 +239,15 @@ class orders_order_paid_api extends Component_Event_Api {
 // 		                		);
 // 		                		$response = RC_Api::api('sms', 'sms_send', $options);
 // 		                	}
-		                	
+
 		                	$options = array(
 	                			'mobile' => $staff_user['mobile'],
 	                			'event'	 => 'sms_order_payed',
 	                			'value'  =>array(
+	                				'order_sn'  	=> $order['order_sn'],
                 					'consignee' 	=> $order['consignee'],
-                					'order_mobile'  => $order['mobile'],
+                					'mobile'  		=> $order['mobile'],
+                					'order_amount'	=> $order['order_amount'],
                 					'service_phone' => ecjia::config('service_phone'),
 	                			),
 		                	);

@@ -194,7 +194,7 @@ class orders_user_account_paid_api extends Component_Event_Api {
 					'value'  =>array(
 						'order_sn'		=> $order_info['order_sn'],
 						'consignee' 	=> $order_info['consignee'],
-						'telphone'  	=> $order_info['mobile'],
+						'telephone'  	=> $order_info['mobile'],
 						'order_amount'	=> $order_info['order_amount'],
 						'service_phone' => ecjia::config('service_phone'),
 					),

@@ -61,13 +61,11 @@ class express_module extends api_admin implements api_interface {
 				        $data = ecjia_cloud::instance()->api('express/track')->data($params)->run();
 				        RC_Logger::getlogger('info')->info(array('express', $data));
 				        
-				        if ($data['status']['succeed'] != 1) {
-				            $data = array('content' => array('time' => 'error', 'context' => $data['status']['error_desc']));
-				        } else {
-				            $data = $data['data'];
-				        }
+				        if (is_ecjia_error($data)) {
+				            $data = array('time' => 'error', 'context' => $data->get_error_message());
+				        } 
 				    } else {
-				        $data = array('content' => array('time' => 'error', 'context' => '物流跟踪未配置'));
+				        $data = array('time' => 'error', 'context' => '物流跟踪未配置');
 				    }
 				}
 				
@@ -138,7 +136,7 @@ class express_module extends api_admin implements api_interface {
 				    'shipping_status' => !empty($data['shipping_status']) ? $data['shipping_status'] : '',
 					'label_shipping_status' => $shipping_code == 'ship_no_express' ? '您当前选择的物流为【无需物流】，因此该订单暂无运单编号和物流状态' : (!empty($data['state_label']) ? $data['state_label'] : ''),
 				    'sign_time_formated' => !empty($data['sign_time_formated']) ? $data['sign_time_formated'] : '',
-					'content'			=> !empty($data['content']) ? $data['content'] : array('time' => 'error', 'context' => '暂无物流信息'),
+					'content'			=> !empty($data) ? $data : array('time' => 'error', 'context' => '暂无物流信息'),
 					'goods_items'		=> $goods_lists,
 				);
 				

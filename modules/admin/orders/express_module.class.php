@@ -59,7 +59,6 @@ class express_module extends api_admin implements api_interface {
     				        'order' => 'desc',
 				        );
 				        $data = ecjia_cloud::instance()->api('express/track')->data($params)->run();
-				        RC_Logger::getlogger('info')->info(array('express', $data));
 				        
 				        if (is_ecjia_error($data)) {
 				            $data = array('content' => array('time' => 'error', 'context' => $data->get_error_message()));

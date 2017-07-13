@@ -87,7 +87,8 @@ class pay_module extends api_front implements api_interface {
 		// 取得支付信息，生成支付代码
 		$payment_config = $payment_method->unserialize_config($payment_info['pay_config']);
 
-		$handler = $payment_method->get_payment_instance($payment_info['pay_code'], $payment_config);
+// 		$handler = $payment_method->get_payment_instance($payment_info['pay_code'], $payment_config);
+		$handler = with(new Ecjia\App\Payment\PaymentPlugin)->channel($payment_info['pay_code']);
 		$handler->set_orderinfo($order);
 		$handler->set_mobile($is_mobile);
 		

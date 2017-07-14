@@ -152,8 +152,8 @@ class orders_order_paid_api extends Component_Event_Api {
 	                order_action($order_sn, OS_CONFIRMED, SS_UNSHIPPED, $pay_status, '', RC_Lang::get('orders::order.buyers'));
 	
 	                /* 支付流水记录*/
-	                $db = RC_DB::table('payment_record');
-	                $db->where('order_sn', $order['order_sn'])->where('trade_type', 'buy')->update(array('pay_time' => RC_Time::gmtime(), 'pay_status' => 1));
+// 	                $db = RC_DB::table('payment_record');
+// 	                $db->where('order_sn', $order['order_sn'])->where('trade_type', 'buy')->update(array('pay_time' => RC_Time::gmtime(), 'pay_status' => 1));
 	                
 	                RC_DB::table('order_status_log')->insert(array(
 		                'order_status'	=> RC_Lang::get('orders::order.ps.'.PS_PAYED),
@@ -281,9 +281,9 @@ class orders_order_paid_api extends Component_Event_Api {
                         );
                         RC_Api::api('user', 'account_change_log', $options);
                         
-                        /* 支付流水记录*/
-                        $db = RC_DB::table('payment_record');
-                        $db->where('order_sn', $arr['order_sn'])->where('trade_type', 'deposit')->update(array('pay_time' => RC_Time::gmtime(), 'pay_status' => 1));
+//                         /* 支付流水记录*/
+//                         $db = RC_DB::table('payment_record');
+//                         $db->where('order_sn', $arr['order_sn'])->where('trade_type', 'deposit')->update(array('pay_time' => RC_Time::gmtime(), 'pay_status' => 1));
                     }
                 }
             }

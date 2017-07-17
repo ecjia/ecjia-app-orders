@@ -622,10 +622,12 @@ function create_express_order($delivery_id) {
         $store_info = RC_DB::table('store_franchisee')->where('store_id', $_SESSION['store_id'])->first();
     
         if (!empty($store_info['longitude']) && !empty($store_info['latitude'])) {
-            $url = "https://api.map.baidu.com/routematrix/v2/riding?output=json&output=json&origins=".$store_info['latitude'].",".$store_info['longitude']."&destinations=".$delivery_order['latitude'].",".$delivery_order['longitude']."&ak=Cgk4EqiiIG4ylFFto9XotosT2ZHF1daZ";
-            $distance_json = file_get_contents($url);
-            $distance_info = json_decode($distance_json, true);
-            $express_data['distance'] = isset($distance_info['result'][0]['distance']['value']) ? $distance_info['result'][0]['distance']['value'] : 0;
+        	//腾讯地图api距离计算
+          	$key = ecjia::config('map_qq_key');
+	        $url = "http://apis.map.qq.com/ws/distance/v1/?mode=driving&from=".$store_info['latitude'].",".$store_info['longitude']."&to=".$delivery_order['latitude'].",".$delivery_order['longitude']."&key=".$key;
+	        $distance_json = file_get_contents($url);
+	     	$distance_info = json_decode($distance_json, true);
+	     	$express_data['distance'] = isset($distance_info['result']['elements'][0]['distance']) ? $distance_info['result']['elements'][0]['distance'] : 0;
         }
     
         $exists_express_order = RC_DB::table('express_order')->where('delivery_sn', $delivery_order['delivery_sn'])->where('store_id', $_SESSION['store_id'])->first();

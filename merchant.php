@@ -2698,17 +2698,16 @@ class merchant extends ecjia_merchant {
 				$province_name	= $region_name[0]['region_name'];
 				$city_name		= $region_name[1]['region_name'];
 				$consignee_address = $province_name.'省'.$city_name.'市'.$delivery['address'];
-				
-				$shop_point = file_get_contents("https://api.map.baidu.com/geocoder/v2/?address='".$consignee_address."'&output=json&ak=E70324b6f5f4222eb1798c8db58a017b");
-				
-				$shop_point = json_decode($shop_point);
-				if (!empty($shop_point->result)) {
-					$shop_point_result = $shop_point->result;
-					$location = $shop_point_result->location;
-				
-					$delivery['longitude']	= $location->lng;
-					$delivery['latitude']	= $location->lat;
-				}
+				$consignee_address = urlencode($consignee_address);
+
+				//腾讯地图api 地址解析（地址转坐标）
+				$key = ecjia::config('map_qq_key');
+				$shop_point = RC_Http::remote_get("https://apis.map.qq.com/ws/geocoder/v1/?address=".$consignee_address."&key=".$key);
+        		$shop_point = json_decode($shop_point['body'], true);
+        		if (isset($shop_point['result']) && !empty($shop_point['result']['location'])) {
+        			$delivery['longitude']	= $shop_point['result']['location']['lng'];
+					$delivery['latitude']	= $shop_point['result']['location']['lat'];
+        		}
 			}
 			
 			/* 过滤字段项 */

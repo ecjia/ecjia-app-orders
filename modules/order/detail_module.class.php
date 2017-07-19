@@ -69,6 +69,15 @@ class detail_module extends api_front implements api_interface {
 
 		/* 订单详情 */
 		$order = get_order_detail($order_id, $user_id, 'front');
+		/*发票抬头和发票识别码处理*/
+		if (!empty($order['inv_payee'])) {
+			if (strpos($order['inv_payee'],"，") > 0) {
+				$inv = explode('，', $order['inv_payee']);
+				$order['inv_payee'] = $inv['0'];
+				$order['inv_tax_no'] = $inv['1'];
+			}
+		} 
+		
 		//获取支付方式的pay_code
 		if (!empty($order['pay_id'])) {
 			$order['pay_code'] = RC_DB::table('payment')->where('pay_id', $order['pay_id'])->pluck('pay_code');

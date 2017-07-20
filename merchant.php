@@ -171,6 +171,17 @@ class merchant extends ecjia_merchant {
 			return $this->showmessage(__('无法找到对应的订单！'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
 		}
 		
+		/*发票抬头和发票识别码处理*/
+		if (!empty($order['inv_payee'])) {
+			if (strpos($order['inv_payee'],"，") > 0) {
+				$inv = explode('，', $order['inv_payee']);
+				$this->assign('inv_payee', $inv['0']);
+				$this->assign('inv_tax_no', $inv['1']);
+			}
+		} else {
+			$this->assign('inv_payee', $order['inv_payee']);
+		}
+		
 		$order_id = $order['order_id'];
 		
 		/* 根据订单是否完成检查权限 */

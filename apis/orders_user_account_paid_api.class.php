@@ -160,7 +160,7 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		if (!is_ecjia_error($result)) {
 			/* 客户付款短信提醒 */
 			$staff_user = RC_DB::table('staff_user')->where('store_id', $order_info['store_id'])->where('parent_id', 0)->first();
-			if (ecjia::config('sms_order_payed') == '1' && !empty($staff_user['mobile'])) {
+			if (!empty($staff_user['mobile'])) {
 				
 				
 				//发送短信

@@ -75,6 +75,10 @@ class detail_module extends api_front implements api_interface {
 				$inv = explode('，', $order['inv_payee']);
 				$order['inv_payee'] = $inv['0'];
 				$order['inv_tax_no'] = $inv['1'];
+				$order['inv_title_type '] = 'enterprise';
+			} else {
+				$order['inv_tax_no'] = '';
+				$order['inv_title_type '] = 'personal';
 			}
 		} 
 		

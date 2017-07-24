@@ -531,7 +531,7 @@ function delivery_order($delivery_id, $order) {
 		$result = ecjia_app::validate_application('sms');
 		if (!is_ecjia_error($result)) {
 			/* 如果需要，发短信 */
-			if (ecjia::config('sms_order_shipped') == '1' && $order['mobile'] != '') {
+			if (!empty($order['mobile'])) {
 				$order['invoice_no'] = $invoice_no;
 				
 				

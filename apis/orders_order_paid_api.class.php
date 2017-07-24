@@ -219,7 +219,7 @@ class orders_order_paid_api extends Component_Event_Api {
 	                if (!is_ecjia_error($result)) {
 	                	$staff_user = RC_DB::table('staff_user')->where('store_id', $order['store_id'])->where('parent_id', 0)->first();
 		                /* 客户付款短信提醒 */
-		                if (ecjia::config('sms_order_payed') == '1' && !empty($staff_user['mobile'])) {
+		                if (!empty($staff_user['mobile'])) {
 		                	
 		                	//发送短信
 // 		                	$tpl_name = 'order_payed_sms';

@@ -414,9 +414,7 @@ class admin_order_delivery extends ecjia_admin {
 			$result = ecjia_app::validate_application('sms');
 			if (!is_ecjia_error($result)) {
 				/* 如果需要，发短信 */
-				if (ecjia::config('sms_order_shipped') == '1' && $order['mobile'] != '') {
-					
-					
+				if (!empty($order['mobile'])) {
 					//发送短信
 // 					$tpl_name = 'order_shipped_sms';
 // 					$tpl   = RC_Api::api('sms', 'sms_template', $tpl_name);

@@ -173,8 +173,8 @@ class merchant extends ecjia_merchant {
 		
 		/*发票抬头和发票识别码处理*/
 		if (!empty($order['inv_payee'])) {
-			if (strpos($order['inv_payee'],"，") > 0) {
-				$inv = explode('，', $order['inv_payee']);
+			if (strpos($order['inv_payee'],",") > 0) {
+				$inv = explode(',', $order['inv_payee']);
 				$this->assign('inv_payee', $inv['0']);
 				$this->assign('inv_tax_no', $inv['1']);
 			}

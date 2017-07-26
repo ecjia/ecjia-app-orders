@@ -71,8 +71,8 @@ class detail_module extends api_front implements api_interface {
 		$order = get_order_detail($order_id, $user_id, 'front');
 		/*发票抬头和发票识别码处理*/
 		if (!empty($order['inv_payee'])) {
-			if (strpos($order['inv_payee'],"，") > 0) {
-				$inv = explode('，', $order['inv_payee']);
+			if (strpos($order['inv_payee'],",") > 0) {
+				$inv = explode(',', $order['inv_payee']);
 				$order['inv_payee'] = $inv['0'];
 				$order['inv_tax_no'] = $inv['1'];
 				$order['inv_title_type'] = 'enterprise';

@@ -136,7 +136,11 @@ class merchant extends ecjia_merchant {
 	public function init() {
 		/* 检查权限 */
 		$this->admin_priv('order_view');
-	    ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('订单列表')));
+		
+		$date = !empty($_GET['date']) ? trim($_GET['date']) : '';
+		$nav_here = $date == 'today' ? '当天订单' : '订单列表';
+		
+	    ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here($nav_here));
 		RC_Script::enqueue_script('order_query', RC_App::apps_url('statics/js/merchant_order_query.js', __FILE__));
 		
 		RC_Loader::load_app_class('merchant_order_list', 'orders', false);
@@ -144,13 +148,36 @@ class merchant extends ecjia_merchant {
 		$order_list = $order->get_order_list();
 		
 		/* 模板赋值 */
-		$this->assign('ur_here'			, RC_Lang::get('orders::order.order_list'));
-		$this->assign('action_link'		, array('href' => RC_Uri::url('orders/merchant/order_query'), 'text' => RC_Lang::get('orders::order.order_query')));
+		$this->assign('ur_here', $nav_here);
 		
-		$this->assign('order_list'		, $order_list);
-		$this->assign('form_action'		, RC_Uri::url('orders/merchant/operate', 'batch=1'));
-		$this->assign('search_action'	, RC_Uri::url('orders/merchant/init'));
-		$this->assign('status_list'		, RC_Lang::get('orders::order.cs'));
+		$action_link = array('href' => RC_Uri::url('orders/merchant/order_query'), 'text' => RC_Lang::get('orders::order.order_query'));
+		$this->assign('action_link', $action_link);
+		
+		if ($date == 'today') {
+			$composite_status = intval($_GET['composite_status']);
+			if (empty($composite_status)) {
+				$composite_status = '';
+			} elseif ($composite_status == 100) {
+				$composite_status = 'await_pay';
+			} elseif ($composite_status == 101) {
+				$composite_status = 'await_ship';
+			} elseif ($composite_status == 104) {
+				$composite_status = 'order_shipped';
+			} elseif ($composite_status == 102) {
+				$composite_status = 'order_finished';
+			}
+			$this->assign('composite_status', $composite_status);
+			
+			$this->assign('date', $date);
+			$this->assign('back_order_list', array('href' => RC_Uri::url('orders/merchant/init'), 'text' => RC_Lang::get('orders::order.order_list')));
+			$count = get_merchant_order_count();
+			$this->assign('count', $count);
+		}
+		
+		$this->assign('order_list', $order_list);
+		$this->assign('form_action', RC_Uri::url('orders/merchant/operate', 'batch=1'));
+		$this->assign('search_action', RC_Uri::url('orders/merchant/init'));
+		$this->assign('status_list', RC_Lang::get('orders::order.cs'));
 		
 		$this->assign('os', RC_Lang::get('orders::order.os'));
 		$this->assign('ps', RC_Lang::get('orders::order.ps'));

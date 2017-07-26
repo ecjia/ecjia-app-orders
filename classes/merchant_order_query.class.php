@@ -136,7 +136,7 @@ class merchant_order_query extends order {
 
 	public function order_where($filter) {
 		if ($filter['keywords']) {
-
+			$this->where[] = "o.order_sn like '%".mysql_like_quote($filter['keywords'])."%' or o.consignee like '%".mysql_like_quote($filter['keywords'])."%'";
 		} else {
 			if ($filter['order_sn']) {
 				$this->where['o.order_sn'] = array('like' => '%'.mysql_like_quote($filter['order_sn']).'%');

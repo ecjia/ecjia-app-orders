@@ -3,6 +3,8 @@
 
 <!-- {block name="footer"} -->
 <script type="text/javascript">
+var date = '{$date}';
+var new_order = '{$new_order}';
 ecjia.merchant.order.init();
 </script>
 <!-- {/block} -->
@@ -37,12 +39,12 @@ ecjia.merchant.order.init();
 		 	<div class="col-lg-12 content">
 				<div class="inner-content">
 					<button class="m_l30 btn btn-success" type="button">20秒自动刷新 </button>
-					<button class="m_l30 btn btn-success" type="button"><i class="fa fa-refresh"></i> 手动刷新 </button>
+					<button class="m_l30 btn btn-warning hand-refresh" type="button"><i class="fa fa-refresh"></i> 手动刷新 </button>
 					<span class="m_l30">下单铃声</span>
 					<div class="switch m_l30">
-			            <div class="onoffswitch">
-			                <input type="checkbox" checked class="onoffswitch-checkbox" id="example1">
-			                <label class="onoffswitch-label" for="example1">
+			            <div class="onoffswitch" data-url="{RC_Uri::url('orders/merchant/switch_on_off')}">
+			                <input type="checkbox" {if $on_off eq 'on'}checked{/if} name="onOff" class="onoffswitch-checkbox" id="onOff">
+			                <label class="onoffswitch-label" for="onOff">
 			                    <span class="onoffswitch-inner"></span>
 			                    <span class="onoffswitch-switch"></span>
 			                </label>
@@ -154,6 +156,8 @@ ecjia.merchant.order.init();
 	     </div>
      </div>
 </div>
-
+{if $date}
+<audio id="audio" src="{$music_url}new_order.mp3" style="opacity:0" preload="auto" controls hidden="true"/>  
+{/if}
 <form action="{$form_action}" name="orderpostForm" id="listForm" data-pjax-url="{$search_action}" method="post"></form>
 <!-- {/block} -->

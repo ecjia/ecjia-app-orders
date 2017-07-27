@@ -171,7 +171,26 @@ class merchant extends ecjia_merchant {
 			$this->assign('date', $date);
 			$this->assign('back_order_list', array('href' => RC_Uri::url('orders/merchant/init'), 'text' => RC_Lang::get('orders::order.order_list')));
 			$count = get_merchant_order_count();
+			$cache_key = 'count_all';
+			
+			$count_all = RC_Cache::app_cache_get($cache_key, 'orders');
+			//有新订单
+			if ($count['all'] > $count_all) {
+				$this->assign('new_order', 1);
+			}
+			RC_Cache::app_cache_set($cache_key, $count['all'], 'orders', 10080);
+			
 			$this->assign('count', $count);
+			$this->assign('music_url', RC_App::apps_url('statics/music/', __FILE__));
+			
+			$on_off = RC_Cache::app_cache_get('switch_on_off', 'orders');
+			if (empty($on_off)) {
+				$this->assign('on_off', 'on');
+				RC_Cache::app_cache_set('switch_on_off', 'on', 'orders', 10080);
+			} else {
+				$this->assign('on_off', $on_off);
+				RC_Cache::app_cache_set('switch_on_off', $on_off, 'orders', 10080);
+			}
 		}
 		
 		$this->assign('order_list', $order_list);
@@ -3411,6 +3430,11 @@ class merchant extends ecjia_merchant {
 		} else {
 			return $this->showmessage(__('未找到相关会员信息'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
+	}
+	
+	public function switch_on_off() {
+		$val = !empty($_POST['val']) ? trim($_POST['val']) : 'off';
+		RC_Cache::app_cache_set('switch_on_off', $val, 'orders', 10080);
 	}
 }
 

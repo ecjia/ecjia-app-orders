@@ -11,7 +11,27 @@
 //			app.order.operate();
 			app.order.batchForm();
 			app.order.tooltip();
-			
+			//20秒自动刷新
+			if (date == 'today') {
+				setTimeout(function(){
+					ecjia.pjax(location.href);
+				}, 20000);
+			}
+			$('.hand-refresh').on('click', function() {
+				ecjia.pjax(location.href);
+			});
+			var myAuto = document.getElementById('audio');  
+			var val = $('#onOff:checked').val();
+			if (myAuto != null && new_order == 1 && val == 'on') {
+				myAuto.play();
+			}
+			$('#onOff').on('click', function() {
+				var val = $('#onOff:checked').val(),
+					url = $('.onoffswitch').attr('data-url');
+				val == undefined ? 'off' : 'on';
+				var info = {'val': val};
+				$.post(url, info);
+			})
 		},
 		tooltip : function(){
 			$('span').tooltip({

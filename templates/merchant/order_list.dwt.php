@@ -36,15 +36,18 @@ ecjia.merchant.order.init();
 	    	{if $date}
 		 	<div class="col-lg-12 content">
 				<div class="inner-content">
-					<button class="btn btn-success" type="button">20秒自动刷新 </button>
-					<button class="btn btn-success" type="button"><i class="fa fa-refresh"></i> 手动刷新 </button>
-<!-- 					<span>下单铃声</span> -->
-<!-- 					<div class="onoffswitch"> -->
-<!-- 						<label class="onoffswitch-label" for="example1"> -->
-<!-- 						    <span class="onoffswitch-inner"></span> -->
-<!-- 						    <span class="onoffswitch-switch"></span> -->
-<!-- 						</label> -->
-<!-- 					</div> -->
+					<button class="m_l30 btn btn-success" type="button">20秒自动刷新 </button>
+					<button class="m_l30 btn btn-success" type="button"><i class="fa fa-refresh"></i> 手动刷新 </button>
+					<span class="m_l30">下单铃声</span>
+					<div class="switch m_l30">
+			            <div class="onoffswitch">
+			                <input type="checkbox" checked class="onoffswitch-checkbox" id="example1">
+			                <label class="onoffswitch-label" for="example1">
+			                    <span class="onoffswitch-inner"></span>
+			                    <span class="onoffswitch-switch"></span>
+			                </label>
+			            </div>
+			        </div>
 				</div>
 			</div>
 			{/if}

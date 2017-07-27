@@ -442,11 +442,11 @@ function get_merchant_order_count() {
 		->select();
 	$today['await_ship'] = count($await_ship);
 	
-	$order_shipped = $db->field('oi.order_id')
-		->where(array_merge($order_query->order_shipped('oi.'), $array))
-		->group('oi.order_id')
-		->select();
-	$today['order_shipped'] = count($order_shipped);
+// 	$order_shipped = $db->field('oi.order_id')
+// 		->where(array_merge($order_query->order_shipped('oi.'), $array))
+// 		->group('oi.order_id')
+// 		->select();
+// 	$today['order_shipped'] = count($order_shipped);
 	
 	$order_finished = $db->field('oi.order_id')
 		->where(array_merge($order_query->order_finished('oi.'), $array))

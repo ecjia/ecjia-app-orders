@@ -169,6 +169,7 @@ class merchant extends ecjia_merchant {
 			$this->assign('composite_status', $composite_status);
 			
 			$this->assign('date', $date);
+			$this->assign('current_order', 1);
 			$this->assign('back_order_list', array('href' => RC_Uri::url('orders/merchant/init'), 'text' => RC_Lang::get('orders::order.order_list')));
 			$count = get_merchant_order_count();
 			$cache_key = 'count_all';

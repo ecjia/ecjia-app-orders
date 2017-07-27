@@ -16,13 +16,13 @@ ecjia.merchant.order.init();
   	</div>
   	<div class="pull-right">
   		{if $back_order_list}
-  			<a href="{$back_order_list.href}" class="btn btn-primary data-pjax ">
+  			<a href="{$back_order_list.href}" class="btn btn-primary nopjax">
 				<i class="fa fa-reply"></i> {$back_order_list.text}
 			</a>
   		{else}
-	  		<a href="{RC_Uri::url('orders/merchant/init')}&date=today" class="btn btn-primary data-pjax">当天订单</a>
+	  		<a href="{RC_Uri::url('orders/merchant/init')}&date=today" class="btn btn-primary nopjax" target="__blank">当天订单</a>
 	  		{if $action_link}
-			<a href="{$action_link.href}" class="btn btn-primary data-pjax ">
+			<a href="{$action_link.href}" class="btn btn-primary data-pjax">
 				<i class="fa fa-search"></i> {$action_link.text}
 			</a>
 			{/if}

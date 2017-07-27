@@ -11,25 +11,8 @@
 //			app.order.operate();
 			app.order.batchForm();
 			app.order.tooltip();
-			//20秒自动刷新
-			if (date == 'today') {
-				autoRefresh(".auto-refresh");
-			}
-			$('.hand-refresh').on('click', function() {
-				ecjia.pjax(location.href);
-			});
-			var myAuto = document.getElementById('audio');  
-			var val = $('#onOff:checked').val();
-			if (myAuto != null && new_order == 1 && val == 'on') {
-				myAuto.play();
-			}
-			$('#onOff').on('click', function() {
-				var val = $('#onOff:checked').val(),
-					url = $('.onoffswitch').attr('data-url');
-				val == undefined ? 'off' : 'on';
-				var info = {'val': val};
-				$.post(url, info);
-			})
+			app.order.current_order();
+			
 		},
 		tooltip : function(){
 			$('span').tooltip({
@@ -901,28 +884,50 @@
 					}
 				});
 			});
-		},		
-	};
-	
-	function autoRefresh(obj) {
-		var countdown = 20;
-		settime(obj);
-		function settime(obj) {
-			if (countdown == 0) {
-				$(obj).html("20秒自动刷新");
-				countdown = 20;
-				ecjia.pjax(location.href);
-				return;
-			} else {
-				$(obj).html(countdown + "秒自动刷新");
-				countdown--;
-			}
-			setTimeout(function() {
-				settime(obj);
-			}, 1000)
-		}
-	}
+		},
 		
+		current_order: function() {
+			var InterValObj; 	//timer变量，控制时间
+			var count = 20; 	//间隔函数，1秒执行
+			
+			//20秒自动刷新
+			if (date == 'today') {
+				InterValObj = window.setInterval(SetRemainTime, 1000); //启动计时器，1秒执行一次
+			}
+			$('.hand-refresh').on('click', function() {
+				ecjia.pjax(location.href);
+			});
+			var myAuto = document.getElementById('audio');  
+			var val = $('#onOff:checked').val();
+			if (myAuto != null && new_order == 1 && val == 'on') {
+				myAuto.play();
+			}
+			$('#onOff').on('click', function() {
+				var val = $('#onOff:checked').val(),
+					url = $('.onoffswitch').attr('data-url');
+				val == undefined ? 'off' : 'on';
+				var info = {'val': val};
+				$.post(url, info);
+			})
+
+			//timer处理函数
+			function SetRemainTime() {
+				if (count == 0) {
+					window.clearInterval(InterValObj);		//停止计时器
+					$('.auto-refresh').html("20秒自动刷新");
+					ecjia.pjax(location.href);
+				} else {
+					count--;
+					$('.auto-refresh').html(count + "秒自动刷新");
+				}
+			};
+			
+			$(document).on('pjax:start', function () {
+				window.clearInterval(InterValObj);
+			});
+		},
+	};
+
 })(ecjia.merchant, jQuery);
 
 // end

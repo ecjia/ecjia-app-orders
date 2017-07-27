@@ -171,6 +171,28 @@
     line-height: 75px;
 }
 
+.inner-content .auto-refresh {
+	width: 112px;
+}
+
+
 .m_l30 {
 	margin-left: 30px;
+}
+
+.current-order-navbar {
+	width: 100%;
+    margin-top: 50px;
+}
+
+.current-order-header {
+    text-align: center;
+    margin: 0 auto;
+    width: 260px;
+    height: 60px;
+    line-height: 60px;
+    color: #fff;
+    background-color: #3498db;
+    font-size: 28px;
+    border-radius: 4px;
 }

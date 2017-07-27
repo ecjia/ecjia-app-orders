@@ -38,7 +38,7 @@ ecjia.merchant.order.init();
 	    	{if $date}
 		 	<div class="col-lg-12 content">
 				<div class="inner-content">
-					<button class="m_l30 btn btn-success" type="button">20秒自动刷新 </button>
+					<button class="m_l30 btn btn-success auto-refresh" type="button">20秒自动刷新 </button>
 					<button class="m_l30 btn btn-warning hand-refresh" type="button"><i class="fa fa-refresh"></i> 手动刷新 </button>
 					<span class="m_l30">下单铃声</span>
 					<div class="switch m_l30">

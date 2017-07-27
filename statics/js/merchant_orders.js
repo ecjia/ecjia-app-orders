@@ -13,9 +13,7 @@
 			app.order.tooltip();
 			//20秒自动刷新
 			if (date == 'today') {
-				setTimeout(function(){
-					ecjia.pjax(location.href);
-				}, 20000);
+				autoRefresh(".auto-refresh");
 			}
 			$('.hand-refresh').on('click', function() {
 				ecjia.pjax(location.href);
@@ -905,6 +903,25 @@
 			});
 		},		
 	};
+	
+	function autoRefresh(obj) {
+		var countdown = 20;
+		settime(obj);
+		function settime(obj) {
+			if (countdown == 0) {
+				$(obj).html("20秒自动刷新");
+				countdown = 20;
+				ecjia.pjax(location.href);
+				return;
+			} else {
+				$(obj).html(countdown + "秒自动刷新");
+				countdown--;
+			}
+			setTimeout(function() {
+				settime(obj);
+			}, 1000)
+		}
+	}
 		
 })(ecjia.merchant, jQuery);
 

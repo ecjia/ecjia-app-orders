@@ -75,9 +75,9 @@ ecjia.merchant.order.init();
         		{else}
         		<ul class="nav nav-pills pull-left">
 					<li class="{if $composite_status eq '' || !$composite_status}active{/if}"><a class="data-pjax" href='{RC_Uri::url("orders/merchant/init")}&date=today{if $smarty.get.keywords}&keywords={$smarty.get.keywords}{/if}'>全部 <span class="badge badge-info">{$count.all}</span></a></li>
+					<li class="{if $composite_status eq 'await_confirm'}active{/if}"><a class="data-pjax" href='{RC_Uri::url("orders/merchant/init")}&date=today&composite_status=0{if $smarty.get.keywords}&keywords={$smarty.get.keywords}{/if}'>待确认<span class="badge badge-info">{$count.await_confirm}</span></a></li>
 					<li class="{if $composite_status eq 'await_pay'}active{/if}"><a class="data-pjax" href='{RC_Uri::url("orders/merchant/init")}&date=today&composite_status=100{if $smarty.get.keywords}&keywords={$smarty.get.keywords}{/if}'>待付款<span class="badge badge-info">{$count.await_pay}</span></a></li>
 					<li class="{if $composite_status eq 'await_ship'}active{/if}"><a class="data-pjax" href='{RC_Uri::url("orders/merchant/init")}&date=today&composite_status=101{if $smarty.get.keywords}&keywords={$smarty.get.keywords}{/if}'>待发货<span class="badge badge-info">{$count.await_ship}</span></a></li>
-<!-- 					<li class="{if $composite_status eq 'order_shipped'}active{/if}"><a class="data-pjax" href='{RC_Uri::url("orders/merchant/init")}&date=today&composite_status=104{if $smarty.get.keywords}&keywords={$smarty.get.keywords}{/if}'>待收货<span class="badge badge-info">{$count.order_shipped}</span></a></li> -->
 					<li class="{if $composite_status eq 'order_finished'}active{/if}"><a class="data-pjax" href='{RC_Uri::url("orders/merchant/init")}&date=today&composite_status=102{if $smarty.get.keywords}&keywords={$smarty.get.keywords}{/if}'>已完成<span class="badge badge-info">{$count.order_finished}</span></a></li>
 				</ul>
         		{/if}
@@ -142,7 +142,7 @@ ecjia.merchant.order.init();
     						</td>
     						<td>{$order.formated_total_fee}</td>
     						<td>{$order.formated_order_amount}</td>
-    						<td>{$os[$order.order_status]},{$ps[$order.pay_status]},{$ss[$order.shipping_status]}</td>
+    						<td {if $order.pay_status eq $payed}class="ecjiafc-red"{/if}>{$os[$order.order_status]},{$ps[$order.pay_status]},{$ss[$order.shipping_status]}</td>
     					</tr>
     					<!-- {foreachelse}-->
     					<tr><td class="no-records" colspan="7">{lang key='system::system.no_records'}</td></tr>

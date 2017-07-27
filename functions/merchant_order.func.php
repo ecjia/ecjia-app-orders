@@ -436,6 +436,18 @@ function get_merchant_order_count() {
 		->select();
 	$today['await_pay'] = count($await_pay);
 	
+	$await_confirm = $db->field('oi.order_id')
+		->where(array_merge($order_query->order_unconfirmed('oi.'), $array))
+		->group('oi.order_id')
+		->select();
+	$today['await_confirm'] = count($await_confirm);
+	
+	$payed = $db->field('oi.order_id')
+		->where(array_merge($order_query->order_payed('oi.'), $array))
+		->group('oi.order_id')
+		->select();
+	$today['payed'] = count($payed);
+	
 	$await_ship = $db->field('oi.order_id')
 		->where(array_merge($order_query->order_await_ship('oi.'), $array))
 		->group('oi.order_id')

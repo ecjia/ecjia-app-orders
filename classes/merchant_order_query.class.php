@@ -133,6 +133,13 @@ class merchant_order_query extends order {
 		$this->where[$alias.'shipping_status'] = array(SS_SHIPPED, SS_RECEIVED);
 		return $this->where;
 	}
+	
+	/*已付款订单：不论是否已确认*/
+	public function order_payed($alias = '') {
+		$this->where = array();
+		$this->where[$alias.'pay_status'] = PS_PAYED;
+		return $this->where;
+	}
 
 	public function order_where($filter) {
 		if ($filter['keywords']) {

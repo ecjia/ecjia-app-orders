@@ -154,9 +154,11 @@ class merchant extends ecjia_merchant {
 		$this->assign('action_link', $action_link);
 		
 		if ($date == 'today') {
-			$composite_status = intval($_GET['composite_status']);
-			if (empty($composite_status)) {
+			$composite_status = isset($_GET['composite_status']) ? $_GET['composite_status'] : '';
+			if ($composite_status === '') {
 				$composite_status = '';
+			} elseif ($composite_status == 0) {
+				$composite_status = 'await_confirm';
 			} elseif ($composite_status == 100) {
 				$composite_status = 'await_pay';
 			} elseif ($composite_status == 101) {
@@ -172,14 +174,14 @@ class merchant extends ecjia_merchant {
 			$this->assign('current_order', 1);
 			$this->assign('back_order_list', array('href' => RC_Uri::url('orders/merchant/init'), 'text' => RC_Lang::get('orders::order.order_list')));
 			$count = get_merchant_order_count();
-			$cache_key = 'count_all';
+			$cache_key = 'count_pay';
 			
-			$count_all = RC_Cache::app_cache_get($cache_key, 'orders');
-			//有新订单
-			if (!empty($count_all) && $count['all'] > $count_all) {
+			$count_payed = RC_Cache::app_cache_get($cache_key, 'orders');
+			//有已付款新订单
+			if (!empty($count_payed) && $count['payed'] > $count_payed) {
 				$this->assign('new_order', 1);
 			}
-			RC_Cache::app_cache_set($cache_key, $count['all'], 'orders', 10080);
+			RC_Cache::app_cache_set($cache_key, $count['payed'], 'orders', 10080);
 			
 			$this->assign('count', $count);
 			$this->assign('music_url', RC_App::apps_url('statics/music/', __FILE__));
@@ -192,6 +194,7 @@ class merchant extends ecjia_merchant {
 				$this->assign('on_off', $on_off);
 				RC_Cache::app_cache_set('switch_on_off', $on_off, 'orders', 10080);
 			}
+			$this->assign('payed', PS_PAYED);
 		}
 		
 		$this->assign('order_list', $order_list);

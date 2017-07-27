@@ -33,7 +33,11 @@
 			//搜索功能
 			$("form[name='searchForm']").on('submit', function(e){
 				e.preventDefault();
-				var url = $(this).attr('action') + '&keywords=' +$("input[name='keywords']").val();
+				var url = $(this).attr('action');
+				var keywords = $("input[name='keywords']").val();
+				if (keywords != '') {
+					url += '&keywords=' + keywords;
+				}
 				ecjia.pjax(url);
 			});
 		},

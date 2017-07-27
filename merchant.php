@@ -176,7 +176,7 @@ class merchant extends ecjia_merchant {
 			
 			$count_all = RC_Cache::app_cache_get($cache_key, 'orders');
 			//有新订单
-			if ($count['all'] > $count_all) {
+			if (!empty($count_all) && $count['all'] > $count_all) {
 				$this->assign('new_order', 1);
 			}
 			RC_Cache::app_cache_set($cache_key, $count['all'], 'orders', 10080);

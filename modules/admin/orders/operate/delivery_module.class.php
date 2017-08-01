@@ -478,7 +478,11 @@ function delivery_order($delivery_id, $order) {
 	$shipping_status			= ($order_finish == 1) ? SS_SHIPPED : SS_SHIPPED_PART;
 	$arr['shipping_status']		= $shipping_status;
 	$arr['shipping_time']		= RC_Time::gmtime(); // 发货时间
-	$arr['invoice_no']			= trim($order['invoice_no'] . '<br>' . $invoice_no, '<br>');
+	if ($order['invoice_no'] != $invoice_no) {
+	    $arr['invoice_no']			= trim($order['invoice_no'] . '<br>' . $invoice_no, '<br>');
+	} else {
+	    $arr['invoice_no']			= trim($order['invoice_no'], '<br>');
+	}
 	update_order($order['order_id'], $arr);
 	
 	/* 发货单发货记录log */

@@ -259,7 +259,7 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 			            'service_phone'=> ecjia::config('service_phone'),
 			        ),
 			    );
-			    $response = RC_Api::api('sms', 'send_event_sms', $options);
+			    RC_Api::api('sms', 'send_event_sms', $options);
 			}
 		}
 	}

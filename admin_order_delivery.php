@@ -426,10 +426,7 @@ class admin_order_delivery extends ecjia_admin {
 			            'service_phone'=> ecjia::config('service_phone'),
 			        ),
 			    );
-			    $response = RC_Api::api('sms', 'send_event_sms', $options);
-			    if (is_ecjia_error($response)) {
-			    	return $this->showmessage($response->get_error_message(), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-			    }
+			    RC_Api::api('sms', 'send_event_sms', $options);
 			}
 		}
 

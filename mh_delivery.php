@@ -582,6 +582,9 @@ class mh_delivery extends ecjia_merchant {
 					),
 				);
 				$response = RC_Api::api('sms', 'send_event_sms', $options);
+				if (is_ecjia_error($response)) {
+					return $this->showmessage($response->get_error_message(), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+				}
 			}
 		}
 		

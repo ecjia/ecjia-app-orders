@@ -58,11 +58,13 @@ class express_module extends api_admin implements api_interface {
     				        'number' => $val['invoice_no'],
     				        'order' => 'desc',
 				        );
-				        $data = ecjia_cloud::instance()->api('express/track')->data($params)->run();
+				        $cloud = ecjia_cloud::instance()->api('express/track')->data($params)->run();
 				        
-				        if (is_ecjia_error($data)) {
-				            $data = array('content' => array('time' => 'error', 'context' => $data->get_error_message()));
-				        } 
+				        if (is_ecjia_error($cloud->getError())) {
+				            $data = array('content' => array('time' => 'error', 'context' => $cloud->getError()->get_error_message()));
+				        } else {
+				            $data = $cloud->getReturnData();
+				        }
 				    } else {
 				        $data = array('content' => array('time' => 'error', 'context' => '物流跟踪未配置'));
 				    }

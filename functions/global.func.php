@@ -1207,4 +1207,53 @@ function merge_order($from_order_sn, $to_order_sn) {
     return true;
 }
 
+/**
+ * 获取指定年、月、日 开始和结束时间戳
+ * @param number $year
+ * @param number $month
+ * @param number $day
+ * @return array
+ */
+function getTimestamp($year = 0, $month = 0, $day = 0) {
+	if (empty($year)) {
+		$year = RC_Time::local_date("Y");
+	}
+	$start_year = $year;
+	$start_year_formated = str_pad(intval($start_year), 4, "0", STR_PAD_RIGHT);
+	$end_year = $start_year + 1;
+	$end_year_formated = str_pad(intval($end_year), 4, "0", STR_PAD_RIGHT);
+
+	if (empty($month)) {
+		//只设置了年份
+		$start_month_formated = '01';
+		$end_month_formated = '01';
+		$start_day_formated = '01';
+		$end_day_formated = '01';
+	} else {
+		$month > 12 || $month < 1 ? $month = 1 : $month = $month;
+		$start_month = $month;
+		$start_month_formated = sprintf("%02d", intval($start_month));
+		if (empty($day)) {
+			//只设置了年份和月份
+			$end_month = $start_month + 1;
+			if ($end_month > 12) {
+				$end_month = 1;
+			} else {
+				$end_year_formated = $start_year_formated;
+			}
+			$end_month_formated = sprintf("%02d", intval($end_month));
+			$start_day_formated = '01';
+			$end_day_formated = '01';
+		} else {
+			//设置了年份月份和日期
+			$startTimestamp = RC_Time::local_strtotime($start_year_formated.'-'.$start_month_formated.'-'.sprintf("%02d", intval($day))." 00:00:00");
+			$endTimestamp = $startTimestamp + 24 * 3600 - 1;
+			return array('start' => $startTimestamp, 'end' => $endTimestamp);
+		}
+	}
+	$startTimestamp = RC_Time::local_strtotime($start_year_formated.'-'.$start_month_formated.'-'.$start_day_formated." 00:00:00");
+	$endTimestamp = RC_Time::local_strtotime($end_year_formated.'-'.$end_month_formated.'-'.$end_day_formated." 00:00:00") - 1;
+	return array('start' => $startTimestamp, 'end' => $endTimestamp);
+}
+
 //end

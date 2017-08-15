@@ -141,6 +141,7 @@ class admin_sale_general extends ecjia_admin {
             $start_time = $filter['start_month_time'];
             $end_time = $filter['end_month_time'];
         }
+        
         $format = $query_type == 'year' ? '%Y' : '%Y-%m';
         $where = "(order_status = '" . OS_CONFIRMED . "' OR order_status >= '" . OS_SPLITED . "' ) AND ( pay_status = '" . PS_PAYED . "' OR pay_status = '" . PS_PAYING . "') AND (shipping_status = '" . SS_SHIPPED . "' OR shipping_status = '" . SS_RECEIVED . "' ) AND (shipping_time >= ' " . $start_time . "' AND shipping_time <= '" . $end_time . "')";
         $where .= " AND is_delete = 0";
@@ -175,8 +176,30 @@ class admin_sale_general extends ecjia_admin {
     public function download() {
         /* 权限判断 */
         $this->admin_priv('sale_general_stats', ecjia::MSGTYPE_JSON);
-        $start_time = RC_Time::local_strtotime($_GET['start_time']);
-        $end_time = RC_Time::local_strtotime($_GET['end_time']);
+       		
+		//默认查询时间
+		$query_type = 'month';
+		$start_year = RC_Time::local_date('Y')-3;
+		$end_year = RC_Time::local_date('Y');
+		$start_month = '';
+		$end_month = '';
+		//按年查询
+		if ($_GET['query_by_year']) {
+			$query_type = 'year';
+			$start_year = intval($_GET['year_beginYear']);
+			$end_year = intval($_GET['year_endYear']);
+			$start_month = '';
+			$end_month = '';
+		//按月查询
+		} elseif ($_GET['query_by_month']) {
+			$start_year = intval($_GET['month_beginYear']);
+			$end_year = intval($_GET['month_endYear']);
+			$start_month = intval($_GET['month_beginMonth']);
+			$end_month = intval($_GET['month_endMonth']);
+		}
+		$start_time = getTimestamp($start_year, $start_month)['start'];
+		$end_time = getTimestamp($end_year, $end_month)['end'];
+		
         $query_type = $_GET['query_type'];
         /* 分组统计订单数和销售额：已发货时间为准 */
         $format = $query_type == 'year' ? '%Y' : '%Y-%m';

@@ -211,29 +211,29 @@ class mh_sale_general extends ecjia_merchant {
 		/* 权限判断 */ 
 		$this->admin_priv('sale_general_stats', ecjia::MSGTYPE_JSON);
 		
-	    if (empty($_GET['query_type'])) {
-    		$query_type = 'month';
-    		$start_year = RC_Time::local_date('Y')-3;
-    		$end_year = RC_Time::local_date('Y');
-    		$start_month = '';
-    		$end_month = '';
-    	}
-    	if ($_GET['query_by_year']) {
-    		$query_type = 'year';
-    		$start_year = intval($_GET['year_beginYear']);
-    		$end_year = intval($_GET['year_endYear']);
-    		$start_month = '';
-    		$end_month = '';
-    	} elseif ($_GET['query_by_month']) {
-    		$start_year = intval($_GET['month_beginYear']);
-    		$end_year = intval($_GET['month_endYear']);
-    		$start_month = intval($_GET['month_beginMonth']);
-    		$end_month = intval($_GET['month_endMonth']);
-    	}
-    	
-    	$filter['start_time'] = $filter['start_month_time'] = getTimestamp($start_year, $start_month)['start'];
-    	$filter['end_time'] = $filter['end_month_time'] = getTimestamp($end_year, $end_month)['end'];
-    	
+		//默认查询时间
+		$query_type = 'month';
+		$start_year = RC_Time::local_date('Y')-3;
+		$end_year = RC_Time::local_date('Y');
+		$start_month = '';
+		$end_month = '';
+		//按年查询
+		if ($_GET['query_by_year']) {
+			$query_type = 'year';
+			$start_year = intval($_GET['year_beginYear']);
+			$end_year = intval($_GET['year_endYear']);
+			$start_month = '';
+			$end_month = '';
+		//按月查询
+		} elseif ($_GET['query_by_month']) {
+			$start_year = intval($_GET['month_beginYear']);
+			$end_year = intval($_GET['month_endYear']);
+			$start_month = intval($_GET['month_beginMonth']);
+			$end_month = intval($_GET['month_endMonth']);
+		}
+		$start_time = getTimestamp($start_year, $start_month)['start'];
+		$end_time = getTimestamp($end_year, $end_month)['end'];
+		
 		$format = ($query_type == 'year') ? '%Y' : '%Y-%m';
 		$where =  " (order_status = '" . OS_CONFIRMED . "' OR order_status >= '" . OS_SPLITED . "' ) AND ( pay_status = '" . PS_PAYED . "' OR pay_status = '" . PS_PAYING . "') AND (shipping_status = '" . SS_SHIPPED . "' OR shipping_status = '" . SS_RECEIVED . "' ) AND (shipping_time >= '". $start_time ."' AND shipping_time <= '" .$end_time. "'  )";
 		$where .= " AND oi.store_id = ". $_SESSION['store_id'];

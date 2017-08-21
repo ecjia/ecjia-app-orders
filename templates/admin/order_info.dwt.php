@@ -101,7 +101,6 @@
 				{if $prev_id}
 				</a>
 				{/if}
-				<button class="btn btn-small" type="button" onclick="window.open('{url path="orders/admin/info" args="order_id={$order.order_id}&print=1"}')">{lang key='orders::order.print_order'}</button>
 			</div>
 		</div>
 	</form>

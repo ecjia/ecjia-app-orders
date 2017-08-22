@@ -86,6 +86,19 @@ class detail_module extends api_admin implements api_interface {
  			return $order;
 		}
 		
+		/*发票抬头和发票识别码处理*/
+		if (!empty($order['inv_payee'])) {
+			if (strpos($order['inv_payee'],",") > 0) {
+				$inv = explode(',', $order['inv_payee']);
+				$order['inv_payee'] = $inv['0'];
+				$order['inv_tax_no'] = $inv['1'];
+				$order['inv_title_type'] = 'enterprise';
+			} else {
+				$order['inv_tax_no'] = '';
+				$order['inv_title_type'] = 'personal';
+			}
+		}
+		
 		$db_user = RC_Model::model('user/users_model');
 		$user_name = $db_user->where(array('user_id' => $order['user_id']))->get_field('user_name');
 

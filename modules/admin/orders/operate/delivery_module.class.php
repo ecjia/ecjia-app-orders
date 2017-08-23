@@ -84,8 +84,17 @@ class delivery_module extends api_admin implements api_interface {
 		}
 		
 		$order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));
+		
 		if (empty($order_info)) {
 			return new ecjia_error('invalid_parameter', '参数错误');
+		}
+		
+		/*配送方式为o2o速递时，自动生成运单号*/
+		$shipping_info = RC_DB::table('shipping')->where('shipping_id', $order_info['shipping_id'])->first();
+		if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
+			$rand1 = mt_rand(100000,999999);
+			$rand2 = mt_rand(1000000,9999999);
+			$invoice_no = $rand1.$rand2;
 		}
 		
 		/* 订单是否已全部分单检查 */
@@ -466,6 +475,7 @@ function delivery_order($delivery_id, $order) {
 	$invoice_no = trim($invoice_no, '<br>');
 	$_delivery['invoice_no']	= $invoice_no;
 	$_delivery['status']		= 0;	/* 0，为已发货 */
+	
 	$result = RC_Model::model('orders/delivery_order_model')->where(array('delivery_id' => $delivery_id))-> update($_delivery);
 	
 	if (!$result) {

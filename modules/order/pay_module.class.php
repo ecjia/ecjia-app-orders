@@ -92,7 +92,7 @@ class pay_module extends api_front implements api_interface {
 		$handler->set_orderinfo($order);
 		$handler->set_mobile($is_mobile);
 		
-		$result = $handler->get_code(payment_abstract::PAYCODE_PARAM);
+		$result = $handler->get_code(Ecjia\App\Payment\PayConstant::PAYCODE_PARAM);
         if (is_ecjia_error($result)) {
             return $result;
         } else {

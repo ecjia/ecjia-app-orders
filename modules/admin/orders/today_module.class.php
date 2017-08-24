@@ -186,9 +186,9 @@ class today_module extends api_admin implements api_interface
 							'name'		=> $val['goods_name'],
 							'goods_number' => $val['goods_number'],
 							'img'		=> array(
-									'thumb'	=> strpos($val['goods_img'], 'http') === false  ? RC_Upload::upload_url($val['goods_img'])	: (empty($val['goods_img']) ? RC_Uri::admin_url('statics/images/nopic.png') : $val['goods_img']),
-									'url'	=> strpos($val['original_img'], 'http') === false ? RC_Upload::upload_url($val['original_img'])  : (empty($val['original_img']) ? RC_Uri::admin_url('statics/images/nopic.png') : $val['original_img']),
-									'small'	=> strpos($val['goods_thumb'], 'http') === false  ? RC_Upload::upload_url($val['goods_thumb'])   : (empty($val['goods_thumb']) ? RC_Uri::admin_url('statics/images/nopic.png') : $val['goods_thumb'])
+									'thumb'	=> !empty($val['goods_img'])  ? RC_Upload::upload_url($val['goods_img'])	:  RC_Uri::admin_url('statics/images/nopic.png'),
+									'url'	=> !empty($val['original_img'])  ? RC_Upload::upload_url($val['original_img'])  :  RC_Uri::admin_url('statics/images/nopic.png'),
+									'small'	=> !empty($val['goods_thumb']) ? RC_Upload::upload_url($val['goods_thumb'])   :  RC_Uri::admin_url('statics/images/nopic.png') 
 							)
 					);
 					

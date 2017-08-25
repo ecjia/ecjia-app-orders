@@ -19,7 +19,8 @@ class express_module extends api_admin implements api_interface {
 		
 		$order_id = $this->requestData('order_id');
 		if (empty($order_id)) {
-			EM_Api::outPut(101);
+			//EM_Api::outPut(101);
+			return new ecjia_error( 'invalid_parameter', RC_Lang::get ('system::system.invalid_parameter' ));
 		}
 		
 		if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {

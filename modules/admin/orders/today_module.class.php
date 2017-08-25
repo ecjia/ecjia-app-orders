@@ -78,7 +78,7 @@ class today_module extends api_admin implements api_interface
 		}
 		
 		$total_fee = "(oi.goods_amount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) as total_fee";
-		$field = 'oi.order_id, oi.order_sn, oi.integral, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.money_paid, oi.surplus, oi.order_amount, oi.add_time, og.goods_number, og.goods_id,  og.goods_name, oi.store_id';
+		$field = 'oi.order_id, oi.order_sn, oi.integral, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.money_paid, oi.surplus, oi.order_amount, oi.add_time, og.goods_number, og.goods_id,  og.goods_name, oi.store_id, g.goods_img, g.goods_thumb, g.original_img';
 			
 		$db_orderinfo_view = RC_Loader::load_app_model('order_info_viewmodel', 'orders');
 		$result = ecjia_app::validate_application('store');
@@ -180,6 +180,7 @@ class today_module extends api_admin implements api_interface
 					if ($val['pay_id'] > 0) {
 						$payment = $payment_method->payment_info_by_id($val['pay_id']);
 					}
+					
 					$goods_lists = array();
 					$goods_lists[] = array(
 							'goods_id'	=> $val['goods_id'],

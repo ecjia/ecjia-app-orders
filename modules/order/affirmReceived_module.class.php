@@ -142,7 +142,7 @@ function affirm_received($order_id, $user_id = 0) {
             	
             	$express_order_viewdb = RC_Model::model('express/express_order_viewmodel');
             	$where = array('staff_id' => $express_info['staff_id'], 'express_id' => $express_info['express_id']);
-            	$field = 'eo.*, oi.add_time as order_time, oi.pay_time, oi.order_amount, oi.pay_name, sf.merchants_name, sf.address as merchant_address, sf.longitude as merchant_longitude, sf.latitude as merchant_latitude';
+            	$field = 'eo.*, oi.add_time as order_time, oi.pay_time, oi.order_amount, oi.pay_name, oi.shipping_id, oi.invoice_no, sf.merchants_name, sf.address as merchant_address, sf.longitude as merchant_longitude, sf.latitude as merchant_latitude';
             	$express_order_info = $express_order_viewdb->field($field)->join(array('delivery_order', 'order_info', 'store_franchisee'))->where($where)->find();
             		
             	
@@ -211,6 +211,21 @@ function affirm_received($order_id, $user_id = 0) {
 //             			}
 //             		}
 //             	}
+            	
+            	/*当订单配送方式为o2o速递时,记录o2o速递物流信息*/
+            	if ($express_order_info['shipping_id'] > 0) {
+            		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
+            		$shipping_info = $shipping_method->shipping_info($express_order_info['shipping_id']);
+            		if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
+            			$data = array(
+            					'express_code' => $shipping_info['shipping_code'],
+            					'track_number' => $express_order_info['invoice_no'],
+            					'time'		   => RC_Time::local_date(ecjia::config('time_format'), RC_Time::gmtime()),
+            					'context'	   => '买家已成功确认收货！',
+            			);
+            			RC_DB::table('express_track_record')->insert($data);
+            		}
+            	}
             	
             	/* 更新配送员相关信息*/
             	$express_user = RC_DB::table('express_user')->where('user_id', $express_info['staff_id'])->first();

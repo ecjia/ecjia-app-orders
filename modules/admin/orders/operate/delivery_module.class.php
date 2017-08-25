@@ -497,6 +497,22 @@ function delivery_order($delivery_id, $order) {
 	
 	/* 发货单发货记录log */
 	order_action($order['order_sn'], OS_CONFIRMED, $shipping_status, $order['pay_status'], '', '', 1);
+	
+	/*当订单配送方式为o2o速递时,记录o2o速递物流信息*/
+	if ($order['shipping_id'] > 0) {
+		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
+		$shipping_info = $shipping_method->shipping_info($order['shipping_id']);
+		if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
+			$data = array(
+					'express_code' => $shipping_info['shipping_code'],
+					'track_number' => $arr['invoice_no'],
+					'time'		   => RC_Time::local_date(ecjia::config('time_format'), RC_Time::gmtime()),
+					'context'	   => '您的订单已配备好，等待配送员取货',
+			);
+			RC_DB::table('express_track_record')->insert($data);
+		}
+	}
+	
 	// 记录管理员操作
 	if ($_SESSION['store_id'] > 0) {
 	    RC_Api::api('merchant', 'admin_log', array('text' => '发货，订单号是'.$order['order_sn'].'【来源掌柜】', 'action' => 'setup', 'object' => 'order'));

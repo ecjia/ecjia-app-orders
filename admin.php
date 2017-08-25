@@ -393,6 +393,7 @@ class admin extends ecjia_admin {
 		
 // 			$this->display('order_print.dwt');
 		} elseif (isset($_GET['shipping_print'])) {
+			return false;
 			/* 打印快递单 */
 			$this->assign('print_time', RC_Time::local_date(ecjia::config('time_format')));
 			//发货地址所在地

@@ -217,6 +217,18 @@ class mh_delivery extends ecjia_merchant {
 			$this->assign('express_order', $express_order);
 		}
 		
+		//获取shopping_code
+		if(empty($delivery_order['invoice_no'])) {
+		    $shipping_id = $delivery_order['shipping_id'];
+		    $shipping_info = RC_DB::table('shipping')->where('shipping_id', $shipping_id)->first();
+		    if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
+		        $rand1 = mt_rand(100000,999999);
+		        $rand2 = mt_rand(1000000,9999999);
+		        $invoice_no = $rand1.$rand2;
+		        $delivery_order['invoice_no'] = $invoice_no;
+		    }
+		}
+		
 		/* 模板赋值 */
 		$this->assign('action_list'			, $act_list);
 		$this->assign('delivery_order'		, $delivery_order);
@@ -403,6 +415,7 @@ class mh_delivery extends ecjia_merchant {
 		/* 判断发货单，生成配送单*/
 		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
 		$shipping_info = $shipping_method->shipping_info($delivery_order['shipping_id']);
+
 		if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
 			$staff_id = isset($_POST['staff_id']) ? intval($_POST['staff_id']) : 0;
 			$express_from = !empty($staff_id) ? 'assign' : 'grab';
@@ -539,6 +552,15 @@ class mh_delivery extends ecjia_merchant {
 // 					}
 // 				}
 			}
+
+			/* 如果是o2o速递则在 ecjia_express_track_record表内更新一条记录*/
+			$express_track_record_data = array(
+			    "express_code"    =>  $shipping_info['shipping_code'],
+			    "track_number"    =>  $delivery['invoice_no'],
+			    "time"            =>  RC_Time::local_date(ecjia::config('time_format'), RC_Time::gmtime()),
+			    "context"         =>  "您的订单已配备好，等待配送员取货",
+			);
+			RC_DB::table('express_track_record')->insert($express_track_record_data);
 		}
 		
 		/* 如果当前订单已经全部发货 */
@@ -782,6 +804,8 @@ class mh_delivery extends ecjia_merchant {
 		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
 		$shipping_info = $shipping_method->shipping_info($delivery_order['shipping_id']);
 		if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
+		    /* 如果是o2o速递，退货的时候删除ecjia_express_track_record相对应的记录 */
+		    RC_DB::table('express_track_record')->where('track_number', $delivery['invoice_no'])->delete();
 		}
 		/* 操作成功 */
 		$links[] = array('text' => RC_Lang::get('orders::order.delivery_sn') . RC_Lang::get('orders::order.detail'), 'href' => RC_Uri::url('orders/mh_delivery/delivery_info', 'delivery_id=' . $delivery_id));
@@ -819,7 +843,13 @@ class mh_delivery extends ecjia_merchant {
 					/* 更新：删除订单中的发货单号 */
 					del_order_invoice_no($delivery_order['order_id'], $delivery_order['invoice_no']);
 				}
-
+				
+				/* 如果是o2o速递，退货的时候删除ecjia_express_track_record相对应的记录 */
+				$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
+				$shipping_info = $shipping_method->shipping_info($delivery_order['shipping_id']);
+				if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
+				    RC_DB::table('express_track_record')->where('track_number', $delivery_order['invoice_no'])->delete();
+				}
 				/* 记录日志 */
 				ecjia_admin_log::instance()->add_object('delivery_order', '发货单');
 				if ($type == 'batch') {

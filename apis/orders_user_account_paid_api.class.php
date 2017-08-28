@@ -128,8 +128,8 @@ class orders_user_account_paid_api extends Component_Event_Api {
 			);
 			RC_Api::api('user', 'account_change_log', $options);
 			/* 插入支付日志 */
-			$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
-			$payment_method->insert_pay_log($order_info['order_id'], $order_info['order_amount'], PAY_SURPLUS);
+// 			$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
+// 			$payment_method->insert_pay_log($order_info['order_id'], $order_info['order_amount'], PAY_SURPLUS);
 		}
 		
 		order_action($order_info['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_PAYED, '', RC_Lang::get('orders::order.buyers'));

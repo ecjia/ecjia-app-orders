@@ -82,10 +82,10 @@ class pay_module extends api_front implements api_interface {
 		}
 		
 		//支付方式信息
-		$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
-		$payment_info = $payment_method->payment_info_by_id($order['pay_id']);
+// 		$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
+		$payment_info = with(new Ecjia\App\Payment\PaymentPlugin)->getPluginDataById($order['pay_id']);
 		// 取得支付信息，生成支付代码
-		$payment_config = $payment_method->unserialize_config($payment_info['pay_config']);
+// 		$payment_config = $payment_method->unserialize_config($payment_info['pay_config']);
 
 // 		$handler = $payment_method->get_payment_instance($payment_info['pay_code'], $payment_config);
 		$handler = with(new Ecjia\App\Payment\PaymentPlugin)->channel($payment_info['pay_code']);

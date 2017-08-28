@@ -1190,9 +1190,9 @@ function merge_order($from_order_sn, $to_order_sn) {
     //删除原来的订单商品
     RC_DB::table('order_goods')->insert($order_goods_list);
     //添加合并后的订单商品
-    $payment_method = RC_Loader::load_app_class('payment_method', 'payment');
-    /* 插入支付日志 */
-    $payment_method->insert_pay_log($order_id, $order['order_amount'], PAY_ORDER);
+//     $payment_method = RC_Loader::load_app_class('payment_method', 'payment');
+//     /* 插入支付日志 */
+//     $payment_method->insert_pay_log($order_id, $order['order_amount'], PAY_ORDER);
     /* 删除原订单 */
     RC_DB::table('order_info')->whereIn('order_id', array($from_order['order_id'], $to_order['order_id']))->delete();
     /* 删除原订单支付日志 */

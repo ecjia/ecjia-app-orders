@@ -145,7 +145,19 @@ function affirm_received($order_id, $user_id = 0) {
             	$field = 'eo.*, oi.add_time as order_time, oi.pay_time, oi.order_amount, oi.pay_name, oi.shipping_id, oi.invoice_no, sf.merchants_name, sf.address as merchant_address, sf.longitude as merchant_longitude, sf.latitude as merchant_latitude';
             	$express_order_info = $express_order_viewdb->field($field)->join(array('delivery_order', 'order_info', 'store_franchisee'))->where($where)->find();
             		
-            	
+            	//短信发送
+            	if (!empty($express_order_info['express_mobile'])) {
+            		$options = array(
+            				'mobile' => $express_order_info['express_mobile'],
+            				'event'	 => 'sms_express_confirm',
+            				'value'  =>array(
+            						'express_sn'   => $express_order_info['express_sn'],
+            						'service_phone'=> ecjia::config('service_phone'),
+            				),
+            		);
+            		RC_Api::api('sms', 'send_event_sms', $options);
+            	}
+            		
             	//推送消息
             	$options = array(
             		'user_id'   => $express_info['staff_id'],

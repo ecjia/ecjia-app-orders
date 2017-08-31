@@ -485,13 +485,25 @@ class mh_delivery extends ecjia_merchant {
 			    $where = array('express_id' => $express_id);
 			    $field = 'eo.*, oi.add_time as order_time, oi.pay_time, oi.order_amount, oi.pay_name, sf.merchants_name, sf.address as merchant_address, sf.longitude as merchant_longitude, sf.latitude as merchant_latitude';
 			    $express_order_info = $express_order_viewdb->field($field)->join(array('delivery_order', 'order_info', 'store_franchisee'))->where($where)->find();
-			    
-			    
-			    /*推送消息*/
+
+
+			    /* 派单发短信 */
+			    if (!empty($express_order_info['express_mobile'])) {
+			    	$options = array(
+		    			'mobile' => $express_order_info['express_mobile'],
+		    			'event'	 => 'sms_express_system_assign',
+		    			'value'  =>array(
+		    				'express_sn'=> $express_order_info['express_sn'],
+		    			),
+			    	);
+			    	RC_Api::api('sms', 'send_event_sms', $options);
+			    }
+
+			    /*派单推送消息*/
 			    $options = array(
 		    		'user_id'   => $staff_id,
 		    		'user_type' => 'merchant',
-		    		'event'     => 'system_express_assign',
+		    		'event'     => 'express_system_assign',
 		    		'value' => array(
 	    				'express_sn'=> $express_order_info['express_sn'],
 		    		),
@@ -500,7 +512,8 @@ class mh_delivery extends ecjia_merchant {
 		    		),
 			    );
 			    RC_Api::api('push', 'push_event_send', $options);
-			    
+
+
 			    //消息通知
 			    $notification_express_data = array(
 			        'title'	=> '系统派单',

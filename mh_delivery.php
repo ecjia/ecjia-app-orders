@@ -646,7 +646,7 @@ class mh_delivery extends ecjia_merchant {
 				'user_name'=> $user_name,
 				'order_sn' => $order['order_sn'],
 				'consignee'=> $order['consignee'],
-				'service_phone'=> $express_order_info['express_sn'],
+				'service_phone'=> ecjia::config('service_phone'),
 			),
 			'field' => array(
 				'open_type' => 'admin_message',

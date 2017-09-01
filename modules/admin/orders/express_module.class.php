@@ -31,6 +31,8 @@ class express_module extends api_admin implements api_interface {
 		}
 		
 		$delivery_result = RC_Model::model('orders/delivery_order_model')->where(array('order_id' => $order_id))->select();
+		RC_Logger::getlogger('info')->info($order_id);
+		RC_Logger::getlogger('info')->info($delivery_result);
 		
 		$delivery_list = array();
 		if (!empty($delivery_result)) {
@@ -114,47 +116,6 @@ class express_module extends api_admin implements api_interface {
 						}
 					}
 					
-					
-					
-					// 				0：在途，即货物处于运输过程中；
-					// 				1：揽件，货物已由快递公司揽收并且产生了第一条跟踪信息；
-					// 				2：疑难，货物寄送过程出了问题；
-					// 				3：签收，收件人已签收；
-					// 				4：退签，即货物由于用户拒签、超区等原因退回，而且发件人已经签收；
-					// 				5：派件，即快递正在进行同城派件；
-					// 				6：退回，货物正处于退回发件人的途中；
-					
-					/* if (isset($data['state'])) {
-					 switch ($data['state']) {
-					case 0 :
-					$label_shipping_status = '即货物处于运输过程中';
-					break;
-					case 1 :
-					$label_shipping_status = '货物已由快递公司揽收并且产生了第一条跟踪信息';
-					break;
-					case 2 :
-					$label_shipping_status = '货物寄送过程出了问题';
-					break;
-					case 3 :
-					$label_shipping_status = '收件人已签收';
-					break;
-					case 4 :
-					$label_shipping_status = '即货物由于用户拒签、超区等原因退回，而且发件人已经签收';
-					break;
-					case 5 :
-					$label_shipping_status = '即快递正在进行同城派件';
-					break;
-					case 6 :
-					$label_shipping_status = '货物正处于退回发件人的途中';
-					break;
-					default:
-					$label_shipping_status = '暂无配送信息';
-					break;
-					}
-					} else {
-					$label_shipping_status = '暂无配送信息';
-					} */
-					
 					$delivery_goods = $delivery_goods_db->where(array('delivery_id' => $val['delivery_id']))->select();
 					
 					$goods_lists = array();
@@ -192,6 +153,45 @@ class express_module extends api_admin implements api_interface {
 	
 	
 }
+
+// 				0：在途，即货物处于运输过程中；
+// 				1：揽件，货物已由快递公司揽收并且产生了第一条跟踪信息；
+// 				2：疑难，货物寄送过程出了问题；
+// 				3：签收，收件人已签收；
+// 				4：退签，即货物由于用户拒签、超区等原因退回，而且发件人已经签收；
+// 				5：派件，即快递正在进行同城派件；
+// 				6：退回，货物正处于退回发件人的途中；
+	
+/* if (isset($data['state'])) {
+ switch ($data['state']) {
+ case 0 :
+ $label_shipping_status = '即货物处于运输过程中';
+ break;
+ case 1 :
+ $label_shipping_status = '货物已由快递公司揽收并且产生了第一条跟踪信息';
+ break;
+ case 2 :
+ $label_shipping_status = '货物寄送过程出了问题';
+ break;
+ case 3 :
+ $label_shipping_status = '收件人已签收';
+ break;
+ case 4 :
+ $label_shipping_status = '即货物由于用户拒签、超区等原因退回，而且发件人已经签收';
+ break;
+ case 5 :
+ $label_shipping_status = '即快递正在进行同城派件';
+ break;
+ case 6 :
+ $label_shipping_status = '货物正处于退回发件人的途中';
+ break;
+ default:
+ $label_shipping_status = '暂无配送信息';
+ break;
+ }
+ } else {
+ $label_shipping_status = '暂无配送信息';
+ } */
 
 
 function getComType($typeCom)

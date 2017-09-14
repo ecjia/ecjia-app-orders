@@ -63,6 +63,7 @@ class detail_module extends api_admin implements api_interface {
  		}
 		$order_id = $this->requestData('id', 0);
 		$order_sn = $this->requestData('order_sn');
+		$device = $this->device;
 
  		if (empty($order_id) && empty($order_sn)) {
  			return new ecjia_error(101, '参数错误');
@@ -71,7 +72,24 @@ class detail_module extends api_admin implements api_interface {
 
 		/* 订单详情 */
 		$order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => $order_sn, 'store_id' => $_SESSION['store_id']));
-
+		if (is_ecjia_error($order)) {
+			return $order;
+		}
+		$db_term_meta = RC_DB::table('term_meta');
+		//$meta_where = array(
+		//		'object_type'	=> 'ecjia.order',
+		//		'object_group'	=> 'order',
+		//		'meta_key'		=> 'receipt_verification',
+		//		'object_id'		=> $order['order_id'],
+		//);
+		//$verify_code = $db_term_meta->where($meta_where)->get_field('meta_value');
+		$verify_code = $db_term_meta->where('object_type', 'ecjia.order')->where('object_group', 'order')->where('meta_key', 'receipt_verification')->where('object_id', $order['order_id'])->pluck('meta_value');
+		$order['verify_code'] = empty($verify_code) ? '' : $verify_code;
+		
+		//if ($device['code'] == 8001) {
+		//	$order['adviser_name'] = RC_Model::model('orders/adviser_log_viewmodel')->join(array('adviser'))->where(array('al.order_id' => $order['order_id']))->get_field('username');
+		//}
+		
 		$order['label_order_source'] = '';
 		/*订单来源返回处理*/
 		if (!empty($order['referer'])) {

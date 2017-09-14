@@ -236,7 +236,7 @@ class list_module extends api_admin implements api_interface {
 						)
 					);
 
-				if ($device_code == 8001) {
+				if ($device_code == '8001') {
 						if (in_array($val['order_status'], array(OS_CANCELED, OS_INVALID, OS_RETURNED))) {
 							$label_order_status = '已撤销';
 							$status_code		= 'canceled';

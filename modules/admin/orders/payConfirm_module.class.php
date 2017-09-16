@@ -50,14 +50,14 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * @author will
  *
  */
-class payConfirm_module extends api_admin implements api_interface {
-    public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
+class payConfirm_module extends api_admin implements api_interface
+{
+    public function handleRequest(\Royalcms\Component\HttpKernel\Request $request)
+    {	
 		$this->authadminSession();
-		
-		if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
-		    return new ecjia_error(100, 'Invalid session');
+		if ($_SESSION['admin_id'] <= 0 && $_SESSION['ru_id'] <= 0) {
+			return new ecjia_error(100, 'Invalid session');
 		}
-		
 		$result = $this->admin_priv('order_stats');
 		if (is_ecjia_error($result)) {
 			return $result;
@@ -65,27 +65,25 @@ class payConfirm_module extends api_admin implements api_interface {
 
 		$order_id = $this->requestData('order_id');
 		if (empty($order_id)) {
-			return new ecjia_error(101, '参数错误');
+			return new ecjia_error('invalid_parameter', '参数错误');
 		}
-		
-		return new ecjia_error('error', '商家不支持付款操作');
 		
 		/* 查询订单信息 */
 		$order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => ''));
 		if (empty($order)) {
-			return new ecjia_error(13, '不存在的信息');
+			//EM_Api::outPut(13);
+			return new ecjia_error('dose_not_exist', '不存在的信息');
 		}
 		
 		$payment_method	= new Ecjia\App\Payment\PaymentPlugin();
 		$pay_info = $payment_method->getPluginDataById($order['pay_id']);
-// 		$payment_handler = $payment_method->get_payment_instance($pay_info['pay_code']);
 		$payment_handler = $payment_method->channel($pay_info['pay_code']);
 		
 		/* 判断是否有支付方式以及是否为现金支付和酷银*/
-		if (!$payment_handler) {
-			return new ecjia_error(8, '处理失败');
+		if (!$payment) {
+			return new ecjia_error('fail_error', '处理失败');
 		}
-		$payment_handler->set_orderinfo($order);
+		$payment->set_orderinfo($order);
 		
 		if ($pay_info['pay_code'] == 'pay_cash') {
 			/* 进行确认*/
@@ -146,7 +144,7 @@ class payConfirm_module extends api_admin implements api_interface {
 			return array('payment' => $data);
 		}
 		
-		if (in_array($pay_info['pay_code'], array('pay_koolyun', 'pay_koolyun_alipay', 'pay_koolyun_upmp', 'pay_koolyun_wxpay'))) {
+		if (in_array($pay_info['pay_code'], array('pay_koolyun', 'pay_koolyun_alipay', 'pay_koolyun_upmp', 'pay_koolyun_wxpay', 'pay_balance'))) {
 			
 			/* 配货*/
 			$result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'prepare', 'note' => array('action_note' => '收银台配货')));
@@ -198,8 +196,8 @@ class payConfirm_module extends api_admin implements api_interface {
 
 function delivery_ship($order_id, $delivery_id) {
 	RC_Logger::getLogger('error')->info('订单发货处理【订单id|'.$order_id.'】');
-	RC_Loader::load_app_func('global', 'orders');
-	RC_Loader::load_app_func('admin_order', 'orders');
+    RC_Loader::load_app_func('global', 'orders');
+    RC_Loader::load_app_func('admin_order', 'orders');
 	$db_delivery = RC_Loader::load_app_model('delivery_viewmodel','orders');
 	$db_delivery_order		= RC_Loader::load_app_model('delivery_order_model','orders');
 	$db_goods				= RC_Loader::load_app_model('goods_model','goods');
@@ -352,6 +350,7 @@ function delivery_ship($order_id, $delivery_id) {
 	} else {
 	    ecjia_admin::admin_log('发货，订单号是'.$order['order_sn'].'【来源掌柜】', 'setup', 'order'); // 记录日志
 	}
+	
 	
 	
 	RC_Logger::getLogger('error')->info('判断是否全部发货'.$order_finish);

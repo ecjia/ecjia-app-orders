@@ -352,7 +352,6 @@ function delivery_ship($order_id, $delivery_id) {
 	}
 	
 	
-	
 	RC_Logger::getLogger('error')->info('判断是否全部发货'.$order_finish);
 	/* 如果当前订单已经全部发货 */
 	if ($order_finish) {

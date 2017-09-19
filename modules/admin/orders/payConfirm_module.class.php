@@ -240,8 +240,7 @@ function delivery_ship($order_id, $delivery_id) {
     	);	
 	/* 检查此单发货商品库存缺货情况 */
 	$virtual_goods			= array();
-	$delivery_stock_result	= RC_Model::model('orders/delivery_viewmodel')->join(array('goods', 'products'))->field($field)->where(array('dg.delivery_id' => $delivery_id))->group('dg.product_id')->select();
-	RC_Logger::getLogger('error')->info(RC_Model::model('orders/delivery_viewmodel')->last_sql());
+	$delivery_stock_result	= RC_Model::model('orders/delivery_viewmodel')->join(array('goods', 'products'))->where(array('dg.delivery_id' => $delivery_id))->group('dg.product_id')->select();
 	/* 如果商品存在规格就查询规格，如果不存在规格按商品库存查询 */
 	if(!empty($delivery_stock_result)) {
 		foreach ($delivery_stock_result as $value) {

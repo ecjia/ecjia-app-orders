@@ -56,7 +56,7 @@ class detail_module extends api_admin implements api_interface {
 		$this->authadminSession();
         if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
             return new ecjia_error(100, 'Invalid session');
-        }
+        } 
 		$result = $this->admin_priv('order_view');
  		if (is_ecjia_error($result)) {
  			return $result;
@@ -89,6 +89,7 @@ class detail_module extends api_admin implements api_interface {
 		//if ($device['code'] == 8001) {
 		//	$order['adviser_name'] = RC_Model::model('orders/adviser_log_viewmodel')->join(array('adviser'))->where(array('al.order_id' => $order['order_id']))->get_field('username');
 		//}
+		//TODO::收银员名字
 		
 		$order['label_order_source'] = '';
 		/*订单来源返回处理*/

@@ -100,21 +100,13 @@ class quickpay_module extends api_admin implements api_interface {
 
 		/* 获取商家或平台的地址 作为收货地址 */
 		$region = RC_Loader::load_app_model('region_model','shipping');
-		if ($_SESSION['ru_id'] > 0){
-			$msi_dbview = RC_Loader::load_app_model('merchants_shop_information_viewmodel', 'seller');
-			$where = array();
-			$where['ssi.status'] = 1;
-			$where['msi.merchants_audit'] = 1;
-			$where['msi.user_id'] = $_SESSION['ru_id'];
-			$info = $msi_dbview->join(array('category', 'seller_shopinfo'))
-			->field('ssi.*')
-			->where($where)
-			->find();
+		if ($_SESSION['store_id'] > 0){
+			RC_Loader::load_app_func('merchant_store','store');
+			$info = get_store_full_info($_SESSION['store_id']);
 			$region_info = array(
-					'country'			=> $info['country'],
-					'province'			=> $info['province'],
-					'city'				=> $info['city'],
-					'address'			=> $info['shop_address'],
+			    'province'			=> $info['province'],
+			    'city'				=> $info['city'],
+			    'address'			=> $info['address'],
 			);
 			$consignee = array_merge($consignee, $region_info);
 		} else {
@@ -195,16 +187,17 @@ class quickpay_module extends api_admin implements api_interface {
 			$order_goods_id = $db_order_goods->insert($arr);
 		}
 		
-		if ($new_order_id > 0 && $order_goods_id > 0) {
-			$adviser_log = array(
-				'adviser_id' => $_SESSION['adviser_id'],
-				'order_id'	 => $new_order_id,
-				'device_id'	 => $_SESSION['device_id'],
-				'type'   	 => '2',//收款
-				'add_time'	 => RC_Time::gmtime(),
-			);
-			$adviser_log_id = RC_Model::model('achievement/adviser_log_model')->insert($adviser_log);
-		}
+		//TODO收银员操作日志
+// 		if ($new_order_id > 0 && $order_goods_id > 0) {
+// 			$adviser_log = array(
+// 				'adviser_id' => $_SESSION['adviser_id'],
+// 				'order_id'	 => $new_order_id,
+// 				'device_id'	 => $_SESSION['device_id'],
+// 				'type'   	 => '2',//收款
+// 				'add_time'	 => RC_Time::gmtime(),
+// 			);
+// 			$adviser_log_id = RC_Model::model('achievement/adviser_log_model')->insert($adviser_log);
+// 		}
 		
 // 		/* 插入支付日志 */
 // 		$order['log_id'] = $payment_method->insert_pay_log($new_order_id, $order['order_amount'], PAY_ORDER);

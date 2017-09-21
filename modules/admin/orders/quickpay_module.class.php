@@ -208,7 +208,7 @@ class quickpay_module extends api_admin implements api_interface {
 				'order_sn' => $order['order_sn'],
 				'order_id' => $new_order_id,
 				'order_info' => array(
-						'pay_code' 		=> $payment_info['pay_code'],
+						'pay_code' 		=> $payment['pay_code'],
 						'order_amount' 	=> $order['order_amount'],
 						'order_id' 		=> $new_order_id,
 						'subject' 		=> $subject,

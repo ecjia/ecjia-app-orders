@@ -74,7 +74,7 @@ class setgrab_module extends api_admin implements api_interface {
 			RC_Model::model('orders/store_order_model')->insert(array(
 																'order_id'	=> $order_id,
 																'store_id'	=> '0',
-																'ru_id'		=> $_SESSION['ru_id'],
+// 																'ru_id'		=> $_SESSION['ru_id'],
 																'is_grab_order'		=> 1,
 																'grab_store_list'	=> $store_id,
 			));

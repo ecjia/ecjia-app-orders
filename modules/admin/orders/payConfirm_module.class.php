@@ -64,6 +64,9 @@ class payConfirm_module extends api_admin implements api_interface
 		}
 
 		$order_id = $this->requestData('order_id');
+		$invoice_no = $this->requestData('invoice_no');
+		$action_note = $this->requestData('action_note');
+		
 		if (empty($order_id)) {
 			return new ecjia_error('invalid_parameter', '参数错误');
 		}
@@ -122,7 +125,7 @@ class payConfirm_module extends api_admin implements api_interface
 			$db_delivery_order	= RC_Loader::load_app_model('delivery_order_model', 'orders');
 			$delivery_id = $db_delivery_order->where(array('order_sn' => array('like' => '%'.$order['order_sn'].'%')))->order(array('delivery_id' => 'desc'))->get_field('delivery_id');
 			
-			$result = delivery_ship($order_id, $delivery_id);
+			$result = delivery_ship($order_id, $delivery_id, $invoice_no, $action_note);
 			if (is_ecjia_error($result)) {
 				RC_Logger::getLogger('error')->info('订单发货【订单id|'.$order_id.'】：'.$result->get_error_message());
 			}
@@ -169,7 +172,7 @@ class payConfirm_module extends api_admin implements api_interface
 			$db_delivery_order	= RC_Loader::load_app_model('delivery_order_model', 'orders');
 			$delivery_id = $db_delivery_order->where(array('order_sn' => array('like' => '%'.$order['order_sn'].'%')))->order(array('delivery_id' => 'desc'))->get_field('delivery_id');
 			
-			$result = delivery_ship($order_id, $delivery_id);
+			$result = delivery_ship($order_id, $delivery_id, $invoice_no, $action_note);
 			if (is_ecjia_error($result)) {
 				RC_Logger::getLogger('error')->info('订单发货【订单id|'.$order_id.'】：'.$result->get_error_message());
 			}
@@ -203,7 +206,7 @@ class payConfirm_module extends api_admin implements api_interface
 }
 
 
-function delivery_ship($order_id, $delivery_id) {
+function delivery_ship($order_id, $delivery_id, $invoice_no, $action_note) {
 	RC_Logger::getLogger('error')->info('订单发货处理【订单id|'.$order_id.'】');
     RC_Loader::load_app_func('global', 'orders');
     RC_Loader::load_app_func('admin_order', 'orders');
@@ -218,8 +221,8 @@ function delivery_ship($order_id, $delivery_id) {
 	$delivery				= array();
 	$order_id				= intval(trim($order_id));			// 订单id
 	$delivery_id			= intval(trim($delivery_id));		// 发货单id
-	$delivery['invoice_no']	= isset($this->requestData['invoice_no']) ? trim($this->requestData['invoice_no']) : '';
-	$action_note			= isset($this->requestData['action_note']) ? trim($this->requestData['action_note']) : '';
+	$delivery['invoice_no']	= isset($invoice_no) ? trim($invoice_no) : '';
+	$action_note			= isset($action_note) ? trim($action_note) : '';
 	
 	/* 根据发货单id查询发货单信息 */
 	if (!empty($delivery_id)) {

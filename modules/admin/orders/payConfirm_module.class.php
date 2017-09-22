@@ -80,9 +80,15 @@ class payConfirm_module extends api_admin implements api_interface
 		
 		/* 判断是否有支付方式以及是否为现金支付和酷银*/
 		if (is_ecjia_error($payment_handler)) {
+			RC_Logger::getLogger('error')->info('payConfirm-test1');
 			return $payment_handler;
 		}
 		$payment_handler->set_orderinfo($order);
+		
+		RC_Logger::getLogger('error')->info('payConfirm-test2');
+		RC_Logger::getLogger('error')->info($pay_info);
+		RC_Logger::getLogger('error')->info($payment_handler);
+		RC_Logger::getLogger('error')->info('payConfirm-test3');
 		
 		if ($pay_info['pay_code'] == 'pay_cash') {
 			/* 进行确认*/
@@ -139,7 +145,7 @@ class payConfirm_module extends api_admin implements api_interface
 					'pay_status'	=> 'success',
 					'desc'			=> '订单支付成功！'
 			);
-			
+			RC_Logger::getLogger('error')->info('payConfirm-test4');
 			return array('payment' => $data);
 		}
 		
@@ -170,7 +176,7 @@ class payConfirm_module extends api_admin implements api_interface
 			$arr['money_paid']		= $order['money_paid'] + $order['order_amount'];
 			$arr['order_amount']	= 0;
 			update_order($order_id, $arr);
-			
+			RC_Logger::getLogger('error')->info('payConfirm-test5');
 			/* 记录log */
 			order_action($order['order_sn'], OS_SPLITED, SS_RECEIVED, PS_PAYED, '收银台确认收货');
 			

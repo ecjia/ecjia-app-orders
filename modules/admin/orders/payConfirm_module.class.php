@@ -79,10 +79,10 @@ class payConfirm_module extends api_admin implements api_interface
 		$payment_handler = $payment_method->channel($pay_info['pay_code']);
 		
 		/* 判断是否有支付方式以及是否为现金支付和酷银*/
-		if (!$payment) {
-			return new ecjia_error('fail_error', '处理失败');
+		if (is_ecjia_error($payment_handler)) {
+			return $payment_handler;
 		}
-		$payment->set_orderinfo($order);
+		$payment_handler->set_orderinfo($order);
 		
 		if ($pay_info['pay_code'] == 'pay_cash') {
 			/* 进行确认*/

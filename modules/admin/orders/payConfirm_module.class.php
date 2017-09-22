@@ -70,6 +70,10 @@ class payConfirm_module extends api_admin implements api_interface
 		
 		/* 查询订单信息 */
 		$order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => ''));
+		
+		RC_Logger::getLogger('error')->info('payConfirm-test1');
+		RC_Logger::getLogger('error')->info($order);
+		
 		if (empty($order)) {
 			return new ecjia_error('dose_not_exist', '不存在的信息');
 		}
@@ -80,17 +84,17 @@ class payConfirm_module extends api_admin implements api_interface
 		
 		/* 判断是否有支付方式以及是否为现金支付和酷银*/
 		if (is_ecjia_error($payment_handler)) {
-			RC_Logger::getLogger('error')->info('payConfirm-test1');
 			return $payment_handler;
 		}
 		$payment_handler->set_orderinfo($order);
 		
 		RC_Logger::getLogger('error')->info('payConfirm-test2');
 		RC_Logger::getLogger('error')->info($pay_info);
-		RC_Logger::getLogger('error')->info($payment_handler);
+		//RC_Logger::getLogger('error')->info($payment_handler);
 		RC_Logger::getLogger('error')->info('payConfirm-test3');
 		
 		if ($pay_info['pay_code'] == 'pay_cash') {
+			RC_Logger::getLogger('error')->info('payConfirm-test4');
 			/* 进行确认*/
 			$result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'confirm', 'note' => array('action_note' => '收银台订单确认')));
 			if (is_ecjia_error($result)) {
@@ -150,7 +154,7 @@ class payConfirm_module extends api_admin implements api_interface
 		}
 		
 		if (in_array($pay_info['pay_code'], array('pay_koolyun', 'pay_koolyun_alipay', 'pay_koolyun_upmp', 'pay_koolyun_wxpay', 'pay_balance'))) {
-			
+			RC_Logger::getLogger('error')->info('payConfirm-test5');
 			/* 配货*/
 			$result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'prepare', 'note' => array('action_note' => '收银台配货')));
 			if (is_ecjia_error($result)) {
@@ -176,7 +180,7 @@ class payConfirm_module extends api_admin implements api_interface
 			$arr['money_paid']		= $order['money_paid'] + $order['order_amount'];
 			$arr['order_amount']	= 0;
 			update_order($order_id, $arr);
-			RC_Logger::getLogger('error')->info('payConfirm-test5');
+			
 			/* 记录log */
 			order_action($order['order_sn'], OS_SPLITED, SS_RECEIVED, PS_PAYED, '收银台确认收货');
 			

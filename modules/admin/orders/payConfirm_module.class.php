@@ -55,7 +55,7 @@ class payConfirm_module extends api_admin implements api_interface
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request)
     {	
 		$this->authadminSession();
-		if ($_SESSION['admin_id'] <= 0 && $_SESSION['ru_id'] <= 0) {
+		if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
 			return new ecjia_error(100, 'Invalid session');
 		}
 		$result = $this->admin_priv('order_stats');
@@ -71,7 +71,6 @@ class payConfirm_module extends api_admin implements api_interface
 		/* 查询订单信息 */
 		$order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => ''));
 		if (empty($order)) {
-			//EM_Api::outPut(13);
 			return new ecjia_error('dose_not_exist', '不存在的信息');
 		}
 		

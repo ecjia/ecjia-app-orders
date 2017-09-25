@@ -179,21 +179,21 @@ class list_module extends api_admin implements api_interface {
 				}
 			}
 		} else {
-			$db_adviser_log_view = RC_Model::model('orders/adviser_log_viewmodel');
+			$db_cashier_record_view = RC_Model::model('orders/cashier_record_viewmodel');
 			if ($type == 'verify') {
-			    $where['al.type'] = 3;
+			    $where['cr.type'] = 'check_order';
 			    $join = array('order_info', 'order_goods', 'adviser', 'goods', 'term_meta');
 			} else {
-			    $where['al.type'] = array(1,2);
+			    $where['cr.type'] = array('billing', 'receipt');
 			    $join = array('order_info', 'order_goods', 'adviser', 'goods');
 			}
 			
-			$where['al.device_id'] = $_SESSION['device_id'];
+			$where['cr.mobile_device_id'] = $_SESSION['device_id'];
 
 			/*获取记录条数 */
-			$record_count = $db_adviser_log_view->join(null)->where($where)->count('al.order_id');
+			$record_count = $db_cashier_record_view->join(null)->where($where)->count('cr.order_id');
 			$page_row = new ecjia_page($record_count, $size, 6, '', $page);
-			$order_id_group = $db_adviser_log_view->join(null)->where($where)->limit($page_row->limit())->order(array('add_time' => 'desc'))->get_field('order_id', true);
+			$order_id_group = $db_cashier_record_view->join(null)->where($where)->limit($page_row->limit())->order(array('add_time' => 'desc'))->get_field('order_id', true);
 
 			if (empty($order_id_group)) {
 				$data = array();
@@ -204,7 +204,7 @@ class list_module extends api_admin implements api_interface {
 				$where['al.order_id'] =  $order_id_group;
 				$where[] = "oi.order_id is not null";
 
-				$data = $db_adviser_log_view->field($field)->join($join)->where($where)->order(array('al.add_time' => 'desc'))->select();
+				$data = $db_cashier_record_view->field($field)->join($join)->where($where)->order(array('cr.create_at' => 'desc'))->select();
 			}
 		}
 

@@ -129,7 +129,7 @@ class detail_module extends api_front implements api_interface {
 		}
 		
 		/*提货信息*/
-		if ($shipping_info['shipping_code'] == 'ship_cac' || $shipping_info['shipping_code'] == 'ship_no_express') {
+		if ($shipping_info['shipping_code'] == 'ship_cac') {
 			$pickup_info = RC_DB::table('term_meta')
 							->where('object_id', $order['order_id'])
 							->where('object_group', 'order')

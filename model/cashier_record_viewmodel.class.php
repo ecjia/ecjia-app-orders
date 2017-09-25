@@ -47,20 +47,20 @@
 defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
- * 营销顾问日志数据模型
+ * 收银日志数据模型
  */
-class adviser_log_viewmodel extends Component_Model_View {
+class cashier_record_viewmodel extends Component_Model_View {
 	public $table_name = '';
 	public $view = array();
 	public function __construct() {
-		$this->table_name = 'adviser_log';
-		$this->table_alias_name = 'al';
+		$this->table_name = 'cashier_record';
+		$this->table_alias_name = 'cr';
 		
 		$this->view = array(
 			'order_info' => array(
 				'type' => Component_Model_View::TYPE_LEFT_JOIN,
 				'alias'=> 'oi',
-				'on'   => 'oi.order_id = al.order_id'
+				'on'   => 'oi.order_id = cr.order_id'
 			),
 			'order_goods' => array(
 				'type' => Component_Model_View::TYPE_LEFT_JOIN,
@@ -72,10 +72,15 @@ class adviser_log_viewmodel extends Component_Model_View {
 				'alias'=> 'g',
 				'on'   => 'g.goods_id = og.goods_id'
 			),
-			'adviser' => array(
+			'staff_user' => array(
 				'type' => Component_Model_View::TYPE_LEFT_JOIN,
-				'alias'=> 'ad',
-				'on'   => 'ad.id = al.adviser_id'
+				'alias'=> 'su',
+				'on'   => 'su.user_id = cr.staff_id'
+			),
+			'term_meta' => array(
+					'type' => Component_Model_View::TYPE_LEFT_JOIN,
+					'alias'=> 'tm',
+					'on'   => 'tm.object_id = oi.order_id and tm.object_type = "ecjia.order" and tm.object_group = "order" and tm.meta_key = "receipt_verification"'
 			),
 		);
 		parent::__construct();

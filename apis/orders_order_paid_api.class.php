@@ -168,10 +168,10 @@ class orders_order_paid_api extends Component_Event_Api {
 		                'add_time'		=> RC_Time::gmtime(),
 	                ));
 	                
-	                /*门店自提，无需物流（收银台）时发送提货验证码；*/
+	                /*门店自提，时发送提货验证码；*/
 	                if ($order['shipping_id'] > 0) {
 	                	$shipping_info = RC_DB::table('shipping')->where('shipping_id', $order['shipping_id'])->first();
-	                	if ($shipping_info['shipping_code'] == 'ship_cac' || $shipping_info['shipping_code'] == 'ship_no_express') {
+	                	if ($shipping_info['shipping_code'] == 'ship_cac') {
 	                		/*短信给用户发送收货验证码*/
 	                		if (ecjia::config('sms_shop_mobile') != '') {
 	                			$db_term_meta = RC_DB::table('term_meta');

@@ -203,6 +203,23 @@ class quickpay_module extends api_admin implements api_interface {
 // 		$order['log_id'] = $payment_method->insert_pay_log($new_order_id, $order['order_amount'], PAY_ORDER);
 // 		$payment_info = $payment_method->payment_info_by_id($pay_id);
 
+		/*收银员操作日志*/
+		if ($new_order_id > 0 && $order_goods_id > 0) {
+			$device_info = RC_DB::table('mobile_device')->where('id', $_SESSION['device_id'])->first();
+			$cashier_record = array(
+					'store_id' 			=> $_SESSION['store_id'],
+					'staff_id'			=> $_SESSION['staff_id'],
+					'order_id'	 		=> $new_order_id,
+					'order_type' 		=> 'ecjia-cashdesk',
+					'mobile_device_id'	=> $_SESSION['device_id'],
+					'device_sn'			=> $device_info['device_udid'],
+					'device_type'		=> 'ecjia-cashdesk',
+					'action'   	 		=> 'receipt', //收款
+					'create_at'	 		=> RC_Time::gmtime(),
+			);
+			RC_DB::table('cashier_record')->insert($cashier_record);
+		}
+		
 		$subject = '收银台快捷收款￥'.floatval($amount).'';
 		$out = array(
 				'order_sn' => $order['order_sn'],

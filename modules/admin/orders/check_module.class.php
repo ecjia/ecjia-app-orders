@@ -74,8 +74,23 @@ class check_module extends api_admin implements api_interface
 			RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'pay', 'note' => array('action_note' => $action_note)));
 			/* 确认收货*/
 			RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'receive', 'note' => array('action_note' => $action_note)));
-				
-// 			员工日志
+			
+			/*收银员订单操作记录*/
+			$device_info = RC_DB::table('mobile_device')->where('id', $_SESSION['device_id'])->first();
+			$cashier_record = array(
+					'store_id' 			=> $_SESSION['store_id'],
+					'staff_id'			=> $_SESSION['staff_id'],
+					'order_id'	 		=> $order_id,
+					'order_type' 		=> 'ecjia-cashdesk',
+					'mobile_device_id'	=> $_SESSION['device_id'],
+					'device_sn'			=> $device_info['device_udid'],
+					'device_type'		=> 'ecjia-cashdesk',
+					'action'   	 		=> 'check_order', //验单
+					'create_at'	 		=> RC_Time::gmtime(),
+			);
+			RC_DB::table('cashier_record')->insert($cashier_record);
+			
+ 			//员工日志
 			/* 查询订单信息 */
 			$order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => ''));
 			if ($_SESSION['store_id'] > 0) {

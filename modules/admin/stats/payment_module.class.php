@@ -61,18 +61,28 @@ function payment_stats($start_date, $end_date, $device)
 	$field = 'count(*) as count, SUM((goods_amount - discount + tax + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee)) AS total_fee';
 	foreach ($cashdesk_payment as $val) {
 		if (isset($pay_id_group[$val])) {
-			$order_stats = RC_Model::model('orders/cashier_record_viewmodel')->join(array('order_info', 'staff_user'))
-														->field($field)
-														->where(
-															array(
-																'oi.pay_status' => 2,
-																'oi.pay_time >="' .$start_date. '" and oi.pay_time<="' .$end_date. '"',
-																'mobile_device_id'		=> $_SESSION['device_id'],
-																'staff_id'	=> $_SESSION['staff_id'],
-																'pay_id'		=> $pay_id_group[$val]['pay_id']
-															)
-														)
-														->find();
+// 			$order_stats = RC_Model::model('orders/cashier_record_viewmodel')->join(array('order_info', 'staff_user'))
+// 														->field($field)
+// 														->where(
+// 															array(
+// 																'oi.pay_status' => 2,
+// 																'oi.pay_time >="' .$start_date. '" and oi.pay_time<="' .$end_date. '"',
+// 																'mobile_device_id'		=> $_SESSION['device_id'],
+// 																'staff_id'	=> $_SESSION['staff_id'],
+// 																'pay_id'		=> $pay_id_group[$val]['pay_id']
+// 															)
+// 														)
+// 		    ->find();
+// 							
+            $order_stats = RC_DB::table('cashier_record as cr')
+    			->leftJoin('order_info as oi', RC_DB::raw('cr.order_id'), '=', RC_DB::raw('oi.order_id'))
+    			->selectRaw($field)
+    			->where(RC_DB::raw('oi.pay_status'), 2)
+    			->where(RC_DB::raw('oi.pay_time'), 2)
+    			->where(RC_DB::raw('cr.staff_id'), $_SESSION['staff_id'])
+    			->where(RC_DB::raw('cr.mobile_device_id'), $_SESSION['device_id'])
+    			->where('pay_id', $pay_id_group[$val]['pay_id'])
+    			->first();
 			$data[] = array(
 					'pay_code'		=> $val,
 					'pay_name'		=> $pay_id_group[$val]['pay_name'],

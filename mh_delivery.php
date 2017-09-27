@@ -415,8 +415,12 @@ class mh_delivery extends ecjia_merchant {
 		/* 判断发货单，生成配送单*/
 		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
 		$shipping_info = $shipping_method->shipping_info($delivery_order['shipping_id']);
-
+		
+		RC_Logger::getLogger('error')->info('商家后台发货测试test1');
+		RC_Logger::getLogger('error')->info($delivery_order);
+		
 		if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
+			RC_Logger::getLogger('error')->info('商家后台发货测试test2');
 			$staff_id = isset($_POST['staff_id']) ? intval($_POST['staff_id']) : 0;
 			$express_from = !empty($staff_id) ? 'assign' : 'grab';
 			$express_data = array(
@@ -467,12 +471,13 @@ class mh_delivery extends ecjia_merchant {
 				
 			$exists_express_order = RC_DB::table('express_order')->where('delivery_sn', $delivery_order['delivery_sn'])->where('store_id', $_SESSION['store_id'])->first();
 			if ($exists_express_order) {
+				RC_Logger::getLogger('error')->info('商家后台发货测试test3');
 				unset($express_data['add_time']);
 				$express_data['update_time'] = RC_Time::gmtime();
 				RC_DB::table('express_order')->where('express_id', $exists_express_order['express_id'])->update($express_data);
 				$express_id = $exists_express_order['express_id'];
 			} else {
-				RC_Logger::getLogger('test1')->info('商家后台发货测试');
+				RC_Logger::getLogger('error')->info('商家后台发货测试test4');
 				$express_id = RC_DB::table('express_order')->insert($express_data);
 			}
 				

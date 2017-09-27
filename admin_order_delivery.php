@@ -738,6 +738,7 @@ class admin_order_delivery extends ecjia_admin {
                 RC_DB::table('express_order')->where('express_id', $exists_express_order['express_id'])->update($express_data);
                 $express_id = $exists_express_order['express_id'];
             } else {
+            	RC_Logger::getLogger('test1')->info('平台后台发货测试');
                 $express_id = RC_DB::table('express_order')->insert($express_data);
             }
             return true;

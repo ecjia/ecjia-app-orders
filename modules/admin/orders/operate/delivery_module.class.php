@@ -181,6 +181,7 @@ class delivery_module extends api_admin implements api_interface {
 		
 		/* 对上一步处理结果进行判断 兼容 上一步判断为假情况的处理 */
 		if (empty($send_number) || empty($goods_list)) {
+			RC_Logger::getLogger('test1')->info('掌柜发货测试');
 			return new ecjia_error('shipping_empty', '没有可发货的商品！');
 		}
 		

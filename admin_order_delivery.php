@@ -364,8 +364,6 @@ class admin_order_delivery extends ecjia_admin {
 			);
 			RC_DB::table('order_status_log')->insert($data);
 			$this->create_express_order($delivery_id);
-			RC_Logger::getLogger('error')->info('平台后台发货测试test1');
-			RC_Logger::getLogger('error')->info($delivery_id);
 		} else {
 		    $links[] = array('text' => RC_Lang::get('orders::order.delivery_sn') . RC_Lang::get('orders::order.detail'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info', array('delivery_id' => $delivery_id)));
 		    return $this->showmessage(RC_Lang::get('orders::order.act_false'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
@@ -678,13 +676,10 @@ class admin_order_delivery extends ecjia_admin {
 	private function create_express_order($delivery_id) {
 	    RC_Loader::load_app_func('global', 'orders');
         $delivery_order = delivery_order_info($delivery_id);
-        RC_Logger::getLogger('error')->info('平台后台发货测试test2');
-        RC_Logger::getLogger('error')->info($delivery_order);
         /* 判断发货单，生成配送单*/
         $shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
         $shipping_info = $shipping_method->shipping_info(intval($delivery_order['shipping_id']));
         if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
-        	RC_Logger::getLogger('error')->info('平台后台发货测试test3');
     //         $staff_id = isset($_POST['staff_id']) ? intval($_POST['staff_id']) : 0;
     //         $express_from = !empty($staff_id) ? 'assign' : 'grab';
             $staff_id = 0;
@@ -737,13 +732,11 @@ class admin_order_delivery extends ecjia_admin {
         
             $exists_express_order = RC_DB::table('express_order')->where('delivery_sn', $delivery_order['delivery_sn'])->where('store_id', $delivery_order['store_id'])->first();
             if ($exists_express_order) {
-            	RC_Logger::getLogger('error')->info('平台后台发货测试test4');
                 unset($express_data['add_time']);
                 $express_data['update_time'] = RC_Time::gmtime();
                 RC_DB::table('express_order')->where('express_id', $exists_express_order['express_id'])->update($express_data);
                 $express_id = $exists_express_order['express_id'];
             } else {
-            	RC_Logger::getLogger('error')->info('平台后台发货测试test5');
                 $express_id = RC_DB::table('express_order')->insert($express_data);
             }
             return true;

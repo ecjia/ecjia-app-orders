@@ -181,7 +181,6 @@ class delivery_module extends api_admin implements api_interface {
 		
 		/* 对上一步处理结果进行判断 兼容 上一步判断为假情况的处理 */
 		if (empty($send_number) || empty($goods_list)) {
-			RC_Logger::getLogger('error')->info('掌柜发货测试test1');
 			return new ecjia_error('shipping_empty', '没有可发货的商品！');
 		}
 		
@@ -396,10 +395,6 @@ class delivery_module extends api_admin implements api_interface {
 		$order_info['invoice_no'] = $invoice_no;
 		$delivery_result = delivery_order($delivery_id, $order_info);
 		if (!is_ecjia_error($delivery_result)) {
-			RC_Logger::getLogger('error')->info('掌柜发货测试test2');
-			RC_Logger::getLogger('error')->info($delivery_id);
-			RC_Logger::getLogger('error')->info($order_info);
-			
 		    create_express_order($delivery_id);
 		}
 		
@@ -612,7 +607,6 @@ function create_express_order($delivery_id) {
     $shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
     $shipping_info = $shipping_method->shipping_info(intval($delivery_order['shipping_id']));
     if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
-    	RC_Logger::getLogger('error')->info('掌柜发货测试test3');
 //         $staff_id = isset($_POST['staff_id']) ? intval($_POST['staff_id']) : 0;
 //         $express_from = !empty($staff_id) ? 'assign' : 'grab';
         $staff_id = 0;
@@ -665,13 +659,11 @@ function create_express_order($delivery_id) {
     
         $exists_express_order = RC_DB::table('express_order')->where('delivery_sn', $delivery_order['delivery_sn'])->where('store_id', $_SESSION['store_id'])->first();
         if ($exists_express_order) {
-        	RC_Logger::getLogger('error')->info('掌柜发货测试test4');
             unset($express_data['add_time']);
             $express_data['update_time'] = RC_Time::gmtime();
             RC_DB::table('express_order')->where('express_id', $exists_express_order['express_id'])->update($express_data);
             $express_id = $exists_express_order['express_id'];
         } else {
-        	RC_Logger::getLogger('error')->info('掌柜发货测试test5');
             $express_id = RC_DB::table('express_order')->insert($express_data);
         }
     }

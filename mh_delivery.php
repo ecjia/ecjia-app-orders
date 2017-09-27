@@ -414,7 +414,7 @@ class mh_delivery extends ecjia_merchant {
 		
 		/* 判断发货单，生成配送单*/
 		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
-		$shipping_info = $shipping_method->shipping_info($delivery_order['shipping_id']);
+		$shipping_info = $shipping_method->shipping_info(intval($delivery_order['shipping_id']));
 		
 		RC_Logger::getLogger('error')->info('商家后台发货测试test1');
 		RC_Logger::getLogger('error')->info($delivery_order);

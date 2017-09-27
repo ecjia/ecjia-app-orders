@@ -610,7 +610,7 @@ function create_express_order($delivery_id) {
     $delivery_order = delivery_order_info($delivery_id);
     /* 判断发货单，生成配送单*/
     $shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
-    $shipping_info = $shipping_method->shipping_info($delivery_order['shipping_id']);
+    $shipping_info = $shipping_method->shipping_info(intval($delivery_order['shipping_id']));
     if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
     	RC_Logger::getLogger('error')->info('掌柜发货测试test3');
 //         $staff_id = isset($_POST['staff_id']) ? intval($_POST['staff_id']) : 0;

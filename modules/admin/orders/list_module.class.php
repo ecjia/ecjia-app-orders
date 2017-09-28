@@ -193,7 +193,7 @@ class list_module extends api_admin implements api_interface {
 			/*获取记录条数 */
 			$record_count = $db_cashier_record_view->join(null)->where($where)->count('cr.order_id');
 			$page_row = new ecjia_page($record_count, $size, 6, '', $page);
-			$order_id_group = $db_cashier_record_view->join(null)->where($where)->limit($page_row->limit())->order(array('add_time' => 'desc'))->get_field('order_id', true);
+			$order_id_group = $db_cashier_record_view->join(null)->where($where)->limit($page_row->limit())->order(array('create_at' => 'desc'))->get_field('order_id', true);
 
 			if (empty($order_id_group)) {
 				$data = array();

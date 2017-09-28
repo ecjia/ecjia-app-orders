@@ -10,7 +10,7 @@
 <!-- {block name="home-content"} -->
 
 <div class="modal fade" id="operate">
-	<div class="modal-dialog">
+	<div class="modal-dialog" style="margin:120px auto">
     	<div class="modal-content">
 			<div class="modal-header">
 				<button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
@@ -23,7 +23,7 @@
 						<div class="col-lg-3 controls p_top pickup_code">
 							
 						</div>
-						 <span class="btn-new">未验单</span>
+						 <div class="btn-new">未验单</div>
 					</div>
 					<div class="form-group">
 						<label class="control-label col-lg-3">姓名：</label>

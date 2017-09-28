@@ -202,7 +202,7 @@ class mh_delivery extends ecjia_merchant {
 		
 		/* 判断配送方式是否是立即送*/
 		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
-		$shipping_info = $shipping_method->shipping_info($delivery_order['shipping_id']);
+		$shipping_info = $shipping_method->shipping_info(intval($delivery_order['shipping_id']));
 		if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
 			/* 获取正在派单的配送员*/
 			$staff_list = RC_DB::table('staff_user')

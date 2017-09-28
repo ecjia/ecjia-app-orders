@@ -181,10 +181,10 @@ class list_module extends api_admin implements api_interface {
 		} else {
 			$db_cashier_record_view = RC_Model::model('orders/cashier_record_viewmodel');
 			if ($type == 'verify') {
-			    $where['cr.type'] = 'check_order';
+			    $where['cr.action'] = 'check_order';
 			    $join = array('order_info', 'order_goods', 'adviser', 'goods', 'term_meta');
 			} else {
-			    $where['cr.type'] = array('billing', 'receipt');
+			    $where['cr.action'] = array('billing', 'receipt');
 			    $join = array('order_info', 'order_goods', 'adviser', 'goods');
 			}
 			

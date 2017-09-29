@@ -203,7 +203,7 @@ class list_module extends api_admin implements api_interface {
 				$data = array();
 			} else {
 				$total_fee = "(oi.goods_amount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) as total_fee";
-				$field = 'oi.order_id, su.name, oi.integral, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time,og.goods_id, og.goods_number, og.goods_name, g.goods_thumb, g.goods_img, g.original_img';
+				$field = 'oi.order_id, oi.store_id, su.name, oi.integral, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time,og.goods_id, og.goods_number, og.goods_name, g.goods_thumb, g.goods_img, g.original_img';
 				$field .= $type == 'verify' ? ', tm.meta_value' : '';
 				$where['cr.order_id'] =  $order_id_group;
 				$where[] = "oi.order_id is not null";
@@ -319,6 +319,13 @@ class list_module extends api_admin implements api_interface {
 					    'verify_code'				=> (isset($val['meta_value']) && !empty($val['meta_value'])) ? $val['meta_value'] : null,
 						'goods_items' 				=> $goods_lists
 					);
+					
+					if ($val['store_id'] > 0) {
+						$store_name = RC_DB::table('store_franchisee')->where('store_id', $val['store_id'])->pluck('merchants_name');
+						$order_list[$val['order_id']]['store_id'] = $val['store_id'];
+						$order_list[$val['order_id']]['store_name'] = $store_name;
+					}
+					
 					$order_id = $val['order_id'];
 				} else {
 					$goods_number += $val['goods_number'];

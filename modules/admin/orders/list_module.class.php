@@ -186,10 +186,10 @@ class list_module extends api_admin implements api_interface {
 			$db_cashier_record_view = RC_Model::model('orders/cashier_record_viewmodel');
 			if ($type == 'verify') {
 			    $where['cr.action'] = 'check_order';
-			    $join = array('order_info', 'order_goods', 'adviser', 'goods', 'term_meta');
+			    $join = array('order_info', 'order_goods', 'staff_user', 'goods', 'term_meta');
 			} else {
 			    $where['cr.action'] = array('billing', 'receipt');
-			    $join = array('order_info', 'order_goods', 'adviser', 'goods');
+			    $join = array('order_info', 'order_goods', 'staff_user', 'goods');
 			}
 			
 			$where['cr.mobile_device_id'] = $_SESSION['device_id'];
@@ -203,9 +203,9 @@ class list_module extends api_admin implements api_interface {
 				$data = array();
 			} else {
 				$total_fee = "(oi.goods_amount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) as total_fee";
-				$field = 'oi.order_id, ad.username, oi.integral, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time,og.goods_id, og.goods_number, og.goods_name, g.goods_thumb, g.goods_img, g.original_img';
+				$field = 'oi.order_id, su.name, oi.integral, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time,og.goods_id, og.goods_number, og.goods_name, g.goods_thumb, g.goods_img, g.original_img';
 				$field .= $type == 'verify' ? ', tm.meta_value' : '';
-				$where['al.order_id'] =  $order_id_group;
+				$where['cr.order_id'] =  $order_id_group;
 				$where[] = "oi.order_id is not null";
 
 				$data = $db_cashier_record_view->field($field)->join($join)->where($where)->order(array('cr.create_at' => 'desc'))->select();

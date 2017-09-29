@@ -58,7 +58,13 @@ class orders_module extends api_admin implements api_interface {
 		if ($_SESSION['admin_id' ] <= 0 && $_SESSION['staff_id'] <= 0) {
 		    return new ecjia_error(100, 'Invalid session');
 		}
-		
+		$device		  = $this->device;
+		if ( $device['code'] !='8001') {
+			$result = $this->admin_priv('sale_order_stats');
+			if (is_ecjia_error($result)) {
+				return $result;
+			}
+		}
 		$result = $this->admin_priv('order_stats');
 		if (is_ecjia_error($result)) {
 			return $result;

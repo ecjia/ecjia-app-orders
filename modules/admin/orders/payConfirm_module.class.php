@@ -100,6 +100,12 @@ class payConfirm_module extends api_admin implements api_interface
 			$order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => ''));
 			$operate = RC_Loader::load_app_class('order_operate', 'orders');
 			$operate->operate($order, 'pay', '收银台收款');
+			
+			/* 更新支付流水记录*/
+			RC_Api::api('payment', 'update_payment_record', [
+			'order_sn' 		=> $order['order_sn'],
+			'trade_no'      => ''
+					]);
 			/* 配货*/
 			$result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'prepare', 'note' => array('action_note' => '收银台配货')));
 			if (is_ecjia_error($result)) {
@@ -146,6 +152,11 @@ class payConfirm_module extends api_admin implements api_interface
 		}
 		
 		if (in_array($pay_info['pay_code'], array('pay_koolyun', 'pay_koolyun_alipay', 'pay_koolyun_upmp', 'pay_koolyun_wxpay', 'pay_balance'))) {
+			/* 更新支付流水记录*/
+			RC_Api::api('payment', 'update_payment_record', [
+			'order_sn' 		=> $order['order_sn'],
+			'trade_no'      => ''
+					]);
 			/* 配货*/
 			$result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'prepare', 'note' => array('action_note' => '收银台配货')));
 			if (is_ecjia_error($result)) {

@@ -57,20 +57,24 @@ class list_module extends api_admin implements api_interface {
         if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
             return new ecjia_error(100, 'Invalid session');
         }
-		$result = $this->admin_priv('order_view');
-		if (is_ecjia_error($result)) {
-			return $result;
-		}
+        
+        $device		  = $this->device;
+        $device_code = isset($device['code']) ? $device['code'] : '';
+        $device_udid = isset($device['udid']) ? $device['udid'] : '';
+        $device_client = isset($device['client']) ? $device['client'] : '';
+        
+        if ($device_code != '8001') {
+        	$result = $this->admin_priv('order_view');
+        	if (is_ecjia_error($result)) {
+        		return $result;
+        	}
+        }
+        
 		$type		= $this->requestData('type', 'whole');
 		$keywords	= $this->requestData('keywords');
 		$user_id	= $this->requestData('user_id', 0);
 		$size = $this->requestData('pagination.count', 15);
 		$page = $this->requestData('pagination.page', 1);
-		
-		$device		  = $this->device;
-		$device_code = isset($device['code']) ? $device['code'] : '';
-		$device_udid = isset($device['udid']) ? $device['udid'] : '';
-		$device_client = isset($device['client']) ? $device['client'] : '';
 
 		$order_query = RC_Loader::load_app_class('order_query', 'orders');
 		$db = RC_Model::model('orders/order_info_model');

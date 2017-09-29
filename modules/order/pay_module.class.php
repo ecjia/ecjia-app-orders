@@ -72,6 +72,11 @@ class pay_module extends api_front implements api_interface {
 			return $order;
 		}
 		
+		RC_Logger::getLogger('error')->info('测试session信息1');
+		RC_Logger::getLogger('error')->info($_SESSION);
+		RC_Logger::getLogger('error')->info('测试session信息2');
+		RC_Logger::getLogger('error')->info($order);
+		
 		if ($_SESSION['user_id'] != $order['user_id']) {
 			return new ecjia_error('error_order_detail', RC_Lang::get('orders::order.error_order_detail'));
 		}

@@ -87,7 +87,7 @@ class list_module extends api_admin implements api_interface {
 		if ($user_id > 0) {
 		    $where['oi.user_id'] = $user_id;
 		}
-		if ($device_code != '8001') {
+		if ($device_code != '8001' || $user_id > 0) {
 			switch ($type) {
 				case 'await_pay':
 					$where_query = $order_query->order_await_pay('oi.');

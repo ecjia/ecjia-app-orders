@@ -65,10 +65,7 @@ class orders_module extends api_admin implements api_interface {
 				return $result;
 			}
 		}
-		$result = $this->admin_priv('order_stats');
-		if (is_ecjia_error($result)) {
-			return $result;
-		}
+		
 		//传入参数
 		$start_date = $this->requestData('start_date');
 		$end_date = $this->requestData('end_date');

@@ -106,13 +106,9 @@ function affirm_received($order_id, $user_id = 0) {
         //如果货到付款，修改付款状态为已付款
         if ($order['pay_id']) {
             $payment = RC_DB::table('payment')->where('pay_id', $order['pay_id'])->first();
-            RC_Logger::getLogger('error')->info('测试货到付款111');
-            RC_Logger::getLogger('error')->info($payment);
             if ($payment['is_cod'] == '1') {
-            	RC_Logger::getLogger('error')->info('测试货到付款222');
                 $data['pay_status'] = PS_PAYED;
             }
-            RC_Logger::getLogger('error')->info('测试货到付款333');
         }
         $query = $db->where(array('order_id' => $order_id))->update($data);
         if ($query) {

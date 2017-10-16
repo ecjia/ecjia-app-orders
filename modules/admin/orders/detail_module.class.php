@@ -84,6 +84,15 @@ class detail_module extends api_admin implements api_interface {
 		$verify_code = $db_term_meta->where('object_type', 'ecjia.order')->where('object_group', 'order')->where('meta_key', 'receipt_verification')->where('object_id', $order['order_id'])->pluck('meta_value');
 		$order['verify_code'] = empty($verify_code) ? '' : $verify_code;
 		
+		/*提货码验证状态*/
+		if (!empty($verify_code)) {
+			if ($order['shipping_status'] > SS_UNSHIPPED) {
+				$order['check_status'] = 1; 
+			} else {
+				$order['check_status'] = 0;
+			}
+		}
+		
 		if ($device['code'] == 8001) {
 			//$order['adviser_name'] = RC_Model::model('orders/adviser_log_viewmodel')->join(array('adviser'))->where(array('al.order_id' => $order['order_id']))->get_field('username');
 			$order['cashier_name'] = RC_DB::table('cashier_record as cr')->leftJoin('staff_user as su', RC_DB::raw('cr.staff_id'), '=', RC_DB::raw('su.user_id'))->where(RC_DB::raw('cr.order_id'), $order['order_id'])->pluck('name');

@@ -444,7 +444,7 @@ class merchant extends ecjia_merchant {
 			$express_order = RC_DB::table('express_order')->where('order_sn', $order['order_sn'])->orderBy('express_id', 'desc')->first();
 			$this->assign('express_order', $express_order);
 		}
-		
+
 		if ($shipping_info['shipping_code'] == "ship_cac" ) {
 		    $meta_value   = RC_DB::table('term_meta')
 		          ->select('meta_value')
@@ -453,7 +453,8 @@ class merchant extends ecjia_merchant {
 		          ->where('meta_key', 'receipt_verification')
 		          ->where('object_id', $order_id)
 		          ->first();
-		    $this->assign('meta_value', $meta_value);
+
+		    $this->assign('meta_value', $meta_value['meta_value']);
 		    $this->assign('shipping_code', $shipping_info['shipping_code']);
 		}
 		

@@ -445,6 +445,18 @@ class merchant extends ecjia_merchant {
 			$this->assign('express_order', $express_order);
 		}
 		
+		if ($shipping_info['shipping_code'] == "ship_cac" ) {
+		    $meta_value   = RC_DB::table('term_meta')
+		          ->select('meta_value')
+		          ->where('object_type', 'ecjia.order')
+		          ->where('object_group', 'order')
+		          ->where('meta_key', 'receipt_verification')
+		          ->where('object_id', $order_id)
+		          ->first();
+		    $this->assign('meta_value', $meta_value);
+		    $this->assign('shipping_code', $shipping_info['shipping_code']);
+		}
+		
 		/* 取得是否存在实体商品 */
 		$this->assign('exist_real_goods', exist_real_goods($order['order_id']));
 		$this->assign_lang();

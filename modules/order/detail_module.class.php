@@ -113,6 +113,12 @@ class detail_module extends api_front implements api_interface {
 		$order['extension_id'] 		= intval($order['extension_id']);
 		$order['parent_id'] 		= intval($order['parent_id']);
 		
+		if ($order['pay_status'] == 2) {
+			$order['is_paid'] = 1;
+		} else{
+			$order['is_paid'] = 0;
+		}
+		
 		if ($order === false) {
 			return new ecjia_error(8, 'fail');
 		}

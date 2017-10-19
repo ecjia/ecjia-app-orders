@@ -471,6 +471,7 @@ function delivery_order($delivery_id, $order) {
 	
 	/* 如果使用库存，且发货时减库存，则修改库存 */
 	if (ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) {
+		RC_Loader::load_app_class('order','orders');
 		foreach ($delivery_stock_result as $value) {
 			/* 商品（实货）、超级礼包（实货） */
 			if ($value['is_real'] != 0) {
@@ -487,23 +488,7 @@ function delivery_order($delivery_id, $order) {
 					RC_Model::model('goods/goods_model')->where(array('goods_id' => $value['goods_id']))->update($data);
 					
 					//发货警告库存发送短信
-					RC_Loader::load_app_class('order','orders');
 					order::sms_goods_stock_warning($value['goods_id']);
-// 					$goods_info  = RC_DB::TABLE('goods')->where('goods_id', $value['goods_id'])->select('goods_name', 'goods_number', 'warn_number', 'store_id')->first();
-// 					$mobile      = RC_DB::table('staff_user')->where('store_id', $goods_info['store_id'])->where('parent_id', 0)->pluck('mobile');
-// 					$store_name  = RC_DB::TABLE('store_franchisee')->where('store_id', $goods_info['store_id'])->pluck('merchants_name');
-// 					if (!empty($mobile) && $goods_info['goods_number'] <= $goods_info['warn_number']) {
-// 						$options = array(
-// 								'mobile' => $mobile,
-// 								'event'     => 'sms_goods_stock_warning',
-// 								'value'  =>array(
-// 										'store_name'   => $store_name,
-// 										'goods_name'   => $goods_info['goods_name'],
-// 										'goods_number' => $goods_info['goods_number']
-// 								),
-// 						);
-// 						$response = RC_Api::api('sms', 'send_event_sms', $options);
-// 					}
 				}
 			}
 		}

@@ -52,7 +52,7 @@ defined('IN_ECJIA') or exit('No permission resources.');
  */
 class list_module extends api_admin implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
-
+		
 		$this->authadminSession();
         if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
             return new ecjia_error(100, 'Invalid session');
@@ -184,32 +184,82 @@ class list_module extends api_admin implements api_interface {
 				}
 			}
 		} else {
+			
 			$db_cashier_record_view = RC_Model::model('orders/cashier_record_viewmodel');
-			if ($type == 'verify') {
-			    $where['cr.action'] = 'check_order';
-			    $join = array('order_info', 'order_goods', 'staff_user', 'goods', 'term_meta');
-			} else {
-			    $where['cr.action'] = array('billing', 'receipt');
-			    $join = array('order_info', 'order_goods', 'staff_user', 'goods');
+			$where['cr.mobile_device_id'] = $_SESSION['device_id'];
+			//$where['cr.mobile_device_id'] = 5558;
+			$where['cr.action'] = array('billing', 'receipt');
+			$join = array('order_info', 'order_goods', 'staff_user', 'goods');
+			
+			switch ($type) {
+				case 'await_pay':
+					$where_query = $order_query->order_await_pay('oi.');
+					break;
+				case 'payed' :
+					$where_query = $order_query->order_await_ship('oi.');
+					break;
+				case 'await_ship':
+					$where_query = $order_query->order_await_ship('oi.');
+					break;
+				case 'shipped':
+					$where_query = $order_query->order_shipped('oi.');
+					break;
+				case 'finished':
+					$where_query = $order_query->order_finished('oi.');
+					break;
+				case 'refund':
+					$where_query = $order_query->order_refund('oi.');
+					break;
+				case 'closed' :
+					$where_query = array_merge($order_query->order_invalid('oi.'),$order_query->order_canceled('oi.'));
+					break;
+				case 'whole':
+					break;
 			}
 			
-			$where['cr.mobile_device_id'] = $_SESSION['device_id'];
-
+			if ($type == 'verify') {
+				$where['cr.action'] = 'check_order';
+				$join = array('order_info', 'order_goods', 'staff_user', 'goods', 'term_meta');
+			}
+			
+			//if ($type == 'verify') {
+			//    $where['cr.action'] = 'check_order';
+			//    $join = array('order_info', 'order_goods', 'staff_user', 'goods', 'term_meta');
+			//} else {
+			//    $where['cr.action'] = array('billing', 'receipt');
+			//    $join = array('order_info', 'order_goods', 'staff_user', 'goods');
+			//}
 			/*获取记录条数 */
-			$record_count = $db_cashier_record_view->join(null)->where($where)->count('cr.order_id');
+			//$record_count = $db_cashier_record_view->join(null)->where($where)->count('cr.order_id');
+			//$page_row = new ecjia_page($record_count, $size, 6, '', $page);
+			//$order_id_group = $db_cashier_record_view->join(null)->where($where)->limit($page_row->limit())->order(array('create_at' => 'desc'))->get_field('order_id', true);
+			
+			if ($type != 'verify') {
+				if (is_array($where_query)) {
+					$where = array_merge($where, $where_query);
+				}
+			}
+			
+			$record_count = $db_cashier_record_view->join(array('order_info'))->where($where)->count('cr.order_id');
+			
 			$page_row = new ecjia_page($record_count, $size, 6, '', $page);
-			$order_id_group = $db_cashier_record_view->join(null)->where($where)->limit($page_row->limit())->order(array('create_at' => 'desc'))->get_field('order_id', true);
-
-			if (empty($order_id_group)) {
+			$order_id_group = $db_cashier_record_view->join(array('order_info'))->where($where)->limit($page_row->limit())->order(array('create_at' => 'desc'))->field('cr.order_id')->select();
+			
+			if (!empty($order_id_group)) {
+				foreach ($order_id_group as $val) {
+					$order_id_groups[] = $val['order_id']; 
+				}
+			}
+			
+			if (empty($order_id_groups)) {
 				$data = array();
 			} else {
 				$total_fee = "(oi.goods_amount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) as total_fee";
 				$field = 'oi.order_id, oi.store_id, su.name, oi.integral, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time,og.goods_id, og.goods_number, og.goods_name, g.goods_thumb, g.goods_img, g.original_img';
 				$field .= $type == 'verify' ? ', tm.meta_value' : '';
-				$where['cr.order_id'] =  $order_id_group;
+				$where['cr.order_id'] =  $order_id_groups;
 				$where[] = "oi.order_id is not null";
-
-				$data = $db_cashier_record_view->field($field)->join($join)->where($where)->order(array('cr.create_at' => 'desc'))->select();
+				$data = $db_cashier_record_view->field($field)->join($join)->where($where)->limit($page_row->limit())->order(array('cr.create_at' => 'desc'))->select();
 			}
 		}
 

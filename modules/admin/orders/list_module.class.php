@@ -234,11 +234,11 @@ class list_module extends api_admin implements api_interface {
 			//$page_row = new ecjia_page($record_count, $size, 6, '', $page);
 			//$order_id_group = $db_cashier_record_view->join(null)->where($where)->limit($page_row->limit())->order(array('create_at' => 'desc'))->get_field('order_id', true);
 			
-			if ($type != 'verify') {
+			//if ($type != 'verify') {
 				if (is_array($where_query)) {
 					$where = array_merge($where, $where_query);
 				}
-			}
+			//}
 			
 			$record_count = $db_cashier_record_view->join(array('order_info'))->where($where)->count('cr.order_id');
 			

@@ -79,7 +79,7 @@ class admin_order_delivery extends ecjia_admin {
 	public function init() {
 		/* 检查权限 */
 		$this->admin_priv('delivery_view');
-
+		
 		ecjia_screen::get_current_screen()->remove_last_nav_here();
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.order_delivery_list')));
 		ecjia_screen::get_current_screen()->add_help_tab( array(

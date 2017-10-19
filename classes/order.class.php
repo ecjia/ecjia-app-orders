@@ -54,7 +54,7 @@ abstract class order {
      * 构造函数
      */
     public function __construct() {
-    	parent::__construct();
+    	
     }
 
     /* 发货警告库存发送短信 */

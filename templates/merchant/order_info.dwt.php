@@ -184,7 +184,7 @@ ecjia.merchant.order.info();
 									<a class="data-pjax" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=shipping"}'>{lang key='system::system.edit'}</a>
 									{/if}
 									{if $shipping_code == 'ship_cac'}
-									(提货码：{$meta_value})
+									(提货码：{if $meta_value neq ''}{$meta_value}{else}暂无{/if})
 									{else}
 									<input type="button" class="btn btn-primary" onclick="window.open('{url path="orders/merchant/info" args="order_id={$order.order_id}&shipping_print=1"}')" value="{lang key='orders::order.print_shipping'}">
 									{/if}

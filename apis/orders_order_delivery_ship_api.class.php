@@ -174,6 +174,23 @@ class orders_order_delivery_ship_api extends Component_Event_Api {
 							'goods_number' => $value['storage'] - $value['sums'],
 						);
 						RC_DB::table('goods')->where('goods_id', $value['goods_id'])->update($data);
+						
+						//发货警告库存发送短信
+						$goods_info  = RC_DB::TABLE('goods')->where('goods_id', $value['goods_id'])->select('goods_name', 'goods_number', 'warn_number', 'store_id')->first();
+						$mobile      = RC_DB::table('staff_user')->where('store_id', $goods_info['store_id'])->where('parent_id', 0)->pluck('mobile');
+						$store_name  = RC_DB::TABLE('store_franchisee')->where('store_id', $goods_info['store_id'])->pluck('merchants_name');
+						if (!empty($mobile) && $goods_info['goods_number'] <= $goods_info['warn_number']) {
+							$options = array(
+									'mobile' => $mobile,
+									'event'     => 'sms_goods_stock_warning',
+									'value'  =>array(
+											'store_name'   => $store_name,
+											'goods_name'   => $goods_info['goods_name'],
+											'goods_number' => $goods_info['goods_number']
+									),
+							);
+							$response = RC_Api::api('sms', 'send_event_sms', $options);
+						}
 					}
 				}
 			}

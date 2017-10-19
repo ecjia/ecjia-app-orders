@@ -49,7 +49,7 @@ defined('IN_ECJIA') or exit('No permission resources.');
 class order_stork {
 
     /* 发货警告库存发送短信 */
-    public function sms_goods_stock_warning($goods_id) {
+    public static function sms_goods_stock_warning($goods_id) {
     	
     	$goods_info  = RC_DB::TABLE('goods')->where('goods_id', $goods_id)->select('goods_name', 'goods_number', 'warn_number', 'store_id')->first();
     	$mobile      = RC_DB::table('staff_user')->where('store_id', $goods_info['store_id'])->where('parent_id', 0)->pluck('mobile');

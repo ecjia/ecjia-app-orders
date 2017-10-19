@@ -303,7 +303,7 @@ class mh_validate_order extends ecjia_merchant {
 	
 		/* 如果使用库存，且发货时减库存，则修改库存 */
 		if (ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) {
-			RC_Loader::load_app_class('order','orders');
+			RC_Loader::load_app_class('order_stork','orders');
 			foreach ($delivery_stock_result as $value) {
 				/* 商品（实货）、超级礼包（实货） */
 				if ($value['is_real'] != 0) {
@@ -320,7 +320,7 @@ class mh_validate_order extends ecjia_merchant {
 						$db_goods->where(array('goods_id' => $value['goods_id']))->update($data);
 						
 						//发货警告库存发送短信
-						order::sms_goods_stock_warning($value['goods_id']);
+						order_stork::sms_goods_stock_warning($value['goods_id']);
 					}
 				}
 			}

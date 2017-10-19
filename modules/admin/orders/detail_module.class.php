@@ -245,6 +245,7 @@ class detail_module extends api_admin implements api_interface {
 				$goods_list[$k] = array(
 					'id'					=> $v['goods_id'],
 					'name'					=> $v['goods_name'],
+					'goods_sn'				=> $v['goods_sn'],
 					'goods_number'			=> $v['goods_number'],
 					'subtotal'				=> price_format($v['subtotal'], false),
 					'goods_attr'			=> trim($v['goods_attr']),

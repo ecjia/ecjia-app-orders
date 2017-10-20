@@ -154,7 +154,7 @@ class payConfirm_module extends api_admin implements api_interface
 			return array('payment' => $data);
 		}
 		
-		if (in_array($pay_info['pay_code'], array('pay_koolyun', 'pay_koolyun_alipay', 'pay_koolyun_upmp', 'pay_koolyun_wxpay', 'pay_balance'))) {
+		if (in_array($pay_info['pay_code'], array('pay_koolyun', 'pay_koolyun_alipay', 'pay_koolyun_unionpay', 'pay_koolyun_wxpay', 'pay_balance'))) {
 			/* 更新支付流水记录*/
 			RC_Api::api('payment', 'update_payment_record', [
 			'order_sn' 		=> $order['order_sn'],

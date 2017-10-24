@@ -406,7 +406,7 @@ class admin extends ecjia_admin {
 			if (!is_array($region_id)) {
 				$region_id = explode(',', $region_id);
 			}
-			$region = RC_DB::table('region')->select('region_id', 'region_name')->whereIn('region_id', $region_id)->get();
+			$region = RC_DB::table('regions')->select('region_id', 'region_name')->whereIn('region_id', $region_id)->get();
 			
 			if (!empty($region)) {
 				foreach ($region as $region_data) {
@@ -3557,7 +3557,7 @@ class admin extends ecjia_admin {
 	 * @return      array
 	 */
 	private function get_regions($type = 0, $parent = 0) {
-		return RC_DB::table('region')->where('region_type', $type)->where('parent_id', $parent)->select('region_id', 'region_name')->get();
+		return RC_DB::table('regions')->where('region_type', $type)->where('parent_id', $parent)->select('region_id', 'region_name')->get();
 	}
 }
 

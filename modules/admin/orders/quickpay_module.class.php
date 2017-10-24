@@ -129,6 +129,7 @@ class quickpay_module extends api_admin implements api_interface {
 				'order_status'  => OS_CONFIRMED,
 				'shipping_status'=> SS_UNSHIPPED,
 				'pay_status' 	=> PS_UNPAYED,
+				'store_id'		=> $_SESSION['store_id'],
 // 				'agency_id' => get_agency_by_regions(array(
 // 						$consignee['country'],
 // 						$consignee['province'],

@@ -217,8 +217,8 @@ class quickpay_module extends api_admin implements api_interface {
 					'staff_id'			=> $_SESSION['staff_id'],
 					'order_id'	 		=> $new_order_id,
 					'order_type' 		=> 'ecjia-cashdesk',
-					'mobile_device_id'	=> $_SESSION['device_id'],
-					'device_sn'			=> $device_info['device_udid'],
+					'mobile_device_id'	=> empty($_SESSION['device_id']) ? 0 : $_SESSION['device_id'],
+					'device_sn'			=> empty($device_info['device_udid']) ? '' : $device_info['device_udid'],
 					'device_type'		=> 'ecjia-cashdesk',
 					'action'   	 		=> 'receipt', //收款
 					'create_at'	 		=> RC_Time::gmtime(),

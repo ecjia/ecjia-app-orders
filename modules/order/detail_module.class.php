@@ -112,9 +112,6 @@ class detail_module extends api_front implements api_interface {
 		$order['agency_id'] 		= intval($order['agency_id']);
 		$order['extension_id'] 		= intval($order['extension_id']);
 		$order['parent_id'] 		= intval($order['parent_id']);
-		$order['province']			= intval($order['province']);
-		$order['city']				= intval($order['city']);
-		$order['district']			= intval($order['district']);
 		$order['longitude']			= empty($order['longitude']) ? '' :trim($order['longitude']);
 		$order['latitude']			= empty($order['latitude']) ? '' :trim($order['latitude']);
 		$order['zipcode']			= empty($order['zipcode']) ? '' :trim($order['zipcode']);
@@ -174,23 +171,22 @@ class detail_module extends api_front implements api_interface {
 		$db_region = RC_Model::model('shipping/region_model');
 		$region_name = $db_region->in(array('region_id' => array($order['country'], $order['province'], $order['city'], $order['district'])))->order('region_type')->select();
 
-		$order['country']	= $region_name[0]['region_name'];
-		$order['province']	= $region_name[1]['region_name'];
-		$order['city']		= $region_name[2]['region_name'];
-		$order['district']	= $region_name[3]['region_name'];
+		$order['country']	= empty($region_name[0]['region_name']) ? '' : $region_name[0]['region_name'];
+		$order['province']	= empty($region_name[1]['region_name']) ? '' : $region_name[1]['region_name'];
+		$order['city']		= empty($region_name[2]['region_name']) ? '' : $region_name[2]['region_name'];
+		$order['district']	=  empty($region_name[3]['region_name']) ? '' : $region_name[3]['region_name'];
 		$goods_list = EM_order_goods($order_id);
+		
+		/*店铺有关信息*/
+		if ($order['store_id'] > 0) {
+			$seller_info = RC_DB::table('store_franchisee')->where('store_id', $order['store_id'])->first();
+		}
+		$order['seller_id']		= !empty($seller_info['store_id']) ? intval($seller_info['store_id']) : 0;
+		$order['seller_name']	= !empty($seller_info['merchants_name']) ? $seller_info['merchants_name'] : '';
+		$order['manage_mode']	= $seller_info['manage_mode'];
+		$order['service_phone']		= RC_DB::table('merchants_config')->where('store_id', $order['store_id'])->where('code', 'shop_kf_mobile')->pluck('value');
 
 		foreach ($goods_list as $k => $v) {
-			if ($k == 0) {
-				if ($v['store_id'] > 0) {
-					$seller_info = RC_DB::table('store_franchisee')->where(RC_DB::raw('store_id'), $v['store_id'])->select('merchants_name', 'manage_mode')->first();
-				}
-
-				$order['seller_id']		= isset($v['store_id']) ? intval($v['store_id']) : 0;
-				$order['seller_name']	= isset($seller_info['merchants_name']) ? $seller_info['merchants_name'] : '自营';
-				$order['manage_mode']	= $seller_info['manage_mode'];
-				$order['service_phone']		= RC_DB::table('merchants_config')->where(RC_DB::raw('store_id'), $v['store_id'])->where(RC_DB::raw('code'), 'shop_kf_mobile')->pluck('value');
-			}
 			$attr = array();
 			if (!empty($v['goods_attr'])) {
 				$goods_attr = explode("\n", $v['goods_attr']);

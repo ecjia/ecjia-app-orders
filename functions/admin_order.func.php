@@ -526,6 +526,10 @@ function user_info($user_id, $mobile) {
 		$user = RC_DB::table('users')->where('mobile_phone', $mobile)->first();
 	}
    
+	if (empty($user)) {
+		return new ecjia_error('userinfo_error', '用户信息不存在！');
+	}
+	
     unset($user['question']);
     unset($user['answer']);
     /* 格式化帐户余额 */

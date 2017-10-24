@@ -112,6 +112,22 @@ class detail_module extends api_front implements api_interface {
 		$order['agency_id'] 		= intval($order['agency_id']);
 		$order['extension_id'] 		= intval($order['extension_id']);
 		$order['parent_id'] 		= intval($order['parent_id']);
+		$order['province']			= intval($order['province']);
+		$order['city']				= intval($order['city']);
+		$order['district']			= intval($order['district']);
+		$order['longitude']			= empty($order['longitude']) ? '' :trim($order['longitude']);
+		$order['latitude']			= empty($order['latitude']) ? '' :trim($order['latitude']);
+		$order['zipcode']			= empty($order['zipcode']) ? '' :trim($order['zipcode']);
+		$order['best_time']			= empty($order['best_time']) ? '' :trim($order['best_time']);
+		$order['sign_building']		= empty($order['sign_building']) ? '' :trim($order['sign_building']);
+		$order['how_surplus']		= empty($order['how_surplus']) ? '' :trim($order['how_surplus']);
+		$order['pack_name']		    = empty($order['pack_name']) ? '' :trim($order['pack_name']);
+		$order['card_name']		    = empty($order['card_name']) ? '' :trim($order['card_name']);
+		$order['to_buyer']		    = empty($order['to_buyer']) ? '' :trim($order['to_buyer']);
+		$order['pay_note']		    = empty($order['pay_note']) ? '' :trim($order['pay_note']);
+		$order['delete_time']		= empty($order['delete_time']) ? '' :trim($order['delete_time']);
+		$order['sign_time']		    = empty($order['sign_time']) ? '' :trim($order['sign_time']);
+		$order['how_surplus_name']	= empty($order['how_surplus_name']) ? '' :trim($order['how_surplus_name']);
 		
 		if ($order['pay_status'] == 2) {
 			$order['is_paid'] = 1;
@@ -197,8 +213,8 @@ class detail_module extends api_front implements api_interface {
 				'subtotal'		=> price_format($v['subtotal'], false),
 				'formated_shop_price' => $v['goods_price'] > 0 ? price_format($v['goods_price'], false) : __('免费'),
 				'is_commented'	=> $v['is_commented'],
-			    'comment_rank'  => $v['comment_rank'],
-			    'comment_content' => $v['comment_content'],
+			    'comment_rank'  => empty($v['comment_rank']) ? 0 : intval($v['comment_rank']),
+			    'comment_content' => empty($v['comment_content']) ? '' : $v['comment_content'],
 				'img' => array(
 					'small'	=> !empty($v['goods_thumb']) ? RC_Upload::upload_url($v['goods_thumb']) : '',
 					'thumb'	=> !empty($v['goods_img']) ? RC_Upload::upload_url($v['goods_img']) : '',

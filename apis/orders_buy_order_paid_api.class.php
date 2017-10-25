@@ -74,6 +74,9 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    if (intval($order['pay_status']) === PS_PAYED) {
 	        return new ecjia_error('order_has_been_paid', '订单已经支付了');
 	    }
+	    RC_Logger::getLogger('error')->info('test1微信支付');
+	    RC_Logger::getLogger('error')->info($order_sn);
+	    RC_Logger::getLogger('error')->info($order);
 	    
 	    /* 改变订单状态 */
         return $this->order_paid($order_sn, $order, PS_PAYED);
@@ -89,6 +92,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	 */
 	private function order_paid($order_sn, $order, $pay_status = PS_PAYED) {
 	    RC_Loader::load_app_func('admin_order', 'orders');
+	    RC_Logger::getLogger('error')->info('test2微信支付');
 	    
 	    $order_id = $order['order_id'];
 	    $order_sn = $order['order_sn'];
@@ -102,7 +106,11 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	        'money_paid'   => $order['order_amount'],
 	        'order_amount' => 0,
 	    );
+	    RC_Logger::getLogger('error')->info($data);
+	    
 	    RC_DB::table('order_info')->where('order_id', $order_id)->update($data);
+	    
+	    RC_Logger::getLogger('error')->info('test3微信支付');
 	    
 	    /* 记录订单操作记录 */
 	    order_action($order_sn, OS_CONFIRMED, SS_UNSHIPPED, $pay_status, '', RC_Lang::get('orders::order.buyers'));

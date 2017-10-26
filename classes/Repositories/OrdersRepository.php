@@ -206,7 +206,7 @@ class OrdersRepository extends AbstractRepository
             }
         });
         
-        $orders->map(function ($item) {
+        $orders = $orders->map(function ($item) {
 //             dd($item->goods);
 //             $item['goods'] = $item->goods;
 //             return $item;
@@ -217,9 +217,9 @@ class OrdersRepository extends AbstractRepository
 //             dd($goods);
 
             $data = [
-            	'seller_id' => '',
-            	'seller_name' => '',
-            	'manage_mode' => '',
+            	'seller_id'        => $item->store->store_id,
+            	'seller_name'      => $item->store->merchants_name,
+            	'manage_mode'      => $item->store->manage_mode,
                 
                 'order_id' => '',
                 'order_sn' => '',
@@ -248,10 +248,10 @@ class OrdersRepository extends AbstractRepository
             	   'order_sn' => '',
                 ],
                 
-                'goods_list' => [],
+//                 'goods_list' => [],
             ];
             
-            $item['goods_list'] = $item->goods->map(function ($item) {
+            $data['goods_list'] = $item->goods->map(function ($item) {
                 $attr = array();
                 if (!empty($item->goods_attr)) {
                     $goods_attr = explode("\n", $item['goods_attr']);
@@ -267,17 +267,17 @@ class OrdersRepository extends AbstractRepository
 //                 $item->goods_attr = $attr;
                 
                 $data = [
-                	'goods_id' => $item->goods_id,
-                	'name' => $item->goods_name,
-                	'goods_attr_id' => $item->goods_attr_id,
-                	'goods_attr' => $attr,
-                	'goods_number' => '',
-                	'subtotal' => '',
-                	'formated_shop_price' => '',
+                	'goods_id'         => $item->goods_id,
+                	'name'             => $item->goods_name,
+                	'goods_attr_id'    => $item->goods_attr_id,
+                	'goods_attr'       => $attr,
+                	'goods_number'     => $item->goods_number,
+                	'subtotal'         => $item->subtotal,
+                	'formated_shop_price' => $item->goods_price,
                     'img' => [
-                    	'small' => '',
-                    	'thumb' => '',
-                    	'url' => '',
+                    	'small'    => $item->goods->goods_thumb,
+                    	'thumb'    => $item->goods->goods_img,
+                    	'url'      => $item->goods->original_img,
                     ],
                     'is_commented' => '',
                     'is_showorder' => '',
@@ -286,10 +286,10 @@ class OrdersRepository extends AbstractRepository
                 return $data;
             });
 
-            
+            return $data;
         });
         
-        dd($orders);
+        dd($orders->toArray());
         
     }
     

@@ -128,12 +128,12 @@ class OrdersRepository extends AbstractRepository
     public function getUserOrdersList($user_id, $type = null, $page = 1, $size = 15, $keywords = null, $store_id = null)
     {
         $where = [
-        	'user_id' => $user_id,
-        	'is_delete' => 0,
+        	'order_info.user_id' => $user_id,
+        	'order_info.is_delete' => 0,
         ];
         
         if ($store_id > 0) {
-            $where['store_id'] = $store_id;
+            $where['order_info.store_id'] = $store_id;
         }
 
         $field = [
@@ -170,6 +170,10 @@ class OrdersRepository extends AbstractRepository
                     $query->whereIn('order_info.order_status', [OS_CONFIRMED, OS_SPLITED])
                           ->whereIn('order_info.pay_status', [PS_PAYED, PS_PAYING])
                           ->where('order_info.shipping_status', SS_RECEIVED);
+                    
+                    $query->whereHas('orderGoods.comment', function ($query) use ($user_id) {
+                        $query->where('user_id', $user_id)->where('comment_type', 0)->where('parent_id', 0);
+                    }, 0);
                 };
             } else {
                 $whereQuery = OrderStatus::getQueryOrder($type);
@@ -195,7 +199,7 @@ class OrdersRepository extends AbstractRepository
             }
         });
         
-        $orders = $this->findWhereLimit($where, $field, $page, $size, function($query) use ($keywords, $whereQuery, $type) {
+        $orders = $this->findWhereLimit($where, $field, $page, $size, function($query) use ($keywords, $whereQuery, $type, $user_id) {
             $query->with(['orderGoods', 'orderGoods.goods', 'store', 'payment', 'orderGoods.comment' => function ($query) {
                 $query->select('comment_id', 'has_image')->where('comment_type', 0)->where('parent_id', 0);
             }]);
@@ -287,9 +291,10 @@ class OrdersRepository extends AbstractRepository
             return $data;
         });
         
-        dd($orderlist->toArray());
-        dd($orders);
+//         dd($orderlist->toArray());
+//         dd($orders);
         
+        return array('order_list' => $orderlist->toArray(), 'count' => $count);
     }
     
     

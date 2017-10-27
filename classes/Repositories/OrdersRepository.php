@@ -58,29 +58,15 @@ class OrdersRepository extends AbstractRepository
     
     protected $orderBy = ['order_info.order_id' => 'desc'];
     
-    protected $type;
+//     protected $type;
     
-    public function __construct($type)
-    {
-        parent::__construct();
+//     public function __construct($type)
+//     {
+//         parent::__construct();
         
-        $this->type = $type;
-    }
+//         $this->type = $type;
+//     }
     
-    /**
-     * 获取所有的客户端列表
-     * 
-     * @return array
-     */
-    public function getAllClients() {
-        $clients = array(
-            'iPhone' => Client::IPHONE,
-            'Android'=> Client::ANDROID,
-            'H5' 	 => Client::H5,
-            'PC'     => Client::PC
-        );
-        return $clients;
-    }
    
     public function findWhereLimit(array $where, $columns = ['*'], $page = 1, $perPage = 15, callable $callback = null)
     {

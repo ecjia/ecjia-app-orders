@@ -234,7 +234,7 @@ class OrdersRepository extends AbstractRepository
                 $whereQuery($query);
             }
         });
-        _dump(\RC_DB::getQueryLog(),1);
+        
         $orderlist = $orders->map(function ($item) {
             //计算订单总价格
             $total_fee = $item->goods_amount + $item->shipping_fee + $item->insure_fee + $item->pay_fee + $item->pack_fee + $item->card_fee + $item->tax - $item->integral_money - $item->bonus - $item->discount; 
@@ -304,7 +304,7 @@ class OrdersRepository extends AbstractRepository
             return $data;
         });
         
-        dd($orderlist);
+//         dd($orderlist);
 //         dd($orders);
         
         return array('order_list' => $orderlist->toArray(), 'count' => $count);

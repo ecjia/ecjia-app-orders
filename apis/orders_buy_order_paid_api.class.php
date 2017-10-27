@@ -105,10 +105,6 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    RC_Logger::getLogger('error')->info($data);
 	    
 	    RC_DB::table('order_info')->where('order_id', $order_id)->update($data);
-	    
-	    RC_Logger::getLogger('error')->info('test1');
-	    RC_Logger::getLogger('error')->info($order);
-	    
 	    /* 记录订单操作记录 */
 	    order_action($order_sn, OS_CONFIRMED, SS_UNSHIPPED, $pay_status, '', RC_Lang::get('orders::order.buyers'));
 	    

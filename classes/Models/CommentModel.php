@@ -72,13 +72,20 @@ class CommentModel extends Model
 	 */
 	public $timestamps = false;
 	
-	
 	/**
 	 * 获取拥有此商品的订单。
 	 */
 	public function orders()
 	{
 	    return $this->belongsTo('Ecjia\App\Orders\Models\OrdersModel', 'order_id', 'order_id');
+	}
+	
+	/**
+	 * 获取拥有此商品的订单。
+	 */
+	public function orderGoods()
+	{
+	    return $this->belongsTo('Ecjia\App\Orders\Models\OrderGoodsModel', 'rec_id', 'rec_id');
 	}
 	
 }

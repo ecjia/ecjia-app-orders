@@ -97,6 +97,13 @@ class OrdersModel extends Model
 	    return $this->belongsTo('Ecjia\App\Payment\PaymentPlugin', 'pay_id', 'pay_id');
 	}
 	
+	/**
+	 * 获取订单的评价。
+	 */
+	public function comment()
+	{
+	    return $this->belongsTo('Ecjia\App\Orders\Models\CommentModel', 'order_id', 'order_id');
+	}
 	
 }
 

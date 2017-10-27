@@ -166,14 +166,28 @@ class OrdersRepository extends AbstractRepository
         $whereQuery = null;
         if (!empty($type)) {
             if ($type == 'allow_comment') {
-                $whereQuery = function ($query) {
+                $whereQuery = function ($query) use ($field) {
                     $query->whereIn('order_info.order_status', [OS_CONFIRMED, OS_SPLITED])
                           ->whereIn('order_info.pay_status', [PS_PAYED, PS_PAYING])
                           ->where('order_info.shipping_status', SS_RECEIVED);
                     
-                    $query->whereHas('orderGoods.comment', function ($query) use ($user_id) {
-                        $query->where('user_id', $user_id)->where('comment_type', 0)->where('parent_id', 0);
-                    }, 0);
+                    $field[] = 'comment.comment_id';
+                    $field[] = 'comment.has_image';
+                    
+                    $query->select($field);
+                    
+                    $query->leftJoin('order_goods', function ($join) {
+                        $join->on('order_info.order_id', '=', 'order_goods.order_id');
+                    })->leftJoin('comment', function ($join) {
+                        $join->on('order_goods.rec_id', '=', 'comment.rec_id')
+                             ->on('comment.id_value', '=', 'order_goods.goods_id')
+                             ->on('comment.order_id', '=', 'order_goods.order_id')
+                             ->where('comment.comment_type', '=', '0')
+                             ->where('comment.parent_id', '=', '0');
+                    });
+                    
+                    $query->whereNull('comment.comment_id');
+                    $query->groupBy('order_info.order_id');
                 };
             } else {
                 $whereQuery = OrderStatus::getQueryOrder($type);
@@ -291,7 +305,7 @@ class OrdersRepository extends AbstractRepository
             return $data;
         });
         
-//         dd($orderlist->toArray());
+        dd($orderlist->toArray());
 //         dd($orders);
         
         return array('order_list' => $orderlist->toArray(), 'count' => $count);

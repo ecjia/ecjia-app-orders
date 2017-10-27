@@ -3,6 +3,7 @@
 namespace Ecjia\App\Orders;
 
 use RC_Lang;
+use RC_Loader;
 
 class OrderStatus
 {
@@ -36,6 +37,23 @@ class OrderStatus
     /* 取消*/
     const CANCELED = 'canceled';
     
+    /**
+     * 订单状态映射
+     * 
+     * @var array
+     */
+    protected static $orderTypes = [
+        self::FINISHED        => 'queryOrderFinished',
+        self::AWAIT_PAY       => 'queryOrderAwaitPay',
+        self::AWAIT_SHIP      => 'queryOrderAwaitShip',
+        self::UNCONFIRMED     => 'queryOrderUnconfirmed',
+        self::UNPROCESSED     => 'queryOrderUnprocessed',
+        self::UNPAY_UNSHIP    => 'queryOrderUnpayUnship',
+        self::SHIPPED         => 'queryOrderShipped',
+        self::REFUND          => 'queryOrderRefund',
+        self::INVALID         => 'queryOrderInvalid',
+        self::CANCELED        => 'queryOrderCanceled',
+    ];
 
     
     public static function getOrderStatusLabel($order_status, $shipping_status, $pay_status, $is_cod) 
@@ -80,40 +98,54 @@ class OrderStatus
         return array($label_order_status, $status_code);
     }
     
+    
+    public static function getQueryOrder($type)
+    {
+        $method = array_get(self::$orderTypes, $type);
+        if ($method) {
+            return self::$method();
+        }
+        return null;
+    }
+    
     /* 已完成订单 */
-    public static function queryOrderFinished($alias = '')
+    public static function queryOrderFinished()
     {
     	return function ($query) {
     		$query->whereIn('order_info.order_status', array(OS_CONFIRMED, OS_SPLITED))
-    		->whereIn('order_info.shipping_status', array(SS_SHIPPED, SS_RECEIVED))
-    		->whereIn('order_info.pay_status', array(PS_PAYED, PS_PAYING));
+    		      ->whereIn('order_info.shipping_status', array(SS_SHIPPED, SS_RECEIVED))
+    		      ->whereIn('order_info.pay_status', array(PS_PAYED, PS_PAYING));
     	};
         
     }
     
     /* 待付款订单 */
-    public static function queryOrderAwaitPay($alias = '') 
+    public static function queryOrderAwaitPay() 
     {
-    	//pay_id待处理
     	return function ($query) {
     		$query->whereIn('order_info.order_status', array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED))
-    		->where('order_info.pay_status', PS_UNPAYED)
-    		->whereIn('order_info.shipping_status', array(SS_SHIPPED, SS_RECEIVED));
+    		      ->where('order_info.pay_status', PS_UNPAYED);
     	};
     }
     
     
     /* 待发货订单 */
-    public static function queryOrderAwaitShip($alias = '') 
+    public static function queryOrderAwaitShip() 
     {
-    	//pay_id待处理
-    	return function ($query) {
+        $payment_method = RC_Loader::load_app_class('payment_method','payment');
+        $payment_ids = $payment_method->payment_id_list(true);
+        
+    	return function ($query) use ($payment_ids) {
     		$query->whereIn('order_info.order_status', array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))
-    		->whereIn('order_info.shipping_status', array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING))
-    		->whereIn('order_info.pay_status', array(PS_PAYED, PS_PAYING));
+    		      ->whereIn('order_info.shipping_status', array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING))
+    		      ->where(function ($query) use ($payment_ids) {
+    		          $query->whereIn('order_info.pay_status', array(PS_PAYED, PS_PAYING))
+    		                ->orWhere(function ($query) use ($payment_ids) {
+    		                	$query->whereIn('pay_id', $payment_ids);
+    		                });
+    		      });
     		
     	};
-        
     }
     
     /* 未确认订单 */
@@ -140,13 +172,13 @@ class OrderStatus
     {
     	return function ($query) {
     		$query->whereIn('order_info.order_status', array(OS_UNCONFIRMED, OS_CONFIRMED))
-    		->whereIn('order_info.shipping_status', array(SS_UNSHIPPED, SS_PREPARING))
-    		->where('order_info.pay_status', PS_UNPAYED);
+    		      ->whereIn('order_info.shipping_status', array(SS_UNSHIPPED, SS_PREPARING))
+    		      ->where('order_info.pay_status', PS_UNPAYED);
     	};
     }
     
     /* 已发货订单：不论是否付款 */
-    public static function queryOrderShipped($alias = '') 
+    public static function queryOrderShipped() 
     {
     	return function ($query) {
     		$query->where('order_info.shipping_status', SS_SHIPPED);
@@ -154,7 +186,7 @@ class OrderStatus
     }
     
     /* 退货*/
-    public static function queryOrderRefund($alias = '') 
+    public static function queryOrderRefund() 
     {
     	return function ($query) {
     		$query->where('order_info.order_status', OS_RETURNED);
@@ -162,7 +194,7 @@ class OrderStatus
     }
     
     /* 无效*/
-    public static function queryOrderRefundInvalid($alias = '')
+    public static function queryOrderInvalid()
     {
     	return function ($query) {
     		$query->where('order_info.order_status', OS_INVALID);
@@ -170,7 +202,7 @@ class OrderStatus
     }
     
     /* 取消*/
-    public static function queryOrderRefundCanceled($alias = '') 
+    public static function queryOrderCanceled() 
     {
     	return function ($query) {
     		$query->where('order_info.order_status', OS_CANCELED);

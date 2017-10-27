@@ -177,21 +177,20 @@ class OrdersRepository extends AbstractRepository
             $field[] = 'order_goods.goods_name';
         }
         
-        $where = null;
+        $whereQuery = null;
         if (!empty($type)) {
             if ($type == 'allow_comment') {
-                $where = function ($query) {
+                $whereQuery = function ($query) {
                     $query->whereIn('order_info.order_status', [OS_CONFIRMED, OS_SPLITED])
                           ->whereIn('order_info.pay_status', [PS_PAYED, PS_PAYING])
                           ->where('order_info.shipping_status', SS_RECEIVED);
                 };
             } else {
-                $order_type = 'order_'.$type;
-                
+                $whereQuery = OrderStatus::getQueryOrder($type);
             }
         }
         
-        $count = $this->findWhereCount($where, [], function($query) use ($keywords, $where) {
+        $count = $this->findWhereCount($where, [], function($query) use ($keywords, $whereQuery) {
             if (!empty($keywords)) {
                 $query->where(function ($query) use ($keywords) {
                     return $query->where('order_goods.goods_name', 'like', '%' . $keywords .'%')
@@ -205,12 +204,12 @@ class OrdersRepository extends AbstractRepository
                 $query->groupby('order_info.order_id');
             }
             
-            if (!empty($where)) {
-                $where($query);
+            if (is_callable($whereQuery)) {
+                $whereQuery($query);
             }
         });
         
-        $orders = $this->findWhereLimit($where, $field, $page, $size, function($query) use ($keywords, $where) {
+        $orders = $this->findWhereLimit($where, $field, $page, $size, function($query) use ($keywords, $whereQuery, $type) {
             $query->with(['orderGoods', 'orderGoods.goods', 'store', 'payment', 'orderGoods.comment' => function ($query) {
                 $query->select('comment_id', 'has_image')->where('comment_type', 0)->where('parent_id', 0);
             }]);
@@ -228,8 +227,8 @@ class OrdersRepository extends AbstractRepository
                 $query->groupby('order_info.order_id');
             }
             
-            if (!empty($where)) {
-                $where($query);
+            if (is_callable($whereQuery)) {
+                $whereQuery($query);
             }
         });
         

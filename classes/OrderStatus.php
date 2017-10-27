@@ -81,20 +81,38 @@ class OrderStatus
     }
     
     /* 已完成订单 */
-    public static function order_finished($alias = '') {
-        
+    public static function queryOrderFinished($alias = '')
+    {
+    	return function ($query) {
+    		$query->whereIn('order_info.order_status', array(OS_CONFIRMED, OS_SPLITED))
+    		->whereIn('order_info.shipping_status', array(SS_SHIPPED, SS_RECEIVED))
+    		->whereIn('order_info.pay_status', array(PS_PAYED, PS_PAYING));
+    	};
         
     }
     
     /* 待付款订单 */
-    public static function order_await_pay($alias = '') {
-        
+    public static function queryOrderAwaitPay($alias = '') 
+    {
+    	//pay_id待处理
+    	return function ($query) {
+    		$query->whereIn('order_info.order_status', array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED))
+    		->where('order_info.pay_status', PS_UNPAYED)
+    		->whereIn('order_info.shipping_status', array(SS_SHIPPED, SS_RECEIVED));
+    	};
     }
     
     
     /* 待发货订单 */
-    public static function order_await_ship($alias = '') {
-        
+    public static function queryOrderAwaitShip($alias = '') 
+    {
+    	//pay_id待处理
+    	return function ($query) {
+    		$query->whereIn('order_info.order_status', array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))
+    		->whereIn('order_info.shipping_status', array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING))
+    		->whereIn('order_info.pay_status', array(PS_PAYED, PS_PAYING));
+    		
+    	};
         
     }
     
@@ -118,29 +136,45 @@ class OrderStatus
     }
     
     /* 未付款未发货订单：管理员可操作 */
-    public static function order_unpay_unship() 
+    public static function queryOrderUnpayUnship() 
     {
-        
+    	return function ($query) {
+    		$query->whereIn('order_info.order_status', array(OS_UNCONFIRMED, OS_CONFIRMED))
+    		->whereIn('order_info.shipping_status', array(SS_UNSHIPPED, SS_PREPARING))
+    		->where('order_info.pay_status', PS_UNPAYED);
+    	};
     }
     
     /* 已发货订单：不论是否付款 */
-    public static function order_shipped($alias = '') {
-        
+    public static function queryOrderShipped($alias = '') 
+    {
+    	return function ($query) {
+    		$query->where('order_info.shipping_status', SS_SHIPPED);
+    	};
     }
     
     /* 退货*/
-    public static function order_refund($alias = '') {
-        
+    public static function queryOrderRefund($alias = '') 
+    {
+    	return function ($query) {
+    		$query->where('order_info.order_status', OS_RETURNED);
+    	};
     }
     
     /* 无效*/
-    public static function order_invalid($alias = '') {
-        
+    public static function queryOrderRefundInvalid($alias = '')
+    {
+    	return function ($query) {
+    		$query->where('order_info.order_status', OS_INVALID);
+    	};
     }
     
     /* 取消*/
-    public static function order_canceled($alias = '') {
-        
+    public static function queryOrderRefundCanceled($alias = '') 
+    {
+    	return function ($query) {
+    		$query->where('order_info.order_status', OS_CANCELED);
+    	};
     }
 
 }

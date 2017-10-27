@@ -80,6 +80,23 @@ class OrderStatus
         return array($label_order_status, $status_code);
     }
     
+    /* 已完成订单 */
+    public static function order_finished($alias = '') {
+        
+        
+    }
+    
+    /* 待付款订单 */
+    public static function order_await_pay($alias = '') {
+        
+    }
+    
+    
+    /* 待发货订单 */
+    public static function order_await_ship($alias = '') {
+        
+        
+    }
     
     /* 未确认订单 */
     public static function queryOrderUnconfirmed() 

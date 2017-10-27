@@ -69,7 +69,7 @@ class orders_order_list_api extends Component_Event_Api {
         $keywords = $options['keywords'];
         $store_id = $options['store_id'];
         
-        $orders = $this->user_orders_list($user_id, $type, $page, $size, $keywords, $store_id);
+//         $orders = $this->user_orders_list($user_id, $type, $page, $size, $keywords, $store_id);
         
         $orders = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
                     ->getUserOrdersList($user_id, $type, $type, $size, $keywords, $store_id);

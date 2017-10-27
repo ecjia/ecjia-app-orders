@@ -89,6 +89,14 @@ class OrderGoodsModel extends Model
 	    return $this->belongsTo('Ecjia\App\Orders\Models\GoodsModel', 'goods_id', 'goods_id');
 	}
 	
+	/**
+	 * 获取订单的评价。
+	 */
+	public function comment()
+	{
+	    return $this->belongsTo('Ecjia\App\Orders\Models\CommentModel', 'rec_id', 'rec_id');
+	}
+	
 }
 
 // end

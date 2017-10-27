@@ -76,7 +76,7 @@ class OrdersModel extends Model
 	/**
 	 * 获取订单的商品。
 	 */
-	public function goods()
+	public function orderGoods()
 	{
 	    return $this->hasMany('Ecjia\App\Orders\Models\OrderGoodsModel', 'order_id', 'order_id');
 	}
@@ -90,12 +90,13 @@ class OrdersModel extends Model
 	}
 	
 	/**
-	 * 获取订单的评价。
+	 * 获取订单的支付方式。
 	 */
-	public function comment()
+	public function payment()
 	{
-	    return $this->belongsTo('Ecjia\App\Orders\Models\CommentModel', 'order_id', 'order_id');
+	    return $this->belongsTo('Ecjia\App\Payment\PaymentPlugin', 'pay_id', 'pay_id');
 	}
+	
 	
 }
 

@@ -72,6 +72,10 @@ class OrdersRepository extends AbstractRepository
     {
         $this->newQuery();
         
+        if (is_callable($callback)) {
+            $callback($this->query);
+        }
+        
         foreach ($where as $field => $value) {
             if (is_array($value)) {
                 list($field, $condition, $val) = $value;
@@ -80,10 +84,6 @@ class OrdersRepository extends AbstractRepository
             else {
                 $this->query->where($field, '=', $value);
             }
-        }
-        
-        if (is_callable($callback)) {
-            $callback($this->query);
         }
         
         if ($page && $perPage) {
@@ -98,6 +98,10 @@ class OrdersRepository extends AbstractRepository
     {
         $this->newQuery();
         
+        if (is_callable($callback)) {
+            $callback($this->query);
+        }
+        
         foreach ($where as $field => $value) {
             if (is_array($value)) {
                 list($field, $condition, $val) = $value;
@@ -106,10 +110,6 @@ class OrdersRepository extends AbstractRepository
             else {
                 $this->query->where($field, '=', $value);
             }
-        }
-        
-        if (is_callable($callback)) {
-            $callback($this->query);
         }
         
         return $this->query->count();
@@ -167,6 +167,16 @@ class OrdersRepository extends AbstractRepository
         if (!empty($type)) {
             if ($type == 'allow_comment') {
                 $whereQuery = function ($query) use ($field) {
+                    $query->leftJoin('order_goods', function ($join) {
+                        $join->on('order_info.order_id', '=', 'order_goods.order_id');
+                    })->leftJoin('comment', function ($join) {
+                        $join->on('order_goods.rec_id', '=', 'comment.rec_id')
+                        ->on('comment.id_value', '=', 'order_goods.goods_id')
+                        ->on('comment.order_id', '=', 'order_goods.order_id')
+                        ->where('comment.comment_type', '=', 0)
+                        ->where('comment.parent_id', '=', 0);
+                    });
+                    
                     $query->whereIn('order_info.order_status', [OS_CONFIRMED, OS_SPLITED])
                           ->whereIn('order_info.pay_status', [PS_PAYED, PS_PAYING])
                           ->where('order_info.shipping_status', SS_RECEIVED);
@@ -175,17 +185,6 @@ class OrdersRepository extends AbstractRepository
                     $field[] = 'comment.has_image';
                     
                     $query->select($field);
-                    
-                    $query->leftJoin('order_goods', function ($join) {
-                        $join->on('order_info.order_id', '=', 'order_goods.order_id');
-                    })->leftJoin('comment', function ($join) {
-                        $join->on('order_goods.rec_id', '=', 'comment.rec_id')
-                             ->on('comment.id_value', '=', 'order_goods.goods_id')
-                             ->on('comment.order_id', '=', 'order_goods.order_id')
-                             ->where('comment.comment_type', '=', '0')
-                             ->where('comment.parent_id', '=', '0');
-                    });
-                    
                     $query->whereNull('comment.comment_id');
                     $query->groupBy('order_info.order_id');
                 };
@@ -196,13 +195,13 @@ class OrdersRepository extends AbstractRepository
         
         $count = $this->findWhereCount($where, [], function($query) use ($keywords, $whereQuery) {
             if (!empty($keywords)) {
+                $query->leftJoin('order_goods', function ($join) {
+                    $join->on('order_info.order_id', '=', 'order_goods.order_id');
+                });
+                
                 $query->where(function ($query) use ($keywords) {
                     return $query->where('order_goods.goods_name', 'like', '%' . $keywords .'%')
                           ->orWhere('order_info.order_sn', 'like', '%' . $keywords .'%');
-                });
-                
-                $query->leftJoin('order_goods', function ($join) {
-                    $join->on('order_info.order_id', '=', 'order_goods.order_id');
                 });
                 
                 $query->groupby('order_info.order_id');
@@ -235,7 +234,7 @@ class OrdersRepository extends AbstractRepository
                 $whereQuery($query);
             }
         });
-        
+        _dump(\RC_DB::getQueryLog(),1);
         $orderlist = $orders->map(function ($item) {
             //计算订单总价格
             $total_fee = $item->goods_amount + $item->shipping_fee + $item->insure_fee + $item->pay_fee + $item->pack_fee + $item->card_fee + $item->tax - $item->integral_money - $item->bonus - $item->discount; 
@@ -305,7 +304,7 @@ class OrdersRepository extends AbstractRepository
             return $data;
         });
         
-//         dd($orderlist->toArray());
+        dd($orderlist);
 //         dd($orders);
         
         return array('order_list' => $orderlist->toArray(), 'count' => $count);

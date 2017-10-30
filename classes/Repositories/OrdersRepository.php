@@ -184,7 +184,9 @@ class OrdersRepository extends AbstractRepository
         });
         
         $orders = $this->findWhereLimit($where, $field, $page, $size, function($query) use ($keywords, $whereQuery, $user_id, $with) {
-            $query->with($with);
+            if (!empty($with)) {
+                $query->with($with);
+            }
             
             if (!empty($keywords)) {
                 $query->leftJoin('order_goods', function ($join) {

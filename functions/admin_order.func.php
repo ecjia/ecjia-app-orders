@@ -1241,7 +1241,7 @@ function EM_order_goods($order_id, $page = 1, $pagesize = 10) {
         ->groupBy(RC_DB::raw('og.rec_id'))
         ->take($pagesize)->skip(($page-1)*$pagesize)
 		->get();
-
+    $goods_list = array();
     if (!empty($res)) {
         RC_Loader::load_app_func('global', 'goods');
         foreach ($res as $row) {

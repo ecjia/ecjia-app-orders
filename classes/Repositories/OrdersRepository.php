@@ -63,6 +63,8 @@ class OrdersRepository extends AbstractRepository
     {
         $this->newQuery();
         
+        $this->query->select($columns);
+        
         if (is_callable($callback)) {
             $callback($this->query);
         }
@@ -81,7 +83,7 @@ class OrdersRepository extends AbstractRepository
             $this->query->forPage($page, $perPage);
         }
         
-        return $this->query->get($columns);
+        return $this->query->get();
     }
     
     
@@ -103,7 +105,7 @@ class OrdersRepository extends AbstractRepository
             }
         }
         
-        return $this->query->count(RC_DB::raw('DISTINCT ecjia_order_info.order_id'));
+        return $this->query->count($columns);
     }
     
     
@@ -166,7 +168,7 @@ class OrdersRepository extends AbstractRepository
             $whereQuery = OrderStatus::getQueryOrder($type);
         }
         
-        $count = $this->findWhereCount($where, [], function($query) use ($keywords, $whereQuery) {
+        $count = $this->findWhereCount($where, RC_DB::raw('DISTINCT ecjia_order_info.order_id'), function($query) use ($keywords, $whereQuery) {
             if (!empty($keywords)) {
                 $query->leftJoin('order_goods', function ($join) {
                     $join->on('order_info.order_id', '=', 'order_goods.order_id');
@@ -183,7 +185,7 @@ class OrdersRepository extends AbstractRepository
             }
         });
         
-        $orders = $this->findWhereLimit($where, $field, $page, $size, function($query) use ($keywords, $whereQuery, $user_id, $with) {
+        $orders = $this->findWhereLimit($where, $field, $page, $size, function($query) use ($keywords, $whereQuery, $with) {
             if (!empty($with)) {
                 $query->with($with);
             }

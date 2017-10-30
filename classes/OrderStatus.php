@@ -232,7 +232,6 @@ class OrderStatus
                 ->where('order_info.shipping_status', SS_RECEIVED);
         
             $fields = array('comment.comment_id', 'comment.has_image');
-    
             $query->addSelect($fields);
             $query->whereNull('comment.comment_id');
         };

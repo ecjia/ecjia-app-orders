@@ -118,13 +118,17 @@ class OrdersRepository extends AbstractRepository
     /**
      *  获取用户指定范围的订单列表
      *
-     * @access  public
-     * @param   int         $user_id        用户ID号
-     * @param   int         $num            列表最大数量
-     * @param   int         $start          列表起始位置
+     * @param   int         $user_id        用户ID, 为0，获取所有用户的订单
+     * @param   string      $type           订单类型，订单状态类型
+     * @param   int         $page           列表当前页数
+     * @param   int         $size           列表每页多少条
+     * @param   string      $keywords       搜索关键词，可为订单号、商品名称
+     * @param   string      $store_id       店铺ID，为null，获取所有店铺的订单
+     * @param   string|array $with          关联表查询
+     * @param   callable    $callback       查询结果回调处理
      * @return  array       $order_list     订单列表
      */
-    public function getUserOrdersList($user_id, $type = null, $page = 1, $size = 15, $keywords = null, $store_id = null, callable $callback = null)
+    public function getUserOrdersList($user_id, $type = null, $page = 1, $size = 15, $keywords = null, $store_id = null, $with = null, callable $callback = null)
     {
         $where = [
         	'order_info.is_delete' => 0,
@@ -167,32 +171,7 @@ class OrdersRepository extends AbstractRepository
         
         $whereQuery = null;
         if (!empty($type)) {
-            if ($type == 'allow_comment') {
-                $whereQuery = function ($query) use ($field) {
-                    $query->leftJoin('order_goods', function ($join) {
-                        $join->on('order_info.order_id', '=', 'order_goods.order_id');
-                    })->leftJoin('comment', function ($join) {
-                        $join->on('order_goods.rec_id', '=', 'comment.rec_id')
-                        ->on('comment.id_value', '=', 'order_goods.goods_id')
-                        ->on('comment.order_id', '=', 'order_goods.order_id')
-                        ->where('comment.comment_type', '=', 0)
-                        ->where('comment.parent_id', '=', 0);
-                    });
-                    
-                    $query->whereIn('order_info.order_status', [OS_CONFIRMED, OS_SPLITED])
-                          ->whereIn('order_info.pay_status', [PS_PAYED, PS_PAYING])
-                          ->where('order_info.shipping_status', SS_RECEIVED);
-                    
-                    $field[] = 'comment.comment_id';
-                    $field[] = 'comment.has_image';
-                    
-                    $query->select($field);
-                    $query->whereNull('comment.comment_id');
-                    $query->groupBy('order_info.order_id');
-                };
-            } else {
-                $whereQuery = OrderStatus::getQueryOrder($type);
-            }
+            $whereQuery = OrderStatus::getQueryOrder($type);
         }
         
         $count = $this->findWhereCount($where, [], function($query) use ($keywords, $whereQuery) {
@@ -214,10 +193,8 @@ class OrdersRepository extends AbstractRepository
             }
         });
         
-        $orders = $this->findWhereLimit($where, $field, $page, $size, function($query) use ($keywords, $whereQuery, $type, $user_id) {
-            $query->with(['orderGoods', 'orderGoods.goods', 'store', 'payment', 'orderGoods.comment' => function ($query) {
-                $query->select('comment_id', 'has_image')->where('comment_type', 0)->where('parent_id', 0);
-            }]);
+        $orders = $this->findWhereLimit($where, $field, $page, $size, function($query) use ($keywords, $whereQuery, $type, $user_id, $with) {
+            $query->with($with);
             
             if (!empty($keywords)) {
                 $query->leftJoin('order_goods', function ($join) {

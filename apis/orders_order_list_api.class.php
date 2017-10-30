@@ -70,9 +70,11 @@ class orders_order_list_api extends Component_Event_Api {
         $store_id = $options['store_id'];
         
 //         $orders = $this->user_orders_list($user_id, $type, $page, $size, $keywords, $store_id);
-        
+        $with = ['orderGoods', 'orderGoods.goods', 'store', 'payment', 'orderGoods.comment' => function ($query) {
+                $query->select('comment_id', 'has_image')->where('comment_type', 0)->where('parent_id', 0);
+            }];
         $orders = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
-                    ->getUserOrdersList($user_id, $type, $page, $size, $keywords, $store_id, ['Ecjia\App\Orders\CustomizeOrderList', 'exportOrderListApi']);
+                    ->getUserOrdersList($user_id, $type, $page, $size, $keywords, $store_id, $with, ['Ecjia\App\Orders\CustomizeOrderList', 'exportOrderListApi']);
 
         return $orders;
     }

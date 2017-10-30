@@ -28,14 +28,17 @@ class OrderStatus
     /* 已发货订单：不论是否付款 */
     const SHIPPED = 'shipped';
     
-    /* 退货*/
+    /* 退货 */
     const REFUND = 'refund';
     
-    /* 无效*/
+    /* 无效 */
     const INVALID = 'invalid';
     
-    /* 取消*/
+    /* 取消 */
     const CANCELED = 'canceled';
+    
+    /* 待评论 */
+    const ALLOW_COMMENT = 'allow_comment';
     
     /**
      * 订单状态映射
@@ -53,6 +56,7 @@ class OrderStatus
         self::REFUND          => 'queryOrderRefund',
         self::INVALID         => 'queryOrderInvalid',
         self::CANCELED        => 'queryOrderCanceled',
+        self::ALLOW_COMMENT   => 'queryOrderAllowComment',
     ];
 
     
@@ -185,7 +189,7 @@ class OrderStatus
     	};
     }
     
-    /* 退货*/
+    /* 退货 */
     public static function queryOrderRefund() 
     {
     	return function ($query) {
@@ -193,7 +197,7 @@ class OrderStatus
     	};
     }
     
-    /* 无效*/
+    /* 无效 */
     public static function queryOrderInvalid()
     {
     	return function ($query) {
@@ -201,12 +205,38 @@ class OrderStatus
     	};
     }
     
-    /* 取消*/
+    /* 取消 */
     public static function queryOrderCanceled() 
     {
     	return function ($query) {
     		$query->where('order_info.order_status', OS_CANCELED);
     	};
+    }
+    
+    /* 待评论 */
+    public static function queryOrderAllowComment()
+    {
+        return  function ($query) {
+            $query->leftJoin('order_goods', function ($join) {
+                $join->on('order_info.order_id', '=', 'order_goods.order_id');
+            })->leftJoin('comment', function ($join) {
+                $join->on('order_goods.rec_id', '=', 'comment.rec_id')
+                ->on('comment.id_value', '=', 'order_goods.goods_id')
+                ->on('comment.order_id', '=', 'order_goods.order_id')
+                ->where('comment.comment_type', '=', 0)
+                ->where('comment.parent_id', '=', 0);
+            });
+        
+            $query->whereIn('order_info.order_status', [OS_CONFIRMED, OS_SPLITED])
+                ->whereIn('order_info.pay_status', [PS_PAYED, PS_PAYING])
+                ->where('order_info.shipping_status', SS_RECEIVED);
+        
+            $fields = array('comment.comment_id', 'comment.has_image');
+    
+            $query->addSelect($fields);
+            $query->whereNull('comment.comment_id');
+            $query->groupBy('order_info.order_id');
+        };
     }
 
 }

@@ -215,6 +215,64 @@ class OrdersRepository extends AbstractRepository
         return $orders;
     }
     
+    
+    /**
+     * 获取订单列表
+     */
+    public function getOrderList($page, $size, $with = null, callable $callback = null)
+    {
+        $field = [
+            'order_info.order_id',
+            'order_info.store_id',
+            'order_info.order_sn',
+            'order_info.add_time',
+            'order_info.order_status',
+            'order_info.shipping_status',
+            'order_info.order_amount',
+            'order_info.money_paid',
+            'order_info.pay_status',
+            'order_info.consignee',
+            'order_info.address',
+            'order_info.email',
+            'order_info.tel',
+            'order_info.mobile',
+            'order_info.extension_code',
+            'order_info.extension_id',
+        ];
+        
+        $where = [];
+        
+        $orders = $this->findWhereLimit($where, $field, $page, $size, function($query) use ($keywords, $whereQuery, $with) {
+            if (!empty($with)) {
+                $query->with($with);
+            }
+            
+            if (!empty($keywords)) {
+                $query->leftJoin('order_goods', function ($join) {
+                    $join->on('order_info.order_id', '=', 'order_goods.order_id');
+                });
+            
+                $query->where(function ($query) use ($keywords) {
+                    $query->where('order_goods.goods_name', 'like', '%' . $keywords .'%')
+                    ->orWhere('order_info.order_sn', 'like', '%' . $keywords .'%');
+                });
+            
+                $query->groupby('order_info.order_id');
+            }
+            
+            if (is_callable($whereQuery)) {
+                $whereQuery($query);
+            }
+            
+        });
+        
+        if (is_callable($callback)) {
+            return $callback($orders, $count);
+        }
+        
+        return $orders;
+    }
+    
 }
 
 // end

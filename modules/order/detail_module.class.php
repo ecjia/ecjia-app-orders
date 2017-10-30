@@ -175,6 +175,8 @@ class detail_module extends api_front implements api_interface {
 		$order['province']	= empty($region_name[1]['region_name']) ? '' : $region_name[1]['region_name'];
 		$order['city']		= empty($region_name[2]['region_name']) ? '' : $region_name[2]['region_name'];
 		$order['district']	=  empty($region_name[3]['region_name']) ? '' : $region_name[3]['region_name'];
+		
+		$goods_list = array();
 		$goods_list = EM_order_goods($order_id);
 		
 		/*店铺有关信息*/
@@ -186,38 +188,41 @@ class detail_module extends api_front implements api_interface {
 		$order['manage_mode']	= $seller_info['manage_mode'];
 		$order['service_phone']		= RC_DB::table('merchants_config')->where('store_id', $order['store_id'])->where('code', 'shop_kf_mobile')->pluck('value');
 
-		foreach ($goods_list as $k => $v) {
-			$attr = array();
-			if (!empty($v['goods_attr'])) {
-				$goods_attr = explode("\n", $v['goods_attr']);
-				$goods_attr = array_filter($goods_attr);
-				foreach ($goods_attr as  $val) {
-					$a = explode(':',$val);
-					if (!empty($a[0]) && !empty($a[1])) {
-						$attr[] = array('name'=>$a[0], 'value'=>$a[1]);
+		if (!empty($goods_list)) {
+			foreach ($goods_list as $k => $v) {
+				$attr = array();
+				if (!empty($v['goods_attr'])) {
+					$goods_attr = explode("\n", $v['goods_attr']);
+					$goods_attr = array_filter($goods_attr);
+					foreach ($goods_attr as  $val) {
+						$a = explode(':',$val);
+						if (!empty($a[0]) && !empty($a[1])) {
+							$attr[] = array('name'=>$a[0], 'value'=>$a[1]);
+						}
 					}
 				}
-			}
-
-			$goods_list[$k] = array(
-			    'rec_id'		=> $v['rec_id'],
-				'goods_id'		=> $v['goods_id'],
-				'name'			=> $v['goods_name'],
-			    'goods_attr_id'	=> $v['goods_attr_id'],
-			    'goods_attr'	=> $attr,
-				'goods_number'	=> $v['goods_number'],
-				'subtotal'		=> price_format($v['subtotal'], false),
-				'formated_shop_price' => $v['goods_price'] > 0 ? price_format($v['goods_price'], false) : __('免费'),
-				'is_commented'	=> $v['is_commented'],
-			    'comment_rank'  => empty($v['comment_rank']) ? 0 : intval($v['comment_rank']),
-			    'comment_content' => empty($v['comment_content']) ? '' : $v['comment_content'],
-				'img' => array(
-					'small'	=> !empty($v['goods_thumb']) ? RC_Upload::upload_url($v['goods_thumb']) : '',
-					'thumb'	=> !empty($v['goods_img']) ? RC_Upload::upload_url($v['goods_img']) : '',
-					'url' 	=> !empty($v['original_img']) ? RC_Upload::upload_url($v['original_img']) : '',
-				)
-			);
+			
+				$goods_list[$k] = array(
+						'rec_id'		=> $v['rec_id'],
+						'goods_id'		=> $v['goods_id'],
+						'name'			=> $v['goods_name'],
+						'goods_attr_id'	=> $v['goods_attr_id'],
+						'goods_attr'	=> $attr,
+						'goods_number'	=> $v['goods_number'],
+						'subtotal'		=> price_format($v['subtotal'], false),
+						'formated_shop_price' => $v['goods_price'] > 0 ? price_format($v['goods_price'], false) : __('免费'),
+						'is_commented'	=> $v['is_commented'],
+						'comment_rank'  => empty($v['comment_rank']) ? 0 : intval($v['comment_rank']),
+						'comment_content' => empty($v['comment_content']) ? '' : $v['comment_content'],
+						'img' => array(
+								'small'	=> !empty($v['goods_thumb']) ? RC_Upload::upload_url($v['goods_thumb']) : '',
+								'thumb'	=> !empty($v['goods_img']) ? RC_Upload::upload_url($v['goods_img']) : '',
+								'url' 	=> !empty($v['original_img']) ? RC_Upload::upload_url($v['original_img']) : '',
+						)
+				);
+			}	
 		}
+		
 		$order['goods_list'] = $goods_list;
 
 		$order_status_log = RC_Model::model('orders/order_status_log_model')->where(array('order_id' => $order_id))->order(array('log_id' => 'desc'))->select();

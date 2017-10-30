@@ -184,8 +184,6 @@ class OrdersRepository extends AbstractRepository
                     return $query->where('order_goods.goods_name', 'like', '%' . $keywords .'%')
                           ->orWhere('order_info.order_sn', 'like', '%' . $keywords .'%');
                 });
-                
-                $query->groupby('order_info.order_id');
             }
             
             if (is_callable($whereQuery)) {

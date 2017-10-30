@@ -219,8 +219,42 @@ class OrdersRepository extends AbstractRepository
     /**
      * 获取订单列表
      */
-    public function getOrderList($page, $size, $with = null, callable $callback = null)
+    public function getOrderList(array $filter, $page, $size, $with = null, callable $callback = null)
     {
+        /* 过滤信息 */
+        $filter['order_sn']             = trim(array_get($filter, 'order_sn'));
+        $filter['consignee']            = trim(array_get($filter, 'consignee'));
+        $filter['keywords']             = trim(array_get($filter, 'keywords'));
+        $filter['email']                = trim(array_get($filter, 'email'));
+        $filter['address']              = trim(array_get($filter, 'address'));
+        $filter['zipcode']              = trim(array_get($filter, 'zipcode'));
+        $filter['tel']                  = trim(array_get($filter, 'tel'));
+        $filter['mobile']               = trim(array_get($filter, 'mobile'));
+        $filter['merchants_name']       = trim(array_get($filter, 'merchants_name'));
+        $filter['merchant_keywords']    = trim(array_get($filter, 'merchant_keywords'));
+        
+        $filter['country']              = intval(array_get($filter, 'country'));
+        $filter['province']             = intval(array_get($filter, 'province'));
+        $filter['district']             = intval(array_get($filter, 'district'));
+        $filter['shipping_id']          = intval(array_get($filter, 'shipping_id'));
+        $filter['pay_id']               = intval(array_get($filter, 'pay_id'));
+        $filter['status']               = intval(array_get($filter, 'status', -1));
+        $filter['order_status']         = intval(array_get($filter, 'order_status', -1));
+        $filter['shipping_status']      = intval(array_get($filter, 'shipping_status', -1));
+        $filter['pay_status']           = intval(array_get($filter, 'pay_status', -1));
+        
+        $filter['user_id']              = intval(array_get($filter, 'user_id'));
+        $filter['user_name']            = trim(array_get($filter, 'user_name'));
+        $filter['composite_status']     = intval(array_get($filter, 'composite_status', -1));
+        $filter['group_buy_id']         = intval(array_get($filter, 'group_buy_id'));
+        $filter['sort_by']              = trim(array_get($filter, 'sort_by', 'add_time'));
+        $filter['sort_order']           = trim(array_get($filter, 'sort_order', 'DESC'));
+        
+        $filter['start_time']           = trim(array_get($filter, 'start_time'));
+        $filter['end_time']             = trim(array_get($filter, 'end_time'));
+        $filter['type']                 = trim(array_get($filter, 'type'));
+        
+        
         $field = [
             'order_info.order_id',
             'order_info.store_id',
@@ -271,6 +305,121 @@ class OrdersRepository extends AbstractRepository
         }
         
         return $orders;
+    }
+    
+    
+    public function orderQuery(array $filter)
+    {
+        return function ($query) use ($filter) {
+            if (array_get($filter, 'keywords')) {
+                $query->where(function ($query) {
+                    $query->where('order_info.order_sn', 'like', '%'.ecjia_mysql_like_quote(array_get($filter, 'keywords')).'%')
+                    ->orWhere('order_info.consignee', 'like', '"%'.ecjia_mysql_like_quote(array_get($filter, 'keywords')).'%"');
+                });
+            } else {
+                if (array_get($filter, 'order_sn')) {
+                    $query->where('order_info.order_sn', 'like', '%'.ecjia_mysql_like_quote(array_get($filter, 'order_sn')).'%');
+                }
+                if (array_get($filter, 'consignee')) {
+                    $query->where('order_info.consignee', 'like', '"%'.ecjia_mysql_like_quote(array_get($filter, 'consignee')).'%"');
+                }
+            }
+            
+            if (array_get($filter, 'email')) {
+                $query->where('order_info.email', 'like', '%'.ecjia_mysql_like_quote(array_get($filter, 'email')).'%');
+            }
+            if (array_get($filter, 'address')) {
+                $query->where('order_info.address', 'like', '%'.ecjia_mysql_like_quote(array_get($filter, 'address')).'%');
+            }
+            if (array_get($filter, 'zipcode')) {
+                $query->where('order_info.zipcode', 'like', '%'.ecjia_mysql_like_quote(array_get($filter, 'zipcode')).'%');
+            }
+            if (array_get($filter, 'tel')) {
+                $query->where('order_info.tel', 'like', '%'.ecjia_mysql_like_quote(array_get($filter, 'tel')).'%');
+            }
+            if (array_get($filter, 'mobile')) {
+                $query->where('order_info.mobile', 'like', '%'.ecjia_mysql_like_quote(array_get($filter, 'mobile')).'%');
+            }
+            if (array_get($filter, 'country')) {
+                $query->where('order_info.country', array_get($filter, 'country'));
+            }
+            if (array_get($filter, 'province')) {
+                $query->where('order_info.province', array_get($filter, 'province'));
+            }
+            if (array_get($filter, 'city')) {
+                $query->where('order_info.city', array_get($filter, 'city'));
+            }
+            if (array_get($filter, 'district')) {
+                $query->where('order_info.district', array_get($filter, 'district'));
+            }
+            if (array_get($filter, 'shipping_id')) {
+                $query->where('order_info.shipping_id', array_get($filter, 'shipping_id'));
+            }
+            if (array_get($filter, 'pay_id')) {
+                $query->where('order_info.pay_id', array_get($filter, 'pay_id'));
+            }
+            if (array_get($filter, 'status') != -1) {
+                $query->where(function ($query) {
+                	$query->where('order_info.order_status', array_get($filter, 'status'))
+                	       ->orWhere('order_info.shipping_status', array_get($filter, 'status'))
+                	       ->orWhere('order_info.pay_status', array_get($filter, 'status'));
+                });
+            }
+            if (array_get($filter, 'order_status') != -1) {
+                $query->where('order_info.order_status', array_get($filter, 'order_status'));
+            }
+            if (array_get($filter, 'shipping_status') != -1) {
+                $query->where('order_info.shipping_status', array_get($filter, 'shipping_status'));
+            }
+            if (array_get($filter, 'pay_status') != -1) {
+                $query->where('order_info.pay_status', array_get($filter, 'pay_status'));
+            }
+            if (array_get($filter, 'start_time')) {
+                $query->where('order_info.start_time', array_get($filter, '>=', 'start_time'));
+            }
+            if (array_get($filter, 'end_time')) {
+                $query->where('order_info.start_time', array_get($filter, '<=', 'start_time'));
+            }
+            if (array_get($filter, 'group_buy_id')) {
+                $query->where('order_info.extension_code', 'group_buy');
+                $query->where('order_info.extension_id', array_get($filter, 'group_buy_id'));
+            }
+            
+            
+            if (array_get($filter, 'composite_status')) {
+                //综合状态
+                switch(array_get($filter, 'composite_status')) {
+                	case CS_AWAIT_PAY :
+                	    $whereQuery = OrderStatus::getQueryOrder('await_pay');
+                	    $whereQuery($query);
+                	    break;
+                
+                	case CS_AWAIT_SHIP :
+                	    $whereQuery = OrderStatus::getQueryOrder('await_ship');
+                	    $whereQuery($query);
+                	    break;
+                
+                	case CS_FINISHED :
+                	    $whereQuery = OrderStatus::getQueryOrder('finished');
+                	    $whereQuery($query);
+                	    break;
+                
+                	case CS_RECEIVED :
+                	    $whereQuery = OrderStatus::getQueryOrder('received');
+                	    $whereQuery($query);
+                	    break;
+                
+                	case CS_SHIPPED :
+                	    $whereQuery = OrderStatus::getQueryOrder('shipped');
+                	    $whereQuery($query);
+                	    break;
+                	default:
+                	    
+                };
+                
+            }
+        	
+        };
     }
     
 }

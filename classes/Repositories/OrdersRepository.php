@@ -127,9 +127,12 @@ class OrdersRepository extends AbstractRepository
     public function getUserOrdersList($user_id, $type = null, $page = 1, $size = 15, $keywords = null, $store_id = null, callable $callback = null)
     {
         $where = [
-        	'order_info.user_id' => $user_id,
         	'order_info.is_delete' => 0,
         ];
+        
+        if ($user_id > 0) {
+            $where['order_info.user_id'] = $user_id;
+        }
         
         if ($store_id > 0) {
             $where['order_info.store_id'] = $store_id;

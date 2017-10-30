@@ -193,7 +193,7 @@ class OrdersRepository extends AbstractRepository
             }
         });
         
-        $orders = $this->findWhereLimit($where, $field, $page, $size, function($query) use ($keywords, $whereQuery, $type, $user_id, $with) {
+        $orders = $this->findWhereLimit($where, $field, $page, $size, function($query) use ($keywords, $whereQuery, $user_id, $with) {
             $query->with($with);
             
             if (!empty($keywords)) {

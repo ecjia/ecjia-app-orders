@@ -221,10 +221,10 @@ class OrderStatus
                 $join->on('order_info.order_id', '=', 'order_goods.order_id');
             })->leftJoin('comment', function ($join) {
                 $join->on('order_goods.rec_id', '=', 'comment.rec_id')
-                ->on('comment.id_value', '=', 'order_goods.goods_id')
-                ->on('comment.order_id', '=', 'order_goods.order_id')
-                ->where('comment.comment_type', '=', 0)
-                ->where('comment.parent_id', '=', 0);
+                    ->on('comment.id_value', '=', 'order_goods.goods_id')
+                    ->on('comment.order_id', '=', 'order_goods.order_id')
+                    ->where('comment.comment_type', '=', 0)
+                    ->where('comment.parent_id', '=', 0);
             });
         
             $query->whereIn('order_info.order_status', [OS_CONFIRMED, OS_SPLITED])

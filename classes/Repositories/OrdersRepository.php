@@ -49,6 +49,7 @@ namespace Ecjia\App\Orders\Repositories;
 
 use Royalcms\Component\Repository\Repositories\AbstractRepository;
 use ecjia_page;
+use RC_DB;
 use Ecjia\App\Orders\OrderStatus;
 
 class OrdersRepository extends AbstractRepository
@@ -56,15 +57,6 @@ class OrdersRepository extends AbstractRepository
     protected $model = 'Ecjia\App\Orders\Models\OrdersModel';
     
     protected $orderBy = ['order_info.order_id' => 'desc'];
-    
-//     protected $type;
-    
-//     public function __construct($type)
-//     {
-//         parent::__construct();
-        
-//         $this->type = $type;
-//     }
     
    
     public function findWhereLimit(array $where, $columns = ['*'], $page = 1, $perPage = 15, callable $callback = null)
@@ -111,7 +103,7 @@ class OrdersRepository extends AbstractRepository
             }
         }
         
-        return $this->query->count();
+        return $this->query->count(RC_DB::raw('DISTINCT ecjia_order_info.order_id'));
     }
     
     

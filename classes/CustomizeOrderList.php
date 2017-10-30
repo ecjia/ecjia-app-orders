@@ -78,8 +78,6 @@ class CustomizeOrderList
             return $data;
         });
         
-        dd($orderlist);
-        
         return array('order_list' => $orderlist->toArray(), 'count' => $count);
     }
 }

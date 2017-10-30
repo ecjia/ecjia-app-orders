@@ -48,37 +48,37 @@ class CustomizeOrderList
                     ],
     
                 'goods_list' => [],
-                ];
+            ];
     
-                $data['goods_list'] = $item->orderGoods->map(function ($item) use (& $goods_number) {
-                    $attr = GoodsAttr::decodeGoodsAttr($item->goods_attr);
-                    $subtotal = $item->goods_price * $item->goods_number;
-                    $goods_number += $item->goods_number;
-    
-                    $data = [
-                        'goods_id'         => $item->goods_id,
-                        'name'             => $item->goods_name,
-                        'goods_attr_id'    => $item->goods_attr_id,
-                        'goods_attr'       => $attr,
-                        'goods_number'     => $item->goods_number,
-                        'subtotal'         => ecjia_price_format($subtotal, false),
-                        'formated_shop_price' => ecjia_price_format($item->goods_price, false),
-                        'img' => [
-                            'small'    => ecjia_upload_url($item->goods->goods_thumb),
-                            'thumb'    => ecjia_upload_url($item->goods->goods_img),
-                            'url'      => ecjia_upload_url($item->goods->original_img),
-                            ],
-                        'is_commented' => empty($item->orderGoods->comment->comment_id) ? 0 : 1,
-                        'is_showorder' => empty($item->orderGoods->comment->has_image) ? 0 : 1,
-                        ];
-    
-                        return $data;
-                })->toArray();
-    
-                return $data;
+            $data['goods_list'] = $item->orderGoods->map(function ($item) use (& $goods_number) {
+                $attr = GoodsAttr::decodeGoodsAttr($item->goods_attr);
+                $subtotal = $item->goods_price * $item->goods_number;
+                $goods_number += $item->goods_number;
+
+                $data = [
+                    'goods_id'         => $item->goods_id,
+                    'name'             => $item->goods_name,
+                    'goods_attr_id'    => $item->goods_attr_id,
+                    'goods_attr'       => $attr,
+                    'goods_number'     => $item->goods_number,
+                    'subtotal'         => ecjia_price_format($subtotal, false),
+                    'formated_shop_price' => ecjia_price_format($item->goods_price, false),
+                    'img' => [
+                        'small'    => ecjia_upload_url($item->goods->goods_thumb),
+                        'thumb'    => ecjia_upload_url($item->goods->goods_img),
+                        'url'      => ecjia_upload_url($item->goods->original_img),
+                        ],
+                    'is_commented' => empty($item->orderGoods->comment->comment_id) ? 0 : 1,
+                    'is_showorder' => empty($item->orderGoods->comment->has_image) ? 0 : 1,
+                    ];
+
+                    return $data;
+            })->toArray();
+
+            return $data;
         });
     
-            return array('order_list' => $orderlist->toArray(), 'count' => $count);
+        return array('order_list' => $orderlist->toArray(), 'count' => $count);
     }
 }
 

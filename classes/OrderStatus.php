@@ -235,7 +235,6 @@ class OrderStatus
     
             $query->addSelect($fields);
             $query->whereNull('comment.comment_id');
-//             $query->groupBy('order_info.order_id');
         };
     }
 

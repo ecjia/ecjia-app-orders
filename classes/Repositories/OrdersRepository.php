@@ -168,7 +168,8 @@ class OrdersRepository extends AbstractRepository
             $whereQuery = OrderStatus::getQueryOrder($type);
         }
         
-        $count = $this->findWhereCount($where, RC_DB::raw('DISTINCT ecjia_order_info.order_id'), function($query) use ($keywords, $whereQuery) {
+        $table = RC_DB::getTableFullName('order_info');
+        $count = $this->findWhereCount($where, RC_DB::raw("DISTINCT {$table}.order_id"), function($query) use ($keywords, $whereQuery) {
             if (!empty($keywords)) {
                 $query->leftJoin('order_goods', function ($join) {
                     $join->on('order_info.order_id', '=', 'order_goods.order_id');

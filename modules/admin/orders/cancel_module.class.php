@@ -74,7 +74,11 @@ class cancel_module extends api_admin implements api_interface {
 		RC_Loader::load_app_func('global', 'orders');
 		/* 查询订单信息 */
 		$order = order_info($order_id);
-
+		
+		RC_Logger::getLogger('error')->info('test55');
+		RC_Logger::getLogger('error')->info($order);
+		RC_Logger::getLogger('error')->info('test55');
+		
 		/* 取消 */
 		/* 标记订单为“取消”，记录取消原因 */
 		$cancel_note = $this->requestData('cancel_note','');

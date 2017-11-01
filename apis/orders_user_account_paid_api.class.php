@@ -89,9 +89,9 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		
 		/* 订单详情 */
 		$order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));
-		//if ($user_id != $order_info['user_id']) {
-		//	return new ecjia_error('error_order_detail', RC_Lang::get('orders::order.error_order_detail'));
-		//}
+		if ($user_id != $order_info['user_id']) {
+			return new ecjia_error('error_order_detail', RC_Lang::get('orders::order.error_order_detail'));
+		}
 		/* 会员详情*/
 		$user_info = RC_Api::api('user', 'user_info', array('user_id' => $user_id));
 

@@ -227,7 +227,7 @@ class admin extends ecjia_admin {
 		}
 		
 		/* 取得该店铺属于个人还是企业 */
-		$order['validate_type'] = RC_DB::table('store_franchisee')->select('validate_type')->where('store_id', $order['store_id'])->pluck();
+		$order['validate_type'] = RC_DB::table('store_franchisee')->where('store_id', $order['store_id'])->pluck('validate_type');
 	
 		/* 取得区域名 */
 		$order['region'] = get_regions($order_id);
@@ -3435,7 +3435,7 @@ class admin extends ecjia_admin {
 		$this->admin_priv('order_edit', ecjia::MSGTYPE_JSON);
 		$keyword = empty($_POST['keyword']) ? '' : trim($_POST['keyword']);
 		$order_id = !empty($_GET['order_id']) ? trim($_GET['order_id']) : '';
-		$store_id = RC_DB::table('order_info')->select('store_id')->where('order_id', $order_id)->pluck();
+		$store_id = RC_DB::table('order_info')->where('order_id', $order_id)->pluck('store_id');
 
 		$result = array();
 		if (!empty($keyword)) {

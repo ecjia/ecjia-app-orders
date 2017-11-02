@@ -57,7 +57,7 @@ class OrderStatusLog
      * @param array $options
      * @return bool
      */
-    public static function generate_order(array $options) {
+    public static function generate_order($options) {
     	RC_DB::table('order_status_log')->insert(array(
     	'order_status'	=> RC_Lang::get('cart::shopping_flow.label_place_order'),
     	'order_id'		=> $options['order_id'],

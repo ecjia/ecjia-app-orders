@@ -66,6 +66,8 @@ class payConfirm_module extends api_admin implements api_interface
 			}
 		}
 		
+		RC_Loader::load_app_class('OrderStatusLog', 'orders', false);
+		
 		$order_id = $this->requestData('order_id');
 		$invoice_no = $this->requestData('invoice_no');
 		$action_note = $this->requestData('action_note');
@@ -121,7 +123,7 @@ class payConfirm_module extends api_admin implements api_interface
 				RC_Logger::getLogger('error')->info('订单分单【订单id|'.$order_id.'】：'.$result->get_error_message());
 			} else {
 				/*订单状态日志记录*/
-				Ecjia\App\Orders\OrderStatusLog::generate_delivery_orderInvoice(array('order_id' => $order['order_id'], 'order_sn' => $order['order_sn']));
+				OrderStatusLog::generate_delivery_orderInvoice(array('order_id' => $order['order_id'], 'order_sn' => $order['order_sn']));
 			}
 			
 			/* 发货*/
@@ -133,7 +135,7 @@ class payConfirm_module extends api_admin implements api_interface
 				RC_Logger::getLogger('error')->info('订单发货【订单id|'.$order_id.'】：'.$result->get_error_message());
 			} else {
 				/*订单状态日志记录*/
-				Ecjia\App\Orders\OrderStatusLog::delivery_ship_finished(array('order_id' => $order['order_id'], 'order_sn' => $order['order_sn']));
+				OrderStatusLog::delivery_ship_finished(array('order_id' => $order['order_id'], 'order_sn' => $order['order_sn']));
 			}
 			
 			/* 确认收货*/
@@ -146,7 +148,7 @@ class payConfirm_module extends api_admin implements api_interface
 			$res = update_order($order_id, $arr);
 			if ($res) {
 				/*订单状态日志记录*/
-				Ecjia\App\Orders\OrderStatusLog::affirm_received(array('order_id' => $order['order_id']));
+				OrderStatusLog::affirm_received(array('order_id' => $order['order_id']));
 			}
 			
 			/* 记录log */

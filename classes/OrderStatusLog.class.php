@@ -44,7 +44,7 @@
 //
 //  ---------------------------------------------------------------------------------
 //
-namespace Ecjia\App\Orders;
+defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
  * 订单状态日志记录
@@ -58,12 +58,13 @@ class OrderStatusLog
      * @return bool
      */
     public static function generate_order($options) {
-    	RC_DB::table('order_status_log')->insert(array(
+    	$data = array(
     	'order_status'	=> RC_Lang::get('cart::shopping_flow.label_place_order'),
     	'order_id'		=> $options['order_id'],
     	'message'		=> '下单成功，订单号：'.$options['order_sn'],
     	'add_time'		=> RC_Time::gmtime(),
-    	));
+    	);
+    	 RC_DB::table('order_status_log')->insert($data);
         return true;
     }
 

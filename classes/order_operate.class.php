@@ -165,6 +165,7 @@ class order_operate {
 		$delivery['agency_id']		= intval($order['agency_id']);
 		$delivery['insure_fee']		= floatval($order['insure_fee']);
 		$delivery['shipping_fee']	= floatval($order['shipping_fee']);
+		$delivery['shipping_id']	= $order['shipping_id'];
 
 		/* 订单是否已全部分单检查 */
 		if ($order['order_status'] == OS_SPLITED) {

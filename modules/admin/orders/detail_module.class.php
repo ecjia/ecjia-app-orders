@@ -59,7 +59,8 @@ class detail_module extends api_admin implements api_interface {
         } 
         
         $device = $this->device;
-        if ($device['device_code'] != '8001') {
+        $codes = array('8001', '8011');
+        if (!in_array($device['device_code'], $codes)) {
         	$result = $this->admin_priv('order_view');
         	if (is_ecjia_error($result)) {
         		return $result;
@@ -93,7 +94,9 @@ class detail_module extends api_admin implements api_interface {
 			}
 		}
 		
-		if ($device['code'] == 8001) {
+		$codes = array('8001', '8011');
+		
+		if (in_array($device['code'], $codes)) {
 			//$order['adviser_name'] = RC_Model::model('orders/adviser_log_viewmodel')->join(array('adviser'))->where(array('al.order_id' => $order['order_id']))->get_field('username');
 			$order['cashier_name'] = RC_DB::table('cashier_record as cr')->leftJoin('staff_user as su', RC_DB::raw('cr.staff_id'), '=', RC_DB::raw('su.user_id'))->where(RC_DB::raw('cr.order_id'), $order['order_id'])->pluck('name');
 		}

@@ -583,8 +583,12 @@ class admin extends ecjia_admin {
 		$this->assign('pay_list', $payment_method->available_payment_list());
 		/* 载入国家 */
 		//$this->assign('country_list', $this->get_regions());
-		$countries = with(new Ecjia\App\Setting\Country)->getCountries();
-		$this->assign('country_list', $countries);
+		//$countries = with(new Ecjia\App\Setting\Country)->getCountries();
+		//$this->assign('country_list', $countries);
+		
+		$provinces = with(new Ecjia\App\Setting\Region)->getProvinces(ecjia::config('shop_country'));//获取当前国家的所有省份
+		$this->assign('provinces', $provinces);
+		
 		/* 载入订单状态、付款状态、发货状态 */
 		$this->assign('os_list', get_status_list('order'));
 		$this->assign('ps_list', get_status_list('payment'));

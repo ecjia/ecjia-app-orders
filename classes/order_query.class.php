@@ -270,10 +270,11 @@ class order_query extends order {
         $filter['mobile'] 				= empty($args['mobile']) 			? 0 	: intval($args['mobile']);
         $filter['merchants_name'] 		= empty($args['merchants_name']) 	? '' 	: trim($args['merchants_name']);
         
-        $filter['country'] 				= empty($args['country']) 			? 0 	: intval($args['country']);
-        $filter['province'] 			= empty($args['province']) 			? 0 	: intval($args['province']);
-        $filter['city'] 				= empty($args['city']) 				? 0 	: intval($args['city']);
-        $filter['district'] 			= empty($args['district']) 			? 0 	: intval($args['district']);
+        $filter['country'] 				= ecjia::config('shop_country');
+        $filter['province'] 			= empty($args['province']) 			? '' 	: trim($args['province']);
+        $filter['city'] 				= empty($args['city']) 				? '' 	: trim($args['city']);
+        $filter['district'] 			= empty($args['district']) 			? '' 	: trim($args['district']);
+        $filter['street'] 			    = empty($args['street']) 			? '' 	: trim($args['street']);
         $filter['shipping_id'] 			= empty($args['shipping_id']) 		? 0 	: intval($args['shipping_id']);
         $filter['pay_id'] 				= empty($args['pay_id']) 			? 0 	: intval($args['pay_id']);
         

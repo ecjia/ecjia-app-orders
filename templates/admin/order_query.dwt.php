@@ -132,10 +132,10 @@
 								<div class="control-group control-group-small">
 									<label class="control-label">{lang key='orders::order.country_lable'}</label>
 									<div>
-										<select name="country" data-toggle="regionSummary" data-url='{url path="shipping/region/init"}' data-type="1" data-target="region-summary-provinces" >
+										<select name="country" data-toggle="regionSummary" data-url='{url path="setting/region/init"}' data-type="1" data-target="region-summary-provinces" >
 											<option value="0">{lang key='system::system.select_please'}</option>
-											<!-- {foreach from=$country_list item=country} -->
-											<option value="{$country.region_id}">{$country.region_name}</option>
+											<!-- {foreach from=$country_list key=key item=country} -->
+											<option value="{$key}">{$country}</option>
 											<!-- {/foreach} -->
 										</select>
 									</div>

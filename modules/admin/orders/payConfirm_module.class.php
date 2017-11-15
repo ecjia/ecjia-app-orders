@@ -59,12 +59,16 @@ class payConfirm_module extends api_admin implements api_interface
 			return new ecjia_error(100, 'Invalid session');
 		}
 		$device = $this->device;
-		if ($device['code'] !='8001') {
+		$codes = array('8001', '8011');
+		
+		if (!in_array($device['code'], $codes)) {
 			$result = $this->admin_priv('order_stats');
 			if (is_ecjia_error($result)) {
 				return $result;
 			}
 		}
+		
+		RC_Loader::load_app_class('OrderStatusLog', 'orders', false);
 		
 		$order_id = $this->requestData('order_id');
 		$invoice_no = $this->requestData('invoice_no');
@@ -76,6 +80,7 @@ class payConfirm_module extends api_admin implements api_interface
 		
 		/* 查询订单信息 */
 		$order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => ''));
+		
 		if (empty($order)) {
 			return new ecjia_error('dose_not_exist', '不存在的信息');
 		}
@@ -118,23 +123,35 @@ class payConfirm_module extends api_admin implements api_interface
 			$result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'split', 'note' => array('action_note' => '收银台生成发货单')));
 			if (is_ecjia_error($result)) {
 				RC_Logger::getLogger('error')->info('订单分单【订单id|'.$order_id.'】：'.$result->get_error_message());
+			} else {
+				/*订单状态日志记录*/
+				OrderStatusLog::generate_delivery_orderInvoice(array('order_id' => $order['order_id'], 'order_sn' => $order['order_sn']));
 			}
 			
 			/* 发货*/
 			$db_delivery_order	= RC_Loader::load_app_model('delivery_order_model', 'orders');
 			$delivery_id = $db_delivery_order->where(array('order_sn' => array('like' => '%'.$order['order_sn'].'%')))->order(array('delivery_id' => 'desc'))->get_field('delivery_id');
-			
 			$result = delivery_ship($order_id, $delivery_id, $invoice_no, $action_note);
+			
 			if (is_ecjia_error($result)) {
 				RC_Logger::getLogger('error')->info('订单发货【订单id|'.$order_id.'】：'.$result->get_error_message());
+			} else {
+				/*订单状态日志记录*/
+				OrderStatusLog::delivery_ship_finished(array('order_id' => $order['order_id'], 'order_sn' => $order['order_sn']));
 			}
+			
 			/* 确认收货*/
 			$arr = array('shipping_status' => SS_RECEIVED);
+			$arr['order_status']	= OS_SPLITED;
 			$arr['pay_status']		= PS_PAYED;
 			$arr['pay_time']		= RC_Time::gmtime();
 			$arr['money_paid']		= $order['money_paid'] + $order['order_amount'];
 			$arr['order_amount']	= 0;
-			update_order($order_id, $arr);
+			$res = update_order($order_id, $arr);
+			if ($res) {
+				/*订单状态日志记录*/
+				OrderStatusLog::affirm_received(array('order_id' => $order['order_id']));
+			}
 			
 			/* 记录log */
 			order_action($order['order_sn'], OS_SPLITED, SS_RECEIVED, PS_PAYED, '收银台确认收货');
@@ -169,7 +186,11 @@ class payConfirm_module extends api_admin implements api_interface
 			$result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'split', 'note' => array('action_note' => '收银台生成发货单')));
 			if (is_ecjia_error($result)) {
 				RC_Logger::getLogger('error')->info('订单分单【订单id|'.$order_id.'】：'.$result->get_error_message());
+			}else {
+				/*订单状态日志记录*/
+				OrderStatusLog::generate_delivery_orderInvoice(array('order_id' => $order['order_id'], 'order_sn' => $order['order_sn']));
 			}
+			
 			/* 发货*/
 			$db_delivery_order	= RC_Loader::load_app_model('delivery_order_model', 'orders');
 			$delivery_id = $db_delivery_order->where(array('order_sn' => array('like' => '%'.$order['order_sn'].'%')))->order(array('delivery_id' => 'desc'))->get_field('delivery_id');
@@ -177,14 +198,23 @@ class payConfirm_module extends api_admin implements api_interface
 			$result = delivery_ship($order_id, $delivery_id, $invoice_no, $action_note);
 			if (is_ecjia_error($result)) {
 				RC_Logger::getLogger('error')->info('订单发货【订单id|'.$order_id.'】：'.$result->get_error_message());
+			}else {
+				/*订单状态日志记录*/
+				OrderStatusLog::delivery_ship_finished(array('order_id' => $order['order_id'], 'order_sn' => $order['order_sn']));
 			}
+			
 			/* 确认收货*/
 			$arr = array('shipping_status' => SS_RECEIVED);
 			$arr['pay_status']		= PS_PAYED;
+			$arr['order_status']	= OS_SPLITED;
 			$arr['pay_time']		= RC_Time::gmtime();
 			$arr['money_paid']		= $order['money_paid'] + $order['order_amount'];
 			$arr['order_amount']	= 0;
-			update_order($order_id, $arr);
+			$res = update_order($order_id, $arr);
+			if ($res) {
+				/*订单状态日志记录*/
+				OrderStatusLog::affirm_received(array('order_id' => $order['order_id']));
+			}
 			
 			/* 记录log */
 			order_action($order['order_sn'], OS_SPLITED, SS_RECEIVED, PS_PAYED, '收银台确认收货');
@@ -239,22 +269,32 @@ function delivery_ship($order_id, $delivery_id, $invoice_no, $action_note) {
 	/* 查询订单信息 */
 	$order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => ''));
 
-	RC_Model::model('orders/delivery_viewmodel')->view = array(
-    		'goods' => array(
-    			'type'  => Component_Model_View::TYPE_LEFT_JOIN,
-    			'alias' => 'g',
-    			'field' => 'dg.goods_id, dg.is_real, dg.product_id, SUM(dg.send_number) AS sums, IF(dg.product_id > 0, p.product_number, g.goods_number) AS storage, g.goods_name, dg.send_number',
-    			'on'    => 'dg.goods_id = g.goods_id ',
-    		),
-	 		'products' => array(
- 				'type'  => Component_Model_View::TYPE_LEFT_JOIN,
- 				'alias' => 'p',
- 				'on'    => 'dg.product_id = p.product_id ',
-	 		)
-    	);	
+	// RC_Model::model('orders/delivery_viewmodel')->view = array(
+ //    		'goods' => array(
+ //    			'type'  => Component_Model_View::TYPE_LEFT_JOIN,
+ //    			'alias' => 'g',
+ //    			'field' => 'dg.goods_id, dg.is_real, dg.product_id, SUM(dg.send_number) AS sums, IF(dg.product_id > 0, p.product_number, g.goods_number) AS storage, g.goods_name, dg.send_number',
+ //    			'on'    => 'dg.goods_id = g.goods_id ',
+ //    		),
+	//  		'products' => array(
+ // 				'type'  => Component_Model_View::TYPE_LEFT_JOIN,
+ // 				'alias' => 'p',
+ // 				'on'    => 'dg.product_id = p.product_id ',
+	//  		)
+ //    	);	
 	/* 检查此单发货商品库存缺货情况 */
 	$virtual_goods			= array();
-	$delivery_stock_result	= RC_Model::model('orders/delivery_viewmodel')->join(array('goods', 'products'))->where(array('dg.delivery_id' => $delivery_id))->group('dg.product_id')->select();
+	// $delivery_stock_result	= RC_Model::model('orders/delivery_viewmodel')->join(array('goods', 'products'))->where(array('dg.delivery_id' => $delivery_id))->group('dg.product_id')->select();
+
+	$delivery_stock_result = RC_DB::table('delivery_goods as dg')
+		->leftJoin('goods as g', RC_DB::raw('dg.goods_id'), '=', RC_DB::raw('g.goods_id'))
+		->leftJoin('products as p', RC_DB::raw('dg.product_id'), '=', RC_DB::raw('p.product_id'))
+		->selectRaw('dg.goods_id, dg.is_real, dg.product_id, SUM(dg.send_number) AS sums, IF(dg.product_id > 0, p.product_number, g.goods_number) AS storage, g.goods_name, dg.send_number')
+		->where(RC_DB::raw('dg.delivery_id'), $delivery_id)
+		->groupBy(RC_DB::raw('dg.product_id'))
+		->get();
+
+
 	/* 如果商品存在规格就查询规格，如果不存在规格按商品库存查询 */
 	if(!empty($delivery_stock_result)) {
 		foreach ($delivery_stock_result as $value) {
@@ -268,23 +308,29 @@ function delivery_ship($order_id, $delivery_id, $invoice_no, $action_note) {
 			/* 虚拟商品列表 virtual_card */
 			if ($value['is_real'] == 0) {
 				$virtual_goods[] = array(
-						'goods_id'		=> $value['goods_id'],
-						'goods_name'	=> $value['goods_name'],
-						'num'			=> $value['send_number']
+					'goods_id'		=> $value['goods_id'],
+					'goods_name'	=> $value['goods_name'],
+					'num'			=> $value['send_number']
 				);
 			}
 		}
 	} else {
-		$db_delivery->view = array(
-				'goods' => array(
-						'type'		=> Component_Model_View::TYPE_LEFT_JOIN,
-						'alias'		=> 'g',
-						'field'		=> 'dg.goods_id, dg.is_real, SUM(dg.send_number) AS sums, g.goods_number, g.goods_name, dg.send_number',
-						'on'		=> 'dg.goods_id = g.goods_id ',
-				)
-		);
+		// $db_delivery->view = array(
+		// 	'goods' => array(
+		// 		'type'		=> Component_Model_View::TYPE_LEFT_JOIN,
+		// 		'alias'		=> 'g',
+		// 		'field'		=> 'dg.goods_id, dg.is_real, SUM(dg.send_number) AS sums, g.goods_number, g.goods_name, dg.send_number',
+		// 		'on'		=> 'dg.goods_id = g.goods_id ',
+		// 	)
+		// );
+		// $delivery_stock_result = $db_delivery->where(array('dg.delivery_id' => $delivery_id))->group('dg.goods_id')->select();
 
-		$delivery_stock_result = $db_delivery->where(array('dg.delivery_id' => $delivery_id))->group('dg.goods_id')->select();
+		$delivery_stock_result = RC_DB::table('delivery_goods as dg')
+			->leftJoin('goods as g', RC_DB::raw('dg.goods_id'), '=', RC_DB::raw('g.goods_id'))
+			->selectRaw('dg.goods_id, dg.is_real, SUM(dg.send_number) AS sums, g.goods_number, g.goods_name, dg.send_number')
+			->where(RC_DB::raw('dg.delivery_id'), $delivery_id)
+			->groupBy(RC_DB::raw('dg.goods_id'))
+			->get();
 
 		foreach ($delivery_stock_result as $value) {
 			if (($value['sums'] > $value['goods_number'] || $value['goods_number'] <= 0) &&
@@ -297,9 +343,9 @@ function delivery_ship($order_id, $delivery_id, $invoice_no, $action_note) {
 			/* 虚拟商品列表 virtual_card*/
 			if ($value['is_real'] == 0) {
 				$virtual_goods[] = array(
-						'goods_id'		=> $value['goods_id'],
-						'goods_name'	=> $value['goods_name'],
-						'num'			=> $value['send_number']
+					'goods_id'		=> $value['goods_id'],
+					'goods_name'	=> $value['goods_name'],
+					'num'			=> $value['send_number']
 				);
 			}
 		}
@@ -322,12 +368,12 @@ function delivery_ship($order_id, $delivery_id, $invoice_no, $action_note) {
 				/* （货品） */
 				if (!empty($value['product_id'])) {
 					$data = array(
-							'product_number' => $value['storage'] - $value['sums'],
+						'product_number' => $value['storage'] - $value['sums'],
 					);
 					$db_products->where(array('product_id' => $value['product_id']))->update($data);
 				} else {
 					$data = array(
-							'goods_number' => $value['storage'] - $value['sums'],
+						'goods_number' => $value['storage'] - $value['sums'],
 					);
 					$db_goods->where(array('goods_id' => $value['goods_id']))->update($data);
 				}

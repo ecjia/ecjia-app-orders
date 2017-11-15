@@ -207,7 +207,7 @@ class merchant extends ecjia_merchant {
 		$this->assign('ss', RC_Lang::get('orders::order.ss'));
 		
 		$this->assign_lang();
-		$this->display('order_list.dwt');
+		$this->display('mh_order_list.dwt');
 	}
 	
 	/**

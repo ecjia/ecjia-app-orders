@@ -58,7 +58,8 @@ class cancel_module extends api_admin implements api_interface {
 			return new ecjia_error(100, 'Invalid session');
 		}
 		$device		  = $this->device;
-		if ($device['code'] !='8001') {
+		$codes = array('8001', '8011');
+		if (!in_array($device['code'], $codes)) {
 			$result = $this->admin_priv('order_edit');
 			if (is_ecjia_error($result)) {
 				return $result;
@@ -74,7 +75,7 @@ class cancel_module extends api_admin implements api_interface {
 		RC_Loader::load_app_func('global', 'orders');
 		/* 查询订单信息 */
 		$order = order_info($order_id);
-
+		
 		/* 取消 */
 		/* 标记订单为“取消”，记录取消原因 */
 		$cancel_note = $this->requestData('cancel_note','');

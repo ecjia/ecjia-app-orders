@@ -132,7 +132,7 @@ class order_operate {
 		/* 记录日志 */
 		ecjia_admin::admin_log('配货中，订单号是 '.$order['order_sn'], 'edit', 'order_status');
 		/* 记录log */
-		$this->order_action($order['order_sn'], OS_CONFIRMED, SS_PREPARING, $order['pay_status'], $note);
+		$this->order_action($order['order_sn'], OS_CONFIRMED, SS_PREPARING, $order['pay_status'], $note['action_note']);
 		
 		return true;
 	}
@@ -165,6 +165,7 @@ class order_operate {
 		$delivery['agency_id']		= intval($order['agency_id']);
 		$delivery['insure_fee']		= floatval($order['insure_fee']);
 		$delivery['shipping_fee']	= floatval($order['shipping_fee']);
+		$delivery['shipping_id']	= $order['shipping_id'];
 
 		/* 订单是否已全部分单检查 */
 		if ($order['order_status'] == OS_SPLITED) {

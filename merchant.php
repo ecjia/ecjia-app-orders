@@ -657,10 +657,13 @@ class merchant extends ecjia_merchant {
 			$this->assign('pay_list'		, $payment_method->available_payment_list());
 		}
 		/* 载入地区列表 */
-		if (!empty($this->db_region)) {
-			$this->assign('country_list'	, $this->db_region->get_regions());
-		}
-
+// 		if (!empty($this->db_region)) {
+// 			$this->assign('country_list'	, $this->db_region->get_regions());
+// 		}
+		
+		$provinces = with(new Ecjia\App\Setting\Region)->getProvinces(ecjia::config('shop_country'));//获取当前国家的所有省份
+		$this->assign('provinces', $provinces);
+		
 		/* 载入订单状态、付款状态、发货状态 */
 		$this->assign('os_list'			, get_status_list('order'));
 		$this->assign('ps_list'			, get_status_list('payment'));

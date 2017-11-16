@@ -2634,10 +2634,12 @@ class merchant extends ecjia_merchant {
 			$action_note = isset($_POST['action_note']) ? trim($_POST['action_note']) : '';
 			
 			$delivery['user_id']		= intval($delivery['user_id']);
-			$delivery['country']		= intval($delivery['country']);
-			$delivery['province']		= intval($delivery['province']);
-			$delivery['city']			= intval($delivery['city']);
-			$delivery['district']		= intval($delivery['district']);
+
+			$delivery['country']		= trim($delivery['country']);
+			$delivery['province']		= trim($delivery['province']);
+			$delivery['city']			= trim($delivery['city']);
+			$delivery['district']		= trim($delivery['district']);
+
 			$delivery['agency_id']		= intval($delivery['agency_id']);
 			$delivery['insure_fee']		= floatval($delivery['insure_fee']);
 			$delivery['shipping_fee']	= floatval($delivery['shipping_fee']);

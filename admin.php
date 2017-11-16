@@ -458,10 +458,12 @@ class admin extends ecjia_admin {
 				$lable_box['t_shop_district']		= ''; //网店-区/县
 				$lable_box['t_shop_tel']			= ecjia::config('service_phone'); //网店-联系电话
 				$lable_box['t_shop_address']		= ecjia::config('shop_address'); //网店-地址
-				$lable_box['t_customer_country']	= !empty($region_array[$order['country']]) ? $region_array[$order['country']] : ''; //收件人-国家
+
+				$lable_box['t_customer_country']	= !empty($region_array[$order['country']]) 	? $region_array[$order['country']] 	: ''; //收件人-国家
 				$lable_box['t_customer_province']	= !empty($region_array[$order['province']]) ? $region_array[$order['province']] : ''; //收件人-省份
-				$lable_box['t_customer_city']		= !empty($region_array[$order['city']]) ? $region_array[$order['city']] : ''; //收件人-城市
+				$lable_box['t_customer_city']		= !empty($region_array[$order['city']]) 	? $region_array[$order['city']] 	: ''; //收件人-城市
 				$lable_box['t_customer_district']	= !empty($region_array[$order['district']]) ? $region_array[$order['district']] : ''; //收件人-区/县
+				
 				$lable_box['t_customer_tel']		= $order['tel']; //收件人-电话
 				$lable_box['t_customer_mobel']		= $order['mobile']; //收件人-手机
 				$lable_box['t_customer_post']		= $order['zipcode']; //收件人-邮编
@@ -2710,10 +2712,12 @@ class admin extends ecjia_admin {
 			$action_note = isset($_POST['action_note']) ? trim($_POST['action_note']) : '';
 			
 			$delivery['user_id']		= intval($delivery['user_id']);
-			$delivery['country']		= intval($delivery['country']);
-			$delivery['province']		= intval($delivery['province']);
-			$delivery['city']			= intval($delivery['city']);
-			$delivery['district']		= intval($delivery['district']);
+
+			$delivery['country']		= trim($delivery['country']);
+			$delivery['province']		= trim($delivery['province']);
+			$delivery['city']			= trim($delivery['city']);
+			$delivery['district']		= trim($delivery['district']);
+
 			$delivery['agency_id']		= intval($delivery['agency_id']);
 			$delivery['insure_fee']		= floatval($delivery['insure_fee']);
 			$delivery['shipping_fee']	= floatval($delivery['shipping_fee']);

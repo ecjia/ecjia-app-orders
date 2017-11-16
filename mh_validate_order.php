@@ -553,10 +553,12 @@ class mh_validate_order extends ecjia_merchant {
 		/*默认全部发货*/
 		$delivery['order_sn']		= $order['order_sn'];
 		$delivery['user_id']		= intval($order['user_id']);
-		$delivery['country']		= intval($order['country']);
-		$delivery['province']		= intval($order['province']);
-		$delivery['city']			= intval($order['city']);
-		$delivery['district']		= intval($order['district']);
+
+		$delivery['country']		= trim($order['country']);
+		$delivery['province']		= trim($order['province']);
+		$delivery['city']			= trim($order['city']);
+		$delivery['district']		= trim($order['district']);
+
 		$delivery['agency_id']		= intval($order['agency_id']);
 		$delivery['insure_fee']		= floatval($order['insure_fee']);
 		$delivery['shipping_fee']	= floatval($order['shipping_fee']);

@@ -256,7 +256,7 @@ class order_query extends order {
 	}
 	
     public function get_order_list($pagesize = '15') {
-	    $args 			= $_GET;
+	    $args = $_GET;
 	   
         /* 过滤信息 */
         $filter['order_sn'] 			= empty($args['order_sn']) 			? '' 	: trim($args['order_sn']);
@@ -275,6 +275,7 @@ class order_query extends order {
         $filter['city'] 				= empty($args['city']) 				? '' 	: trim($args['city']);
         $filter['district'] 			= empty($args['district']) 			? '' 	: trim($args['district']);
         $filter['street'] 			    = empty($args['street']) 			? '' 	: trim($args['street']);
+
         $filter['shipping_id'] 			= empty($args['shipping_id']) 		? 0 	: intval($args['shipping_id']);
         $filter['pay_id'] 				= empty($args['pay_id']) 			? 0 	: intval($args['pay_id']);
         

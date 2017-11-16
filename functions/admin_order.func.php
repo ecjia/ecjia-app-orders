@@ -756,7 +756,7 @@ function change_goods_storage($goods_id, $product_id, $number = 0) {
     if (!empty($product_id)) {
         /* by will.chen start*/
         $product_number = RC_DB::table('products')->where('goods_id', $goods_id)->where('product_id', $product_id)->pluck('product_number');
-        if ($product_number < $number) {
+        if ($product_number < abs($number)) {
             return new ecjia_error('low_stocks', RC_Lang::get('orders::order.goods_num_err'));
         }
         /* end*/
@@ -764,7 +764,7 @@ function change_goods_storage($goods_id, $product_id, $number = 0) {
     }
     /* by will.chen start*/
     $goods_number = RC_DB::table('goods')->where('goods_id', $goods_id)->pluck('goods_number');
-    if ($goods_number < $number) {
+    if ($goods_number < abs($number)) {
         return new ecjia_error('low_stocks', RC_Lang::get('orders::order.goods_num_err'));
     }
     /* end*/

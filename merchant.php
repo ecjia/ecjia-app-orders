@@ -2808,10 +2808,11 @@ class merchant extends ecjia_merchant {
 			$delivery['best_time']		= $order['expect_shipping_time'];
 			
 			if (empty($delivery['longitude']) || empty($delivery['latitude'])) {
-				$province_name = ecjia_region::getRegionName($delivery['province']);
-				$city_name = ecjia_region::getRegionName($delivery['city']);
-				$district_name = ecjia_region::getRegionName($delivery['district']);
-				$street_name = ecjia_region::getRegionName($delivery['street']);
+				$province_name 	= ecjia_region::getRegionName($delivery['province']);
+				$city_name 		= ecjia_region::getRegionName($delivery['city']);
+				$district_name 	= ecjia_region::getRegionName($delivery['district']);
+				$street_name 	= ecjia_region::getRegionName($delivery['street']);
+
 				$consignee_address = '';
 				if (!empty($province_name)) {
 					$consignee_address .= $province_name;

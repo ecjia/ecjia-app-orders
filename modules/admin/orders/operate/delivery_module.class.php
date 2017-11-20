@@ -266,10 +266,11 @@ class delivery_module extends api_admin implements api_interface {
 
 		/*掌柜发货时将用户地址转为坐标存入delivery_order表*/
 		if (empty($order_info['longitude']) || empty($order_info['latitude'])) {
-			$province_name = ecjia_region::getRegionName($order_info['province']);
-			$city_name = ecjia_region::getRegionName($order_info['city']);
-			$district_name = ecjia_region::getRegionName($order_info['district']);
-			$street_name = ecjia_region::getRegionName($order_info['street']);
+			$province_name 	= ecjia_region::getRegionName($order_info['province']);
+			$city_name 		= ecjia_region::getRegionName($order_info['city']);
+			$district_name 	= ecjia_region::getRegionName($order_info['district']);
+			$street_name 	= ecjia_region::getRegionName($order_info['street']);
+			
 			$consignee_address = '';
 			if (!empty($province_name)) {
 				$consignee_address .= $province_name;

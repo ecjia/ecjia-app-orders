@@ -1538,7 +1538,7 @@ function get_back_list() {
 	//实例化分页
 	$page = new ecjia_page($count, 15, 6);
 	/* 查询 */
-	$row = $db_back_order->select('back_id', 'order_id', 'delivery_sn', 'order_sn', 'order_id', 'add_time', 'action_user', 'consignee', 'country', 'province', 'city', 'district', 'tel', 'status', 'update_time', 'email', 'return_time')->orderby($filter['sort_by'], $filter['sort_order'])->take(15)->skip($page->start_id - 1)->get();
+	$row = $db_back_order->select('back_id', 'order_id', 'delivery_sn', 'order_sn', 'order_id', 'add_time', 'action_user', 'consignee', 'country', 'province', 'city', 'district', 'street', 'tel', 'status', 'update_time', 'email', 'return_time')->orderby($filter['sort_by'], $filter['sort_order'])->take(15)->skip($page->start_id - 1)->get();
 	if (!empty($row) && is_array($row)) {
 		/* 格式化数据 */
 		foreach ($row as $key => $value) {

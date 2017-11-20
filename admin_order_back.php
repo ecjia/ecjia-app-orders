@@ -199,7 +199,7 @@ class admin_order_back extends ecjia_admin {
 		$this->admin_priv('back_view', ecjia::MSGTYPE_JSON);
 		$id = $_GET['back_id'];
 		if (!empty($id)) {
-			$field = array('order_id', 'consignee', 'address', 'country', 'province', 'city', 'district', 'sign_building', 'email', 'zipcode', 'tel', 'mobile', 'best_time');
+			$field = array('order_id', 'consignee', 'address', 'country', 'province', 'city', 'district', 'street', 'sign_building', 'email', 'zipcode', 'tel', 'mobile', 'best_time');
 			$row = RC_DB::table('back_order')->select($field)->where('back_id', $id)->first();
 			
 			if (!empty($row)) {

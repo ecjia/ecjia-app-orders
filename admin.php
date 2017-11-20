@@ -2892,7 +2892,7 @@ class admin extends ecjia_admin {
 			/* 过滤字段项 */
 			$filter_fileds = array(
 				'order_sn', 'add_time', 'user_id', 'how_oos', 'shipping_id', 'shipping_fee',
-				'consignee', 'address', 'country', 'province', 'city', 'district', 'sign_building',
+				'consignee', 'address', 'country', 'province', 'city', 'district', 'street', 'sign_building',
 				'email', 'zipcode', 'tel', 'mobile', 'best_time', 'postscript', 'insure_fee',
 				'agency_id', 'delivery_sn', 'action_user', 'update_time',
 				'suppliers_id', 'status', 'order_id', 'shipping_name'

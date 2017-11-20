@@ -188,7 +188,7 @@ class mh_back extends ecjia_merchant {
 		$this->admin_priv('back_view', ecjia::MSGTYPE_JSON);
 		$id = $_GET['back_id'];
 		if (!empty($id)) {
-			$field = array('order_id', 'consignee', 'address', 'country', 'province', 'city', 'district', 'sign_building', 'email', 'zipcode', 'tel', 'mobile', 'best_time');
+			$field = array('order_id', 'consignee', 'address', 'country', 'province', 'city', 'district', 'street', 'sign_building', 'email', 'zipcode', 'tel', 'mobile', 'best_time');
 			$row = RC_DB::table('back_order')->select($field)->where('back_id', $id)->first();
 			if (!empty($row)) {
 				$region = RC_DB::table('order_info as o')

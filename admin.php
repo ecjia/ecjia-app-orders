@@ -231,7 +231,7 @@ class admin extends ecjia_admin {
 	
 		/* 取得区域名 */
 		$order['region'] = get_regions($order_id);
-		
+
 		/* 格式化金额 */
 		if ($order['order_amount'] < 0) {
 			$order['money_refund']			= abs($order['order_amount']);
@@ -406,8 +406,7 @@ class admin extends ecjia_admin {
 			if (!is_array($region_id)) {
 				$region_id = explode(',', $region_id);
 			}
-			$region = RC_DB::table('regions')->select('region_id', 'region_name')->whereIn('region_id', $region_id)->get();
-			
+			$region = ecjia_region::getRegions($region_id);
 			if (!empty($region)) {
 				foreach ($region as $region_data) {
 					$region_array[$region_data['region_id']] = $region_data['region_name'];
@@ -583,12 +582,8 @@ class admin extends ecjia_admin {
 		$this->assign('shipping_list', $shipping_method->shipping_list());
 		/* 载入支付方式 */
 		$this->assign('pay_list', $payment_method->available_payment_list());
-		/* 载入国家 */
-		//$this->assign('country_list', $this->get_regions());
-		//$countries = with(new Ecjia\App\Setting\Country)->getCountries();
-		//$this->assign('country_list', $countries);
-		
-		$provinces = with(new Ecjia\App\Setting\Region)->getProvinces(ecjia::config('shop_country'));//获取当前国家的所有省份
+		/* 载入省份 */
+		$provinces = ecjia_region::getSubarea(ecjia::config('shop_country'));
 		$this->assign('provinces', $provinces);
 		
 		/* 载入订单状态、付款状态、发货状态 */
@@ -969,22 +964,16 @@ class admin extends ecjia_admin {
 					}
 				}
 			}
-
 			if ($exist_real_goods) {
-				/* 取得国家 */
-				$this->assign('country_list', $this->get_regions());
-				if ($order['country'] > 0) {
-					/* 取得省份 */
-					$this->assign('province_list', $this->get_regions(1, $order['country']));
-					if ($order['province'] > 0) {
-						/* 取得城市 */
-						$this->assign('city_list', $this->get_regions(2, $order['province']));
-						if ($order['city'] > 0) {
-							/* 取得区域 */
-							$this->assign('district_list', $this->get_regions(3, $order['city']));
-						}
-					}
-				}
+		        $province = ecjia_region::getSubarea(ecjia::config('shop_country'));
+				$city = ecjia_region::getSubarea($order['province']);
+				$district = ecjia_region::getSubarea($order['city']);
+				$street = ecjia_region::getSubarea($order['district']);
+		        
+		        $this->assign('province', $province);
+		        $this->assign('city', $city);
+		        $this->assign('district', $district);
+		        $this->assign('street', $street);
 			}
 		} elseif ('shipping' == $step) {
 			/* 查询是否存在实体商品 */
@@ -1110,7 +1099,7 @@ class admin extends ecjia_admin {
 		/* 取得参数 step */
 		$step_list	= array('user', 'edit_goods', 'add_goods', 'goods', 'consignee', 'shipping', 'payment', 'other', 'money', 'invoice');
 		$step		= isset($_GET['step']) && in_array($_GET['step'], $step_list) ? $_GET['step'] : 'user';
-		
+
 		/* 取得参数 order_id */
 		$order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
 		if ($order_id > 0) {
@@ -1121,7 +1110,7 @@ class admin extends ecjia_admin {
 		$step_act = isset($_GET['step_act']) ? $_GET['step_act'] : 'add';
 		
 		/* 插入订单信息 */
-		if ('user' == $step || ('user_select' == $step && $_GET['user']=='0')) {
+		if ('user' == $step || ('user_select' == $step && $_GET['user'] == '0')) {
 			/* 取得参数：user_id */
 			$user_id = (!empty($_POST['anonymous']) && $_POST['anonymous'] == 1) ? 0 : intval($_POST['user']);
 			
@@ -1394,6 +1383,7 @@ class admin extends ecjia_admin {
 			/* 保存收货人信息 */
 			/* 保存订单 */
 			$order = $_POST;
+			
 			if (isset($order['next'])) {
 				unset($order['next']);
 			}
@@ -1403,7 +1393,7 @@ class admin extends ecjia_admin {
 			//如果是会员订单则读取会员地址信息
 			if ($order['user_address'] > 0 && $old_order['user_id'] > 0) {
 				$orders = RC_DB::table('user_address')
-					->selectRaw('consignee, email, country, province, city, district, address, zipcode, tel, mobile, sign_building, best_time')
+					->selectRaw('consignee, email, country, province, city, district, street, address, zipcode, tel, mobile, sign_building, best_time')
 					->where('user_id', $old_order['user_id'])
 					->where('address_id', $order['user_address'])
 					->first();
@@ -3557,17 +3547,6 @@ class admin extends ecjia_admin {
 		} else {
 			return $this->showmessage(RC_Lang::get('orders::order.not_member_inf_found'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
-	}
-	
-	/**
-	 * 获得指定国家的所有省份
-	 *
-	 * @access      public
-	 * @param       int     country    国家的编号
-	 * @return      array
-	 */
-	private function get_regions($type = 0, $parent = 0) {
-		return RC_DB::table('regions')->where('region_type', $type)->where('parent_id', $parent)->select('region_id', 'region_name')->get();
 	}
 }
 

@@ -486,7 +486,7 @@ class merchant extends ecjia_merchant {
 			$region_id	.= ecjia::config('shop_city'	, ecjia::CONFIG_CHECK) ? ecjia::config('shop_city') . ',' : '';
 			$region_id	= substr($region_id, 0, -1);
 			
-			$region = $this->db_region->field('region_id, region_name')->in(array('region_id' => $region_id))->select();
+			$region = ecjia_region::getRegions($region_id);
 			if (!empty($region)) {
 				foreach ($region as $region_data) {
 					$region_array[$region_data['region_id']] = $region_data['region_name'];
@@ -654,14 +654,9 @@ class merchant extends ecjia_merchant {
 		$payment_method	= RC_Loader::load_app_class('payment_method', 'payment');
 
 		if (!empty($payment_method)) {
-			$this->assign('pay_list'		, $payment_method->available_payment_list());
+			$this->assign('pay_list', $payment_method->available_payment_list());
 		}
-		/* 载入地区列表 */
-// 		if (!empty($this->db_region)) {
-// 			$this->assign('country_list'	, $this->db_region->get_regions());
-// 		}
-		
-		$provinces = with(new Ecjia\App\Setting\Region)->getProvinces(ecjia::config('shop_country'));//获取当前国家的所有省份
+		$provinces = ecjia_region::getProvinces();//获取当前国家的所有省份
 		$this->assign('provinces', $provinces);
 		
 		/* 载入订单状态、付款状态、发货状态 */
@@ -852,20 +847,15 @@ class merchant extends ecjia_merchant {
 			}
 
 			if ($exist_real_goods) {
-				/* 取得国家 */
-				$this->assign('country_list'	, $this->db_region->get_regions());
-				if ($order['country'] > 0) {
-					/* 取得省份 */
-					$this->assign('province_list'	, $this->db_region->get_regions(1, $order['country']));
-					if ($order['province'] > 0) {
-						/* 取得城市 */
-						$this->assign('city_list'	, $this->db_region->get_regions(2, $order['province']));
-						if ($order['city'] > 0) {
-							/* 取得区域 */
-							$this->assign('district_list'	, $this->db_region->get_regions(3, $order['city']));
-						}
-					}
-				}
+				$province = ecjia_region::getSubarea(ecjia::config('shop_country'));
+				$city = ecjia_region::getSubarea($order['province']);
+				$district = ecjia_region::getSubarea($order['city']);
+				$street = ecjia_region::getSubarea($order['district']);
+				
+				$this->assign('province', $province);
+				$this->assign('city', $city);
+				$this->assign('district', $district);
+				$this->assign('street', $street);
 			}
 		} elseif ('shipping' == $step) {
 			/* 查询是否存在实体商品 */
@@ -1279,7 +1269,7 @@ class merchant extends ecjia_merchant {
 			//如果是会员订单则读取会员地址信息
 			if ($order['user_address'] > 0 && $old_order['user_id'] > 0) {
 				$db_address = RC_Loader::load_app_model('user_address_model', 'user');
-				$field = "consignee, email, country, province, city, district, address, zipcode, tel,mobile, sign_building, best_time";
+				$field = "consignee, email, country, province, city, district, street, address, zipcode, tel,mobile, sign_building, best_time";
 				$orders = $db_address->field($field)->find(array('user_id' => $old_order['user_id'], 'address_id' => $order['user_address']));
 				update_order($order_id, $orders);
 			} else {
@@ -2820,12 +2810,24 @@ class merchant extends ecjia_merchant {
 			$delivery['best_time']		= $order['expect_shipping_time'];
 			
 			if (empty($delivery['longitude']) || empty($delivery['latitude'])) {
-				$db_region = RC_Model::model('region_model');
-				$region_name = $db_region->where(array('region_id' => array('in' => $delivery['province'], $delivery['city'])))->order('region_type')->select();
-				
-				$province_name	= $region_name[0]['region_name'];
-				$city_name		= $region_name[1]['region_name'];
-				$consignee_address = $province_name.'省'.$city_name.'市'.$delivery['address'];
+				$province_name = ecjia_region::getRegionName($delivery['province']);
+				$city_name = ecjia_region::getRegionName($delivery['city']);
+				$district_name = ecjia_region::getRegionName($delivery['district']);
+				$street_name = ecjia_region::getRegionName($delivery['street']);
+				$consignee_address = '';
+				if (!empty($province_name)) {
+					$consignee_address .= $province_name;
+				}
+				if (!empty($city_name)) {
+					$consignee_address .= $city_name;
+				}
+				if (!empty($district_name)) {
+					$consignee_address .= $district_name;
+				}
+				if (!empty($street_name)) {
+					$consignee_address .= $street_name;
+				}
+				$consignee_address .= $delivery['address'];
 				$consignee_address = urlencode($consignee_address);
 
 				//腾讯地图api 地址解析（地址转坐标）
@@ -3507,6 +3509,7 @@ class merchant extends ecjia_merchant {
 		$val = !empty($_POST['val']) ? trim($_POST['val']) : 'off';
 		RC_Cache::app_cache_set('switch_on_off', $val, 'orders', 10080);
 	}
+	
 }
 
 // end

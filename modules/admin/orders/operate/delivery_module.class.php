@@ -266,12 +266,24 @@ class delivery_module extends api_admin implements api_interface {
 
 		/*掌柜发货时将用户地址转为坐标存入delivery_order表*/
 		if (empty($order_info['longitude']) || empty($order_info['latitude'])) {
-			$db_region = RC_Model::model('region_model');
-			$region_name = $db_region->where(array('region_id' => array('in' => $order_info['province'], $order_info['city'])))->order('region_type')->select();
-		
-			$province_name	= $region_name[0]['region_name'];
-			$city_name		= $region_name[1]['region_name'];
-			$consignee_address = $province_name.'省'.$city_name.'市'.$order_info['address'];
+			$province_name = ecjia_region::getRegionName($order_info['province']);
+			$city_name = ecjia_region::getRegionName($order_info['city']);
+			$district_name = ecjia_region::getRegionName($order_info['district']);
+			$street_name = ecjia_region::getRegionName($order_info['street']);
+			$consignee_address = '';
+			if (!empty($province_name)) {
+				$consignee_address .= $province_name;
+			}
+			if (!empty($city_name)) {
+				$consignee_address .= $city_name;
+			}
+			if (!empty($district_name)) {
+				$consignee_address .= $district_name;
+			}
+			if (!empty($street_name)) {
+				$consignee_address .= $street_name;
+			}
+			$consignee_address .= $order_info['address'];
 			$consignee_address = urlencode($consignee_address);
 		
 			//腾讯地图api 地址解析（地址转坐标）

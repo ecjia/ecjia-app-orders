@@ -558,6 +558,7 @@ class mh_validate_order extends ecjia_merchant {
 		$delivery['province']		= trim($order['province']);
 		$delivery['city']			= trim($order['city']);
 		$delivery['district']		= trim($order['district']);
+		$delivery['street']			= trim($order['street']);
 
 		$delivery['agency_id']		= intval($order['agency_id']);
 		$delivery['insure_fee']		= floatval($order['insure_fee']);
@@ -751,14 +752,26 @@ class mh_validate_order extends ecjia_merchant {
 		$delivery['best_time']		= $order['expect_shipping_time'];
 			
 		if (empty($delivery['longitude']) || empty($delivery['latitude'])) {
-			$db_region = RC_Model::model('region_model');
-			$region_name = $db_region->where(array('region_id' => array('in' => $delivery['province'], $delivery['city'])))->order('region_type')->select();
-		
-			$province_name	= $region_name[0]['region_name'];
-			$city_name		= $region_name[1]['region_name'];
-			$consignee_address = $province_name.'省'.$city_name.'市'.$delivery['address'];
+			$province_name = ecjia_region::getRegionName($delivery['province']);
+			$city_name = ecjia_region::getRegionName($delivery['city']);
+			$district_name = ecjia_region::getRegionName($delivery['district']);
+			$street_name = ecjia_region::getRegionName($delivery['street']);
+			$consignee_address = '';
+			if (!empty($province_name)) {
+				$consignee_address .= $province_name;
+			}
+			if (!empty($city_name)) {
+				$consignee_address .= $city_name;
+			}
+			if (!empty($district_name)) {
+				$consignee_address .= $district_name;
+			}
+			if (!empty($street_name)) {
+				$consignee_address .= $street_name;
+			}
+			$consignee_address .= $delivery['address'];
 			$consignee_address = urlencode($consignee_address);
-		
+
 			//腾讯地图api 地址解析（地址转坐标）
 // 			$keys = ecjia::config('map_qq_key');
 // 			$shop_point = RC_Http::remote_get("https://apis.map.qq.com/ws/geocoder/v1/?address=".$consignee_address."&key=".$keys);

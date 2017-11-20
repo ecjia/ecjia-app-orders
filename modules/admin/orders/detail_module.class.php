@@ -132,19 +132,20 @@ class detail_module extends api_admin implements api_interface {
 		$user_name = $db_user->where(array('user_id' => $order['user_id']))->get_field('user_name');
 
 		$order['user_name'] = empty($user_name) ? __('匿名用户') : $user_name;
-		//收货人地址
-		$db_region = RC_Model::model('shipping/region_model');
-		$region_name = $db_region->where(array('region_id' => array('in'=>$order['country'], $order['province'], $order['city'], $order['district'])))->order('region_type')->select();
-		$order['country_id']  = $order['country'];
-		$order['country']     = $region_name[0]['region_name'];
-		$order['province_id'] = $order['province'];
-		$order['province']    = $region_name[1]['region_name'];
-		$order['city_id']     = $order['city'];
-		$order['city']        = $region_name[2]['region_name'];
-		$order['district_id'] = $order['district'];
-		$order['district']    = isset($region_name[3]) ? $region_name[3]['region_name'] : '';
 
-		$order['invoice_no']            = !empty($order['invoice_no']) ? explode('<br>', $order['invoice_no']) : array();
+		$order['country_id']  = $order['country'];
+		$order['province_id'] = $order['province'];
+		$order['city_id']     = $order['city'];
+		$order['district_id'] = $order['district'];
+		$order['street_id']   = $order['street'];
+
+		$order['country']     = ecjia_region::getCountryName($order['country']);
+		$order['province']    = ecjia_region::getRegionName($order['province']);
+		$order['city']        = ecjia_region::getRegionName($order['city']);
+		$order['district']    = ecjia_region::getRegionName($order['district']);
+		$order['street']      = ecjia_region::getRegionName($order['street']);
+
+		$order['invoice_no'] = !empty($order['invoice_no']) ? explode('<br>', $order['invoice_no']) : array();
 		
 // 		$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
 		if ($order['pay_id'] > 0) {

@@ -168,13 +168,11 @@ class detail_module extends api_front implements api_interface {
 		}
 		
 		//收货人地址
-		$db_region = RC_Model::model('shipping/region_model');
-		$region_name = $db_region->in(array('region_id' => array($order['country'], $order['province'], $order['city'], $order['district'])))->order('region_type')->select();
-
-		$order['country']	= empty($region_name[0]['region_name']) ? '' : $region_name[0]['region_name'];
-		$order['province']	= empty($region_name[1]['region_name']) ? '' : $region_name[1]['region_name'];
-		$order['city']		= empty($region_name[2]['region_name']) ? '' : $region_name[2]['region_name'];
-		$order['district']	=  empty($region_name[3]['region_name']) ? '' : $region_name[3]['region_name'];
+		$order['country'] = ecjia_region::getCountryName($order['country']);
+		$order['province'] = ecjia_region::getCountryName($order['province']);
+		$order['city'] = ecjia_region::getCountryName($order['city']);
+		$order['district'] = ecjia_region::getCountryName($order['district']);
+		$order['street'] = ecjia_region::getCountryName($order['street']);
 		
 		$goods_list = array();
 		$goods_list = EM_order_goods($order_id);

@@ -656,7 +656,7 @@ class admin_order_delivery extends ecjia_admin {
 
 		$id = $_GET['delivery_id'];
 		if (!empty($id)) {
-			$row = RC_DB::table('delivery_order')->select(RC_DB::raw('order_id, consignee, address, country, province, city, district, sign_building, email, zipcode, tel, mobile, best_time'))
+			$row = RC_DB::table('delivery_order')->select(RC_DB::raw('order_id, consignee, address, country, province, city, district, street, sign_building, email, zipcode, tel, mobile, best_time'))
 				->where('delivery_id', $id)->first();
 
 			if (!empty($row)) {

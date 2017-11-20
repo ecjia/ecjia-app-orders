@@ -77,7 +77,6 @@ class list_module extends api_admin implements api_interface {
 			$user_id = $order_info['user_id'];
 			$address_result = RC_Model::model('user/user_address_model')->where(array('user_id' => $user_id))->select();
 			if (!empty($address_result)) {
-				$db_region = RC_Model::model('shipping/region_model');
 				$user_info = RC_Model::model('user/users_model')->where(array('user_id' => $user_id))->find();
 				foreach ($address_result as $key => $value) {
 					$address_list[$key]['id']			= $value['address_id'];

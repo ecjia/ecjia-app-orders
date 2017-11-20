@@ -59,7 +59,6 @@ class merchant extends ecjia_merchant {
 	private $db_user_address;
 	private $db_bonus;
 	private $db_order_goodview;
-	private $db_region;
 	private $db_shipping;
 	private $db_delivery;
 	private $db_goods;
@@ -92,7 +91,6 @@ class merchant extends ecjia_merchant {
 		$this->db_user_address		= RC_Model::model('user/user_address_viewmodel');
 		$this->db_bonus				= RC_Model::model('orders/bonus_type_user_viewmodel');
 		$this->db_order_goodview	= RC_Model::model('orders/order_order_goods_viewmodel');
-		$this->db_region			= RC_Model::model('region_model');
 		$this->db_shipping			= RC_Model::model('shipping/shipping_model');
 		$this->db_delivery			= RC_Model::model('orders/delivery_goods_model');
 		$this->db_goods				= RC_Model::model('goods/goods_model');

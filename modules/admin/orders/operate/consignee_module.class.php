@@ -71,7 +71,7 @@ class consignee_module extends api_admin implements api_interface {
 		$consignee		= $this->requestData('consignee');
 		$address		= $this->requestData('address');
 		$country_id		= $this->requestData('country_id', 0);
-		$province_id	= $this->requestData('province_id', 0);
+		$province_id	= $this->requestData('province_id', '');
 		$city_id		= $this->requestData('city_id', 0);
 		$district_id	= $this->requestData('district_id', 0);
 		$mobile			= $this->requestData('mobile');

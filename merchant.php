@@ -1249,7 +1249,7 @@ class merchant extends ecjia_merchant {
 					return $this->showmessage(join(chr(13), $msgs) , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 				} else {
 					/* 跳转到订单详情 */
-					$url=RC_Uri::url('orders/merchant/info', array('order_id' => $order_id));
+					$url = RC_Uri::url('orders/merchant/info', array('order_id' => $order_id));
 					return $this->showmessage('' , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS , array('url' => $url));
 				}
 			}
@@ -1304,7 +1304,8 @@ class merchant extends ecjia_merchant {
 						$links[] = array('text' => RC_Lang::get('orders::order.step.shipping'), 'href' => RC_Uri::url('orders/merchant/edit', array('order_id' => $order_id, 'step' => 'shipping')));
 						return $this->showmessage(RC_Lang::get('orders::order.continue_shipping'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR , array('links' => $links));
 					}
-				}	
+				}
+				$url = RC_Uri::url('orders/merchant/info', array('order_id' => $order_id));
 				return $this->showmessage('' , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS , array('url' => $url));
 			
 		} elseif ('shipping' == $step) {

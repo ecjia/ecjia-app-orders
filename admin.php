@@ -1420,6 +1420,7 @@ class admin extends ecjia_admin {
 				}
 				return $this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('url' => $url));
 			} elseif (isset($_POST['finish'])) {
+				$url = RC_Uri::url('orders/admin/info', array('order_id' => $order_id));
 				/* 如果是编辑且存在实体商品，检查收货人地区的改变是否影响原来选的配送 */
 				if ('edit' == $step_act && exist_real_goods($order_id)) {
 					$order = order_info($order_id);

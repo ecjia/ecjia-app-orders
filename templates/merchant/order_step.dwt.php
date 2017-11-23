@@ -246,7 +246,7 @@ ecjia.merchant.order.addedit();
 						<div class="form-group order-step">
                             <label class="control-label col-lg-2">{t}省份：{/t}</label>
                             <div class="w110 f_l m_l15">
-                                <select class="form-control required" name="province" data-toggle="regionSummary" data-type="2" data-target="region-summary-cities" data-url="{url path='setting/region/init'}">
+                                <select class="form-control required" name="province" data-toggle="regionSummary" data-type="2" data-target="region-summary-cities" data-url="{url path='merchant/region/init'}">
                                     <option value='0'>{t}请选择...{/t}</option>
                                     <!-- {foreach from=$province item=region} -->
                                         <option value="{$region.region_id}" {if $region.region_id eq $order.province}selected{/if}>{$region.region_name}</option>

@@ -137,7 +137,7 @@ ecjia.merchant.order_query.init();
 						<div class="form-group form-inline">
 							<label class="control-label col-lg-4">{t}省：{/t}</label>
 							<div class="col-lg-7">
-								<select class="region-summary-provinces form-control" name="province" data-toggle="regionSummary" data-url='{url path="setting/region/init"}'  data-type="1" data-target="region-summary-cities" >
+								<select class="region-summary-provinces form-control" name="province" data-toggle="regionSummary" data-url='{url path="merchant/region/init"}'  data-type="1" data-target="region-summary-cities" >
 									<option value="0">{lang key='system::system.select_please'}</option>
 									<!-- {foreach from=$provinces item=province} -->
 									<option value="{$province.region_id}">{$province.region_name}</option>

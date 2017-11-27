@@ -171,26 +171,63 @@ class merchant extends ecjia_merchant {
 			$this->assign('date', $date);
 			$this->assign('current_order', 1);
 			$this->assign('back_order_list', array('href' => RC_Uri::url('orders/merchant/init'), 'text' => RC_Lang::get('orders::order.order_list')));
+			
+			$t = RC_Time::gmtime();
+			$start_time = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date("m", $t), RC_Time::local_date("d", $t), RC_Time::local_date("Y", $t));  //当天开始时间
+			$end_time = RC_Time::local_mktime(23, 59, 59, RC_Time::local_date("m", $t), RC_Time::local_date("d", $t), RC_Time::local_date("Y", $t)); //当天结束时间
+			
 			$count = get_merchant_order_count();
-			$cache_key = 'count_pay';
+			$cache_key = 'count_pay'.$start_time.$end_time;
 			
 			$count_payed = RC_Cache::app_cache_get($cache_key, 'orders');
 			//有已付款新订单
 			if (!empty($count['payed']) && $count['payed'] > $count_payed) {
 				$this->assign('new_order', 1);
 			}
-			RC_Cache::app_cache_set($cache_key, $count['payed'], 'orders', 10080);
+			RC_Cache::app_cache_set($cache_key, $count['payed'], 'orders', 86400);
 			
 			$this->assign('count', $count);
 			$this->assign('music_url', RC_App::apps_url('statics/music/', __FILE__));
 			
+			//货到付款订单 start
+			$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
+			$payment_id_row = $payment_method->payment_id_list('pay_cod');
+			
+			$payment_id = "";
+			foreach ($payment_id_row as $v) {
+				$payment_id = $v;
+			}
+			$db_order_info = RC_DB::table('order_info');
+			if (!empty($payment_id)) {
+				$db_order_info->where('pay_id', $payment_id);
+			}
+			
+			$cash_delivery = $db_order_info
+				->select('order_id')
+				->where('store_id', $_SESSION['store_id'])
+				->where('add_time', '>', $start_time)
+				->where('add_time', '<', $end_time)
+				->where('is_delete', 0)
+				->whereIn('order_status', array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED))
+				->groupBy('order_id')
+				->get();
+			$count_cash_delivery = count($cash_delivery);
+			
+			$cache_key = 'cash_delivery'.$start_time.$end_time;
+			$count_cash_delivery_cache = RC_Cache::app_cache_get($cache_key, 'orders');
+			if (!empty($count_cash_delivery) && $count_cash_delivery > $count_cash_delivery_cache) {
+				$this->assign('new_order', 1);
+			}
+			RC_Cache::app_cache_set($cache_key, $count_cash_delivery, 'orders', 86400);
+			//货到付款订单 end
+			
 			$on_off = RC_Cache::app_cache_get('switch_on_off', 'orders');
 			if (empty($on_off)) {
 				$this->assign('on_off', 'on');
-				RC_Cache::app_cache_set('switch_on_off', 'on', 'orders', 10080);
+				RC_Cache::app_cache_set('switch_on_off', 'on', 'orders', 86400);
 			} else {
 				$this->assign('on_off', $on_off);
-				RC_Cache::app_cache_set('switch_on_off', $on_off, 'orders', 10080);
+				RC_Cache::app_cache_set('switch_on_off', $on_off, 'orders', 86400);
 			}
 			$this->assign('payed', PS_PAYED);
 		}

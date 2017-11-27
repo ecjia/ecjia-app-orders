@@ -69,7 +69,7 @@ class merchant_order_query extends order {
 
 	/* 待付款订单 */
 	public function order_await_pay($alias = '') {
-		 $this->where = array();
+		$this->where = array();
 		$payment_method = RC_Loader::load_app_class('payment_method','payment');
 		$payment_id_row = $payment_method->payment_id_list(false);
 		$payment_id = "";
@@ -77,10 +77,10 @@ class merchant_order_query extends order {
 			$payment_id .= empty($payment_id) ? $v : ','.$v ;
 		}
 		$payment_id = empty($payment_id) ? "''" : $payment_id;
-		 $this->where[$alias.'order_status'] = array(OS_UNCONFIRMED, OS_CONFIRMED,OS_SPLITED);
+		 $this->where[$alias.'order_status'] = array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED);
 		 $this->where[$alias.'pay_status'] = PS_UNPAYED;
 		 $this->where[]= "( {$alias}shipping_status in (". SS_SHIPPED .",". SS_RECEIVED .") OR {$alias}pay_id in (" . $payment_id . ") )";
-		return  $this->where;
+		return $this->where;
 	}
 	
 	/* 待发货订单 */

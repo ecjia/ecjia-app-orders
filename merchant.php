@@ -540,16 +540,14 @@ class merchant extends ecjia_merchant {
 			//打印单模式
 			if ($shipping['print_model'] == 2) {
 				/* 可视化 快递单*/
-				RC_Loader::load_app_class('shipping_factory', "shipping", false);
 				/* 判断模板图片位置 */
 				if (!empty($shipping['print_bg']) && trim($shipping['print_bg']) !='') {
 					$uploads_dir_info    = RC_Upload::upload_dir();
 					$shipping['print_bg'] = $uploads_dir_info[baseurl] . $shipping['print_bg'];
 				} else {
 					/* 使用插件默认快递单图片 */
-					$plugin_handle = new shipping_factory($shipping['shipping_code']);
-					$config = $plugin_handle->configure_config();
-					$shipping['print_bg'] = $config['print_bg'];
+					$plugin_handle = ecjia_shipping::channel($shipping['shipping_code']);
+					$shipping['print_bg'] = $plugin_handle->printBcakgroundImage();
 				}
 				/* 取快递单背景宽高 */
 				if (!empty($shipping['print_bg'])) {

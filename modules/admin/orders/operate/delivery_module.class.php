@@ -552,8 +552,8 @@ function delivery_order($delivery_id, $order) {
 	
 	/*当订单配送方式为o2o速递时,记录o2o速递物流信息*/
 	if ($order['shipping_id'] > 0) {
-		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
-		$shipping_info = $shipping_method->shipping_info($order['shipping_id']);
+// 		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
+		$shipping_info = ecjia_shipping::pluginData($order['shipping_id']);
 		if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
 			$data = array(
 					'express_code' => $shipping_info['shipping_code'],
@@ -637,8 +637,8 @@ function delivery_order($delivery_id, $order) {
 function create_express_order($delivery_id) {
     $delivery_order = delivery_order_info($delivery_id);
     /* 判断发货单，生成配送单*/
-    $shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
-    $shipping_info = $shipping_method->shipping_info(intval($delivery_order['shipping_id']));
+//     $shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
+    $shipping_info = ecjia_shipping::pluginData(intval($delivery_order['shipping_id']));
     if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
 //         $staff_id = isset($_POST['staff_id']) ? intval($_POST['staff_id']) : 0;
 //         $express_from = !empty($staff_id) ? 'assign' : 'grab';

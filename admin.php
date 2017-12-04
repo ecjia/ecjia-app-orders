@@ -1766,10 +1766,10 @@ class admin extends ecjia_admin {
 			if (!exist_real_goods($order_id)) {
 				return $this->showmessage('Hacking Attemp', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 			}
-			$shipping_method = RC_Loader::load_app_class("shipping_method", "shipping");
+// 			$shipping_method = RC_Loader::load_app_class("shipping_method", "shipping");
 			/* 保存订单 */
 			$shipping_id	= $_POST['shipping'];
-			$shipping		= $shipping_method->shipping_info($shipping_id);
+			$shipping		= ecjia_shipping::pluginData($shipping_id);
 			$invoice_no		= trim($_POST['invoice_no']);
 			$invoice_no		= str_replace(',', '<br>', $invoice_no);
 			$order = array(

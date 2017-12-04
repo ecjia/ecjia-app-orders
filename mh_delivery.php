@@ -201,8 +201,8 @@ class mh_delivery extends ecjia_merchant {
 		}
 		
 		/* 判断配送方式是否是立即送*/
-		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
-		$shipping_info = $shipping_method->shipping_info(intval($delivery_order['shipping_id']));
+// 		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
+		$shipping_info = ecjia_shipping::pluginData(intval($delivery_order['shipping_id']));
 		if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
 			/* 获取正在派单的配送员*/
 			$staff_list = RC_DB::table('staff_user')
@@ -430,8 +430,8 @@ class mh_delivery extends ecjia_merchant {
 		order_action($order['order_sn'], OS_CONFIRMED, $shipping_status, $order['pay_status'], $action_note, null, 1);
 		
 		/* 判断发货单，生成配送单*/
-		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
-		$shipping_info = $shipping_method->shipping_info(intval($delivery_order['shipping_id']));
+// 		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
+		$shipping_info = ecjia_shipping::pluginData(intval($delivery_order['shipping_id']));
 		
 		if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
 			$staff_id = isset($_POST['staff_id']) ? intval($_POST['staff_id']) : 0;
@@ -841,8 +841,8 @@ class mh_delivery extends ecjia_merchant {
 		}
 
 		/* 判断发货单，取消配送单*/
-		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
-		$shipping_info = $shipping_method->shipping_info($delivery_order['shipping_id']);
+// 		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
+		$shipping_info = ecjia_shipping::pluginData($delivery_order['shipping_id']);
 		if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
 		    /* 如果是o2o速递，退货的时候删除ecjia_express_track_record相对应的记录 */
 		    RC_DB::table('express_track_record')->where('track_number', $delivery['invoice_no'])->delete();
@@ -885,8 +885,8 @@ class mh_delivery extends ecjia_merchant {
 				}
 				
 				/* 如果是o2o速递，退货的时候删除ecjia_express_track_record相对应的记录 */
-				$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
-				$shipping_info = $shipping_method->shipping_info($delivery_order['shipping_id']);
+// 				$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
+				$shipping_info = ecjia_shipping::pluginData($delivery_order['shipping_id']);
 				if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
 				    RC_DB::table('express_track_record')->where('track_number', $delivery_order['invoice_no'])->delete();
 				}

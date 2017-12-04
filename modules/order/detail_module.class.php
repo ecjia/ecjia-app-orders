@@ -168,12 +168,12 @@ class detail_module extends api_front implements api_interface {
 		}
 		
 		//收货人地址
-		$order['country'] = ecjia_region::getCountryName($order['country']);
-		$order['province'] = ecjia_region::getCountryName($order['province']);
-		$order['city'] = ecjia_region::getCountryName($order['city']);
-		$order['district'] = ecjia_region::getCountryName($order['district']);
-		$order['street'] = ecjia_region::getCountryName($order['street']);
-		
+		$order['country'] = ecjia_region::getRegionName($order['country']);
+		$order['province'] = ecjia_region::getRegionName($order['province']);
+		$order['city'] = ecjia_region::getRegionName($order['city']);
+		$order['district'] = ecjia_region::getRegionName($order['district']);
+		$order['street'] = ecjia_region::getRegionName($order['street']);
+
 		$goods_list = array();
 		$goods_list = EM_order_goods($order_id);
 		

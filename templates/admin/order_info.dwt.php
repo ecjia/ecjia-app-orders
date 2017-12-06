@@ -153,72 +153,47 @@
 									<td>{$order.pay_time}</td>
 								</tr>
 								
-								{if $shipping.shipping_code eq 'ship_o2o_express'}
-									<tr>
-										<td><div align="right"><strong>{lang key='orders::order.label_shipping'}</strong></div></td>
-										<td>
-											{if $exist_real_goods}
-											{if $order.shipping_id gt 0}
-											<span>{$order.shipping_name}</span>
-											{else}
-											<span>{lang key='system::system.require_field'}</span>
-											{/if}
-											{if !$invalid_order}
-											<a class="data-pjax" href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=shipping"}'>{lang key='system::system.edit'}</a>
-											{/if}
-											{if $order.insure_fee gt 0}{lang key='orders::order.label_insure_fee'}{$order.formated_insure_fee}{/if}
-											{/if}
-										</td>
-										<td><div align="right"><strong>送达时间：</strong></div></td>
-										<td>{$order.expect_shipping_time}</td>
-									</tr>
-									<tr>
-										<td><div align="right"><strong>{lang key='orders::order.label_invoice_no'}</strong></div></td>
-										<td>{if $order.shipping_id gt 0 and $order.shipping_status gt 0}<span>{if $order.invoice_no}{$order.invoice_no}{else}暂无{/if}</span>&nbsp;
-										<a href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=shipping"}' class="special data-pjax">{lang key='system::system.edit'}</a>{/if}</td>
-										<td><div align="right"><strong>{lang key='orders::order.label_shipping_time'}</strong></div></td>
-										<td>{$order.shipping_time}</td>
-									</tr>
-									<tr>
-										<td><div align="right"><strong>{lang key='orders::order.from_order'}</strong></div></td>
-										<td colspan="3">{if $order.referer eq 'ecjia-cashdesk'}收银台{else}{$order.referer}{/if}</td>
-									</tr>
-								{else}
-									<tr>
-										<td><div align="right"><strong>{lang key='orders::order.label_shipping'}</strong></div></td>
-										<td>
-											{if $exist_real_goods}
-											{if $order.shipping_id gt 0}
-											<span>{$order.shipping_name}</span>
-											{else}
-											<span>{lang key='system::system.require_field'}</span>
-											{/if}
-											{if !$invalid_order}
-											<a class="data-pjax" href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=shipping"}'>{lang key='system::system.edit'}</a>
-											{/if}
-											{if $order.insure_fee gt 0}{lang key='orders::order.label_insure_fee'}{$order.formated_insure_fee}{/if}
-											{/if}
-										</td>
-										<td><div align="right"><strong>{lang key='orders::order.label_shipping_time'}</strong></div></td>
-										<td>{$order.shipping_time}</td>
-									</tr>
-									<tr>
-										<td><div align="right"><strong>{lang key='orders::order.label_invoice_no'}</strong></div></td>
-										<td>{if $order.shipping_id gt 0 and $order.shipping_status gt 0}<span>{if $order.invoice_no}{$order.invoice_no}{else}暂无{/if}</span>&nbsp;
-										<a href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=shipping"}' class="special data-pjax">{lang key='system::system.edit'}</a>{/if}</td>
-										<td><div align="right"><strong>{lang key='orders::order.from_order'}</strong></div></td>
-										<td>{if $order.referer eq 'ecjia-cashdesk'}收银台{else}{$order.referer}{/if}</td>
-									</tr>
-								{/if}
+								<tr>
+									<td><div align="right"><strong>{lang key='orders::order.label_shipping'}</strong></div></td>
+									<td>
+										{if $exist_real_goods}
+										{if $order.shipping_id gt 0}
+										<span>{$order.shipping_name}</span>
+										{else}
+										<span>{lang key='system::system.require_field'}</span>
+										{/if}
+										{if !$invalid_order}
+										<a class="data-pjax" href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=shipping"}'>{lang key='system::system.edit'}</a>
+										{/if}
+										{if $order.insure_fee gt 0}{lang key='orders::order.label_insure_fee'}{$order.formated_insure_fee}{/if}
+										{/if}
+									</td>
+									<td><div align="right"><strong>{lang key='orders::order.label_shipping_time'}</strong></div></td>
+									<td>{$order.shipping_time}</td>
+								</tr>
 								
-								{if $order.express_user}
+								<tr>
+									<td><div align="right"><strong>{lang key='orders::order.label_invoice_no'}</strong></div></td>
+									<td>{if $order.shipping_id gt 0 and $order.shipping_status gt 0}<span>{if $order.invoice_no}{$order.invoice_no}{else}暂无{/if}</span>&nbsp;
+									<a href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=shipping"}' class="special data-pjax">{lang key='system::system.edit'}</a>{/if}</td>
+									<td><div align="right"><strong>{lang key='orders::order.from_order'}</strong></div></td>
+									<td>{if $order.referer eq 'ecjia-cashdesk'}收银台{else}{$order.referer}{/if}</td>
+								</tr>
+								
+								<!-- {if $order.express_user} -->
 								<tr>
 									<td><div align="right"><strong>{lang key='orders::order.label_express_user'}</strong></div></td>
-									<td>{$order.express_user}</span>&nbsp;
+									<td>{$order.express_user}</td>
 									<td><div align="right"><strong>{lang key='orders::order.label_express_user_mobile'}</strong></div></td>
 									<td>{$order.express_mobile}</td>
 								</tr>
-								{/if}
+								<!-- {/if} -->
+								
+								<tr>
+									<td><div align="right"><strong>期望送达时间：</strong></div></td>
+									<td colspan="3">{$order.expect_shipping_time}</td>
+								</tr>
+								
 							</tbody>
 						</table>
 					</div>

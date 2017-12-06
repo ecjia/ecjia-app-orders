@@ -525,12 +525,8 @@ class admin extends ecjia_admin {
 
 			/* 参数赋值：订单 */
 			$this->assign('order', $order);
-			
-			$shipping = ecjia_shipping::pluginData($order['shipping_id']);
-			RC_Logger::getLogger('info')->error('test_admin');
-			$this->assign('shipping', $shipping);
-			
 			$this->assign('order_id', $order_id);
+			
 			if ($order['order_amount'] < 0 ) {
 				$anonymous = $order['user_id'] <= 0 ? 1 : 0;
 				$this->assign('refund_url', RC_Uri::url('orders/admin/process', 'func=load_refund&anonymous='.$anonymous.'&order_id='.$order['order_id'].'&refund_amount='.$order['money_refund']));

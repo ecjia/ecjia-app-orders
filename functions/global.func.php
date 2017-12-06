@@ -946,7 +946,8 @@ function get_regions($order_id) {
     	->leftJoin('regions as p', RC_DB::raw('o.province'), '=', RC_DB::raw('p.region_id'))
     	->leftJoin('regions as t', RC_DB::raw('o.city'), '=', RC_DB::raw('t.region_id'))
     	->leftJoin('regions as d', RC_DB::raw('o.district'), '=', RC_DB::raw('d.region_id'))
-    	->select(RC_DB::raw("concat(IFNULL(c.region_name, ''), '  ', IFNULL(p.region_name, ''),'  ', IFNULL(t.region_name, ''), '  ', IFNULL(d.region_name, '')) AS region"))
+    	->leftJoin('regions as s', RC_DB::raw('o.street'), '=', RC_DB::raw('s.region_id'))
+    	->select(RC_DB::raw("concat(IFNULL(c.region_name, ''), '  ', IFNULL(p.region_name, ''),'  ', IFNULL(t.region_name, ''), '  ', IFNULL(d.region_name, ''), '  ', IFNULL(s.region_name, '')) AS region"))
     	->where(RC_DB::raw('o.order_id'), $order_id)
     	->first();
     return $region['region'];

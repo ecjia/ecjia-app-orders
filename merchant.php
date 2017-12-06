@@ -325,10 +325,7 @@ class merchant extends ecjia_merchant {
 
 		
 		/* 取得区域名 */
-		$db		=  RC_Model::model('orders/order_region_viewmodel');
-		$field	= array("concat(IFNULL(c.region_name, ''), '  ', IFNULL(p.region_name, ''),'  ', IFNULL(t.region_name, ''), '  ', IFNULL(d.region_name, '')) AS region");
-		$region	= $db->field($field)->find(array('o.order_id' => $order_id));
-		$order['region']	= $region['region'];
+		$order['region'] = get_regions($order_id);
 		
 		/* 格式化金额 */
 		if ($order['order_amount'] < 0) {

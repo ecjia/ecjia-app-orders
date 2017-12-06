@@ -522,7 +522,7 @@ class admin extends ecjia_admin {
 				$invalid_order = true;
 			}
 			$this->assign('invalid_order', $invalid_order);
-			
+
 			/* 参数赋值：订单 */
 			$this->assign('order', $order);
 			
@@ -1428,7 +1428,7 @@ class admin extends ecjia_admin {
 					$order = order_info($order_id);
 					/* 取得可用配送方式 */
 					$region_id_list = array(
-						$order['country'], $order['province'], $order['city'], $order['district']
+						$order['country'], $order['province'], $order['city'], $order['district'], $order['street']
 					);
 					$shipping_method = RC_Loader::load_app_class("shipping_method","shipping");
 					$shipping_list = $shipping_method->available_shipping_list($region_id_list, $order['store_id']);
@@ -2710,6 +2710,7 @@ class admin extends ecjia_admin {
 			$delivery['province']		= trim($delivery['province']);
 			$delivery['city']			= trim($delivery['city']);
 			$delivery['district']		= trim($delivery['district']);
+			$delivery['street']			= trim($delivery['street']);
 
 			$delivery['agency_id']		= intval($delivery['agency_id']);
 			$delivery['insure_fee']		= floatval($delivery['insure_fee']);

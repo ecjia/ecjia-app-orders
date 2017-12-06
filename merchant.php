@@ -638,6 +638,10 @@ class merchant extends ecjia_merchant {
 			
 			/* 参数赋值：订单 */
 			$this->assign('order', $order);
+
+			$shipping = ecjia_shipping::pluginData($order['shipping_id']);
+			$this->assign('shipping', $shipping);
+			
 			$this->assign('order_id', $order_id);
 			if ($order['order_amount'] < 0 ) {
 				$anonymous = $order['user_id'] <= 0 ? 1 : 0;

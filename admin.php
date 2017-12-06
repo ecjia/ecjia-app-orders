@@ -527,7 +527,7 @@ class admin extends ecjia_admin {
 			$this->assign('order', $order);
 			
 			$shipping = ecjia_shipping::pluginData($order['shipping_id']);
-			RC_Logger::getLogger('info')->error($shipping);
+			RC_Logger::getLogger('info')->error('test_admin');
 			$this->assign('shipping', $shipping);
 			
 			$this->assign('order_id', $order_id);

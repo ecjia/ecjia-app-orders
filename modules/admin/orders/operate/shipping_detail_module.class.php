@@ -112,10 +112,10 @@ class shipping_detail_module extends api_admin implements api_interface {
 				$order['street_id']		= $order['street'];
 
 				$order['country']	= ecjia_region::getCountryName($val['country']);
-				$order['province']	= ecaji_region::getRegionName($val['province']);
-				$order['city']		= ecaji_region::getRegionName($val['city']);
-				$order['district']	= ecaji_region::getRegionName($val['district']);
-				$order['street']    = ecaji_region::getRegionName($val['street']);
+				$order['province']	= ecjia_region::getRegionName($val['province']);
+				$order['city']		= ecjia_region::getRegionName($val['city']);
+				$order['district']	= ecjia_region::getRegionName($val['district']);
+				$order['street']    = ecjia_region::getRegionName($val['street']);
 
 				$delivery_info = array(
 					'order_id'		=> $val['order_id'],
@@ -125,6 +125,7 @@ class shipping_detail_module extends api_admin implements api_interface {
 					'province_id'	=> $val['province'],
 					'city_id'		=> $val['city'],
 					'district_id'	=> $val['district'],
+					'street_id'		=> $val['street'],
 					'country'		=> $order['country'],
 					'province'		=> $order['province'],
 					'city'			=> $order['city'],

@@ -1983,14 +1983,14 @@ class merchant extends ecjia_merchant {
 			$operation		= 'after_service';
 		} elseif (isset($_GET['return'])) {
 			/* 退货 */
-// 			$require_note	= ecjia::config('order_return_note') == 1;
-// 			$order			= order_info($order_id);
-// 			if ($order['money_paid'] > 0) {
-// 				$show_refund = true;
-// 			}
-// 			$anonymous		= $order['user_id'] == 0;
-// 			$action			= RC_Lang::get('orders::order.op_return');
-// 			$operation		= 'return';
+			$require_note	= ecjia::config('order_return_note') == 1 ? true : false;
+			$order			= order_info($order_id);
+			if ($order['money_paid'] > 0) {
+				$show_refund = true;
+			}
+			$anonymous		= $order['user_id'] == 0;
+			$action			= RC_Lang::get('orders::order.op_return');
+			$operation		= 'return';
 		}
 		$result = array();
 		/* 直接处理还是跳到详细页面 */
@@ -2128,14 +2128,14 @@ class merchant extends ecjia_merchant {
 			$operation		= 'after_service';
 		} elseif (isset($_GET['return'])) {
 			/* 退货 */
-// 			$require_note	= ecjia::config('order_return_note') == 1;
-// 			$order			= order_info($order_id);
-// 			if ($order['money_paid'] > 0) {
-// 				$show_refund = true;
-// 			}
-// 			$anonymous		= $order['user_id'] == 0;
-// 			$action			= RC_Lang::get('orders::order.op_return');
-// 			$operation		= 'return';
+			$require_note	= ecjia::config('order_return_note') == 1;
+			$order			= order_info($order_id);
+			if ($order['money_paid'] > 0) {
+				$show_refund = true;
+			}
+			$anonymous		= $order['user_id'] == 0;
+			$action			= RC_Lang::get('orders::order.op_return');
+			$operation		= 'return';
 		} elseif (isset($_GET['assign'])) {
 			/* 指派 */
 			/* 取得参数 */
@@ -3188,9 +3188,6 @@ class merchant extends ecjia_merchant {
 			/* 退货用户余额、积分、红包 */
 			return_user_surplus_integral_bonus($order);
 		} elseif ('return' == $operation) {
-			//暂不支持退货
-			return false;
-			
 			/* 退货 */
 			/* 定义当前时间 */
 			define('GMTIME_UTC', RC_Time::gmtime()); // 获取 UTC 时间戳

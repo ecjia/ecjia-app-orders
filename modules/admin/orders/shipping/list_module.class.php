@@ -105,12 +105,17 @@ class list_module extends api_admin implements api_interface {
 		$new_shipping_list = array();
 		
 		if (!empty($shipping_list)) {
+			foreach ($shipping_list as $a => $b) {
+				if (empty($b['shipping_id'])) {
+					unset($shipping_list[$a]);
+				}
+			}
+		}
+		
+		if (!empty($shipping_list)) {
 			foreach ($shipping_list AS $key => $shipping) {
 	// 			$parent = get_parent_region($shipping['parent_id']);
 	// 			$shipping_list[$key]['parent_name'] = $parent['region_name'];
-				if (empty($shipping['shipping_id'])) {
-					unset($shipping_list[$key]);
-				}
 				if (strpos($shipping['shipping_code'], 'ship') === false) {
 					$shipping['shipping_code'] = 'ship_'.$shipping['shipping_code'];
 				}

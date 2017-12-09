@@ -51,7 +51,7 @@ class today_module extends api_admin implements api_interface
 		
 			$payment_id = empty($payment_id) ? 0 : $payment_id;
 
-			$where1[] = "(oi.pay_time >= ".$last_refresh_time." AND oi.pay_time <= ".$time.") OR pay_id in (" . $payment_id . ")";
+			$where1[] = "(oi.pay_time >= ".$last_refresh_time." AND oi.pay_time <= ".$time.") OR oi.pay_id in (" . $payment_id . ")";
 		}
 		
 		if (!empty($type)) {

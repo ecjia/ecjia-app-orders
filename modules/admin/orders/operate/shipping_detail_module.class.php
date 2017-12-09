@@ -105,11 +105,11 @@ class shipping_detail_module extends api_admin implements api_interface {
 			/* 首次设置订单信息*/
 			if ($key == 0) {
 				//收货人地址
-				$order['country_id']	= $order['country'];
-				$order['province_id']	= $order['province'];
-				$order['city_id']		= $order['city'];
-				$order['district_id']	= $order['district'];
-				$order['street_id']		= $order['street'];
+				$order['country_id']	= $val['country'];
+				$order['province_id']	= $val['province'];
+				$order['city_id']		= $val['city'];
+				$order['district_id']	= $val['district'];
+				$order['street_id']		= $val['street'];
 
 				$order['country']	= ecjia_region::getCountryName($val['country']);
 				$order['province']	= ecjia_region::getRegionName($val['province']);
@@ -121,11 +121,11 @@ class shipping_detail_module extends api_admin implements api_interface {
 					'order_id'		=> $val['order_id'],
 					'order_sn'		=> $val['order_sn'],
 					'consignee'		=> $val['consignee'],
-					'country_id'	=> $val['country'],
-					'province_id'	=> $val['province'],
-					'city_id'		=> $val['city'],
-					'district_id'	=> $val['district'],
-					'street_id'		=> $val['street'],
+					'country_id'	=> $order['country_id'],
+					'province_id'	=> $order['province_id'],
+					'city_id'		=> $order['city_id'],
+					'district_id'	=> $order['district_id'],
+					'street_id'		=> $order['street_id'],
 					'country'		=> $order['country'],
 					'province'		=> $order['province'],
 					'city'			=> $order['city'],

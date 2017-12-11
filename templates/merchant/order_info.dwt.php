@@ -523,7 +523,7 @@ ecjia.merchant.order.info();
 									{/if}
 
 									{if $operable_list.pay}
-									<button class="btn operatesubmit btn-info" type="submit" name="pay">{lang key='orders::order.op_pay'}</button>
+									<button class="btn operatesubmit btn-info" type="submit" name="pay">{lang key='orders::order.op_confirm_pay'}</button>
 									{/if}
 
 									{if $operable_list.unpay}

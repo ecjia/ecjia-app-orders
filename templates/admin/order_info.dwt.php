@@ -520,7 +520,7 @@
 										{if $operable_list.confirm}
 										<button class="btn operatesubmit" type="submit" name="confirm">{lang key='orders::order.op_confirm'}</button>
 										{/if} {if $operable_list.pay}
-										<button class="btn operatesubmit" type="submit" name="pay">{lang key='orders::order.op_pay'}</button>
+										<button class="btn operatesubmit" type="submit" name="pay">{lang key='orders::order.op_confirm_pay'}</button>
 										{/if} {if $operable_list.unpay}
 										<button class="btn operatesubmit" type="submit" name="unpay">{lang key='orders::order.op_unpay'}</button>
 										{/if} {if $operable_list.prepare}

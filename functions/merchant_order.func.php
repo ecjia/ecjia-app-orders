@@ -69,6 +69,7 @@ function merchant_operable_list($order) {
     /* 取得订单支付方式是否货到付款 */
 //     $payment_method = RC_Loader::load_app_class('payment_method', 'payment');
     $payment = with(new Ecjia\App\Payment\PaymentPlugin)->getPluginDataById($order['pay_id']);
+    
 //     if (!empty($payment_method)) {
 //         $payment = $payment_method->payment_info($order['pay_id']);
 //     }
@@ -125,7 +126,7 @@ function merchant_operable_list($order) {
                 } else {
                     /* 不是货到付款 */
                     if ($priv_list['ps']) {
-                        $list['pay'] = false;
+                        $list['pay'] = true;
                         // 付款
                     }
                 }
@@ -141,7 +142,7 @@ function merchant_operable_list($order) {
             } else {
                 /* 状态：已确认、未付款、已发货或已收货 => 货到付款 */
                 if ($priv_list['ps']) {
-                    $list['pay'] = false;
+                    $list['pay'] = true;
                     // 付款
                 }
                 if ($priv_list['ss']) {
@@ -206,7 +207,7 @@ function merchant_operable_list($order) {
                     }
                 }
                 if ($priv_list['ps'] && $is_cod) {
-                    $list['unpay'] = false;
+                    $list['unpay'] = true;
                     // 设为未付款
                 }
                 if ($priv_list['os'] && $priv_list['ss'] && $priv_list['ps']) {
@@ -256,7 +257,12 @@ function merchant_operable_list($order) {
             // 取消
         }
     }
-    $list['unpay'] = $list['pay'] = false;
+    //自营商家，只有货到付款的订单才支持付款功能
+    $store_info = RC_DB::table('store_franchisee')->where('store_id', $_SESSION['store_id'])->first();
+    if ($store_info['manage_mode'] != 'self' || $payment['pay_code'] != 'pay_cod') {
+    	$list['unpay'] = $list['pay'] = false;
+    }
+    
     /* 售后 */
     $list['after_service'] = true;
     return $list;
@@ -419,7 +425,7 @@ function get_merchant_order_count() {
 	$start_time = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date("m", $t), RC_Time::local_date("d", $t), RC_Time::local_date("Y", $t));  //当天开始时间
 	$end_time = RC_Time::local_mktime(23, 59, 59, RC_Time::local_date("m", $t), RC_Time::local_date("d", $t), RC_Time::local_date("Y", $t)); //当天结束时间
 
-	$array = array('oi.store_id'  => $_SESSION['store_id'], 'oi.add_time' => array('gt'=> $start_time, 'lt' => $t), 'oi.is_delete' => 0);
+	$array = array('oi.store_id'  => $_SESSION['store_id'], 'oi.add_time' => array('gt'=> $start_time, 'lt' => $end_time), 'oi.is_delete' => 0);
 	if (!empty($keywords)) {
 		$array[] = "(oi.order_sn like '%".mysql_like_quote($keywords)."%' or oi.consignee like '%".mysql_like_quote($keywords)."%')"; 
 	}

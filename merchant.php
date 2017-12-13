@@ -518,8 +518,9 @@ class merchant extends ecjia_merchant {
 			$region_id	.= ecjia::config('shop_country'	, ecjia::CONFIG_CHECK) ? ecjia::config('shop_province') . ',' : '';
 			$region_id	.= ecjia::config('shop_city'	, ecjia::CONFIG_CHECK) ? ecjia::config('shop_city') . ',' : '';
 			$region_id	= substr($region_id, 0, -1);
+			$region_id_list = explode(',', $region_id);
 			
-			$region = ecjia_region::getRegions($region_id);
+			$region = ecjia_region::getRegions($region_id_list);
 			if (!empty($region)) {
 				foreach ($region as $region_data) {
 					$region_array[$region_data['region_id']] = $region_data['region_name'];
@@ -600,8 +601,8 @@ class merchant extends ecjia_merchant {
 					$temp_config_lable[$temp_key] = implode(',', $temp_info);
 				}
 				$shipping['config_lable'] = implode('||,||',  $temp_config_lable);
-				$this->assign('shipping', 	$shipping);
-				
+				$this->assign('shipping', $shipping);
+
 				$this->display('print.dwt');
 			} elseif (!empty($shipping['shipping_print'])) {
 				/* 代码 */

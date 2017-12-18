@@ -121,7 +121,7 @@ ecjia.merchant.order.info();
         		<ul class="dropdown-menu pull-right">
         			<li><a class="nopjax" href='{url path="orders/merchant/info" args="order_id={$order.order_id}&print=1"}' target="__blank">订单打印</a></li>
         			{if $has_payed eq 1}
-        			<li><a class="nopjax" href='{url path="printer/mh_print/print_order" args="order_id={$order.order_id}"}' target="__blank">小票打印</a></li>
+        			<li><a class="toggle_view" href='{url path="printer/mh_print/print_order" args="order_id={$order.order_id}"}'>小票打印</a></li>
             		{/if}
             	</ul>
         	</div>

@@ -89,7 +89,7 @@ class mh_print extends ecjia_merchant
             }
         }
 
-        $order_trade_no   = RC_DB::table('payment_record')->where('order_sn', 'LIKE', '%' . mysql_like_quote($order['order_sn']) . '%')->pluck('trade_no');
+        $order_trade_no   = RC_DB::table('payment_record')->where('order_sn', 'LIKE', '%' . mysql_like_quote($order['order_sn']) . '%')->where('trade_type', 'buy')->pluck('trade_no');
         $integral_balance = RC_DB::table('users')->where('user_id', $order['user_id'])->pluck('pay_points');
 
         RC_Loader::load_app_func('admin_order', 'orders');

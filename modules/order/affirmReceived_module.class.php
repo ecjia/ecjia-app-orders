@@ -205,8 +205,15 @@ function affirm_received($order_id, $user_id = 0) {
             	);
             	$express_finished = new ExpressFinished($express_data);
             	RC_Notification::send($user, $express_finished);
-
-            	RC_DB::table('express_order')->where('express_id', $express_info['express_id'])->update(array('status' => 5, 'signed_time' => RC_Time::gmtime()));
+				
+            	$update_data = array(
+            		'status' 			=> 5,
+            		'signed_time' 		=> RC_Time::gmtime(),
+            		'commision_status'	=> 1,
+            		'commision_time'	=> RC_Time::gmtime(), 
+            	);
+            	
+            	RC_DB::table('express_order')->where('express_id', $express_info['express_id'])->update($update_data);
             	
             	/*推送消息*/
 //             	$devic_info = RC_Api::api('mobile', 'device_info', array('user_type' => 'merchant', 'user_id' => $express_info['staff_id']));

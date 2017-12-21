@@ -662,7 +662,7 @@ function create_express_order($delivery_id) {
             'mobile'		=> $delivery_order['mobile'],
             'best_time'		=> $delivery_order['best_time'],
             'remark'		=> '',
-            'shipping_fee'	=> '5.00',
+            'shipping_fee'	=> $delivery_order['shipping_fee'],
             'commision'		=> '',
             'add_time'		=> RC_Time::gmtime(),
             'longitude'		=> $delivery_order['longitude'],

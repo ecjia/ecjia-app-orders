@@ -112,21 +112,22 @@ class mh_print extends ecjia_merchant
                 'order_trade_no'      => $order_trade_no, //流水编号
                 'user_name'           => $order['user_name'], //会员账号
                 'purchase_time'       => RC_Time::local_date('Y-m-d H:i:s', $order['add_time']), //下单时间
-                'integral_money'      => $order['integral_money'],
-                'receivables'         => $order['total_fee'], //应收金额
 
-                'integral_balance'    => $integral_balance, //积分余额
-                'integral_give'       => $integral_give, //获得积分
-
-                'payment'             => $order['pay_name'],
-                'favourable_discount' => $order['discount'], //满减满折
-                'bonus_discount'      => $order['bonus'], //红包折扣
-                'rounding'            => '0.00', //分头舍去
-                'order_amount'        => $order['money_paid'], //实收金额
-                'give_change'         => '0.00', //找零金额
-                'order_remarks'       => $order['postscript'],
                 'goods_lists'         => $goods_list,
                 'goods_subtotal'      => $order['goods_amount'], //商品总计
+
+                'integral_money'      => '-' . $order['integral_money'],
+                'integral_give'       => $integral_give, //获得积分
+                'integral_balance'    => $integral_balance, //积分余额
+                'favourable_discount' => '-' . $order['discount'], //满减满折
+                'bonus_discount'      => '-' . $order['bonus'], //红包折扣
+
+                'shipping_fee'        => $order['shipping_fee'],
+                'receivables'         => $order['total_fee'], //应收金额
+                'order_amount'        => $order['money_paid'], //实收金额
+                'payment'             => $order['pay_name'],
+
+                'order_remarks'       => $order['postscript'],
                 'qrcode'              => $order['order_sn'],
             );
         } elseif ($type == 'print_takeaway_orders') {
@@ -159,11 +160,12 @@ class mh_print extends ecjia_merchant
 
                 'integral_balance'     => $integral_balance, //积分余额
                 'integral_give'        => $integral_give, //获得积分
+                'shipping_fee'         => $order['shipping_fee'],
 
                 'receivables'          => $order['total_fee'], //应收金额
-                'favourable_discount'  => $order['discount'], //满减满折
-                'bonus_discount'       => $order['bonus'], //红包折扣
-                'rounding'             => '0.00', //分头舍去
+                'favourable_discount'  => '-' . $order['discount'], //满减满折
+                'bonus_discount'       => '-' . $order['bonus'], //红包折扣
+
                 'order_amount'         => $order['money_paid'], //实收金额
                 'order_remarks'        => $order['postscript'],
                 'consignee_address'    => $address,

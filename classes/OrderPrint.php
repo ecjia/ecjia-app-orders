@@ -149,7 +149,9 @@ class OrderPrint
             'payment'              => $order['pay_name'], //支付方式
             'pay_status'           => RC_Lang::get('orders::order.ps.' . $order['pay_status']), //支付状态
             'purchase_time'        => RC_Time::local_date('Y-m-d H:i:s', $order['add_time']), //下单时间
-            'expect_shipping_time' => RC_Time::local_date('Y-m-d H:i:s', $order['expect_shipping_time']), //期望送达时间
+            
+            'expect_shipping_time' => $order['expect_shipping_time'], //期望送达时间
+            
             'integral_money'       => $order['integral_money'], //积分抵扣
         
             'integral_balance'     => $user['pay_points'], //积分余额

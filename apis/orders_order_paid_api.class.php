@@ -50,6 +50,7 @@ defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
  * 订单支付后处理订单的接口
+ * @deprecated 1.8.0 此接口已经废弃了
  * @author royalwang
  */
 class orders_order_paid_api extends Component_Event_Api {

@@ -55,13 +55,17 @@ class OrderPrint
         
         //4.获取配送方式，判断订单类型
         $type          = 'print_buy_orders';
-        $shipping_data = ecjia_shipping::getPluginDataById($order['shipping_id']);
-        if ($shipping_data['shipping_code'] == 'ship_o2o_express') {
-            $type = 'print_takeaway_orders';
-        } elseif ($shipping_data['shipping_code'] == 'ship_cac' || $shipping_data['shipping_code'] == 'ship_no_express') {
-        	$type = 'print_store_orders';
-        }
         
+        if (intval($order['shipping_id']) == 0) {
+        	$type = 'print_store_orders';
+        } else {
+        	$shipping_data = ecjia_shipping::getPluginDataById($order['shipping_id']);
+        	if ($shipping_data['shipping_code'] == 'ship_o2o_express') {
+        		$type = 'print_takeaway_orders';
+        	} elseif ($shipping_data['shipping_code'] == 'ship_cac') {
+        		$type = 'print_store_orders';
+        	}
+        }
         //5.获取订单中的商品列表
         $goods_list = $this->getGoodsList();
         

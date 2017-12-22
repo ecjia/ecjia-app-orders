@@ -247,7 +247,7 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		RC_Notification::send($staff_user_ob, $push_order_pay);
 		
 		/* 打印订单 */
-		$res = with(new Ecjia\App\Orders\OrderPrint($order_id, $order['store_id']))->doPrint(true);
+		$res = with(new Ecjia\App\Orders\OrderPrint($order_id, $order_info['store_id']))->doPrint(true);
 		if (is_ecjia_error($res)) {
 		    RC_Logger::getLogger('error')->error($res->get_error_message());
 		}

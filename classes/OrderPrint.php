@@ -58,6 +58,8 @@ class OrderPrint
         $shipping_data = ecjia_shipping::getPluginDataById($order['shipping_id']);
         if ($shipping_data['shipping_code'] == 'ship_o2o_express') {
             $type = 'print_takeaway_orders';
+        } elseif ($shipping_data['shipping_code'] == 'ship_cac') {
+        	$type = 'print_store_orders';
         }
         
         //5.获取订单中的商品列表
@@ -73,6 +75,8 @@ class OrderPrint
             return $this->printBuyOrders($type, $order, $store, $user, $goods_list, $order_trade_no, $integral_give, $auto_print);
         } elseif ($type == 'print_takeaway_orders') {
             return $this->printTakeawayOrders($type, $order, $store, $user, $goods_list, $order_trade_no, $integral_give, $auto_print);
+        } elseif ($type == 'print_store_orders') {
+        	return $this->printStoreOrders($type, $order, $store, $goods_list, $order_trade_no, $auto_print);
         }
     }
     
@@ -186,6 +190,56 @@ class OrderPrint
         return $result;
     }
     
+    
+    /**
+     * 打印到店购物小票
+     */
+    public function printStoreOrders($type, $order, $store, $goods_list, $order_trade_no, $auto_print = false)
+    {
+    	$address = '';
+    	if (!empty($store['province'])) {
+    		$address .= ecjia_region::getRegionName($store['province']);
+    	}
+    	if (!empty($store['city'])) {
+    		$address .= ecjia_region::getRegionName($store['city']);
+    	}
+    	if (!empty($store['district'])) {
+    		$address .= ecjia_region::getRegionName($store['district']);
+    	}
+    	if (!empty($store['street'])) {
+    		$address .= ecjia_region::getRegionName($store['street']);
+    	}
+    	if (!empty($address)) {
+    		$address .= ' ';
+    	}
+    	$address .= $store['address'];
+    
+    	$data = array(
+    		'order_sn'        	=> $order['order_sn'], //订单编号
+    		'order_trade_no'   	=> $order_trade_no, //流水编号
+    		'purchase_time'    	=> RC_Time::local_date('Y-m-d H:i:s', $order['add_time']), //下单时间
+    		'merchant_address'  => $address,
+    			
+    		'goods_lists'       => $goods_list,
+    		'discount_amount'	=> $order['discount'], //优惠金额
+    		'receivables'     	=> $order['surplus'], //应收金额
+    		'payment'        	=> $order['pay_name'], //支付方式
+    		'order_amount'    	=> $order['surplus'], //实收金额
+    	);
+    
+    	$data['order_type']      = 'buy';
+    	$data['merchant_name']   = $store['merchants_name'];
+    	$data['merchant_mobile'] = $store['shop_kf_mobile'];
+    
+    	$result = RC_Api::api('printer', 'send_event_print', [
+    		'store_id'      => $store['store_id'],
+    		'event'         => $type,
+    		'value'         => $data,
+    		'auto_print'    => $auto_print,
+		]);
+    
+    	return $result;
+    }
     
     /**
      * 获取商品列表

@@ -26,6 +26,7 @@ class OrderPrint
     
     /**
      * 打印
+     * @param boolean $auto_print 是否自动打印
      * @return ecjia_error|boolean
      */
     public function doPrint($auto_print = false)

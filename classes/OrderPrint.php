@@ -47,7 +47,7 @@ class OrderPrint
         
         //3.获取用户信息
         $user = RC_Api::api('user', 'user_info', array('user_id' => $order['user_id']));
-        if (is_ecjia_error($user)) {
+        if (is_ecjia_error($user) || empty($user['user_name'])) {
             $order['user_name'] = '匿名用户';
         } else {
             $order['user_name'] = $user['user_name'];
@@ -225,6 +225,7 @@ class OrderPrint
     		'receivables'     	=> $order['surplus'], //应收金额
     		'payment'        	=> $order['pay_name'], //支付方式
     		'order_amount'    	=> $order['surplus'], //实收金额
+    		'qrcode'            => $order['order_sn'],
     	);
     
     	$data['order_type']      = 'buy';

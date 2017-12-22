@@ -98,7 +98,7 @@ class OrderPrint
         
             'shipping_fee'        => $order['shipping_fee'],
             'receivables'         => $order['total_fee'], //应收金额
-            'order_amount'        => $order['money_paid'], //实收金额
+            'order_amount'        => $order['total_fee'], //实收金额
             'payment'             => $order['pay_name'],
         
             'order_remarks'       => $order['postscript'],
@@ -160,7 +160,7 @@ class OrderPrint
             'favourable_discount'  => $order['discount'], //满减满折
             'bonus_discount'       => $order['bonus'], //红包折扣
         
-            'order_amount'         => $order['money_paid'], //实收金额
+            'order_amount'         => $order['total_fee'], //实收金额
             'order_remarks'        => $order['postscript'],
             'consignee_address'    => $address,
             'consignee_name'       => $order['consignee'],

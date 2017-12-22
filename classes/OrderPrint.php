@@ -6,8 +6,10 @@ use RC_Api;
 use RC_DB;
 use RC_Time;
 use RC_Lang;
+use RC_Loader;
 use ecjia_region;
 use ecjia_error;
+use ecjia_shipping;
 
 class OrderPrint
 {
@@ -63,18 +65,20 @@ class OrderPrint
         //6.获取支付流水号
         $order_trade_no = $this->getPayRecord($order);
         
+        //7.获取该订单获得积分
+        $integral_give = $this->getIntegralGive($order);
         
         if ($type == 'print_buy_orders') {
-            return $this->printBuyOrders($type, $order, $store, $user, $goods_list, $order_trade_no);
+            return $this->printBuyOrders($type, $order, $store, $user, $goods_list, $order_trade_no, $integral_give);
         } elseif ($type == 'print_takeaway_orders') {
-            return $this->printTakeawayOrders($type, $order, $store, $user, $goods_list, $order_trade_no);
+            return $this->printTakeawayOrders($type, $order, $store, $user, $goods_list, $order_trade_no, $integral_give);
         }
     }
     
     /**
      * 打印普通订单小票
      */
-    public function printBuyOrders($type, $order, $store, $user, $goods_list, $order_trade_no)
+    public function printBuyOrders($type, $order, $store, $user, $goods_list, $order_trade_no, $integral_give)
     {
         $data = array(
             'order_sn'            => $order['order_sn'], //订单编号
@@ -87,7 +91,7 @@ class OrderPrint
         
             'integral_money'      => '-' . $order['integral_money'],
             'integral_give'       => $integral_give, //获得积分
-            'integral_balance'    => $integral_balance, //积分余额
+            'integral_balance'    => $user['pay_points'], //积分余额
             'favourable_discount' => '-' . $order['discount'], //满减满折
             'bonus_discount'      => '-' . $order['bonus'], //红包折扣
         
@@ -117,7 +121,7 @@ class OrderPrint
     /**
      * 打印外卖订单小票
      */
-    public function printTakeawayOrders($type, $order, $store, $user, $goods_list, $order_trade_no)
+    public function printTakeawayOrders($type, $order, $store, $user, $goods_list, $order_trade_no, $integral_give)
     {
         $address = '';
         if (!empty($order['province'])) {
@@ -144,9 +148,9 @@ class OrderPrint
             'pay_status'           => RC_Lang::get('orders::order.ps.' . $order['pay_status']), //支付状态
             'purchase_time'        => RC_Time::local_date('Y-m-d H:i:s', $order['add_time']), //下单时间
             'expect_shipping_time' => RC_Time::local_date('Y-m-d H:i:s', $order['expect_shipping_time']), //期望送达时间
-            'integral_money'       => $order['integral_money'], //积分抵扣
+            'integral_money'       => '-' . $order['integral_money'], //积分抵扣
         
-            'integral_balance'     => $integral_balance, //积分余额
+            'integral_balance'     => $user['pay_points'], //积分余额
             'integral_give'        => $integral_give, //获得积分
             'shipping_fee'         => $order['shipping_fee'],
         
@@ -218,5 +222,16 @@ class OrderPrint
         return $record['trade_no'] ?: $record['order_trade_no'];
     }
     
+    /**
+     * 获取该订单所得积分
+     */
+    protected function getIntegralGive($order)
+    {
+    	RC_Loader::load_app_func('admin_order', 'orders');
+    	$integral      = integral_to_give($order);
+    	$integral_give = !empty($integral['custom_points']) ? $integral['custom_points'] : 0;
+    	
+    	return $integral_give;
+    }
     
 }

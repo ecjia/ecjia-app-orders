@@ -28,7 +28,7 @@ class OrderPrint
      * 打印
      * @return ecjia_error|boolean
      */
-    public function doPrint()
+    public function doPrint($auto_print = false)
     {
         //1.获取订单信息
         $order    = RC_Api::api('orders', 'order_info', array('order_id' => $this->order_id, 'store_id' => $this->store_id));
@@ -65,16 +65,16 @@ class OrderPrint
         
         
         if ($type == 'print_buy_orders') {
-            return $this->printBuyOrders($type, $order, $store, $user, $goods_list, $order_trade_no);
+            return $this->printBuyOrders($type, $order, $store, $user, $goods_list, $order_trade_no, $auto_print);
         } elseif ($type == 'print_takeaway_orders') {
-            return $this->printTakeawayOrders($type, $order, $store, $user, $goods_list, $order_trade_no);
+            return $this->printTakeawayOrders($type, $order, $store, $user, $goods_list, $order_trade_no, $auto_print);
         }
     }
     
     /**
      * 打印普通订单小票
      */
-    public function printBuyOrders($type, $order, $store, $user, $goods_list, $order_trade_no)
+    public function printBuyOrders($type, $order, $store, $user, $goods_list, $order_trade_no, $auto_print = false)
     {
         $data = array(
             'order_sn'            => $order['order_sn'], //订单编号
@@ -105,9 +105,10 @@ class OrderPrint
         $data['merchant_mobile'] = $store['shop_kf_mobile'];
         
         $result = RC_Api::api('printer', 'send_event_print', [
-            'store_id' => $_SESSION['store_id'],
-            'event'    => $type,
-            'value'    => $data,
+            'store_id'      => $store['store_id'],
+            'event'         => $type,
+            'value'         => $data,
+            'auto_print'    => $auto_print,
         ]);
         
         return $result;
@@ -117,7 +118,7 @@ class OrderPrint
     /**
      * 打印外卖订单小票
      */
-    public function printTakeawayOrders($type, $order, $store, $user, $goods_list, $order_trade_no)
+    public function printTakeawayOrders($type, $order, $store, $user, $goods_list, $order_trade_no, $auto_print = false)
     {
         $address = '';
         if (!empty($order['province'])) {
@@ -169,9 +170,10 @@ class OrderPrint
         $data['merchant_mobile'] = $store['shop_kf_mobile'];
         
         $result = RC_Api::api('printer', 'send_event_print', [
-            'store_id' => $_SESSION['store_id'],
-            'event'    => $type,
-            'value'    => $data,
+            'store_id'      => $store['store_id'],
+            'event'         => $type,
+            'value'         => $data,
+            'auto_print'    => $auto_print,
         ]);
         
         return $result;

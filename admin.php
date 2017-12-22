@@ -2641,12 +2641,6 @@ class admin extends ecjia_admin {
 			}
 			update_order($order_id, $arr);
 			
-			// 打印订单
-			$result = with(new Ecjia\App\Orders\OrderPrint($order_id, $order['store_id']))->doPrint(true);
-			if (is_ecjia_error($result)) {
-				RC_Logger::getLogger('error')->error($result->get_error_message());
-			}
-			
 			/* 记录日志 */
 			ecjia_admin::admin_log(RC_Lang::get('orders::order.ps.'.PS_PAYED).' '.RC_Lang::get('orders::order.order_is').$order['order_sn'], 'edit', 'order_status');
 			/* 记录log */

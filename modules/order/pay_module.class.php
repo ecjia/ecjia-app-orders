@@ -120,6 +120,12 @@ class pay_module extends api_front implements api_interface {
         //增加支付状态
         $order['payment']['order_pay_status'] = $order['pay_status'];//0 未付款，1付款中，2已付款
         
+        //打印订单
+        $res = with(new Ecjia\App\Orders\OrderPrint($order_id, $order['store_id']))->doPrint();
+        if (is_ecjia_error($res)) {
+        	RC_Logger::getLogger('error')->error($res->get_error_message());
+        }
+        
         return array('payment' => $order['payment']);
 	}
 }

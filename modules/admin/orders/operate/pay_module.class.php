@@ -101,6 +101,13 @@ class pay_module extends api_admin implements api_interface {
 			$order_info['shipping_status']	= SS_RECEIVED;
 		}
 		update_order($order_id, $arr);
+		
+		// 打印订单
+		$result = with(new Ecjia\App\Orders\OrderPrint($order_id, $order_info['store_id']))->doPrint(true);
+		if (is_ecjia_error($result)) {
+			RC_Logger::getLogger('error')->error($result->get_error_message());
+		}
+		
 		/* 记录日志 */
 		if ($_SESSION['store_id'] > 0) {
 		    RC_Api::api('merchant', 'admin_log', array('text' => '已付款，订单号是 '.$order_info['order_sn'].'【来源掌柜】', 'action' => 'edit', 'object' => 'order_status'));

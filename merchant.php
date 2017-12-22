@@ -2602,6 +2602,13 @@ class merchant extends ecjia_merchant {
 				$order['shipping_status']	= SS_RECEIVED;
 			}
 			update_order($order_id, $arr);
+			
+			// 打印订单
+			$result = with(new Ecjia\App\Orders\OrderPrint($order_id, $_SESSION['store_id']))->doPrint(true);
+			if (is_ecjia_error($result)) {
+				RC_Logger::getLogger('error')->error($result->get_error_message());
+			}
+			
 			/* 记录日志 */
 			ecjia_merchant::admin_log('设为付款,订单号是'.$order['order_sn'], 'setup', 'order');
 			/* 记录log */

@@ -90,11 +90,11 @@ class OrderPrint
             'goods_lists'         => $goods_list,
             'goods_subtotal'      => $order['goods_amount'], //商品总计
         
-            'integral_money'      => '-' . $order['integral_money'],
+            'integral_money'      => $order['integral_money'],
             'integral_give'       => $integral_give, //获得积分
             'integral_balance'    => $user['pay_points'], //积分余额
-            'favourable_discount' => '-' . $order['discount'], //满减满折
-            'bonus_discount'      => '-' . $order['bonus'], //红包折扣
+            'favourable_discount' => $order['discount'], //满减满折
+            'bonus_discount'      => $order['bonus'], //红包折扣
         
             'shipping_fee'        => $order['shipping_fee'],
             'receivables'         => $order['total_fee'], //应收金额
@@ -150,15 +150,15 @@ class OrderPrint
             'pay_status'           => RC_Lang::get('orders::order.ps.' . $order['pay_status']), //支付状态
             'purchase_time'        => RC_Time::local_date('Y-m-d H:i:s', $order['add_time']), //下单时间
             'expect_shipping_time' => RC_Time::local_date('Y-m-d H:i:s', $order['expect_shipping_time']), //期望送达时间
-            'integral_money'       => '-' . $order['integral_money'], //积分抵扣
+            'integral_money'       => $order['integral_money'], //积分抵扣
         
             'integral_balance'     => $user['pay_points'], //积分余额
             'integral_give'        => $integral_give, //获得积分
             'shipping_fee'         => $order['shipping_fee'],
         
             'receivables'          => $order['total_fee'], //应收金额
-            'favourable_discount'  => '-' . $order['discount'], //满减满折
-            'bonus_discount'       => '-' . $order['bonus'], //红包折扣
+            'favourable_discount'  => $order['discount'], //满减满折
+            'bonus_discount'       => $order['bonus'], //红包折扣
         
             'order_amount'         => $order['money_paid'], //实收金额
             'order_remarks'        => $order['postscript'],
@@ -198,7 +198,7 @@ class OrderPrint
                     ->leftJoin('goods as g', RC_DB::raw('o.goods_id'), '=', RC_DB::raw('g.goods_id'))
                     ->selectRaw("o.*, IF(o.product_id > 0, p.product_number, g.goods_number) AS storage,
                     o.goods_attr, g.suppliers_id, p.product_sn, g.goods_img, g.goods_sn as goods_sn")
-                            ->where(RC_DB::raw('o.order_id'), $order_id)
+                            ->where(RC_DB::raw('o.order_id'), $this->order_id)
                             ->get();
         
         if (!empty($data)) {

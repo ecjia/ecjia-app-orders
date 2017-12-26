@@ -355,7 +355,7 @@ class merchant extends ecjia_merchant {
 		$order['shipping_time']		= $order['shipping_time'] > 0 ? RC_Time::local_date(ecjia::config('time_format'), $order['shipping_time']) : RC_Lang::get('orders::order.ss.'.SS_UNSHIPPED);
 		$order['status']			= RC_Lang::get('orders::order.os.'.$order['order_status']) . ',' . RC_Lang::get('orders::order.ps.'.$order['pay_status']) . ',' . RC_Lang::get('orders::order.ss.'.$order['shipping_status']);
 		$order['invoice_no']		= $order['shipping_status'] == SS_UNSHIPPED || $order['shipping_status'] == SS_PREPARING ? RC_Lang::get('orders::order.ss.'.SS_UNSHIPPED) : $order['invoice_no'];
-		
+
 		/* 取得订单的来源 */
 		if ($order['from_ad'] == 0) {
 			$order['referer']	= empty($order['referer']) ? RC_Lang::get('orders::order.from_self_site') : $order['referer'];
@@ -646,6 +646,11 @@ class merchant extends ecjia_merchant {
 			if ($order['order_amount'] < 0 ) {
 				$anonymous = $order['user_id'] <= 0 ? 1 : 0;
 				$this->assign('refund_url', RC_Uri::url('orders/merchant/process','func=load_refund&anonymous='.$anonymous.'&order_id='.$order['order_id'].'&refund_amount='.$order['money_refund']));
+			}
+			$order_finishied = 0;
+			if (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED)) && in_array($order['shipping_status'], array(SS_SHIPPED, SS_RECEIVED)) && in_array($order['pay_status'], array(PS_PAYED, PS_PAYING))) {
+				$order_finishied = 1;
+				$this->assign('order_finished', $order_finishied);
 			}
 			$this->display('order_info.dwt');
 		}	

@@ -325,10 +325,7 @@ class merchant extends ecjia_merchant {
 
 		
 		/* 取得区域名 */
-		$db		=  RC_Model::model('orders/order_region_viewmodel');
-		$field	= array("concat(IFNULL(c.region_name, ''), '  ', IFNULL(p.region_name, ''),'  ', IFNULL(t.region_name, ''), '  ', IFNULL(d.region_name, '')) AS region");
-		$region	= $db->field($field)->find(array('o.order_id' => $order_id));
-		$order['region']	= $region['region'];
+		$order['region'] = get_regions($order_id);
 		
 		/* 格式化金额 */
 		if ($order['order_amount'] < 0) {
@@ -342,8 +339,9 @@ class merchant extends ecjia_merchant {
 			$time_key = 2;
 			$this->assign('pay_key', true);
 		}
+
 		if ($order['shipping_time'] > 0) {
-			if ($order['shipping_status'] == 2) {
+			if ($order['shipping_status'] == SS_RECEIVED) {
 				$time_key = 4;
 			} else {
 				$time_key = 3;
@@ -520,8 +518,9 @@ class merchant extends ecjia_merchant {
 			$region_id	.= ecjia::config('shop_country'	, ecjia::CONFIG_CHECK) ? ecjia::config('shop_province') . ',' : '';
 			$region_id	.= ecjia::config('shop_city'	, ecjia::CONFIG_CHECK) ? ecjia::config('shop_city') . ',' : '';
 			$region_id	= substr($region_id, 0, -1);
+			$region_id_list = explode(',', $region_id);
 			
-			$region = ecjia_region::getRegions($region_id);
+			$region = ecjia_region::getRegions($region_id_list);
 			if (!empty($region)) {
 				foreach ($region as $region_data) {
 					$region_array[$region_data['region_id']] = $region_data['region_name'];
@@ -602,8 +601,8 @@ class merchant extends ecjia_merchant {
 					$temp_config_lable[$temp_key] = implode(',', $temp_info);
 				}
 				$shipping['config_lable'] = implode('||,||',  $temp_config_lable);
-				$this->assign('shipping', 	$shipping);
-				
+				$this->assign('shipping', $shipping);
+
 				$this->display('print.dwt');
 			} elseif (!empty($shipping['shipping_print'])) {
 				/* 代码 */
@@ -635,10 +634,14 @@ class merchant extends ecjia_merchant {
 				$invalid_order = true;
 			}
 			$this->assign('invalid_order', $invalid_order);
-			
+
+			if ($order['pay_status'] == PS_PAYED) {
+				$this->assign('has_payed', 1);
+			}
 			/* 参数赋值：订单 */
 			$this->assign('order', $order);
 			$this->assign('order_id', $order_id);
+			
 			if ($order['order_amount'] < 0 ) {
 				$anonymous = $order['user_id'] <= 0 ? 1 : 0;
 				$this->assign('refund_url', RC_Uri::url('orders/merchant/process','func=load_refund&anonymous='.$anonymous.'&order_id='.$order['order_id'].'&refund_amount='.$order['money_refund']));
@@ -1419,8 +1422,9 @@ class merchant extends ecjia_merchant {
 				
 				$max_code = $max_code ? ceil($max_code/10000) : 1000000;
 				$code = $max_code . str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT);
+				$mobile = RC_DB::table('users')->where('user_id', $order_info['user_id'])->pluck('mobile_phone');
 				$options = array(
-					'mobile' => $order['mobile'],
+					'mobile' => $mobile,
 					'event'	 => 'sms_order_pickup',
 					'value'  => array(
 						'order_sn'  	=> $order['order_sn'],
@@ -1702,10 +1706,10 @@ class merchant extends ecjia_merchant {
 			if (!exist_real_goods($order_id)) {
 				return $this->showmessage('Hacking Attemp' , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 			}
-			$shipping_method = RC_Loader::load_app_class("shipping_method","shipping");
+// 			$shipping_method = RC_Loader::load_app_class("shipping_method","shipping");
 			/* 保存订单 */
 			$shipping_id	= $_POST['shipping'];
-			$shipping		= $shipping_method->shipping_info($shipping_id);
+			$shipping		= ecjia_shipping::pluginData($shipping_id);
 			$invoice_no		= trim($_POST['invoice_no']);
 			$invoice_no		= str_replace(',', '<br>', $invoice_no);
 			$order = array(
@@ -1934,37 +1938,37 @@ class merchant extends ecjia_merchant {
 			$operation		= 'confirm';
 		} elseif (isset($_GET['pay'])) {
 			/* 付款 */
-			$require_note	= ecjia::config('order_pay_note') == 1;
+			$require_note	= ecjia::config('order_pay_note') == 1 ? true : false;
 			$action			= RC_Lang::get('orders::order.op_pay');
 			$operation		= 'pay';
 		} elseif (isset($_GET['unpay'])) {
 			/* 未付款 */
-			$require_note	= ecjia::config('order_unpay_note') == 1;
+			$require_note	= ecjia::config('order_unpay_note') == 1 ? true : false;
 			$order			= order_info($order_id);
 			if ($order['money_paid'] > 0) {
 				$show_refund = true;
 			}
 			$anonymous		= $order['user_id'] == 0;
-			$action			= RC_Lang::get('orders::order.op_unpay');
+			$action			= RC_Lang::get('orders::order.op_unpay') ? true : false;
 			$operation		= 'unpay';
 		} elseif (isset($_GET['prepare'])) {
 			/* 配货 */
 			$require_note	= false;
-			$action			= RC_Lang::get('orders::order.op_prepare');
+			$action			= RC_Lang::get('orders::order.op_prepare') ? true : false;
 			$operation		= 'prepare';
 		} elseif (isset($_GET['unship'])) {
 			/* 未发货 */
-			$require_note	= ecjia::config('order_unship_note') == 1;
+			$require_note	= ecjia::config('order_unship_note') == 1 ? true : false;
 			$action			= RC_Lang::get('orders::order.op_unship');
 			$operation		= 'unship';
 		} elseif (isset($_GET['receive'])) {
 			/* 收货确认 */
-			$require_note	= ecjia::config('order_receive_note') == 1;
+			$require_note	= ecjia::config('order_receive_note') == 1 ? true : false;
 			$action			= RC_Lang::get('orders::order.op_receive');
 			$operation		= 'receive';
 		} elseif (isset($_GET['cancel'])) {
 			/* 取消 */
-			$require_note	= ecjia::config('order_cancel_note') == 1;
+			$require_note	= ecjia::config('order_cancel_note') == 1 ? true : false;
 			$action			= RC_Lang::get('orders::order.op_cancel');
 			$operation		= 'cancel';
 			$show_cancel_note	= true;
@@ -1975,7 +1979,7 @@ class merchant extends ecjia_merchant {
 			$anonymous		= $order['user_id'] == 0;
 		} elseif (isset($_GET['invalid'])) {
 			/* 无效 */
-			$require_note	= ecjia::config('order_invalid_note') == 1;
+			$require_note	= ecjia::config('order_invalid_note') == 1 ? true : false;
 			$action			= RC_Lang::get('orders::order.op_invalid');
 			$operation		= 'invalid';
 		} elseif (isset($_GET['after_service'])) {
@@ -1985,18 +1989,18 @@ class merchant extends ecjia_merchant {
 			$operation		= 'after_service';
 		} elseif (isset($_GET['return'])) {
 			/* 退货 */
-// 			$require_note	= ecjia::config('order_return_note') == 1;
-// 			$order			= order_info($order_id);
-// 			if ($order['money_paid'] > 0) {
-// 				$show_refund = true;
-// 			}
-// 			$anonymous		= $order['user_id'] == 0;
-// 			$action			= RC_Lang::get('orders::order.op_return');
-// 			$operation		= 'return';
+			$require_note	= ecjia::config('order_return_note') == 1 ? true : false;
+			$order			= order_info($order_id);
+			if ($order['money_paid'] > 0) {
+				$show_refund = true;
+			}
+			$anonymous		= $order['user_id'] == 0;
+			$action			= RC_Lang::get('orders::order.op_return');
+			$operation		= 'return';
 		}
 		$result = array();
 		/* 直接处理还是跳到详细页面 */
-		if (isset($require_note) || isset($show_invoice_no) || isset($show_refund)) {
+		if ($require_note || isset($show_invoice_no) || isset($show_refund)) {
 			$result['result'] = false;
 			$result['require_note']		=	$require_note;				// 是否要求填写备注
 			$result['show_cancel_note']	=	isset($show_cancel_note);	// 是否要求填写备注
@@ -2031,12 +2035,6 @@ class merchant extends ecjia_merchant {
 		$action_note	= isset($_POST['action_note']) 	? trim($_POST['action_note']) 	: '';
 		$operation		= isset($_POST['operation']) 	? $_POST['operation'] 			: '';			// 订单操作
 		
-		/* 判断备注是否填写*/
-		if (empty($_POST['action_note'])) {
-		    if ($batch != 1){
-		       return $this->showmessage(__('请填写备注信息！') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		    }
-		}
 		if (!empty($_REQUEST['order_id'])) {
 			$order_id = $_REQUEST['order_id'];
 			
@@ -2061,7 +2059,6 @@ class merchant extends ecjia_merchant {
 		}
 
 		/* 取得订单id（可能是多个，多个sn）和操作备注（可能没有） */
-		
 		$batch			= isset($_GET['batch']);		// 是否批处理
 		$action_note	= isset($_POST['action_note']) ? trim($_POST['action_note']) : '';
 		$operation		= $_POST['operation'];			// 订单操作
@@ -2075,7 +2072,7 @@ class merchant extends ecjia_merchant {
 			/* 付款 */
 			/* 检查权限 */
 			$this->admin_priv('order_ps_edit', ecjia::MSGTYPE_JSON);
-			$require_note	= ecjia::config('order_pay_note') == 1;
+			$require_note	= ecjia::config('order_pay_note');
 			$action			= RC_Lang::get('orders::order.op_pay');
 			$operation		= 'pay';
 		} elseif (isset($_GET['unpay'])) {
@@ -2083,7 +2080,7 @@ class merchant extends ecjia_merchant {
 			/* 检查权限 */
 			$this->admin_priv('order_ps_edit', ecjia::MSGTYPE_JSON);
 		
-			$require_note	= ecjia::config('order_unpay_note') == 1;
+			$require_note	= ecjia::config('order_unpay_note');
 			$order			= order_info($order_id);
 			if ($order['money_paid'] > 0) {
 				$show_refund = true;
@@ -2105,7 +2102,7 @@ class merchant extends ecjia_merchant {
 			/* 未发货 */
 			/* 检查权限 */
 			$this->admin_priv('order_ss_edit', ecjia::MSGTYPE_JSON);
-			$require_note	= ecjia::config('order_unship_note') == 1;
+			$require_note	= ecjia::config('order_unship_note');
 			$action			= RC_Lang::get('orders::order.op_unship');
 			$operation		= 'unship';
 		} elseif (isset($_GET['receive'])) {
@@ -2116,7 +2113,7 @@ class merchant extends ecjia_merchant {
 			$operation		= 'receive';
 		} elseif (isset($_GET['cancel'])) {
 			/* 取消 */
-			$require_note	= ecjia::config('order_cancel_note') == 1;
+			$require_note	= ecjia::config('order_cancel_note');
 			$action			= RC_Lang::get('orders::order.op_cancel');
 			$operation		= 'cancel';
 			$show_cancel_note = true;
@@ -2127,7 +2124,7 @@ class merchant extends ecjia_merchant {
 			$anonymous		= $order['user_id'] == 0;
 		} elseif (isset($_GET['invalid'])) {
 			/* 无效 */
-			$require_note	= ecjia::config('order_invalid_note') == 1;
+			$require_note	= ecjia::config('order_invalid_note');
 			$action			= RC_Lang::get('orders::order.op_invalid');
 			$operation		= 'invalid';
 		} elseif (isset($_GET['after_service'])) {
@@ -2137,14 +2134,14 @@ class merchant extends ecjia_merchant {
 			$operation		= 'after_service';
 		} elseif (isset($_GET['return'])) {
 			/* 退货 */
-// 			$require_note	= ecjia::config('order_return_note') == 1;
-// 			$order			= order_info($order_id);
-// 			if ($order['money_paid'] > 0) {
-// 				$show_refund = true;
-// 			}
-// 			$anonymous		= $order['user_id'] == 0;
-// 			$action			= RC_Lang::get('orders::order.op_return');
-// 			$operation		= 'return';
+			$require_note	= ecjia::config('order_return_note') == 1;
+			$order			= order_info($order_id);
+			if ($order['money_paid'] > 0) {
+				$show_refund = true;
+			}
+			$anonymous		= $order['user_id'] == 0;
+			$action			= RC_Lang::get('orders::order.op_return');
+			$operation		= 'return';
 		} elseif (isset($_GET['assign'])) {
 			/* 指派 */
 			/* 取得参数 */
@@ -2263,24 +2260,28 @@ class merchant extends ecjia_merchant {
 			exit;
 			
 		} elseif (isset($_GET['to_delivery'])) {
+			$require_note = ecjia::config('order_ship_note');
+			/*判断备注是否填写*/
+			if ($require_note == 1 && empty($_POST['action_note']) && $batch != 1) {
+				return $this->showmessage(__('请填写备注信息！') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			}
 			/* 去发货 */
 			$url = RC_Uri::url('orders/mh_delivery/init', array('order_sn' => $_GET['order_sn'], 'type' => 2));
 			return $this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS , array('url' => $url));
 		}
   
-		/* 直接处理还是跳到详细页面 */
-		if ((isset($require_note) && $action_note == '') || isset($show_invoice_no) || isset($show_refund)) {
-			return $this->showmessage('请填写备注信息及其他信息！', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		/*判断备注是否填写*/
+		if ($require_note == 1 && empty($_POST['action_note']) && $batch != 1) {
+			return $this->showmessage(__('请填写备注信息！') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		}
+		/* 直接处理 */
+		if (!$batch) {
+			/* 一个订单 */
+			$this->operate_post();
 		} else {
-			/* 直接处理 */
-			if (!$batch) {
-				/* 一个订单 */
-				$this->operate_post();
-			} else {
-				/* 多个订单 */
-				$this->batch_operate_post();
+			/* 多个订单 */
+			$this->batch_operate_post();
 
-			}
 		}
 	}
 	
@@ -2583,50 +2584,51 @@ class merchant extends ecjia_merchant {
 		} elseif ('pay' == $operation) {
 			/* 付款 */
 			/* 检查权限 */
-// 			$this->admin_priv('order_ps_edit');
+			$this->admin_priv('order_ps_edit');
 		
-// 			/* 标记订单为已确认、已付款，更新付款时间和已支付金额，如果是货到付款，同时修改订单为“收货确认” */
-// 			if ($order['order_status'] != OS_CONFIRMED) {
-// 				$arr['order_status']	= OS_CONFIRMED;
-// 				$arr['confirm_time']	= RC_Time::gmtime();
-// 			}
-// 			$arr['pay_status']		= PS_PAYED;
-// 			$arr['pay_time']		= RC_Time::gmtime();
-// 			$arr['money_paid']		= $order['money_paid'] + $order['order_amount'];
-// 			$arr['order_amount']	= 0;
-// 			$payment_method = RC_Loader::load_app_class('payment_method','payment');
-// 			$payment = $payment_method->payment_info($order['pay_id']);
-// 			if ($payment['is_cod']) {
-// 				$arr['shipping_status']		= SS_RECEIVED;
-// 				$order['shipping_status']	= SS_RECEIVED;
-// 			}
-// 			update_order($order_id, $arr);
-// 			/* 记录日志 */
-// 			ecjia_merchant::admin_log('设为付款,订单号是'.$order['order_sn'], 'setup', 'order');
-// 			/* 记录log */
-// 			order_action($order['order_sn'], OS_CONFIRMED, $order['shipping_status'], PS_PAYED, $action_note);
+			/* 标记订单为已确认、已付款，更新付款时间和已支付金额，如果是货到付款，同时修改订单为“收货确认” */
+			if ($order['order_status'] != OS_CONFIRMED) {
+				$arr['order_status']	= OS_CONFIRMED;
+				$arr['confirm_time']	= RC_Time::gmtime();
+			}
+			$arr['pay_status']		= PS_PAYED;
+			$arr['pay_time']		= RC_Time::gmtime();
+			$arr['money_paid']		= $order['money_paid'] + $order['order_amount'];
+			$arr['order_amount']	= 0;
+			$payment_method = RC_Loader::load_app_class('payment_method','payment');
+			$payment = $payment_method->payment_info($order['pay_id']);
+			if ($payment['is_cod']) {
+				$arr['shipping_status']		= SS_RECEIVED;
+				$order['shipping_status']	= SS_RECEIVED;
+			}
+			update_order($order_id, $arr);
+			
+			/* 记录日志 */
+			ecjia_merchant::admin_log('设为付款,订单号是'.$order['order_sn'], 'setup', 'order');
+			/* 记录log */
+			order_action($order['order_sn'], OS_CONFIRMED, $order['shipping_status'], PS_PAYED, $action_note);
 		} elseif ('unpay' == $operation) {
 			/* 设为未付款 */
 			/* 检查权限 */
-// 			$this->admin_priv('order_ps_edit');
+			$this->admin_priv('order_ps_edit');
 		
-// 			/* 标记订单为未付款，更新付款时间和已付款金额 */
-// 			$arr = array(
-// 				'pay_status'	=> PS_UNPAYED,
-// 				'pay_time'		=> 0,
-// 				'money_paid'	=> 0,
-// 				'order_amount'	=> $order['money_paid']
-// 			);
-// 			update_order($order_id, $arr);
+			/* 标记订单为未付款，更新付款时间和已付款金额 */
+			$arr = array(
+				'pay_status'	=> PS_UNPAYED,
+				'pay_time'		=> 0,
+				'money_paid'	=> 0,
+				'order_amount'	=> $order['money_paid']
+			);
+			update_order($order_id, $arr);
 		
-// 			/* todo 处理退款 */
-// 			$refund_type = @$_POST['refund'];
-// 			$refund_note = @$_POST['refund_note'];
-// 			order_refund($order, $refund_type, $refund_note);
-// 			/* 记录日志 */
-// 			ecjia_merchant::admin_log('设为未付款,订单号是'.$order['order_sn'], 'setup', 'order');
-// 			/* 记录log */
-// 			order_action($order['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_UNPAYED, $action_note);
+			/* todo 处理退款 */
+			$refund_type = @$_POST['refund'];
+			$refund_note = @$_POST['refund_note'];
+			order_refund($order, $refund_type, $refund_note);
+			/* 记录日志 */
+			ecjia_merchant::admin_log('设为未付款,订单号是'.$order['order_sn'], 'setup', 'order');
+			/* 记录log */
+			order_action($order['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_UNPAYED, $action_note);
 		} elseif ('prepare' == $operation) {
 			/* 配货 */
 			/* 标记订单为已确认，配货中 */
@@ -3001,6 +3003,12 @@ class merchant extends ecjia_merchant {
 			$url = RC_Uri::url('orders/mh_delivery/delivery_info', array('delivery_id' => $delivery_id));
 			return $this->showmessage(RC_Lang::get('orders::order.act_ok') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS , array('pjaxurl' => $url));
 		} elseif ('unship' == $operation) {
+			/*判断备注是否填写*/
+			$require_note = ecjia::config('order_unship_note');
+			if ($require_note == 1 && empty($_POST['action_note'])) {
+				return $this->showmessage(__('请填写备注信息！') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			}
+				
 			/* 设为未发货 */
 			/* 检查权限 */
 			$this->admin_priv('order_ss_edit', ecjia::MSGTYPE_JSON);
@@ -3047,6 +3055,12 @@ class merchant extends ecjia_merchant {
 			);
 			$this->db_order_good->where(array('order_id' => $order_id))->update($data);
 		} elseif ('receive' == $operation) {
+			/*判断备注是否填写*/
+			$require_note = ecjia::config('order_unship_note');
+			if ($require_note == 1 && empty($_POST['action_note'])) {
+				return $this->showmessage(__('请填写备注信息！') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			}
+			
 			/* 收货确认 */
 			/* 标记订单为“收货确认”，如果是货到付款，同时修改订单为已付款 */
 			$arr = array('shipping_status' => SS_RECEIVED);
@@ -3074,6 +3088,12 @@ class merchant extends ecjia_merchant {
 			order_action($order['order_sn'], $order['order_status'], SS_RECEIVED, $order['pay_status'], $action_note);
 		} elseif ('cancel' == $operation) {
 			/* 取消 */
+			
+			/*判断是否需要填写备注*/
+			$require_note = ecjia::config('order_cancel_note');
+			if ($require_note == 1 && empty($_POST['action_note'])) {
+				return $this->showmessage(__('请填写操作备注！') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			}
 
 			/* todo 处理退款 */
 			if ($order['money_paid'] > 0) {
@@ -3137,6 +3157,12 @@ class merchant extends ecjia_merchant {
 			}
 			
 		} elseif ('invalid' == $operation) {
+			/*判断备注是否填写*/
+			$require_note = ecjia::config('order_invalid_note');
+			if ($require_note == 1 && empty($_POST['action_note'])) {
+				return $this->showmessage(__('请填写备注信息！') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			}
+				
 			/* 设为无效 */
 			/* 标记订单为“无效”、“未付款” */
 			update_order($order_id, array('order_status' => OS_INVALID));
@@ -3169,9 +3195,6 @@ class merchant extends ecjia_merchant {
 			/* 退货用户余额、积分、红包 */
 			return_user_surplus_integral_bonus($order);
 		} elseif ('return' == $operation) {
-			//暂不支持退货
-			return false;
-			
 			/* 退货 */
 			/* 定义当前时间 */
 			define('GMTIME_UTC', RC_Time::gmtime()); // 获取 UTC 时间戳

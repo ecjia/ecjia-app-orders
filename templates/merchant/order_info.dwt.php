@@ -116,7 +116,15 @@ ecjia.merchant.order.info();
 			{if $prev_id}
 			</a>
 			{/if}
-			<button class="btn btn-primary" type="button" onclick="window.open('{url path="orders/merchant/info" args="order_id={$order.order_id}&print=1"}')">{lang key='orders::order.print_order'}</button>
+			<div class="btn-group form-group">
+        		<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">打印 <span class="caret"></span></button>
+        		<ul class="dropdown-menu pull-right">
+        			<li><a class="nopjax" href='{url path="orders/merchant/info" args="order_id={$order.order_id}&print=1"}' target="__blank">订单打印</a></li>
+        			{if $has_payed eq 1}
+        			<li><a class="toggle_view" href='{url path="orders/mh_print/init" args="order_id={$order.order_id}"}'>小票打印</a></li>
+            		{/if}
+            	</ul>
+        	</div>
 		</div>
 	</div>
 </div>
@@ -171,6 +179,7 @@ ecjia.merchant.order.info();
 								<td><div align="right"><strong>{lang key='orders::order.label_pay_time'}</strong></div></td>
 								<td>{$order.pay_time}</td>
 							</tr>
+							
 							<tr>
 								<td><div align="right"><strong>{lang key='orders::order.label_shipping'}</strong></div></td>
 								<td>
@@ -194,6 +203,7 @@ ecjia.merchant.order.info();
 								<td><div align="right"><strong>{lang key='orders::order.label_shipping_time'}</strong></div></td>
 								<td>{$order.shipping_time}</td>
 							</tr>
+							
 							<tr>
 								<td><div align="right"><strong>{lang key='orders::order.label_invoice_no'}</strong></div></td>
 								<td>{if $order.shipping_id gt 0 and $order.shipping_status gt 0}<span>{if $order.invoice_no}{$order.invoice_no}{else}暂无{/if}</span>&nbsp;
@@ -201,14 +211,21 @@ ecjia.merchant.order.info();
 								<td><div align="right"><strong>{lang key='orders::order.from_order'}</strong></div></td>
 								<td>{if $order.referer eq 'ecjia-cashdesk'}收银台{else}{$order.referer}{/if}</td>
 							</tr>
+							
 							<!-- {if $order.express_user} -->
 							<tr>
 								<td><div align="right"><strong>{lang key='orders::order.label_express_user'}</strong></div></td>
-								<td>{$order.express_user}&nbsp;
+								<td>{$order.express_user}</td>
 								<td><div align="right"><strong>{lang key='orders::order.label_express_user_mobile'}</strong></div></td>
 								<td>{$order.express_mobile}</td>
 							</tr>
 							<!-- {/if}  -->
+							
+							<tr>
+								<td><div align="right"><strong>期望送达时间：</strong></div></td>
+								<td colspan="3">{$order.expect_shipping_time}</td>
+							</tr>
+							
 						</tbody>
 					</table>
 				</div>
@@ -514,7 +531,7 @@ ecjia.merchant.order.info();
 									{/if}
 
 									{if $operable_list.pay}
-									<button class="btn operatesubmit btn-info" type="submit" name="pay">{lang key='orders::order.op_pay'}</button>
+									<button class="btn operatesubmit btn-info" type="submit" name="pay">{lang key='orders::order.op_confirm_pay'}</button>
 									{/if}
 
 									{if $operable_list.unpay}
@@ -546,7 +563,7 @@ ecjia.merchant.order.info();
 									{/if}
 
 									{if $operable_list.return}
-<!-- 									<button class="btn operatesubmit btn-info" type="submit" name="return">{lang key='orders::order.op_return'}</button> -->
+									<button class="btn operatesubmit btn-info" type="submit" name="return">{lang key='orders::order.op_return'}</button>
 									{/if}
 
 									{if $operable_list.to_delivery}

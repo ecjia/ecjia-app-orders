@@ -152,6 +152,7 @@
 									<td><div align="right"><strong>{lang key='orders::order.label_pay_time'}</strong></div></td>
 									<td>{$order.pay_time}</td>
 								</tr>
+								
 								<tr>
 									<td><div align="right"><strong>{lang key='orders::order.label_shipping'}</strong></div></td>
 									<td>
@@ -170,6 +171,7 @@
 									<td><div align="right"><strong>{lang key='orders::order.label_shipping_time'}</strong></div></td>
 									<td>{$order.shipping_time}</td>
 								</tr>
+								
 								<tr>
 									<td><div align="right"><strong>{lang key='orders::order.label_invoice_no'}</strong></div></td>
 									<td>{if $order.shipping_id gt 0 and $order.shipping_status gt 0}<span>{if $order.invoice_no}{$order.invoice_no}{else}暂无{/if}</span>&nbsp;
@@ -178,14 +180,20 @@
 									<td>{if $order.referer eq 'ecjia-cashdesk'}收银台{else}{$order.referer}{/if}</td>
 								</tr>
 								
-								{if $order.express_user}
+								<!-- {if $order.express_user} -->
 								<tr>
 									<td><div align="right"><strong>{lang key='orders::order.label_express_user'}</strong></div></td>
-									<td>{$order.express_user}</span>&nbsp;
+									<td>{$order.express_user}</td>
 									<td><div align="right"><strong>{lang key='orders::order.label_express_user_mobile'}</strong></div></td>
 									<td>{$order.express_mobile}</td>
 								</tr>
-								{/if}
+								<!-- {/if} -->
+								
+								<tr>
+									<td><div align="right"><strong>期望送达时间：</strong></div></td>
+									<td colspan="3">{$order.expect_shipping_time}</td>
+								</tr>
+								
 							</tbody>
 						</table>
 					</div>
@@ -512,7 +520,7 @@
 										{if $operable_list.confirm}
 										<button class="btn operatesubmit" type="submit" name="confirm">{lang key='orders::order.op_confirm'}</button>
 										{/if} {if $operable_list.pay}
-										<button class="btn operatesubmit" type="submit" name="pay">{lang key='orders::order.op_pay'}</button>
+										<button class="btn operatesubmit" type="submit" name="pay">{lang key='orders::order.op_confirm_pay'}</button>
 										{/if} {if $operable_list.unpay}
 										<button class="btn operatesubmit" type="submit" name="unpay">{lang key='orders::order.op_unpay'}</button>
 										{/if} {if $operable_list.prepare}
@@ -528,7 +536,7 @@
 										{/if} {if $operable_list.invalid}
 										<button class="btn operatesubmit" type="submit" name="invalid">{lang key='orders::order.op_invalid'}</button>
 										{/if} {if $operable_list.return}
-<!-- 										<button class="btn operatesubmit" type="submit" name="return">{lang key='orders::order.op_return'}</button> -->
+										<button class="btn operatesubmit" type="submit" name="return">{lang key='orders::order.op_return'}</button>
 										{/if} {if $operable_list.to_delivery}
 										<button class="btn operatesubmit" type="submit" name="to_delivery">{lang key='orders::order.op_to_delivery'}</button>
 										<input name="order_sn" type="hidden" value="{$order.order_sn}" />

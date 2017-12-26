@@ -247,7 +247,8 @@ class admin_order_delivery extends ecjia_admin {
 		}
 		
 		/*判断备注是否填写*/
-	    if (empty($_POST['action_note'])) {
+		$require_note = ecjia::config('order_ship_note');
+	    if ($require_note == 1 && empty($_POST['action_note'])) {
 		   return $this->showmessage(__('请填写备注信息！') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		/* 根据发货单id查询发货单信息 */
@@ -481,7 +482,8 @@ class admin_order_delivery extends ecjia_admin {
 		$action_note			= isset($_POST['action_note'])	? trim($_POST['action_note']) : '';
 
 		/*判断备注是否填写*/
-		if (empty($_POST['action_note'])) {
+		$require_note = ecjia::config('order_unship_note');
+		if ($require_note == 1 && empty($_POST['action_note'])) {
 		    return $this->showmessage(__('请填写备注信息！') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		/* 根据发货单id查询发货单信息 */
@@ -683,8 +685,8 @@ class admin_order_delivery extends ecjia_admin {
 	    RC_Loader::load_app_func('global', 'orders');
         $delivery_order = delivery_order_info($delivery_id);
         /* 判断发货单，生成配送单*/
-        $shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
-        $shipping_info = $shipping_method->shipping_info(intval($delivery_order['shipping_id']));
+//         $shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
+        $shipping_info = ecjia_shipping::pluginData(intval($delivery_order['shipping_id']));
         if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
     //         $staff_id = isset($_POST['staff_id']) ? intval($_POST['staff_id']) : 0;
     //         $express_from = !empty($staff_id) ? 'assign' : 'grab';

@@ -184,20 +184,20 @@ ecjia.merchant.order.info();
 								<td><div align="right"><strong>{lang key='orders::order.label_shipping'}</strong></div></td>
 								<td>
 									{if $exist_real_goods}
-									{if $order.shipping_id gt 0}
-									<span>{$order.shipping_name}</span>
-									{else}
-									<span>{lang key='system::system.require_field'}</span>
-									{/if}
-									{if !$invalid_order}
-									<a class="data-pjax" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=shipping"}'>{lang key='system::system.edit'}</a>
-									{/if}
-									{if $shipping_code == 'ship_cac'}
-									(提货码：{if $meta_value neq ''}{$meta_value}{else}暂无{/if})
-									{else}
-									<input type="button" class="btn btn-primary" onclick="window.open('{url path="orders/merchant/info" args="order_id={$order.order_id}&shipping_print=1"}')" value="{lang key='orders::order.print_shipping'}">
-									{/if}
-									{if $order.insure_fee gt 0}{lang key='orders::order.label_insure_fee'}{$order.formated_insure_fee}{/if}
+										<span>{if $order.shipping_name}{$order.shipping_name}{/if}</span>
+										{if !$invalid_order}
+										<a class="data-pjax" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=shipping"}'>{lang key='system::system.edit'}</a>
+										{/if}
+										
+										{if $shipping_code == 'ship_cac'}
+											(提货码：{if $meta_value neq ''}{$meta_value}{else}暂无{/if})
+										{else}
+											<input type="button" class="btn btn-primary" onclick="window.open('{url path="orders/merchant/info" args="order_id={$order.order_id}&shipping_print=1"}')" value="{lang key='orders::order.print_shipping'}">
+										{/if}
+										
+										{if $order.insure_fee gt 0}
+											{lang key='orders::order.label_insure_fee'}{$order.formated_insure_fee}
+										{/if}
 									{/if}
 								</td>
 								<td><div align="right"><strong>{lang key='orders::order.label_shipping_time'}</strong></div></td>

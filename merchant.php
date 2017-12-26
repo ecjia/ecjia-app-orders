@@ -471,7 +471,8 @@ class merchant extends ecjia_merchant {
 		$order['express_mobile'] = $express_info['express_mobile'];
 		
 		/* 判断是否为立即配送*/
-		$shipping_info = RC_DB::table('shipping')->where('shipping_id', $order['shipping_id'])->first();
+		$shipping_info = ecjia_shipping::getPluginDataById($order['shipping_id']);
+		
 		if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
 			$this->assign('is_o2o_express', true);
 			$express_order = RC_DB::table('express_order')->where('order_sn', $order['order_sn'])->orderBy('express_id', 'desc')->first();
@@ -514,9 +515,9 @@ class merchant extends ecjia_merchant {
 			$this->assign('print_time',   RC_Time::local_date(ecjia::config('time_format')));
 			//发货地址所在地
 			$region_array	= array();
-			$region_id	= ecjia::config('shop_province'	, ecjia::CONFIG_CHECK) ? ecjia::config('shop_country') . ',' : '';
-			$region_id	.= ecjia::config('shop_country'	, ecjia::CONFIG_CHECK) ? ecjia::config('shop_province') . ',' : '';
-			$region_id	.= ecjia::config('shop_city'	, ecjia::CONFIG_CHECK) ? ecjia::config('shop_city') . ',' : '';
+			$region_id	= ecjia::config('shop_country', ecjia::CONFIG_CHECK) ? ecjia::config('shop_country') . ',' : '';
+			$region_id	.= ecjia::config('shop_province', ecjia::CONFIG_CHECK) ? ecjia::config('shop_province') . ',' : '';
+			$region_id	.= ecjia::config('shop_city', ecjia::CONFIG_CHECK) ? ecjia::config('shop_city') . ',' : '';
 			$region_id	= substr($region_id, 0, -1);
 			$region_id_list = explode(',', $region_id);
 			
@@ -526,7 +527,7 @@ class merchant extends ecjia_merchant {
 					$region_array[$region_data['region_id']] = $region_data['region_name'];
 				}
 			}
-			
+
 			$this->assign('shop_name', ecjia::config('shop_name'));
 			$this->assign('order_id', $order_id);
 			$this->assign('province', $region_array[ecjia::config('shop_province')]);
@@ -534,8 +535,8 @@ class merchant extends ecjia_merchant {
 			$this->assign('shop_address', ecjia::config('shop_address'));
 			$this->assign('service_phone', ecjia::config('service_phone'));
 			$this->assign('order', $order);
-			$shipping = $this->db_shipping->find(array('shipping_id' => $order['shipping_id']));
-
+			
+			$shipping = ecjia_shipping::getPluginDataById($order['shipping_id']);
 			//打印单模式
 			if ($shipping['print_model'] == 2) {
 				/* 可视化 快递单*/

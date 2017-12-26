@@ -531,6 +531,11 @@ class admin extends ecjia_admin {
 				$anonymous = $order['user_id'] <= 0 ? 1 : 0;
 				$this->assign('refund_url', RC_Uri::url('orders/admin/process', 'func=load_refund&anonymous='.$anonymous.'&order_id='.$order['order_id'].'&refund_amount='.$order['money_refund']));
 			}
+			$order_finishied = 0;
+			if (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED)) && in_array($order['shipping_status'], array(SS_SHIPPED, SS_RECEIVED)) && in_array($order['pay_status'], array(PS_PAYED, PS_PAYING))) {
+				$order_finishied = 1;
+				$this->assign('order_finished', $order_finishied);
+			}
 			$this->display('order_info.dwt');
 		}
 	}

@@ -257,6 +257,9 @@ class admin extends ecjia_admin {
 		$order['order_time']	= RC_Time::local_date(ecjia::config('time_format'), $order['add_time']);
 		$order['pay_time']		= $order['pay_time'] > 0 ? RC_Time::local_date(ecjia::config('time_format'), $order['pay_time']) : RC_Lang::get('orders::order.ps.'.PS_UNPAYED);
 		$order['shipping_time']	= $order['shipping_time'] > 0 ? RC_Time::local_date(ecjia::config('time_format'), $order['shipping_time']) : RC_Lang::get('orders::order.ss.'.SS_UNSHIPPED);
+		$order['format_shipping_time']	= $order['shipping_time'];
+		$order['format_confirm_time']	= $order['confirm_time'] > 0 ? RC_Time::local_date(ecjia::config('time_format'), $order['confirm_time']) : '未确认';
+		$order['unformat_status'] = $order['status'];
 		$order['status']		= RC_Lang::get('orders::order.os.'.$order['order_status']) . ',' . RC_Lang::get('orders::order.ps.'.$order['pay_status']) . ',' . RC_Lang::get('orders::order.ss.'.$order['shipping_status']);
 		$order['invoice_no']	= $order['shipping_status'] == SS_UNSHIPPED || $order['shipping_status'] == SS_PREPARING ? RC_Lang::get('orders::order.ss.'.SS_UNSHIPPED) : $order['invoice_no'];
 		

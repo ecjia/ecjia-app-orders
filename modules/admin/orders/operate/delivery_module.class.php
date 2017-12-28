@@ -658,6 +658,7 @@ function create_express_order($delivery_id) {
             'province'		=> $delivery_order['province'],
             'city'			=> $delivery_order['city'],
             'district'		=> $delivery_order['district'],
+        	'street'		=> $delivery_order['street'],
             'email'			=> $delivery_order['email'],
             'mobile'		=> $delivery_order['mobile'],
             'best_time'		=> $delivery_order['best_time'],

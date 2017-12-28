@@ -451,6 +451,7 @@ class mh_delivery extends ecjia_merchant {
 				'province'		=> $delivery_order['province'],
 				'city'			=> $delivery_order['city'],
 				'district'		=> $delivery_order['district'],
+				'street'		=> $delivery_order['street'],
 				'email'			=> $delivery_order['email'],
 				'mobile'		=> $delivery_order['mobile'],
 				'best_time'		=> $delivery_order['best_time'],

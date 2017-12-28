@@ -204,7 +204,7 @@ function affirm_received($order_id, $user_id = 0) {
 	            		'order_time'      	=> RC_Time::local_date(ecjia::config('time_format'), $express_order_info['add_time']),
 	            		'pay_time'       	=> empty($express_order_info['pay_time']) 	? '' : RC_Time::local_date(ecjia::config('time_format'), $express_order_info['pay_time']),
 	            		'best_time'       	=> empty($express_order_info['best_time']) 	? '' : RC_Time::local_date(ecjia::config('time_format'), $express_order_info['best_time']),
-	            		'shipping_fee'    	=> $express_order_info['shipping_fee'],
+	            		'shipping_fee'    	=> $express_order_info['commision'],
 	            		'order_amount'    	=> $express_order_info['order_amount'],
             		),
             	);
@@ -219,6 +219,19 @@ function affirm_received($order_id, $user_id = 0) {
             	);
             	
             	RC_DB::table('express_order')->where('express_id', $express_info['express_id'])->update($update_data);
+            	
+            	/*用户确认收货后更新配送员资金账户信息*/
+            	RC_Loader::load_app_class('express_account_change', 'express', false);
+            	
+            	$options = array(
+            			'staff_user_id' => $express_order_info['staff_id'],
+            			'user_money'	=> $express_order_info['commision'],
+            			'frozen_money'	=> '0.00',
+            			'change_desc'	=> '配送订单'.$express_order_info['order_sn'].'所得的配送费用',
+            			'change_type'	=> '99'
+            	);
+            	
+            	express_account_change::express_account_change_log($options);
             	
             	/*当订单配送方式为o2o速递时,记录o2o速递物流信息*/
             	if ($express_order_info['shipping_id'] > 0) {

@@ -469,6 +469,8 @@ class mh_delivery extends ecjia_merchant {
 			if ($staff_id > 0) {
 				$express_data['receive_time'] = RC_Time::gmtime();
 				$staff_info = RC_DB::table('staff_user')->where('user_id', $staff_id)->first();
+				$express_data['commision']	= '5.00';
+				$express_data['commision_status']	= '0';
 				$express_data['express_user']	= $staff_info['name'];
 				$express_data['express_mobile']	= $staff_info['mobile'];
 			}

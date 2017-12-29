@@ -687,7 +687,7 @@ class admin_order_delivery extends ecjia_admin {
         /* 判断发货单，生成配送单*/
 //         $shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
         $shipping_info = ecjia_shipping::pluginData(intval($delivery_order['shipping_id']));
-        if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
+        if ($shipping_info['shipping_code'] == 'ship_o2o_express' || $shipping_info['shipping_code'] == 'ship_ecjia_express') {
     //         $staff_id = isset($_POST['staff_id']) ? intval($_POST['staff_id']) : 0;
     //         $express_from = !empty($staff_id) ? 'assign' : 'grab';
             $staff_id = 0;

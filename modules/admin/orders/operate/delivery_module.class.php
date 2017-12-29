@@ -639,7 +639,7 @@ function create_express_order($delivery_id) {
     /* 判断发货单，生成配送单*/
 //     $shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
     $shipping_info = ecjia_shipping::pluginData(intval($delivery_order['shipping_id']));
-    if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
+    if ($shipping_info['shipping_code'] == 'ship_o2o_express' || $shipping_info['shipping_code'] == 'ship_ecjia_express') {
 //         $staff_id = isset($_POST['staff_id']) ? intval($_POST['staff_id']) : 0;
 //         $express_from = !empty($staff_id) ? 'assign' : 'grab';
         $staff_id = 0;
@@ -699,6 +699,15 @@ function create_express_order($delivery_id) {
             $express_id = $exists_express_order['express_id'];
         } else {
             $express_id = RC_DB::table('express_order')->insert($express_data);
+        }
+        
+    	/*配送单生成后，自动派单。只有订单配送方式是众包配送时才去自动派单*/
+        if ($shipping_info['shipping_code'] == 'ship_ecjia_express' && empty($staff_id)) {
+        	$params = array(
+        			'express_id' => $express_id,
+        	);
+        	
+        	$result = RC_Api::api('express', 'auto_assign_expressOrder', $params);
         }
     }
 }

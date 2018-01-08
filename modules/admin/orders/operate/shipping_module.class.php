@@ -70,6 +70,8 @@ class shipping_module extends api_admin implements api_interface {
 		$order_id		= $this->requestData('order_id', 0);
 		$shipping_id	= $this->requestData('shipping_id', 0);
 		$action_note	= $this->requestData('action_note');
+		$shipping_id	= !empty($shipping_id) ? intval($shipping_id) : 0;
+		
 		if (empty($order_id)) {
 			return new ecjia_error(101, '参数错误');
 		}
@@ -108,16 +110,13 @@ class shipping_module extends api_admin implements api_interface {
 		/* 保存订单 */
 		//$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
 		//$shipping		= $shipping_method->shipping_area_info($shipping_id, $region_id_list, $order_info['store_id']);
-		$shipping_id = intval($shipping_id);
 		if(!empty($shipping_id) > 0){
 			$shipping = ecjia_shipping::pluginData($shipping_id);
+			if (empty($shipping)) {
+				return new ecjia_error('shipping_fail', '配送方式获取失败');
+			}
 		}
-		if (empty($shipping)) {
-		    return new ecjia_error('shipping_fail', '配送方式获取失败');
-		}
-		if (strpos($shipping['shipping_code'], 'ship') === false) {
-			$shipping['shipping_code'] = 'ship_'.$shipping['shipping_code'];
-		}
+		
 		$weight_amount	= order_weight_price($order_id);
 		//$shipping_fee	= $shipping_method->shipping_fee($shipping['shipping_code'], $shipping['configure'], $weight_amount['weight'], $weight_amount['amount'], $weight_amount['number']);
 		

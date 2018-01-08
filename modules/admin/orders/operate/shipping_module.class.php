@@ -108,8 +108,8 @@ class shipping_module extends api_admin implements api_interface {
 		/* 保存订单 */
 		//$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
 		//$shipping		= $shipping_method->shipping_area_info($shipping_id, $region_id_list, $order_info['store_id']);
-		
-		if($shipping_id > 0){
+		$shipping_id = intval($shipping_id);
+		if(!empty($shipping_id) > 0){
 			$shipping = ecjia_shipping::pluginData($shipping_id);
 		}
 		if (empty($shipping)) {

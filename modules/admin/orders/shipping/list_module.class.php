@@ -163,59 +163,6 @@ class list_module extends api_admin implements api_interface {
 		
 		if (!empty($shipping_list)) {
 			foreach ($shipping_list AS $key => $shipping) {
-	// 			$parent = get_parent_region($shipping['parent_id']);
-	// 			$shipping_list[$key]['parent_name'] = $parent['region_name'];
-// 				if (strpos($shipping['shipping_code'], 'ship') === false) {
-// 					$shipping['shipping_code'] = 'ship_'.$shipping['shipping_code'];
-// 				}
-			
-// 				if (ecjia::config('freight_model') == 0) {
-			
-// 					$shipping_fee = $shipping_method->shipping_fee($shipping['shipping_code'],
-// 							unserialize($shipping['configure']), $total['weight'], $total['amount'], $total['number']);
-// 					$shipping_list[$key]['shipping_fee'] = $shipping_fee;
-// 					$shipping_list[$key]['format_shipping_fee'] = price_format($shipping_fee);
-// 					$shipping_list[$key]['free_money'] = price_format($shipping['configure']['free_money']);
-			
-// 					$shipping_list[$key]['freight_model'] = 0;
-					
-// 					$new_shipping_list[] = array(
-// 							'shipping_id'	=> $shipping_list[$key]['shipping_id'],
-// 							'shipping_code'	=> $shipping_list[$key]['shipping_code'],
-// 							'shipping_name'	=> $shipping_list[$key]['shipping_name'],
-// 							'shipping_fee'	=> $shipping_list[$key]['shipping_fee'],
-// 							'format_shipping_fee'	=> $shipping_list[$key]['format_shipping_fee'],
-// 							'free_money'	=> $shipping_list[$key]['free_money'],
-							
-// 					); 
-// 				} elseif (ecjia::config('freight_model') == 1) {
-					
-// 					$shippingFee = get_goods_order_shipping_fee($goods_list, $consignee, $shipping['shipping_code'], $shipping['shipping_id']);
-				
-// 					$shipping_list[$key]['free_money']          = price_format($shippingFee['free_money'], false);
-
-
-// // 					if ($shipping_fee['ru_list'][$order_info['ru_id']]){
-// // 						$shipping_list[$key]['ru_list'] = array_values($shipping_fee['ru_list'][$order_info['ru_id']]);
-// // 						$shipping_list[$key]['ru_count'] = count($shipping_list[$key]['ru_list']);
-// // 					}
-					
-// // 					$shipping = available_shipping_fee($shipping_list[$key]['ru_list']);
-// // 					$shipping_list[$key]['format_shipping_fee'] = $shipping['shipping_fee'];
-// // 					$shipping_list[$key]['freight_model'] = 1;
-// 					$shipping_list[$key]['shipping_fee']		= $shippingFee['shipping_fee'];
-// 					$shipping_list[$key]['format_shipping_fee'] = price_format($shippingFee['shipping_fee'], false);
-						
-// 					$new_shipping_list[] = array(
-// 							'shipping_id'	=> $shipping_list[$key]['shipping_id'],
-// 							'shipping_code'	=> $shipping_list[$key]['shipping_code'],
-// 							'shipping_name'	=> $shipping_list[$key]['shipping_name'],
-// 							'shipping_fee'	=> $shipping_list[$key]['shipping_fee'],
-// 							'format_shipping_fee'	=> $shipping_list[$key]['format_shipping_fee'],
-// 							'free_money'	=> $shipping_list[$key]['free_money'],
-								
-// 					);
-// 				}
 				$shipping_cfg = ecjia_shipping::unserializeConfig($shipping['configure']);
 				if ($shipping['shipping_code'] == 'ship_o2o_express' || $shipping['shipping_code'] == 'ship_ecjia_express') {
 					$shipping_fee = ecjia_shipping::fee($shipping['shipping_area_id'], $distance, $total['amount'], $total['number']);
@@ -225,23 +172,57 @@ class list_module extends api_admin implements api_interface {
 				$shipping_list[$key]['shipping_fee'] = $shipping_fee;
 				$shipping_list[$key]['format_shipping_fee'] = price_format($shipping_fee);
 				$shipping_list[$key]['free_money']          = price_format($shipping_cfg['free_money'], false);
-				
-				$new_shipping_list[] = array(
-						'shipping_id'			=> $shipping_list[$key]['shipping_id'],
-						'shipping_code'			=> $shipping_list[$key]['shipping_code'],
-						'shipping_name'			=> $shipping_list[$key]['shipping_name'],
-						'shipping_fee'			=> $shipping_list[$key]['shipping_fee'],
-						'format_shipping_fee'	=> $shipping_list[$key]['format_shipping_fee'],
-						'free_money'			=> $shipping_list[$key]['free_money'],
-				
-				);
-			}
-						
 
-			
+				/* o2o*/
+				if ($shipping['shipping_code'] == 'ship_o2o_express' || $shipping['shipping_code'] == 'ship_ecjia_express') {
+					/* 获取最后可送的时间（当前时间+需提前下单时间）*/
+					$time = RC_Time::local_date('H:i', RC_Time::gmtime() + $shipping_cfg['last_order_time'] * 60);
+					
+					if (empty($shipping_cfg['ship_time'])) {
+						unset($shipping_list[$key]);
+						continue;
+					}
+					$shipping_list[$key]['shipping_date'] = array();
+					$ship_date = 0;
+				
+					if (empty($shipping_cfg['ship_days'])) {
+						$shipping_cfg['ship_days'] = 7;
+					}
+				
+					while ($shipping_cfg['ship_days']) {
+						foreach ($shipping_cfg['ship_time'] as $k => $v) {
+				
+							if ($v['end'] > $time || $ship_date > 0) {
+								$shipping_list[$key]['shipping_date'][$ship_date]['date'] = RC_Time::local_date('Y-m-d', RC_Time::local_strtotime('+'.$ship_date.' day'));
+								$shipping_list[$key]['shipping_date'][$ship_date]['time'][] = array(
+										'start_time' 	=> $v['start'],
+										'end_time'		=> $v['end'],
+								);
+							}
+						}
+				
+						$ship_date ++;
+				
+						if (count($shipping_list[$key]['shipping_date']) >= $shipping_cfg['ship_days']) {
+							break;
+						}
+					}
+					$shipping_list[$key]['shipping_date'] = array_merge($shipping_list[$key]['shipping_date']);
+				}
+				
+				$shipping_list = array_values($shipping_list);
+			}
+					
+			foreach ($shipping_list as $a => $b) {
+				unset($shipping_list[$a]['configure']);
+				unset($shipping_list[$a]['shipping_desc']);
+				unset($shipping_list[$a]['insure']);
+				unset($shipping_list[$a]['support_cod']);
+				unset($shipping_list[$a]['shipping_area_id']);
+			}
 		}
-			
-		return $new_shipping_list;
+		
+		return $shipping_list;
 	} 
 }
 

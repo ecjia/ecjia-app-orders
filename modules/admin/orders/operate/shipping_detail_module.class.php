@@ -123,7 +123,8 @@ class shipping_detail_module extends api_admin implements api_interface {
 				
 				//期望送达时间
 				if (!empty($val['expect_shipping_time'])) {
-					$ship_date = $val['expect_shipping_time'];
+					$ship_date = trim($val['expect_shipping_time']);
+					$ship_date = explode(" ", $ship_date );  
 				}
 				
 				$delivery_info = array(
@@ -153,8 +154,7 @@ class shipping_detail_module extends api_admin implements api_interface {
 				
 				if ($order['shipping_code'] == 'ship_o2o_express' || $order['shipping_code'] == 'ship_ecjia_express') {
 					if (!empty($ship_date)) {
-						$delivery_info['expect_shipping_time'] = array('ship_date' => $ship_date[0], $ship_date['1']);
-						//$region = array($order['country'], $order['province'], $order['city'], $order['district'], $order['street']);
+						$delivery_info['expect_shipping_time'] = array('date' => $ship_date['0'], 'time' => $ship_date['1']);
 						$shipping_area_info = RC_DB::table('shipping_area')
 									->where('store_id', $_SESSION['store_id'])
 									->where('shipping_id', $val['shipping_id'])->first();

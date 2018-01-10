@@ -204,6 +204,7 @@ class detail_module extends api_front implements api_interface {
 				$goods_list[$k] = array(
 						'rec_id'		=> $v['rec_id'],
 						'goods_id'		=> $v['goods_id'],
+				        'goods_sn'      => $v['goods_sn'],
 						'name'			=> $v['goods_name'],
 						'goods_attr_id'	=> $v['goods_attr_id'],
 						'goods_attr'	=> $attr,

@@ -707,7 +707,7 @@ function create_express_order($delivery_id) {
             RC_DB::table('express_order')->where('express_id', $exists_express_order['express_id'])->update($express_data);
             $express_id = $exists_express_order['express_id'];
         } else {
-            $express_id = RC_DB::table('express_order')->insert($express_data);
+            $express_id = RC_DB::table('express_order')->insertGetId($express_data);
         }
         
     	/*配送单生成后，自动派单。只有订单配送方式是众包配送时才去自动派单*/

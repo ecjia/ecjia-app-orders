@@ -122,10 +122,8 @@ class shipping_detail_module extends api_admin implements api_interface {
 				
 				
 				//期望送达时间
-				if (!empty($val['expect_shipping_time'])) {
-					$ship_date = trim($val['expect_shipping_time']);
-					$ship_date = explode(" ", $ship_date );  
-				}
+				$expect_shipping_time = trim($val['expect_shipping_time']);
+				$expect_shipping_time = explode(" ", $expect_shipping_time );  
 				
 				$delivery_info = array(
 					'order_id'		=> $val['order_id'],
@@ -153,43 +151,40 @@ class shipping_detail_module extends api_admin implements api_interface {
 				);
 				
 				if ($order['shipping_code'] == 'ship_o2o_express' || $order['shipping_code'] == 'ship_ecjia_express') {
-					if (!empty($ship_date)) {
-						$delivery_info['expect_shipping_time'] = array('date' => $ship_date['0'], 'time' => $ship_date['1']);
-						$shipping_area_info = RC_DB::table('shipping_area')
-									->where('store_id', $_SESSION['store_id'])
-									->where('shipping_id', $val['shipping_id'])->first();
-						$shipping_cfg = ecjia_shipping::unserializeConfig($shipping_area_info['configure']);
-						
-						/* 获取最后可送的时间（当前时间+需提前下单时间）*/
-						$time = RC_Time::local_date('H:i', RC_Time::gmtime() + $shipping_cfg['last_order_time'] * 60);
-						
-						$ship_date = 0;
-						
-						if (empty($shipping_cfg['ship_days'])) {
-							$shipping_cfg['ship_days'] = 7;
-						}
-						
-						while ($shipping_cfg['ship_days']) {
-							foreach ($shipping_cfg['ship_time'] as $k => $v) {
-						
-								if ($v['end'] > $time || $ship_date > 0) {
-									$delivery_info['shipping_date'][$ship_date]['date'] = RC_Time::local_date('Y-m-d', RC_Time::local_strtotime('+'.$ship_date.' day'));
-									$delivery_info['shipping_date'][$ship_date]['time'][] = array(
-											'start_time' 	=> $v['start'],
-											'end_time'		=> $v['end'],
-									);
-								}
-							}
-						
-							$ship_date ++;
-						
-							if (count($delivery_info['shipping_date']) >= $shipping_cfg['ship_days']) {
-								break;
-							}
-						}
-						$delivery_info['shipping_date'] = array_merge($delivery_info['shipping_date']);
-						
+					$delivery_info['expect_shipping_time'] = array('date' => $expect_shipping_time['0'], 'time' => $expect_shipping_time['1']);
+					$shipping_area_info = RC_DB::table('shipping_area')
+								->where('store_id', $_SESSION['store_id'])
+								->where('shipping_id', $val['shipping_id'])->first();
+					$shipping_cfg = ecjia_shipping::unserializeConfig($shipping_area_info['configure']);
+					
+					/* 获取最后可送的时间（当前时间+需提前下单时间）*/
+					$time = RC_Time::local_date('H:i', RC_Time::gmtime() + $shipping_cfg['last_order_time'] * 60);
+					
+					$ship_date = 0;
+					
+					if (empty($shipping_cfg['ship_days'])) {
+						$shipping_cfg['ship_days'] = 7;
 					}
+					
+					while ($shipping_cfg['ship_days']) {
+						foreach ($shipping_cfg['ship_time'] as $k => $v) {
+					
+							if ($v['end'] > $time || $ship_date > 0) {
+								$delivery_info['shipping_date'][$ship_date]['date'] = RC_Time::local_date('Y-m-d', RC_Time::local_strtotime('+'.$ship_date.' day'));
+								$delivery_info['shipping_date'][$ship_date]['time'][] = array(
+										'start_time' 	=> $v['start'],
+										'end_time'		=> $v['end'],
+								);
+							}
+						}
+					
+						$ship_date ++;
+					
+						if (count($delivery_info['shipping_date']) >= $shipping_cfg['ship_days']) {
+							break;
+						}
+					}
+					$delivery_info['shipping_date'] = array_merge($delivery_info['shipping_date']);
 				}
 				
 				/* 判断订单商品的发货情况*/

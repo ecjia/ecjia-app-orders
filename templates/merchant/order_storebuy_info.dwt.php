@@ -276,7 +276,7 @@ ecjia.merchant.order.info();
 							</tr>
 							<!-- {foreachelse} -->
 							<tr>
-								<td class="no-records w200" colspan="6">{t}该订单暂无操作记录{/t}</td>
+								<td class="no-records w200" colspan="4">{t}该订单暂无操作记录{/t}</td>
 							</tr>
 							<!-- {/foreach} -->
 						</tbody>

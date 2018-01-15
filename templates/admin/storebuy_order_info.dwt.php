@@ -249,9 +249,9 @@
 					<table class="table table-striped m_b0">
 						<thead>
 							<tr>
-								<td class="w130"><strong>{lang key='orders::order.action_user_two'}</strong></td>
-								<td class="w180"><strong>{lang key='orders::order.action_time'}</strong></td>
-								<td class="w130"><strong>{lang key='orders::order.order_status'}</strong></td>
+								<th class="w130"><strong>{lang key='orders::order.action_user_two'}</strong></th>
+								<th class="w180"><strong>{lang key='orders::order.action_time'}</strong></th>
+								<th class="w130"><strong>{lang key='orders::order.order_status'}</strong></th>
 								<th class="w130"><strong>{lang key='orders::order.pay_status'}</strong></th>
 							</tr>
 						</thead>
@@ -265,7 +265,7 @@
 							</tr>
 							<!-- {foreachelse} -->
 							<tr>
-								<td class="no-records" colspan="6">{lang key='orders::order.no_order_operation_record'}</td>
+								<td class="no-records" colspan="4">{lang key='orders::order.no_order_operation_record'}</td>
 							</tr>
 							<!-- {/foreach} -->
 						</tbody>

@@ -36,13 +36,18 @@ ecjia.merchant.order.info();
 				<div class="{if $time_key eq '2'}step-cur{elseif $time_key gt '2' && $pay_key}step-done{else}step-pay{/if}">
 					<div class="step-no">{if $time_key eq '2' || !$pay_key}2{/if}</div>
 					<div class="m_t5">{lang key='orders::order.pay_for_order'}</div>
+					{if $pay_key}
 					<div class="m_t5 ecjiafc-blue">{$order.pay_time}</div>
+					{/if}
 				</div>
 			</li>
 			<li class="step-last">
 				<div class="{if $time_key eq '3'}step-cur{elseif $time_key gt '3'}step-done{/if}">
 					<div class="step-no">{if $time_key lt '4'}3{/if}</div>
 					<div class="m_t5">{lang key='orders::order.label_finished'}</div>
+					{if $pay_key}
+					<div class="m_t5 ecjiafc-blue">{$order.pay_time}</div>
+					{/if}
 				</div>
 			</li>
 		</ul>
@@ -259,8 +264,6 @@ ecjia.merchant.order.info();
 								<th class="w180"><strong>{lang key='orders::order.action_time'}</strong></th>
 								<th class="w130"><strong>{lang key='orders::order.order_status'}</strong></th>
 								<th class="w130"><strong>{lang key='orders::order.pay_status'}</strong></th>
-								<th class="w130"><strong>{lang key='orders::order.shipping_status'}</strong></th>
-								<th class="ecjiafc-pre t_c"><strong>{lang key='orders::order.action_note'}</strong></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -270,8 +273,6 @@ ecjia.merchant.order.info();
 								<td>{$action.action_time}</td>
 								<td>{$action.order_status}</td>
 								<td>{$action.pay_status}</td>
-								<td>{$action.shipping_status}</td>
-								<td class="t_c">{$action.action_note|nl2br}</td>
 							</tr>
 							<!-- {foreachelse} -->
 							<tr>

@@ -365,7 +365,7 @@ class merchant extends ecjia_merchant {
 		$order['status']			= RC_Lang::get('orders::order.os.'.$order['order_status']) . ',' . RC_Lang::get('orders::order.ps.'.$order['pay_status']) . ',' . RC_Lang::get('orders::order.ss.'.$order['shipping_status']);
 
 		if ($storebuy_order) {
-			$order['status'] = RC_Lang::get('orders::order.ps.'.$order['pay_status']);
+			$order['status'] = RC_Lang::get('orders::order.os.'.$order['order_status']) . ',' . RC_Lang::get('orders::order.ps.'.$order['pay_status']);
 			if ($order['pay_status'] == PS_PAYED) {
 				$order['status'] .= ',' . RC_Lang::get('orders::order.cs.'.CS_FINISHED);
 			}

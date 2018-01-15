@@ -153,6 +153,7 @@ class admin extends ecjia_admin {
 		}
 		
 		/*判断订单来源，自助购订单*/
+		$storebuy_order = false;
 		if ($order['referer'] == 'ecjia-storebuy') {
 			$storebuy_order = true;
 		}
@@ -378,12 +379,6 @@ class admin extends ecjia_admin {
 		if (!empty($data)) {
 			foreach ($data as $key => $row) {
 				$row['order_status']	= RC_Lang::get('orders::order.os.'.$row['order_status']);
-				if ($storebuy_order) {
-					$row['order_status'] = RC_Lang::get('orders::order.os.'.OS_CONFIRMED).','.RC_Lang::get('orders::order.ps.'.$order['pay_status']);
-					if ($order['pay_status'] == PS_PAYED) {
-						$row['order_status'] .= ',' . RC_Lang::get('orders::order.cs.'.CS_FINISHED);
-					}
-				}
 				$row['pay_status']		= RC_Lang::get('orders::order.ps.'.$row['pay_status']);
 				$row['shipping_status']	= RC_Lang::get('orders::order.ss.'.$row['shipping_status']);
 				$row['action_time']		= RC_Time::local_date(ecjia::config('time_format'), $row['log_time']);

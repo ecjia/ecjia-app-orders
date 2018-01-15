@@ -252,6 +252,7 @@
 								<td class="w130"><strong>{lang key='orders::order.action_user_two'}</strong></td>
 								<td class="w180"><strong>{lang key='orders::order.action_time'}</strong></td>
 								<td class="w130"><strong>{lang key='orders::order.order_status'}</strong></td>
+								<th class="w130"><strong>{lang key='orders::order.pay_status'}</strong></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -260,6 +261,7 @@
 								<td>{$action.action_user}</td>
 								<td>{$action.action_time}</td>
 								<td>{$action.order_status}</td>
+								<td>{$action.pay_status}</td>
 							</tr>
 							<!-- {foreachelse} -->
 							<tr>

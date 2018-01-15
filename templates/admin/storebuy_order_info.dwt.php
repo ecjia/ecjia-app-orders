@@ -247,10 +247,6 @@
 								<td class="w130"><strong>{lang key='orders::order.action_user_two'}</strong></td>
 								<td class="w180"><strong>{lang key='orders::order.action_time'}</strong></td>
 								<td class="w130"><strong>{lang key='orders::order.order_status'}</strong></td>
-								<td class="w130"><strong>{lang key='orders::order.pay_status'}</strong></td>
-								<td class="w130"><strong>{lang key='orders::order.shipping_status'}</strong></td>
-								<td class="ecjiafc-pre t_c"><strong>备注</strong></td>
-
 							</tr>
 						</thead>
 						<tbody>
@@ -259,9 +255,6 @@
 								<td>{$action.action_user}</td>
 								<td>{$action.action_time}</td>
 								<td>{$action.order_status}</td>
-								<td>{$action.pay_status}</td>
-								<td>{$action.shipping_status}</td>
-								<td>{$action.action_note|nl2br}</td>
 							</tr>
 							<!-- {foreachelse} -->
 							<tr>

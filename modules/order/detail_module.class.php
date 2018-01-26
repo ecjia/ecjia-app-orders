@@ -102,19 +102,29 @@ class detail_module extends api_front implements api_interface {
 		/*订单有没申请退款*/
 		$refund_info = RC_DB::table('refund_order')->where('order_id', $order_id)->first();
 		if (!empty($refund_info)) {
-			$order['has_refund'] 			= 1;
+			RC_Loader::load_app_class('order_refund', 'refund', false);
+			
+			$refund_status_info = get_refund_status($refund_info);
+			
+			$refund_total_amount  = $refund_info['money_paid'] - $refund_info['shipping_fee']; 
+			$order['refund_info'] = array(
+					'refund_type' 			=> $refund_info['refund_type'],
+					'label_refund_type' 	=> $refund_info['refund_type'] == 'refund' ? '仅退款' : '退货退款',
+					'refund_sn'	  			=> $refund_info['refund_sn'],
+					'refund_status'			=> empty($refund_status_info['refund_status_code']) ? '' : $refund_status_info['refund_status_code'],
+					'label_refund_status'	=> empty($refund_status_info['label_refund_status']) ? '' : $refund_status_info['label_refund_status'],
+					'refund_goods_amount'	=> price_format($refund_info['goods_amount']),	 	
+					'shipping_fee'			=> price_format($refund_info['shipping_fee']),
+					'refund_total_amount '	=> price_format($refund_total_amount),
+					'reason'				=> order_refund::get_reason(array('reason_id' => $refund_info['refund_reason'], 'type' => $refund_info['refund_type'])),
+					'return_images'			=> order_refund::get_return_images($refund_info['refund_id']),
+			);	
 			$order['refund_type'] 			= $refund_info['refund_type'];
 			$order['refund_id']				= $refund_info['refund_id'];
 			$refund_status_info 			= get_refund_status($refund_info);
 			$order['refund_status']			= empty($refund_status_info['refund_status_code']) ? '' : $refund_status_info['refund_status_code'];
 			$order['label_refund_status']	= empty($refund_status_info['label_refund_status']) ? '' : $refund_status_info['label_refund_status'];
-		} else {
-			$order['has_refund'] 			= 0;
-			$order['refund_type'] 			= null;
-			$order['refund_id'] 			= null;
-			$order['refund_status'] 		= null;
-			$order['label_refund_status'] 	= null;
-		}
+		} 
 		
 		/*返回数据处理*/
 		$order['order_id'] 			= intval($order['order_id']);
@@ -338,18 +348,18 @@ function get_refund_status($refund_info) {
 	$status = $refund_info['status'];
 	$refund_status = $refund_info['refund_status'];
 	//1进行中2已退款3已取消
-	if (in_array($status, array(Ecjia\App\Refund\Refund_status::UNCHECK,Ecjia\App\Refund\Refund_status::AGREE,Ecjia\App\Refund\Refund_status::REFUSED))) {
+	if (in_array($status, array(Ecjia\App\Refund\RefundStatus::UNCHECK, Ecjia\App\Refund\RefundStatus::AGREE, Ecjia\App\Refund\RefundStatus::REFUSED))) {
 		$refund_status_code = 'going';
 		$label_refund_staus = '进行中';
-	} elseif (in_array($status, array(Ecjia\App\Refund\Refund_status::AGREE)) && in_array($refund_status, array(Ecjia\App\Refund\Refund_status::TRANSFERED))) {
+	} elseif (in_array($status, array(Ecjia\App\Refund\RefundStatus::AGREE)) && in_array($refund_status, array(Ecjia\App\Refund\RefundStatus::TRANSFERED))) {
 		$refund_status_code = 'refunded';
 		$label_refund_staus = '已退款';
-	} elseif (in_array($status, array(Ecjia\App\Refund\Refund_status::CANCELED))) {
+	} elseif (in_array($status, array(Ecjia\App\Refund\RefundStatus::CANCELED))) {
 		$refund_status_code = 'canceled';
 		$label_refund_staus = '已取消';
 	}
 	$result['refund_status_code'] = $refund_status_code;
-	$result['label_refund_staus'] = $label_refund_staus;
+	$result['label_refund_status'] = $label_refund_staus;
 	
 	return $result;
 }

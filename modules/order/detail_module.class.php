@@ -100,7 +100,7 @@ class detail_module extends api_front implements api_interface {
 		$order['label_order_status'] = empty($order_status_info['label_order_status']) ? '' : $order_status_info['label_order_status'];
 		
 		/*订单有没申请退款*/
-		$refund_info = RC_DB::table('refund_order')->where('order_id', $order_id)->first();
+		$refund_info = RC_DB::table('refund_order')->where('order_id', $order_id)->where('status','<>', 10)->first();
 		if (!empty($refund_info)) {
 			RC_Loader::load_app_class('order_refund', 'refund', false);
 			
@@ -340,10 +340,7 @@ function get_order_status($order_status, $shipping_status, $pay_status, $is_cod)
  * @param array
  */
 function get_refund_status($refund_info) {
-	$result = array(
-		'refund_status_code' => '',
-		'label_refund_staus' => ''
-	);
+	$result = array();
 	
 	$status = $refund_info['status'];
 	$refund_status = $refund_info['refund_status'];

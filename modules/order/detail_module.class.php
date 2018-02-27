@@ -69,6 +69,9 @@ class detail_module extends api_front implements api_interface {
 
 		/* 订单详情 */
 		$order = get_order_detail($order_id, $user_id, 'front');
+		if (is_ecjia_error($order)) {
+			return $order;
+		}
 		if (empty($order)) {
 			return new ecjia_error('not_exist_info', "不存在的信息！");
 		}

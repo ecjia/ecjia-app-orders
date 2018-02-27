@@ -135,6 +135,15 @@ class detail_module extends api_front implements api_interface {
 			$order['label_refund_status']	= empty($refund_status_info['label_refund_status']) ? '' : $refund_status_info['label_refund_status'];
 		} 
 		
+		//配送费说明
+		$shipping_fee_desc = array(
+				'shipping_fee' 		=> price_format($order['shipping_fee']),
+				'pack_fee'	   		=> price_format($order['pack_fee']),
+				'total_fee'			=> price_format($order['shipping_fee'] + $order['pack_fee']),
+				'desc'				=> '运费：原订单实际支付的运费金额'
+		);
+		$order['shipping_fee_desc'] = $shipping_fee_desc;
+		
 		/*返回数据处理*/
 		$order['order_id'] 			= intval($order['order_id']);
 		$order['order_mode'] 		= in_array($order['extension_code'], array('storebuy', 'cashdesk')) ? 'storebuy' : 'default';

@@ -363,7 +363,7 @@ function get_refund_status($refund_info) {
 	$status = $refund_info['status'];
 	$refund_status = $refund_info['refund_status'];
 	//1进行中2已退款3已取消
-	if (in_array($status, array(Ecjia\App\Refund\RefundStatus::UNCHECK, Ecjia\App\Refund\RefundStatus::AGREE, Ecjia\App\Refund\RefundStatus::REFUSED))) {
+	if (in_array($status, array(Ecjia\App\Refund\RefundStatus::UNCHECK, Ecjia\App\Refund\RefundStatus::AGREE, Ecjia\App\Refund\RefundStatus::REFUSED)) && $refund_status !=Ecjia\App\Refund\RefundStatus::TRANSFERED) {
 		$refund_status_code = 'going';
 		$label_refund_staus = '进行中';
 	} elseif (in_array($status, array(Ecjia\App\Refund\RefundStatus::AGREE)) && in_array($refund_status, array(Ecjia\App\Refund\RefundStatus::TRANSFERED))) {

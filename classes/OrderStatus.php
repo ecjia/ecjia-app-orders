@@ -69,7 +69,7 @@ class OrderStatus
             $label_order_status = RC_Lang::get('orders::order.cs.'.CS_FINISHED);
             $status_code = 'finished';
         }
-        elseif (in_array($shipping_status, array(SS_SHIPPED)))
+        elseif (in_array($shipping_status, array(SS_SHIPPED)) && $order_status != OS_RETURNED)
         {
             $label_order_status = RC_Lang::get('orders::order.label_await_confirm');
             $status_code = 'shipped';
@@ -97,6 +97,10 @@ class OrderStatus
         elseif (in_array($order_status, array(OS_CANCELED))) {
             $label_order_status = RC_Lang::get('orders::order.label_canceled');
             $status_code = 'canceled';
+        }
+        elseif (in_array($order_status, array(OS_RETURNED))) {
+        	$label_order_status = RC_Lang::get('orders::order.label_refunded');
+        	$status_code = 'refunded';
         }
         
         return array($label_order_status, $status_code);

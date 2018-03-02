@@ -228,11 +228,32 @@ class OrderStatusLog
     }
     
     /**
-     * 退货退款订单商家确认收货
+     * 订单确认收货处理
      * @param array $options
      * @return bool
      */
     public static function return_confirm_receive($options) {
+    	if($options['status'] == 3) {
+    		$message = '商家已确认收货，等价商家退款';
+    	} else {
+    		$message = '商家拒绝确认收货，理由：商品没有问题';
+    	}
+    	$data = array(
+    		'order_status'	=> '确认收货处理',
+    		'message'       => $message,
+    		'order_id'    	=> $options['order_id'],
+    		'add_time'    	=> RC_Time::gmtime(),
+    	);
+    	RC_DB::table('order_status_log')->insert($data);
+    	return true;
+    }
+    
+    /**
+     * 订单退款到账处理
+     * @param array $options
+     * @return bool
+     */
+    public static function refund_payrecord($options) {
     	$data = array(
     		'order_status'	=> '退款到账',
     		'message'       => '您的退款'.$options['back_money'].'元，已退回至您的余额，请查收',

@@ -184,4 +184,62 @@ class OrderStatusLog
         ));
     	return true;
     }
+    
+    /**
+     * 仅退款订单已处理
+     * @param array $options
+     * @return bool
+     */
+    public static function refund_order_process($options) {
+    	if($options['status'] == 1) {
+    		$message = '申请审核已通过';
+    	} else {
+    		$message ='申请审核未通过';
+    	}
+    	$data = array(
+    			'order_status'	=> '订单退款申请已处理',
+    			'message'       => $message,
+    			'order_id'    	=> $options['order_id'],
+    			'add_time'    	=> RC_Time::gmtime(),
+    	);
+    	RC_DB::table('order_status_log')->insert($data);
+    	return true;
+    }
+    
+    /**
+     * 退货退款订单已处理
+     * @param array $options
+     * @return bool
+     */
+    public static function return_order_process($options) {
+    	if($options['status'] == 1) {
+    		$message = '申请审核已通过，请选择返回方式';
+    	} else {
+    		$message ='申请审核未通过';
+    	}
+    	$data = array(
+    		'order_status'	=> '订单退货退款申请已处理',
+    		'message'       => $message,
+    		'order_id'    	=> $options['order_id'],
+    		'add_time'    	=> RC_Time::gmtime(),
+    	);
+    	RC_DB::table('order_status_log')->insert($data);
+    	return true;
+    }
+    
+    /**
+     * 退货退款订单商家确认收货
+     * @param array $options
+     * @return bool
+     */
+    public static function return_confirm_receive($options) {
+    	$data = array(
+    		'order_status'	=> '退款到账',
+    		'message'       => '您的退款'.$options['back_money'].'元，已退回至您的余额，请查收',
+    		'order_id'    	=> $options['order_id'],
+    		'add_time'    	=> RC_Time::gmtime(),
+    	);
+    	RC_DB::table('order_status_log')->insert($data);
+    	return true;
+    }
 }

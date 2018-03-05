@@ -124,7 +124,7 @@ class detail_module extends api_front implements api_interface {
 					'refund_goods_amount'	=> price_format($refund_info['goods_amount']),	 	
 					'shipping_fee'			=> price_format($refund_info['shipping_fee']),
 					'refund_total_amount '	=> price_format($refund_total_amount),
-					'reason'				=> order_refund::get_reason(array('reason_id' => $refund_info['refund_reason'], 'type' => $refund_info['refund_type'])),
+					'reason'				=> order_refund::get_reason(array('reason_id' => $refund_info['refund_reason'])),
 					'return_images'			=> order_refund::get_return_images($refund_info['refund_id']),
 			);	
 			$order['refund_type'] 			= $refund_info['refund_type'];
@@ -335,9 +335,6 @@ function get_order_status($order_status, $shipping_status, $pay_status, $is_cod)
 	{
 		$label_order_status = RC_Lang::get('orders::order.label_shipped_part');
 		$status_code = 'shipped_part';
-	}elseif (in_array($order_status, array(OS_CANCELED))) {
-		$label_order_status = RC_Lang::get('orders::order.label_canceled');
-		$status_code = 'canceled';
 	}elseif (in_array($order_status, array(OS_CANCELED))) {
 		$label_order_status = RC_Lang::get('orders::order.label_canceled');
 		$status_code = 'canceled';

@@ -103,15 +103,14 @@ class detail_module extends api_front implements api_interface {
 		$order['label_order_status'] = empty($order_status_info['label_order_status']) ? '' : $order_status_info['label_order_status'];
 		
 		/*订单有没申请退款*/
-		$refund_info = RC_DB::table('refund_order')->where('order_id', $order_id)->where('status','<>', 10)->first();
+		RC_Loader::load_app_class('order_refund', 'refund', false);
+		$refund_info = order_refund::currorder_refund_info($order_id);
 		if (!empty($refund_info)) {
-			RC_Loader::load_app_class('order_refund', 'refund', false);
-			
 			$refund_status_info = get_refund_status($refund_info);
 			
 			//配送费：已发货的不退，未发货的退
 			if ($order['shipping_status'] > SS_UNSHIPPED) {
-				$refund_total_amount  = ($refund_info['money_paid'] + $refund_info['surplus']) - ($refund_info['shipping_fee'] - $refund_info['pack_fee']);
+				$refund_total_amount  = ($refund_info['money_paid'] + $refund_info['surplus']) - ($refund_info['shipping_fee'] + $refund_info['pack_fee']);
 			} else {
 				$refund_total_amount  = $refund_info['money_paid'] + $refund_info['surplus'];
 			}

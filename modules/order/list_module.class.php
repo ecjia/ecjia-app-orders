@@ -63,7 +63,7 @@ class list_module extends api_front implements api_interface {
 		if (!empty($type) && !in_array($type, array('await_pay', 'await_ship', 'shipped', 'finished', 'unconfirmed', 'whole', 'allow_comment', 'refund'))) {
 			return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
 		}
-		//type whole全部，await_pay待付款，await_ship待发货，shipped待收货，allow_comment待评价
+		//type whole全部，await_pay待付款，await_ship待发货，shipped待收货，allow_comment待评价refund申请了退款的
 		$size = $this->requestData('pagination.count', 15);
 		$page = $this->requestData('pagination.page', 1);
 		$keywords = $this->requestData('keywords');

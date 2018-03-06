@@ -98,6 +98,10 @@ class OrderStatus
             $label_order_status = RC_Lang::get('orders::order.label_canceled');
             $status_code = 'canceled';
         }
+        elseif (in_array($order_status, array(OS_RETURNED)) && $pay_status == PS_PAYED) {
+        	$label_order_status = RC_Lang::get('orders::order.label_refunded');
+        	$status_code = 'refund';
+        }
         
         return array($label_order_status, $status_code);
     }
@@ -211,11 +215,12 @@ class OrderStatus
     public static function queryOrderShipped() 
     {
     	return function ($query) {
-    		$query->where('order_info.shipping_status', SS_SHIPPED);
+    		$query->where('order_info.shipping_status', SS_SHIPPED)
+    			  ->where('order_info.order_status', '<>', OS_RETURNED);
     	};
     }
     
-    /* 退货 */
+    /* 退款 */
     public static function queryOrderRefund() 
     {
     	return function ($query) {
@@ -223,8 +228,9 @@ class OrderStatus
     			$join->on('order_info.order_id', '=', 'refund_order.order_id')
     			     ->where('refund_order.status', '<>', 10);
     		});
-    		$query->where('order_info.order_status', OS_RETURNED);
-
+    		$query->where('order_info.order_status', OS_RETURNED)
+    			  ->where('order_info.pay_status', PS_PAYED);
+    		
     		$fields = array('refund_order.status as rfo_status', 'refund_order.refund_status as rfd_status', 'refund_order.refund_sn');
     		$query->addSelect($fields);
     	};

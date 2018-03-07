@@ -59,7 +59,7 @@ class orders_admin_menu_api extends Component_Event_Api {
 			ecjia_admin::make_admin_menu('03_order_query', RC_Lang::get('orders::order.order_query'), RC_Uri::url('orders/admin/order_query'), 2)->add_purview('order_view'),
 // 			ecjia_admin::make_admin_menu('04_merge_order', RC_Lang::get('orders::order.merge_order'), RC_Uri::url('orders/admin/merge'), 3)->add_purview('order_os_edit'),
 			ecjia_admin::make_admin_menu('09_delivery_order', RC_Lang::get('orders::order.order_delivery_list'), RC_Uri::url('orders/admin_order_delivery/init'), 4)->add_purview('delivery_view'),
-// 			ecjia_admin::make_admin_menu('10_back_order', RC_Lang::get('orders::order.order_back_list'), RC_Uri::url('orders/admin_order_back/init'), 5)->add_purview('back_view'),
+			ecjia_admin::make_admin_menu('10_back_order', RC_Lang::get('orders::order.order_back_list'), RC_Uri::url('orders/admin_order_back/init'), 5)->add_purview('back_view'),
 		);
 		$menus->add_submenu($submenus);
 		

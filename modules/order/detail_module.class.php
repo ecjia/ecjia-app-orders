@@ -115,6 +115,25 @@ class detail_module extends api_front implements api_interface {
 				$refund_total_amount  = $order['money_paid'] + $order['surplus'];
 			}
 			
+			//被拒后返回原因，供重新申请使用
+			$refused_reasons =array();
+			if ($refund_info['status'] == '11') {
+				$reasons = RC_Loader::load_app_config('refund_reasons', 'refund');
+				if (!empty($reasons)) {
+					foreach ($reasons as $kk => $value) {
+						if (!empty($value)) {
+							foreach ($value as $bb) {
+								if ($refund_info['refund_reason'] == $bb['reason_id']) {
+									$reason_str = $kk;
+								}
+							}
+						}
+							
+					}
+				}
+			}
+			$refused_reasons = $reasons[$reason_str];
+			
 			$order['refund_info'] = array(
 					'refund_type' 			=> $refund_info['refund_type'],
 					'label_refund_type' 	=> $refund_info['refund_type'] == 'refund' ? '仅退款' : '退货退款',
@@ -128,6 +147,7 @@ class detail_module extends api_front implements api_interface {
 					'refund_total_amount '	=> price_format($refund_total_amount),
 					'reason'				=> order_refund::get_reason(array('reason_id' => $refund_info['refund_reason'])),
 					'return_images'			=> order_refund::get_return_images($refund_info['refund_id']),
+					'refused_reasons'       => $refused_reasons,
 			);	
 			$order['refund_type'] 			= $refund_info['refund_type'];
 			$order['refund_id']				= $refund_info['refund_id'];
@@ -369,7 +389,7 @@ function get_refund_status($refund_info) {
 	$status = $refund_info['status'];
 	$refund_status = $refund_info['refund_status'];
 	//1进行中2已退款3已取消
-	if (in_array($status, array(Ecjia\App\Refund\RefundStatus::UNCHECK, Ecjia\App\Refund\RefundStatus::AGREE, Ecjia\App\Refund\RefundStatus::REFUSED)) && $refund_status !=Ecjia\App\Refund\RefundStatus::TRANSFERED) {
+	if (in_array($status, array(Ecjia\App\Refund\RefundStatus::UNCHECK, Ecjia\App\Refund\RefundStatus::AGREE)) && $refund_status !=Ecjia\App\Refund\RefundStatus::TRANSFERED) {
 		$refund_status_code = 'going';
 		$label_refund_staus = '进行中';
 	} elseif (in_array($status, array(Ecjia\App\Refund\RefundStatus::AGREE)) && in_array($refund_status, array(Ecjia\App\Refund\RefundStatus::TRANSFERED))) {
@@ -378,6 +398,9 @@ function get_refund_status($refund_info) {
 	} elseif (in_array($status, array(Ecjia\App\Refund\RefundStatus::CANCELED))) {
 		$refund_status_code = 'canceled';
 		$label_refund_staus = '已取消';
+	}elseif ($status == Ecjia\App\Refund\RefundStatus::REFUSED) {
+		$refund_status_code = 'refused';
+		$label_refund_staus = '退款被拒';
 	}
 	$result['refund_status_code'] = $refund_status_code;
 	$result['label_refund_status'] = $label_refund_staus;

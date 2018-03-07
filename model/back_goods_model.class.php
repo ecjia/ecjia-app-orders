@@ -55,6 +55,4 @@ class back_goods_model extends Component_Model_View {
 
 }
 
-
-
 // end

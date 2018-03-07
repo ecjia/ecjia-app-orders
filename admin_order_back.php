@@ -154,8 +154,7 @@ class admin_order_back extends ecjia_admin {
 		$order['insure_yn'] = empty($order['insure_fee']) ? 0 : 1;
 	
 		/* 取得发货单商品 */
-// 		$goods_list = RC_DB::table('back_goods')->where('back_id', $back_order['back_id'])->get();
-		$goods_list = RC_DB::table('refund_goods')->where('refund_id', $back_order['back_id'])->get();
+		$goods_list = RC_DB::table('back_goods')->where('back_id', $back_order['back_id'])->get();
 	
 		/* 是否存在实体商品 */
 		$exist_real_goods = 0;
@@ -187,8 +186,7 @@ class admin_order_back extends ecjia_admin {
 		
 		$back_id = explode(',', $_REQUEST['back_id']);
 		/* 删除退货单 */
-// 		RC_DB::table('back_order')->whereIn('back_id', $back_id)->delete();
-		RC_DB::table('refund_order')->whereIn('refund_id', $back_id)->delete();
+		RC_DB::table('back_order')->whereIn('back_id', $back_id)->delete();
 
 		/* 记录日志 */
 		ecjia_admin::admin_log($back_id, 'remove', 'back_order');
@@ -202,8 +200,7 @@ class admin_order_back extends ecjia_admin {
 		$id = $_GET['back_id'];
 		if (!empty($id)) {
 			$field = array('order_id', 'consignee', 'address', 'country', 'province', 'city', 'district', 'street', 'sign_building', 'email', 'zipcode', 'tel', 'mobile', 'best_time');
-// 			$row = RC_DB::table('back_order')->select($field)->where('back_id', $id)->first();
-			$row = RC_DB::table('refund_order')->select($field)->where('refund_id', $id)->first();
+			$row = RC_DB::table('back_order')->select($field)->where('back_id', $id)->first();
 			
 			if (!empty($row)) {
 				$region = RC_DB::table('order_info as o')

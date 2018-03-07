@@ -1469,8 +1469,7 @@ function operable_list($order) {
  * @return void
  */
 function get_back_list() {
-// 	$db_back_order = RC_DB::table('back_order');
-	$db_refund_order = RC_DB::table('refund_order');
+	$db_back_order = RC_DB::table('back_order');
 	$args = $_GET;
 	/* 过滤信息 */
 	$filter['delivery_sn'] = empty($args['delivery_sn']) ? '' : trim($args['delivery_sn']);
@@ -1481,26 +1480,26 @@ function get_back_list() {
 	$filter['sort_order'] = empty($args['sort_order']) ? 'DESC' : trim($args['sort_order']);
 	$filter['keywords'] = empty($args['keywords']) ? '' : trim($args['keywords']);
 	if ($filter['order_sn']) {
-		$db_refund_order->where('order_sn', 'like', '%' . mysql_like_quote($filter['order_sn']) . '%');
+		$db_back_order->where('order_sn', 'like', '%' . mysql_like_quote($filter['order_sn']) . '%');
 	}
 	if ($filter['consignee']) {
-		$db_refund_order->where('consignee', 'like', '%' . mysql_like_quote($filter['consignee']) . '%');
+		$db_back_order->where('consignee', 'like', '%' . mysql_like_quote($filter['consignee']) . '%');
 	}
 	if ($filter['delivery_sn']) {
-		$db_refund_order->where('delivery_sn', 'like', '%' . mysql_like_quote($filter['delivery_sn']) . '%');
+		$db_back_order->where('delivery_sn', 'like', '%' . mysql_like_quote($filter['delivery_sn']) . '%');
 	}
 	if ($filter['keywords']) {
-		$db_refund_order->where('order_sn', 'like', '%' . mysql_like_quote($filter['keywords']) . '%')->orWhere('consignee', 'like', '%' . mysql_like_quote($filter['keywords']) . '%');
+		$db_back_order->where('order_sn', 'like', '%' . mysql_like_quote($filter['keywords']) . '%')->orWhere('consignee', 'like', '%' . mysql_like_quote($filter['keywords']) . '%');
 	}
 	// 	/* 获取管理员信息 */
 	// 	$where = array_merge($where, get_order_bac_where());
 	/* 记录总数 */
-	$count = $db_refund_order->count();
+	$count = $db_back_order->count();
 	$filter['record_count'] = $count;
 	//实例化分页
 	$page = new ecjia_page($count, 15, 6);
 	/* 查询 */
-	$row = $db_refund_order->select('refund_id', 'order_id', 'delivery_sn', 'order_sn', 'order_id', 'add_time', 'action_user', 'consignee', 'country', 'province', 'city', 'district', 'street', 'tel', 'status', 'update_time', 'email', 'return_time')->orderby($filter['sort_by'], $filter['sort_order'])->take(15)->skip($page->start_id - 1)->get();
+	$row = $db_back_order->select('back_id', 'order_id', 'delivery_sn', 'order_sn', 'order_id', 'add_time', 'action_user', 'consignee', 'country', 'province', 'city', 'district', 'street', 'tel', 'status', 'update_time', 'email', 'return_time')->orderby($filter['sort_by'], $filter['sort_order'])->take(15)->skip($page->start_id - 1)->get();
 	if (!empty($row) && is_array($row)) {
 		/* 格式化数据 */
 		foreach ($row as $key => $value) {

@@ -8,6 +8,13 @@
 <!-- {/block} -->
 
 <!-- {block name="home-content"} -->
+<div class="alert alert-warning">
+	<button type="button" class="close" data-dismiss="alert" aria-hidden="true"><i class="fa fa-times" data-original-title="" title=""></i></button>
+	<strong>温馨提示：</strong>当前退货单功能已废弃，退货单列表以及详情页仅支持历史数据查看。从 v1.14.0 版本起请进入售后列表体验新的退货退款功能。
+	<br><br>
+	<a class="no-underline" href='{url path="refund/merchant/init"}'>进入售后列表 >></a> 
+</div>
+
 <div class="page-header">
 	<div class="pull-left">
 		<h2><!-- {if $ur_here}{$ur_here}{/if} --></h2>

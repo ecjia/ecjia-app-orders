@@ -8,6 +8,12 @@
 <!-- {/block} -->
 
 <!-- {block name="main_content"} -->
+<div class="alert">
+	<a data-dismiss="alert" class="close">×</a>
+	温馨提示：当前退货单功能已废弃，退货单列表以及详情页仅支持历史数据查看。从 v1.14.0 版本起请进入售后列表体验新的退货退款功能。<br><br>
+	<a class="no-underline"  href='{url path="refund/admin/init"}'>进入售后列表 >></a>   
+</div>
+                	                	
 <div>
 	<h3 class="heading">
 		<!-- {if $ur_here}{$ur_here}{/if} -->

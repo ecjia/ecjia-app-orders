@@ -517,7 +517,7 @@ class merchant extends ecjia_merchant {
 			$order['invoice_note']	= $this->db_order_action->where(array('order_id' => $order['order_id'] , 'shipping_status' => 1))->order(array('log_time' => 'DESC'))->get_field('action_note');
 		
 			$this->assign('shop_name'		, ecjia::config('shop_name'));
-			$this->assign('shop_url'		, SITE_URL);
+			$this->assign('shop_url'		, RC_Uri::home_url());
 			$this->assign('shop_address'	, ecjia::config('shop_address'));
 			$this->assign('service_phone'	, ecjia::config('service_phone'));
 			$this->assign('print_time'		, RC_Time::local_date(ecjia::config('time_format')));

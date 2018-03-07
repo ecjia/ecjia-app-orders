@@ -816,10 +816,13 @@ function del_delivery($order_id, $action_array) {
     }
     if (in_array('back', $action_array)) {
         //查找back_id
-        $back_id = RC_DB::table('back_order')->where('order_id', $order_id)->lists('back_id');
-        if (!empty($back_id)) {
-            $query_back = RC_DB::table('back_goods')->whereIn('back_id', $back_id)->delete();
-            $query_back = RC_DB::table('back_order')->where('order_id', $order_id)->delete();
+//      $back_id = RC_DB::table('back_order')->where('order_id', $order_id)->lists('back_id');
+        $refund_id = RC_DB::table('refund_order')->where('order_id', $order_id)->lists('refund_id');
+        if (!empty($refund_id)) {
+//             $query_back = RC_DB::table('back_goods')->whereIn('back_id', $back_id)->delete();
+            $query_back = RC_DB::table('refund_goods')->whereIn('refund_id', $refund_id)->delete();
+//             $query_back = RC_DB::table('back_order')->where('order_id', $order_id)->delete();
+            $query_back = RC_DB::table('refund_order')->where('order_id', $order_id)->delete();
         }
     }
     if ($query_delivery && $query_back) {
@@ -967,9 +970,14 @@ function back_order_info($back_id, $store_id) {
     if (empty($back_id) || !is_numeric($back_id)) {
         return $return_order;
     }
-    $db_back_order = RC_DB::table('back_order')->where('back_id', $back_id);
-    isset($_SESSION['store_id']) ? $db_back_order->where('store_id', $store_id) : '';
-    $back = $db_back_order->first();
+//     $db_back_order = RC_DB::table('back_order')->where('back_id', $back_id);
+//     isset($_SESSION['store_id']) ? $db_back_order->where('store_id', $store_id) : '';
+//     $back = $db_back_order->first();
+
+    $db_refund_order = RC_DB::table('refund_order')->where('refund_id', $back_id);
+    isset($_SESSION['store_id']) ? $db_refund_order->where('store_id', $store_id) : '';
+    $back = $db_refund_order->first();
+    
     if ($back) {
         /* 格式化金额字段 */
         $back['formated_insure_fee'] = price_format($back['insure_fee'], false);

@@ -63,11 +63,13 @@ class merchant extends ecjia_merchant {
 	private $db_delivery;
 	private $db_goods;
 	private $db_products;
-	private $db_back_goods;
+// 	private $db_back_goods;
+	private $db_refund_goods;
 	private $db_pay_log;
 	private $db_goods_attr;
 	private $db_user_bonus;
-	private $db_back_order;
+// 	private $db_back_order;
+	private $db_refund_order;
 	private $db_delivery_order;
 	private $db_virtual_card;
 	private $order_class;
@@ -95,11 +97,13 @@ class merchant extends ecjia_merchant {
 		$this->db_delivery			= RC_Model::model('orders/delivery_goods_model');
 		$this->db_goods				= RC_Model::model('goods/goods_model');
 		$this->db_products			= RC_Model::model('goods/products_model');
-		$this->db_back_goods		= RC_Model::model('orders/back_goods_model');
+// 		$this->db_back_goods		= RC_Model::model('orders/back_goods_model');
+		$this->db_refund_goods		= RC_Model::model('orders/refund_goods_model');
 		$this->db_pay_log			= RC_Model::model('orders/pay_log_model');
 		$this->db_goods_attr		= RC_Model::model('goods/goods_attr_model');
 		$this->db_user_bonus		= RC_Model::model('bonus/user_bonus_model');
-		$this->db_back_order		= RC_Model::model('orders/back_order_model');
+// 		$this->db_back_order		= RC_Model::model('orders/back_order_model');
+		$this->db_refund_order		= RC_Model::model('orders/refund_order_model');
 		$this->db_delivery_order	= RC_Model::model('orders/delivery_order_model');
 		
 		$this->db_user				= RC_Model::model('user/users_model');
@@ -3320,11 +3324,12 @@ class merchant extends ecjia_merchant {
 					    'store_id'		=> $list['store_id'],
 						'invoice_no'	=> $list['invoice_no'],
 					);					
-					$back_id = $this->db_back_order->insert($data);
-		
+// 					$back_id = $this->db_back_order->insert($data);
+					$back_id = $this->db_refund_order->insert($data);
+					
 					$query = $this->db_delivery->field('goods_id, product_id, product_sn, goods_name,goods_sn, is_real, send_number, goods_attr')->find(array('delivery_id' => $list['delivery_id']));
 					$source = array(
-						'back_id'		=> $back_id,
+						'refund_id'		=> $back_id,
 						'goods_id'		=> $query['goods_id'],
 						'product_id'	=> $query['product_id'],
 						'product_sn'	=> $query['product_sn'],
@@ -3335,7 +3340,8 @@ class merchant extends ecjia_merchant {
 						'goods_attr'	=> $query['goods_attr'],
 					);
 
-					$this->db_back_goods->insert($source);
+// 					$this->db_back_goods->insert($source);
+					$this->db_refund_goods->insert($source);
 
 					}
 				}

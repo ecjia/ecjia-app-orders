@@ -108,9 +108,9 @@ class mh_back extends ecjia_merchant {
         $store_id = $_SESSION['store_id'];
 
 		$back_id = intval(trim($_GET['back_id']));
-		$count = RC_DB::table('back_order as bo')
-				->leftJoin('order_goods as og', RC_DB::raw('bo.order_id'), '=', RC_DB::raw('og.order_id'))
-				->whereRaw("bo.back_id = $back_id")
+		$count = RC_DB::table('refund_order as bo')
+				->leftJoin('order_goods as og', RC_DB::raw('ro.refund_id'), '=', RC_DB::raw('og.order_id'))
+				->whereRaw("ro.refund_id = $back_id")
 				->count();
         
 		/* 根据发货单id查询发货单信息 */
@@ -138,7 +138,8 @@ class mh_back extends ecjia_merchant {
 		$order['insure_yn'] = empty($order['insure_fee']) ? 0 : 1;
 	
 		/* 取得发货单商品 */
-		$goods_list	= RC_DB::table('back_goods')->where('back_id', $back_order['back_id'])->get();
+// 		$goods_list	= RC_DB::table('back_goods')->where('back_id', $back_order['back_id'])->get();
+		$goods_list	= RC_DB::table('refund_goods')->where('refund_id', $back_order['back_id'])->get();
 		/* 是否存在实体商品 */
 		$exist_real_goods = 0;
 		if ($goods_list) {
@@ -172,14 +173,17 @@ class mh_back extends ecjia_merchant {
 		$type = htmlspecialchars($_GET['type']);
 		$back = explode(',',$back_id);
         
-		$db_back_order = RC_DB::table('back_order')->whereIn('back_id', $back);
-		$db_back_order_get = $db_back_order->first();
+// 		$db_back_order = RC_DB::table('back_order')->whereIn('back_id', $back);
+// 		$db_back_order_get = $db_back_order->first();
+		$db_refund_order = RC_DB::table('refund_order')->whereIn('refund_id', $back);
+		$db_back_order_get = $db_refund_order->first();
 
 	    if ($db_back_order_get['store_id'] != $_SESSION['store_id']) {
 			return $this->showmessage(__('无法找到对应的订单！'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
 		}
 		
-		$db_back_order->delete();
+// 		$db_back_order->delete();
+		$db_refund_order->delete();
 		return $this->showmessage(RC_Lang::get('orders::order.tips_back_del'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS,array('pjaxurl'=>RC_Uri::url('orders/mh_back/init')));
 	}
 
@@ -189,7 +193,8 @@ class mh_back extends ecjia_merchant {
 		$id = $_GET['back_id'];
 		if (!empty($id)) {
 			$field = array('order_id', 'consignee', 'address', 'country', 'province', 'city', 'district', 'street', 'sign_building', 'email', 'zipcode', 'tel', 'mobile', 'best_time');
-			$row = RC_DB::table('back_order')->select($field)->where('back_id', $id)->first();
+// 			$row = RC_DB::table('back_order')->select($field)->where('back_id', $id)->first();
+			$row = RC_DB::table('refund_order')->select($field)->where('refund_id', $id)->first();
 			if (!empty($row)) {
 				$region = RC_DB::table('order_info as o')
 					->leftJoin('regions as c', RC_DB::raw('o.country'), '=', RC_DB::raw('c.region_id'))

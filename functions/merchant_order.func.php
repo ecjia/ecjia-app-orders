@@ -284,30 +284,47 @@ function get_merchant_back_list() {
 	$filter['sort_by'] = empty($args['sort_by']) ? 'update_time' : trim($args['sort_by']);
 	$filter['sort_order'] = empty($args['sort_order']) ? 'DESC' : trim($args['sort_order']);
 	$filter['keywords'] = empty($args['keywords']) ? '' : trim($args['keywords']);
-	$db_back_order = RC_DB::table('back_order as bo')->leftJoin('order_info as oi', RC_DB::raw('bo.order_id'), '=', RC_DB::raw('oi.order_id'));
-	isset($_SESSION['store_id']) ? $db_back_order->where(RC_DB::raw('bo.store_id'), $_SESSION['store_id']) : '';
+// 	$db_back_order = RC_DB::table('back_order as bo')->leftJoin('order_info as oi', RC_DB::raw('ro.order_id'), '=', RC_DB::raw('oi.order_id'));
+// 	isset($_SESSION['store_id']) ? $db_back_order->where(RC_DB::raw('ro.store_id'), $_SESSION['store_id']) : '';
+// 	$where = array();
+// 	if ($filter['keywords']) {
+// 		$db_back_order->whereRaw('(ro.order_sn like "%' . mysql_like_quote($filter['keywords']) . '%" or ro.consignee like "%' . mysql_like_quote($filter['keywords']) . '%")');
+// 	}
+// 	if ($filter['order_sn']) {
+// 		$db_back_order->where(RC_DB::raw('ro.order_sn'), 'like', '%' . mysql_like_quote($filter['order_sn']) . '%');
+// 	}
+// 	if ($filter['consignee']) {
+// 		$db_back_order->where(RC_DB::raw('ro.consignee'), 'like', '%' . mysql_like_quote($filter['consignee']) . '%');
+// 	}
+// 	if ($filter['delivery_sn']) {
+// 		$db_back_order->where(RC_DB::raw('ro.delivery_sn'), 'like', '%' . mysql_like_quote($filter['delivery_sn']) . '%');
+// 	}
+
+	$db_refund_order = RC_DB::table('refund_order as ro')->leftJoin('order_info as oi', RC_DB::raw('ro.order_id'), '=', RC_DB::raw('oi.order_id'));
+	isset($_SESSION['store_id']) ? $db_refund_order->where(RC_DB::raw('ro.store_id'), $_SESSION['store_id']) : '';
 	$where = array();
 	if ($filter['keywords']) {
-		$db_back_order->whereRaw('(bo.order_sn like "%' . mysql_like_quote($filter['keywords']) . '%" or bo.consignee like "%' . mysql_like_quote($filter['keywords']) . '%")');
+		$db_refund_order->whereRaw('(ro.order_sn like "%' . mysql_like_quote($filter['keywords']) . '%" or ro.consignee like "%' . mysql_like_quote($filter['keywords']) . '%")');
 	}
 	if ($filter['order_sn']) {
-		$db_back_order->where(RC_DB::raw('bo.order_sn'), 'like', '%' . mysql_like_quote($filter['order_sn']) . '%');
+		$db_refund_order->where(RC_DB::raw('ro.order_sn'), 'like', '%' . mysql_like_quote($filter['order_sn']) . '%');
 	}
 	if ($filter['consignee']) {
-		$db_back_order->where(RC_DB::raw('bo.consignee'), 'like', '%' . mysql_like_quote($filter['consignee']) . '%');
+		$db_refund_order->where(RC_DB::raw('ro.consignee'), 'like', '%' . mysql_like_quote($filter['consignee']) . '%');
 	}
 	if ($filter['delivery_sn']) {
-		$db_back_order->where(RC_DB::raw('bo.delivery_sn'), 'like', '%' . mysql_like_quote($filter['delivery_sn']) . '%');
+		$db_refund_order->where(RC_DB::raw('ro.delivery_sn'), 'like', '%' . mysql_like_quote($filter['delivery_sn']) . '%');
 	}
 	/* 记录总数 */
-	$count = RC_DB::table('back_order as bo')->leftJoin('order_info as oi', RC_DB::raw('bo.order_id'), '=', RC_DB::raw('oi.order_id'))->count();
+// 	$count = RC_DB::table('back_order as bo')->leftJoin('order_info as oi', RC_DB::raw('ro.order_id'), '=', RC_DB::raw('oi.order_id'))->count();
+	$count = RC_DB::table('refund_order as ro')->leftJoin('order_info as oi', RC_DB::raw('ro.order_id'), '=', RC_DB::raw('oi.order_id'))->count();
 	$filter['record_count'] = $count;
 	//加载分页类
 	RC_Loader::load_sys_class('ecjia_page', false);
 	//实例化分页
 	$page = new ecjia_merchant_page($count, 15, 6);
 	/* 查询 */
-	$row = $db_back_order->selectRaw('bo.back_id, bo.order_id, bo.delivery_sn, bo.order_sn, bo.order_id, bo.add_time, bo.action_user, bo.consignee, bo.country,bo.province, bo.city, bo.district, bo.tel, bo.status, bo.update_time, bo.email, bo.return_time')->orderBy($filter['sort_by'], $filter['sort_order'])->take(15)->skip($page->start_id - 1)->groupBy('back_id')->get();
+	$row = $db_refund_order->selectRaw('ro.refund_id, ro.order_id, ro.delivery_sn, ro.order_sn, ro.order_id, ro.add_time, ro.action_user, ro.consignee, ro.country,ro.province, ro.city, ro.district, ro.tel, ro.status, ro.update_time, ro.email, ro.return_time')->orderBy($filter['sort_by'], $filter['sort_order'])->take(15)->skip($page->start_id - 1)->groupBy('back_id')->get();
 	if (!empty($row) && is_array($row)) {
 		/* 格式化数据 */
 		foreach ($row as $key => $value) {

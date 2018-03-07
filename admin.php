@@ -3379,7 +3379,8 @@ class admin extends ecjia_admin {
 					    'store_id'      => $list['store_id'],
 						'invoice_no'	=> $list['invoice_no'],
 					);					
-					$back_id = RC_DB::table('back_order')->insertGetId($data);
+// 					$back_id = RC_DB::table('back_order')->insertGetId($data);
+					$back_id = RC_DB::table('refund_order')->insertGetId($data);
 		
 					$query = RC_DB::table('delivery_goods')
 						->selectRaw('goods_id, product_id, product_sn, goods_name, goods_sn, is_real, send_number, goods_attr')
@@ -3387,7 +3388,7 @@ class admin extends ecjia_admin {
 						->first();
 					
 					$source = array(
-						'back_id'		=> $back_id,
+						'refund_id'		=> $back_id,
 						'goods_id'		=> $query['goods_id'],
 						'product_id'	=> $query['product_id'],
 						'product_sn'	=> $query['product_sn'],
@@ -3397,7 +3398,8 @@ class admin extends ecjia_admin {
 						'send_number'	=> $query['send_number'],
 						'goods_attr'	=> $query['goods_attr'],
 					);
-					RC_DB::table('back_goods')->insert($source);
+// 					RC_DB::table('back_goods')->insert($source);
+					RC_DB::table('refund_goods')->insert($source);
 				}
 			}
 	

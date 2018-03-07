@@ -46,15 +46,13 @@
 //
 defined('IN_ECJIA') or exit('No permission resources.');
 
-class back_goods_model extends Component_Model_View {
+class refund_order_model extends Component_Model_View {
 	public $table_name = '';
 	public function __construct() {
-		$this->table_name 	= 'back_goods';
+		$this->table_name 	= 'refund_order';
 		parent::__construct();
 	}
 
 }
-
-
 
 // end

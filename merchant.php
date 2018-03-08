@@ -3661,7 +3661,7 @@ class merchant extends ecjia_merchant {
 			$return_status = 1;
 			$refund_status = 0;
 		}
-		
+		$user_name = RC_DB::TABLE('users')->where('user_id', $order['user_id'])->pluck('user_name');
 		/* 进入售后 */
 		$refund_data = array(
 				'store_id'		=> $order['store_id'],
@@ -3698,7 +3698,7 @@ class merchant extends ecjia_merchant {
 				'refund_content'=> $refund_content,
 				'refund_reason'	=> $refund_reason,
 				'add_time'		=> RC_Time::gmtime(),
-				'referer'		=> 'admin'
+				'referer'		=> 'merchant'
 		);
 		$refund_id = RC_DB::table('refund_order')->insertGetId($refund_data);
 		

@@ -102,18 +102,18 @@ class detail_module extends api_front implements api_interface {
 		$order['order_status_code'] = empty($order_status_info['status_code']) ? '' : $order_status_info['status_code'];
 		$order['label_order_status'] = empty($order_status_info['label_order_status']) ? '' : $order_status_info['label_order_status'];
 		
+		//配送费：已发货的不退，未发货的退
+		if ($order['shipping_status'] > SS_UNSHIPPED) {
+			$refund_total_amount  = $order['money_paid'] + $order['surplus'] - $order['pay_fee']- $order['shipping_fee'] - $order['insure_fee'];
+		} else {
+			$refund_total_amount  = $order['money_paid'] + $order['surplus'];
+		}
+		
 		/*订单有没申请退款*/
 		RC_Loader::load_app_class('order_refund', 'refund', false);
 		$refund_info = order_refund::currorder_refund_info($order_id);
 		if (!empty($refund_info)) {
 			$refund_status_info = get_refund_status($refund_info);
-			
-			//配送费：已发货的不退，未发货的退
-			if ($order['shipping_status'] > SS_UNSHIPPED) {
-				$refund_total_amount  = $order['money_paid'] + $order['surplus'] - $order['pay_fee']- $order['shipping_fee'] - $order['insure_fee'];
-			} else {
-				$refund_total_amount  = $order['money_paid'] + $order['surplus'];
-			}
 			
 			//被拒后返回原因，供重新申请使用
 			$refused_reasons =array();

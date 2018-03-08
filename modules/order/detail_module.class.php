@@ -107,7 +107,7 @@ class detail_module extends api_front implements api_interface {
 			$refund_total_amount  = $order['money_paid'] + $order['surplus'] - $order['pay_fee']- $order['shipping_fee'] - $order['insure_fee'];
 			$refund_shipping_fee  = 0;
 		} else {
-			$refund_total_amount  = $order['money_paid'] + $order['surplus'];
+			$refund_total_amount  = $order['money_paid'] + $order['surplus'] - $order['pay_fee'];
 			$refund_shipping_fee  = $order['shipping_fee'] > 0 ? price_format($order['shipping_fee']) : 0 ;
 		}
 		

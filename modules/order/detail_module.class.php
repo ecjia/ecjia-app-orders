@@ -117,22 +117,9 @@ class detail_module extends api_front implements api_interface {
 			
 			//被拒后返回原因，供重新申请使用
 			$refused_reasons =array();
-			if ($refund_info['status'] == '11') {
-				$reasons = RC_Loader::load_app_config('refund_reasons', 'refund');
-				if (!empty($reasons)) {
-					foreach ($reasons as $kk => $value) {
-						if (!empty($value)) {
-							foreach ($value as $bb) {
-								if ($refund_info['refund_reason'] == $bb['reason_id']) {
-									$reason_str = $kk;
-								}
-							}
-						}
-							
-					}
-				}
+			if ($refund_info['status'] == Ecjia\App\Refund\RefundStatus::REFUSED) {
+				$refused_reasons = order_refund::get_one_group_reasons($refund_info['refund_reason']);
 			}
-			$refused_reasons = $reasons[$reason_str];
 			
 			$order['refund_info'] = array(
 					'refund_type' 			=> $refund_info['refund_type'],

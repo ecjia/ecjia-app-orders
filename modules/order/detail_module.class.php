@@ -105,8 +105,10 @@ class detail_module extends api_front implements api_interface {
 		//配送费：已发货的不退，未发货的退
 		if ($order['shipping_status'] > SS_UNSHIPPED) {
 			$refund_total_amount  = $order['money_paid'] + $order['surplus'] - $order['pay_fee']- $order['shipping_fee'] - $order['insure_fee'];
+			$refund_shipping_fee  = 0;
 		} else {
 			$refund_total_amount  = $order['money_paid'] + $order['surplus'];
+			$refund_shipping_fee  = $order['shipping_fee'] > 0 ? price_format($order['shipping_fee']) : 0 ;
 		}
 		
 		/*订单有没申请退款*/
@@ -141,17 +143,19 @@ class detail_module extends api_front implements api_interface {
 		} 
 		
 		//配送费说明
-		$shipping_fee_desc = array(
-				'shipping_fee' 		=> price_format($order['shipping_fee']),
-				'insure_fee'	   	=> price_format($order['insure_fee']),
-				'total_fee'			=> price_format($order['shipping_fee'] + $order['insure_fee']),
-				'desc'				=> '运费：原订单实际支付的运费金额'
-		);
-		$order['shipping_fee_desc'] = $shipping_fee_desc;
+// 		$shipping_fee_desc = array(
+// 				'shipping_fee' 		=> price_format($order['shipping_fee']),
+// 				'insure_fee'	   	=> price_format($order['insure_fee']),
+// 				'total_fee'			=> price_format($order['shipping_fee'] + $order['insure_fee']),
+// 				'desc'				=> '运费：原订单实际支付的运费金额'
+// 		);
+// 		$order['shipping_fee_desc'] = $shipping_fee_desc;
+		
 		
 		$refund_fee_info = array(
 				'refund_goods_amount' => price_format($order['goods_amount']),
-				'refund_inv_tax'	  => price_format($order['inv_tax']),
+				'refund_shipping_fee' => $refund_shipping_fee,
+				'refund_inv_tax'	  => $order['inv_tax'] > 0 ? price_format($order['inv_tax']) : 0 ,
 				'refund_integral'	  => intval($order['integral']),
 				'refund_total_amount' => price_format($refund_total_amount)
 		);

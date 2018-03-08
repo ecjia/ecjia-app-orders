@@ -3619,8 +3619,7 @@ class merchant extends ecjia_merchant {
 		$this->admin_priv('order_os_edit');
 		
 		RC_Loader::load_app_class('order_refund', 'refund', false);
-		
-		
+	
 		$refund_type = trim($_POST['refund_type']);
 		$refund_reason = intval($_POST['refund_reason']);
 		$order_id	= intval($_POST['order_id']);
@@ -3702,19 +3701,25 @@ class merchant extends ecjia_merchant {
 		$refund_id = RC_DB::table('refund_order')->insertGetId($refund_data);
 		
 		/* 仅仅退货需要录入退货商品表 refund_goods*/
-		$query = $this->db_delivery->field('goods_id, product_id, product_sn, goods_name,goods_sn, is_real, send_number, goods_attr')->find(array('delivery_id' => $list['delivery_id']));
-		$source = array(
-				'refund_id'		=> $refund_id,
-				'goods_id'		=> $query['goods_id'],
-				'product_id'	=> $query['product_id'],
-				'product_sn'	=> $query['product_sn'],
-				'goods_name'	=> $query['goods_name'],
-				'goods_sn'		=> $query['goods_sn'],
-				'is_real'		=> $query['is_real'],
-				'send_number'	=> $query['send_number'],
-				'goods_attr'	=> $query['goods_attr'],
-		);
-		RC_DB::table('refund_goods')->insertGetId($source);
+		$delivery_list = $this->db_delivery_order->where(array('order_id' => $order['order_id']))->in(array('status' => array(0,2)))->select();
+		if ($delivery_list) {
+			foreach ($delivery_list as $list) {
+				$query = $this->db_delivery->field('goods_id, product_id, product_sn, goods_name,goods_sn, is_real, send_number, goods_attr')->find(array('delivery_id' => $list['delivery_id']));
+				$source = array(
+						'refund_id'		=> $refund_id,
+						'goods_id'		=> $query['goods_id'],
+						'product_id'	=> $query['product_id'],
+						'product_sn'	=> $query['product_sn'],
+						'goods_name'	=> $query['goods_name'],
+						'goods_sn'		=> $query['goods_sn'],
+						'is_real'		=> $query['is_real'],
+						'send_number'	=> $query['send_number'],
+						'goods_attr'	=> $query['goods_attr'],
+				);
+				RC_DB::table('refund_goods')->insertGetId($source);
+			}
+		}
+		
 
 		/* 订单状态为“退货” */
 		RC_DB::table('order_info')->where('order_id', $order_id)->update(array('order_status' => OS_RETURNED));

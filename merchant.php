@@ -3619,7 +3619,6 @@ class merchant extends ecjia_merchant {
 		$this->admin_priv('order_os_edit');
 		
 		RC_Loader::load_app_class('order_refund', 'refund', false);
-	
 		$refund_type = trim($_POST['refund_type']);
 		$refund_reason = intval($_POST['refund_reason']);
 		$order_id	= intval($_POST['order_id']);
@@ -3720,14 +3719,13 @@ class merchant extends ecjia_merchant {
 			}
 		}
 		
-
 		/* 订单状态为“退货” */
 		RC_DB::table('order_info')->where('order_id', $order_id)->update(array('order_status' => OS_RETURNED));
 		
 		/* 记录log */
 		$action_note = trim($_POST['action_note']);
-		order_action($order_id, OS_RETURNED, $order['shipping_status'], $order['pay_status'], $action_note, '商家');
-
+		order_refund::order_action($order_id, OS_RETURNED, $order['shipping_status'], $order['pay_status'], $action_note, '商家');
+		
 		/* 发货单状态为“退货” */
 		$data = array('status' => 1);
 		$this->db_delivery_order->where(array('order_id' => $order['order_id']))->in(array('status' => array(0,2)))->update($data);

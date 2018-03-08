@@ -3619,6 +3619,9 @@ class merchant extends ecjia_merchant {
 		$this->admin_priv('order_os_edit');
 		
 		RC_Loader::load_app_class('order_refund', 'refund', false);
+		RC_Loader::load_app_class('OrderStatusLog', 'orders', false);
+		RC_Loader::load_app_class('RefundStatusLog', 'refund', false);
+		
 		$refund_type = trim($_POST['refund_type']);
 		$refund_reason = intval($_POST['refund_reason']);
 		$order_id	= intval($_POST['order_id']);

@@ -664,11 +664,10 @@ ecjia.merchant.order.info();
 									{/if}
 
 									{if $operable_list.return}
-									<button class="btn operatesubmit btn-info" type="submit" name="return">{lang key='orders::order.op_return'}</button>
+									<a style="cursor: pointer;" class="btn btn-info" href="#actionmodal" data-toggle="modal" id="modal">退款/退货</a>
 									{/if}
 									
-									<a style="cursor: pointer;" class="btn btn-info" href="#actionmodal" data-toggle="modal" id="modal">退款/退货</a>
-
+									
 									{if $operable_list.to_delivery}
 									<button class="btn operatesubmit btn-info" type="submit" name="to_delivery">{lang key='orders::order.op_to_delivery'}</button>
 									<input name="order_sn" type="hidden" value="{$order.order_sn}" />

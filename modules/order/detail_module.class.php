@@ -110,7 +110,7 @@ class detail_module extends api_front implements api_interface {
 			
 			//配送费：已发货的不退，未发货的退
 			if ($order['shipping_status'] > SS_UNSHIPPED) {
-				$refund_total_amount  = ($order['money_paid'] + $order['surplus']) - ($order['shipping_fee'] + $order['pack_fee']);
+				$refund_total_amount  = $order['money_paid'] + $order['surplus'] - $order['pay_fee']- $order['shipping_fee'] - $order['insure_fee'];
 			} else {
 				$refund_total_amount  = $order['money_paid'] + $order['surplus'];
 			}
@@ -137,6 +137,7 @@ class detail_module extends api_front implements api_interface {
 			$order['refund_info'] = array(
 					'refund_type' 			=> $refund_info['refund_type'],
 					'label_refund_type' 	=> $refund_info['refund_type'] == 'refund' ? '仅退款' : '退货退款',
+					'refund_id'		        => $refund_info['refund_id'],
 					'refund_sn'	  			=> $refund_info['refund_sn'],
 					'refund_status'			=> empty($refund_status_info['refund_status_code']) ? '' : $refund_status_info['refund_status_code'],
 					'label_refund_status'	=> empty($refund_status_info['label_refund_status']) ? '' : $refund_status_info['label_refund_status'],
@@ -146,14 +147,10 @@ class detail_module extends api_front implements api_interface {
 					'refund_total_amount '	=> price_format($refund_total_amount),
 					'reason_id'				=> intval($refund_info['refund_reason']),
 					'reason'				=> order_refund::get_reason(array('reason_id' => $refund_info['refund_reason'])),
+					'refund_desc'			=> $refund_info['refund_content'],
 					'return_images'			=> order_refund::get_return_images($refund_info['refund_id']),
 					'refused_reasons'       => $refused_reasons,
 			);	
-			$order['refund_type'] 			= $refund_info['refund_type'];
-			$order['refund_id']				= $refund_info['refund_id'];
-			$refund_status_info 			= get_refund_status($refund_info);
-			$order['refund_status']			= empty($refund_status_info['refund_status_code']) ? '' : $refund_status_info['refund_status_code'];
-			$order['label_refund_status']	= empty($refund_status_info['label_refund_status']) ? '' : $refund_status_info['label_refund_status'];
 		} 
 		
 		//配送费说明

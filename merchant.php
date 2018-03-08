@@ -3813,7 +3813,7 @@ class merchant extends ecjia_merchant {
 		OrderStatusLog::refund_order_process(array('order_id' => $refund_info['order_id'], 'status' => 1));
 		
 		/* 操作成功 */
-		return $this->showmessage('申请操作成功', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS,array('pjaxurl' => RC_Uri::url('order/merchant/info', array('order_id' => $order_id))));
+		return $this->showmessage('申请操作成功', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS,array('pjaxurl' => RC_Uri::url('orders/merchant/info', array('order_id' => $order_id))));
 	}
 }
 

@@ -3630,7 +3630,7 @@ class merchant extends ecjia_merchant {
 		
 		/* 检查能否操作 */
 		$operable_list = merchant_operable_list($order);
-		if (!isset($operable_list[$operation])) {
+		if (!isset($operable_list['return'])) {
 			return $this->showmessage("无法对订单执行该操作", ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 

@@ -3614,11 +3614,12 @@ class merchant extends ecjia_merchant {
 		RC_Cache::app_cache_set('switch_on_off', $val, 'orders', 10080);
 	}
 	
-	/* 兼容退货退款功能 */
+	/* 退货退款功能 songqianqian */
 	public function mer_action_return() {
 		$this->admin_priv('order_os_edit');
+		
 		RC_Loader::load_app_class('order_refund', 'refund', false);
-		$action_note = $_POST['action_note'];
+		
 		
 		$refund_type = trim($_POST['refund_type']);
 		$refund_reason = intval($_POST['refund_reason']);
@@ -3719,6 +3720,7 @@ class merchant extends ecjia_merchant {
 		RC_DB::table('order_info')->where('order_id', $order_id)->update(array('order_status' => OS_RETURNED));
 		
 		/* 记录log */
+		$action_note = trim($_POST['action_note']);
 		order_action($order_id, OS_RETURNED, $order['shipping_status'], $order['pay_status'], $action_note, '商家');
 
 		/* 发货单状态为“退货” */
@@ -3731,7 +3733,6 @@ class merchant extends ecjia_merchant {
 		
 		//update commission_bill
 		RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => 2, 'order_id' => $order_id, 'order_amount' => $order['order_amount']));
-		
 		
 		//仅退款---同意---进入打款表
 		$refund_info = RC_DB::table('refund_order')->where('refund_id', $refund_id)->first();
@@ -3781,7 +3782,9 @@ class merchant extends ecjia_merchant {
 			);
 			RC_DB::table('refund_payrecord')->insertGetId($data);
 		} else {//退货退款---同意---进入待买家发货
-			RC_DB::table('refund_order')->where('refund_id', $refund_id)->update(array('status' => $status, 'return_shipping_range' => $return_shipping_range));
+			$return_shipping_range= $_POST['return_shipping_range'];
+			$return_shipping_range = implode(",", $return_shipping_range);
+			RC_DB::table('refund_order')->where('refund_id', $refund_id)->update(array('return_shipping_range' => $return_shipping_range));
 		}
 		
 		//录入退款操作日志表

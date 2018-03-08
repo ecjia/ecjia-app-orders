@@ -5,27 +5,6 @@
 <script type="text/javascript">
 ecjia.merchant.order.info();
 </script>
-
-<style>
-.return_shipping_content {
-    color: #737373;
-    margin-left: 30px;
-}
-strong{
-	margin-left:5px;
-}
-
-small{
-	 color: #737373;
-}
-.return_shipping_content p{
-	margin-bottom:0px;
-	font-size: 12px;
-	
-}
-
-
-</style>
 <!-- {/block} -->
 
 <!-- {block name="home-content"} -->
@@ -45,7 +24,7 @@ small{
 <!-- #BeginLibraryItem "/library/order_operate.lbi" --><!-- #EndLibraryItem -->
 <!-- #BeginLibraryItem "/library/order_refund.lbi" --><!-- #EndLibraryItem -->
 
-	<div id="actionmodal" style="display: block;" >
+	<div id="actionmodal" class="modal fade">
         <div class="modal-dialog" style="margin-top: 200px;">
             <div class="modal-content">
                 <div class="modal-header">
@@ -61,7 +40,7 @@ small{
 					   <div class="form-group">
 							<label class="control-label col-lg-3">退款方式：</label>
 							<div class="controls col-lg-8">
-								<select class="form-control" id="refund_type_select" name="refund_type_select">
+								<select class="form-control" id="refund_type_select" name="refund_type_select" class="w200">
 					                <option value="">请选择…</option>
 					                <option value="refund">仅退款</option>
 					                <option value="return">退货退款</option>
@@ -72,7 +51,7 @@ small{
 						<div id="refund_type_select_return">
 							<div class="form-group">
 					    		<label class="control-label col-lg-3">返还方式：</label>
-								<div class="col-lg-8 chk_radio">
+								<div class="col-lg-8 chk_radio return_shipping_range">
 									<input type="checkbox" name="return_shipping_range" id="home" value="home" > 
 									<label for="home"><strong>上门取件</strong></label><small>（由商家联系配送员上门取件）</small>
 					    			<br/>
@@ -98,7 +77,7 @@ small{
 						<div class="form-group">
 							<label class="control-label col-lg-3">退款原因：</label>
 							<div class="controls col-lg-8">
-								<select class="form-control" id="refund_reason_select" name="refund_reason_select">
+								<select class="form-control" id="refund_reason_select" name="refund_reason_select" class="w200">
 									<option value="">请选择…</option>
 					                <option value="91">暂不想购买了</option>
 									<option value="92">信息填写有误，重新购买</option>

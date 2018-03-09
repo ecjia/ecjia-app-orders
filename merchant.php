@@ -3666,7 +3666,7 @@ class merchant extends ecjia_merchant {
 		$refund_data = array(
 				'store_id'		=> $order['store_id'],
 				'user_id'		=> $order['user_id'],
-				'user_name'		=> $order['user_name'],
+				'user_name'		=> $user_name,
 				'refund_type'	=> $refund_type,
 				'refund_sn'		=> $refund_sn,
 				'order_id'		=> $order_id,

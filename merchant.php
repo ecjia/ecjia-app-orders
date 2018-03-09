@@ -3706,7 +3706,7 @@ class merchant extends ecjia_merchant {
 		$delivery_list = $this->db_delivery_order->where(array('order_id' => $order['order_id']))->in(array('status' => array(0,2)))->select();
 		if ($delivery_list) {
 			foreach ($delivery_list as $list) {
-				$query = $this->db_delivery->field('goods_id, product_id, product_sn, goods_name,goods_sn, is_real, send_number, goods_attr')->find(array('delivery_id' => $list['delivery_id']));
+				$query = RC_DB::table('delivery_goods')->where('delivery_id', $list['delivery_id'])->selectRaw('goods_id, product_id, product_sn, goods_name,goods_sn, is_real, send_number, goods_attr')->get();
 				$source = array(
 						'refund_id'		=> $refund_id,
 						'goods_id'		=> $query['goods_id'],

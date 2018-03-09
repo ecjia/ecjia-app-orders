@@ -40,7 +40,7 @@ ecjia.merchant.order.info();
 					   <div class="form-group">
 							<label class="control-label col-lg-3">退款方式：</label>
 							<div class="controls col-lg-8">
-								<select class="form-control" id="refund_type_select" name="refund_type_select" class="w200">
+								<select class="form-control" id="refund_type_select" name="refund_type_select" style="width: 250px;">
 					                <option value="">请选择…</option>
 					                <option value="refund">仅退款</option>
 					                <option value="return">退货退款</option>
@@ -77,7 +77,7 @@ ecjia.merchant.order.info();
 						<div class="form-group">
 							<label class="control-label col-lg-3">退款原因：</label>
 							<div class="controls col-lg-8">
-								<select class="form-control" id="refund_reason_select" name="refund_reason_select" class="w200">
+								<select class="form-control" id="refund_reason_select" name="refund_reason_select" style="width: 250px;">
 									<option value="">请选择…</option>
 					                <option value="91">暂不想购买了</option>
 									<option value="92">信息填写有误，重新购买</option>

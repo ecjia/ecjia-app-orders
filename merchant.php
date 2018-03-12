@@ -647,9 +647,9 @@ class merchant extends ecjia_merchant {
 			
 			//无效订单 只能查看和删除 不能进行其他操作
 			$invalid_order = false;
-			if ($order['order_status'] == OS_INVALID) {
-				$invalid_order = true;
-			}
+// 			if ($order['order_status'] == OS_INVALID) {
+// 				$invalid_order = true;
+// 			}
 			$this->assign('invalid_order', $invalid_order);
 
 			if ($order['pay_status'] == PS_PAYED) {
@@ -2029,6 +2029,10 @@ class merchant extends ecjia_merchant {
 			$require_note	= true;
 			$action			= RC_Lang::get('orders::order.op_after_service');
 			$operation		= 'after_service';
+		} elseif (isset($_GET['confirm_return'])) {
+			/* 退货退款确认 */
+			$action			= RC_Lang::get('orders::order.op_return_confirm');
+			$operation		= 'confirm_return';
 		} elseif (isset($_GET['return'])) {
 			/* 退货 */
 			$require_note	= ecjia::config('order_return_note') == 1 ? true : false;
@@ -2174,7 +2178,13 @@ class merchant extends ecjia_merchant {
 			$require_note	= true;
 			$action			= RC_Lang::get('orders::order.op_after_service');
 			$operation		= 'after_service';
-		} elseif (isset($_GET['return'])) {
+		}elseif (isset($_GET['confirm_return'])) {
+			/* 退货退款确认 */
+			$require_note	= true;
+			$action			= RC_Lang::get('orders::order.op_return_confirm');
+			$operation		= 'confirm_return';
+		} 
+		elseif (isset($_GET['return'])) {
 			/* 退货 */
 			$require_note	= ecjia::config('order_return_note') == 1;
 			$order			= order_info($order_id);
@@ -2571,6 +2581,7 @@ class merchant extends ecjia_merchant {
 	 * 操作订单状态（处理提交）
 	 */
 	public function operate_post() {
+		
 		/* 检查权限 */
 		$this->admin_priv('order_os_edit' , ecjia::MSGTYPE_JSON);
 
@@ -3378,7 +3389,9 @@ class merchant extends ecjia_merchant {
 			order_action($order['order_sn'], $order['order_status'], $order['shipping_status'], $order['pay_status'], '[' . RC_Lang::get('orders::order.op_after_service') . '] ' . $action_note);
 			/* 记录日志 */
 			ecjia_merchant::admin_log('添加售后,订单号是'.$order['order_sn'], 'setup', 'order');
-		} else {
+		} elseif ('confirm_return' == $operation) {
+			order_action($order['order_sn'], $order['order_status'], $order['shipping_status'], $order['pay_status'], '[' . RC_Lang::get('orders::order.op_return_confirm') . '] ' . $action_note);
+		}else {
 			return $this->showmessage('invalid params' , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		

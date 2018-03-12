@@ -225,13 +225,13 @@ class OrderStatus
     {
     	return function ($query) {
     		$query->leftJoin('refund_order', function ($join) {
-    			$join->on('order_info.order_id', '=', 'refund_order.order_id')
-    			     ->where('refund_order.status', '<>', 10);
+    			$join->on('order_info.order_id', '=', 'refund_order.order_id');
     		});
     		$query->where('order_info.order_status', OS_RETURNED)
     			  ->where('order_info.pay_status', PS_PAYED);
     		
     		$fields = array('refund_order.status as rfo_status', 'refund_order.refund_status as rfd_status', 'refund_order.refund_sn');
+    		
     		$query->addSelect($fields);
     	};
     }

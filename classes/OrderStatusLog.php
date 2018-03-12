@@ -5,6 +5,9 @@ namespace Ecjia\App\Orders;
 use RC_Time;
 use RC_DB;
 
+/**
+ * 订单状态日志记录
+ */
 class OrderStatusLog
 {
     

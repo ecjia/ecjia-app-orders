@@ -18,6 +18,11 @@ class OrderStatusLog
         $this->order_id = $order_id;
     }
     
+    public static function make($order_id)
+    {
+        return new self($order_id);
+    }
+    
     /**
      * 生成订单时状态日志
      * @param string $order_sn 订单编号

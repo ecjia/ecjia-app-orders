@@ -2,7 +2,7 @@
 
 namespace Ecjia\App\Orders\Order;
 
-class GoodsItem
+class OrderItem
 {
     
     

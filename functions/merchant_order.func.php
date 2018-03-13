@@ -255,7 +255,7 @@ function merchant_operable_list($order) {
         }
         /* 如果部分发货 不允许 取消 订单 */
         if (order_deliveryed($order['order_id'])) {
-            $list['return'] = true;
+//             $list['return'] = true;
             // 退货（包括退款）
             unset($list['cancel']);
             // 取消

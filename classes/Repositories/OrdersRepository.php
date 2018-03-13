@@ -128,6 +128,10 @@ class OrdersRepository extends AbstractRepository
         	'order_info.is_delete' => 0,
         ];
         
+        if ($type == 'refund') {
+        	$this->orderBy = ['refund_order.add_time' => 'desc'];
+        }
+        
         if ($user_id > 0) {
             $where['order_info.user_id'] = $user_id;
         }

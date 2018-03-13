@@ -696,7 +696,7 @@ ecjia.merchant.order.info();
 								{if $operable_list.split}【生成发货单】对已经配货完成的订单进行发货，并且生成发货单详细信息；<br>{/if}
 								{if $operable_list.invalid}【无效】设置该订单为无效/作废订单；<br>{/if}
 								{if $operable_list.return}【退款/退货】设置该订单进入售后处理流程；<br>{/if}
-								{if $operable_list.confirm_return}【确认】对申请退货的订单进行确认审核 ；<br>{/if}
+								{if $operable_list.confirm_return}【确认】操作人员对该订单的确认操作记录；<br>{/if}
 								{if $operable_list.after_service}【售后】对该订单的补充说明；<br>{/if}
 								{if $operable_list.remove}【移除】对已经标记取消或无效的订单删除<br>{/if}
 								</td>

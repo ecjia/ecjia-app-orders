@@ -3720,18 +3720,22 @@ class merchant extends ecjia_merchant {
 		if ($delivery_list) {
 			foreach ($delivery_list as $list) {
 				$query = RC_DB::table('delivery_goods')->where('delivery_id', $list['delivery_id'])->selectRaw('goods_id, product_id, product_sn, goods_name,goods_sn, is_real, send_number, goods_attr')->get();
-				$source = array(
-						'refund_id'		=> $refund_id,
-						'goods_id'		=> $query['goods_id'],
-						'product_id'	=> $query['product_id'],
-						'product_sn'	=> $query['product_sn'],
-						'goods_name'	=> $query['goods_name'],
-						'goods_sn'		=> $query['goods_sn'],
-						'is_real'		=> $query['is_real'],
-						'send_number'	=> $query['send_number'],
-						'goods_attr'	=> $query['goods_attr'],
-				);
-				RC_DB::table('refund_goods')->insertGetId($source);
+				if (!empty($query)) {
+					foreach ($query as $res) {
+						$source = array(
+								'refund_id'		=> $refund_id,
+								'goods_id'		=> $res['goods_id'],
+								'product_id'	=> $res['product_id'],
+								'product_sn'	=> $res['product_sn'],
+								'goods_name'	=> $res['goods_name'],
+								'goods_sn'		=> $res['goods_sn'],
+								'is_real'		=> $res['is_real'],
+								'send_number'	=> $res['send_number'],
+								'goods_attr'	=> $res['goods_attr'],
+						);
+						RC_DB::table('refund_goods')->insertGetId($source);
+					}
+				}
 			}
 		}
 		
@@ -3740,7 +3744,7 @@ class merchant extends ecjia_merchant {
 		
 		/* 记录log */
 		$action_note = trim($_POST['action_note']);
-		order_refund::order_action($order_id, OS_RETURNED, $order['shipping_status'], $order['pay_status'], $action_note, '商家');
+		order_refund::order_action($order_id, OS_RETURNED, $order['shipping_status'], $order['pay_status'], $action_note, $_SESSION['staff_name']);
 		
 		/* 发货单状态为“退货” */
 		$data = array('status' => 1);

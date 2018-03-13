@@ -3744,7 +3744,8 @@ class merchant extends ecjia_merchant {
 		
 		/* 记录log */
 		$action_note = trim($_POST['action_note']);
-		order_refund::order_action($order_id, OS_RETURNED, $order['shipping_status'], $order['pay_status'], $action_note, '商家');
+		$action_name = $_SESSION['staff_name'].'（商家）';
+		order_refund::order_action($order_id, OS_RETURNED, $order['shipping_status'], $order['pay_status'], $action_note, $action_name);
 		
 		/* 发货单状态为“退货” */
 		$data = array('status' => 1);

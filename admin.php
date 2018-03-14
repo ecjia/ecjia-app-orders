@@ -227,6 +227,9 @@ class admin extends ecjia_admin {
 		/* 取得用户名 */
 		if ($order['user_id'] > 0) {
 			$user = user_info($order['user_id']);
+			if (is_ecjia_error($user)) {
+				$user = array();
+			}
 			if (!empty($user)) {
 				$order['user_name'] = $user['user_name'];
 				$order['mobile_phone'] = $user['mobile_phone'];

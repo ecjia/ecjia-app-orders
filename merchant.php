@@ -241,6 +241,9 @@ class merchant extends ecjia_merchant {
 		$this->assign('ps', RC_Lang::get('orders::order.ps'));
 		$this->assign('ss', RC_Lang::get('orders::order.ss'));
 		
+		$search_url = $this->get_search_url();
+		$this->assign('search_url', $search_url);
+		
 		$this->assign_lang();
 		$this->display('mh_order_list.dwt');
 	}
@@ -3831,6 +3834,70 @@ class merchant extends ecjia_merchant {
 		
 		/* 操作成功 */
 		return $this->showmessage('申请操作成功', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS,array('pjaxurl' => RC_Uri::url('orders/merchant/info', array('order_id' => $order_id))));
+	}
+	
+	private function get_search_url() {
+		$arr = array();
+		if (isset($_GET['order_sn'])) {
+			$arr['order_sn'] = trim($_GET['order_sn']);
+		}
+		if (isset($_GET['start_time'])) {
+			$arr['start_time'] = trim($_GET['start_time']);
+		}
+		if (isset($_GET['end_time'])) {
+			$arr['end_time'] = trim($_GET['end_time']);
+		}
+		if (isset($_GET['email'])) {
+			$arr['email'] = trim($_GET['email']);
+		}
+		if (isset($_GET['user_name'])) {
+			$arr['user_name'] = trim($_GET['user_name']);
+		}
+		if (isset($_GET['consignee'])) {
+			$arr['consignee'] = trim($_GET['consignee']);
+		}
+		if (isset($_GET['tel'])) {
+			$arr['tel'] = trim($_GET['tel']);
+		}
+		if (isset($_GET['mobile'])) {
+			$arr['mobile'] = trim($_GET['mobile']);
+		}
+		if (isset($_GET['merchants_name'])) {
+			$arr['merchants_name'] = trim($_GET['merchants_name']);
+		}
+		if (isset($_GET['address'])) {
+			$arr['address'] = trim($_GET['address']);
+		}
+	
+		if (isset($_GET['zipcode'])) {
+			$arr['zipcode'] = trim($_GET['zipcode']);
+		}
+		if (isset($_GET['order_status'])) {
+			$arr['order_status'] = trim($_GET['order_status']);
+		}
+		if (isset($_GET['pay_status'])) {
+			$arr['pay_status'] = intval($_GET['pay_status']);
+		}
+		if (isset($_GET['shipping_status'])) {
+			$arr['shipping_status'] = intval($_GET['shipping_status']);
+		}
+		if (isset($_GET['shipping_id'])) {
+			$arr['shipping_id'] = intval($_GET['shipping_id']);
+		}
+		if (isset($_GET['pay_id'])) {
+			$arr['pay_id'] = intval($_GET['pay_id']);
+		}
+		if (isset($_GET['composite_status'])) {
+			$arr['composite_status'] = intval($_GET['composite_status']);
+		}
+		if (isset($_GET['keywords'])) {
+			$arr['keywords'] = intval($_GET['keywords']);
+		}
+		if (isset($_GET['merchant_keywords'])) {
+			$arr['merchant_keywords'] = intval($_GET['merchant_keywords']);
+		}
+	
+		return RC_Uri::url('orders/merchant/init', $arr);
 	}
 }
 

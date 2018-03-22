@@ -3133,8 +3133,9 @@ class merchant extends ecjia_merchant {
 				);
 				RC_DB::table('order_status_log')->insert($data);
 				//update commission_bill
-				RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => 'buy', 'order_id' => $order_id, 'order_amount' => $order['order_amount']));
-				RC_Api::api('goods', 'update_goods_sales', array('order_id' => $order_id));
+// 				RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => 'buy', 'order_id' => $order_id, 'order_amount' => $order['order_amount']));
+				RC_Api::api('commission', 'add_bill_queue', array('order_type' => 'buy', 'order_id' => $order_id));
+		        RC_Api::api('goods', 'update_goods_sales', array('order_id' => $order_id));
 			}
 			
 			/* 记录log */
@@ -3755,7 +3756,8 @@ class merchant extends ecjia_merchant {
 		$this->db_order_good->where(array('order_id' => $order_id))->update(array('send_number' => 0));
 		
 		//update commission_bill
-		RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => 'refund', 'order_id' => $order_id, 'order_amount' => $order['order_amount']));
+// 		RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => 'refund', 'order_id' => $order_id, 'order_amount' => $order['order_amount']));
+		RC_Api::api('commission', 'add_bill_queue', array('order_type' => 'refund', 'order_id' => $order_id));
 		
 		//仅退款---同意---进入打款表
 		$refund_info = RC_DB::table('refund_order')->where('refund_id', $refund_id)->first();

@@ -128,10 +128,6 @@ class OrdersRepository extends AbstractRepository
         	'order_info.is_delete' => 0,
         ];
         
-        if ($type == 'refund') {
-        	$this->orderBy = ['refund_order.add_time' => 'desc'];
-        }
-        
         if ($user_id > 0) {
             $where['order_info.user_id'] = $user_id;
         }
@@ -207,11 +203,7 @@ class OrdersRepository extends AbstractRepository
                     $query->where('order_goods.goods_name', 'like', '%' . $keywords .'%')
                           ->orWhere('order_info.order_sn', 'like', '%' . $keywords .'%');
                 });
-                
-                //$query->groupby('order_info.order_id');
             }
-            
-            $query->groupby('order_info.order_id');
             
             if (is_callable($whereQuery)) {
                 $whereQuery($query);

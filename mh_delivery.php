@@ -221,7 +221,7 @@ class mh_delivery extends ecjia_merchant {
 		if(empty($delivery_order['invoice_no'])) {
 		    $shipping_id = $delivery_order['shipping_id'];
 		    $shipping_info = RC_DB::table('shipping')->where('shipping_id', $shipping_id)->first();
-		    if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
+		    if ($shipping_info['shipping_code'] == 'ship_o2o_express' || $shipping_info['shipping_code'] == 'ship_ecjia_express') {
 		        $rand1 = mt_rand(100000,999999);
 		        $rand2 = mt_rand(1000000,9999999);
 		        $invoice_no = $rand1.$rand2;
@@ -434,7 +434,7 @@ class mh_delivery extends ecjia_merchant {
 // 		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
 		$shipping_info = ecjia_shipping::pluginData(intval($delivery_order['shipping_id']));
 		
-		if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
+		if ($shipping_info['shipping_code'] == 'ship_o2o_express' || $shipping_info['shipping_code'] == 'ship_ecjia_express') {
 			$staff_id = isset($_POST['staff_id']) ? intval($_POST['staff_id']) : 0;
 			$express_from = !empty($staff_id) ? 'assign' : 'grab';
 			$express_data = array(
@@ -457,6 +457,7 @@ class mh_delivery extends ecjia_merchant {
 				'best_time'		=> $delivery_order['best_time'],
 				'remark'		=> '',
 				'shipping_fee'	=> '5.00',
+				'shipping_code' => $shipping_info['shipping_code'],
 				'commision'		=> '',
 				'add_time'		=> RC_Time::gmtime(),
 				'longitude'		=> $delivery_order['longitude'],

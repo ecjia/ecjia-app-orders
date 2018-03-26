@@ -456,7 +456,7 @@ class mh_delivery extends ecjia_merchant {
 				'mobile'		=> $delivery_order['mobile'],
 				'best_time'		=> $delivery_order['best_time'],
 				'remark'		=> '',
-				'shipping_fee'	=> '5.00',
+				'shipping_fee'	=> $delivery_order['shipping_fee'],
 				'shipping_code' => $shipping_info['shipping_code'],
 				'commision'		=> '',
 				'add_time'		=> RC_Time::gmtime(),
@@ -850,7 +850,7 @@ class mh_delivery extends ecjia_merchant {
 		/* 判断发货单，取消配送单*/
 // 		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
 		$shipping_info = ecjia_shipping::pluginData($delivery_order['shipping_id']);
-		if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
+		if ($shipping_info['shipping_code'] == 'ship_o2o_express' || $shipping_info['shipping_code'] == 'ship_ecjia_express') {
 		    /* 如果是o2o速递，退货的时候删除ecjia_express_track_record相对应的记录 */
 		    RC_DB::table('express_track_record')->where('track_number', $delivery['invoice_no'])->delete();
 		}

@@ -386,7 +386,7 @@ class admin_order_delivery extends ecjia_admin {
 
 		/* 如果是o2o速递则在 ecjia_express_track_record表内更新一条记录*/
 		$shipping_info = RC_DB::table('shipping')->where('shipping_id', $shipping_id)->first();
-		if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
+		if ($shipping_info['shipping_code'] == 'ship_o2o_express' || $shipping_info['shipping_code'] == 'ship_ecjia_express') {
 		    $express_track_record_data = array(
 		        "express_code"    =>  $shipping_info['shipping_code'],
 		        "track_number"    =>  $delivery['invoice_no'],
@@ -618,7 +618,7 @@ class admin_order_delivery extends ecjia_admin {
             
 			/* 如果是o2o速递，删除发货单的时候删除ecjia_express_track_record相对应的记录 */
 			$shipping_info = RC_DB::table('shipping')->where('shipping_id', $delivery_order['shipping_id'])->first();
-			if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
+			if ($shipping_info['shipping_code'] == 'ship_o2o_express' || $shipping_info['shipping_code'] == 'ship_ecjia_express') {
 			    RC_DB::table('express_track_record')->where('track_number', $delivery_order['invoice_no'])->delete();
 			}
 			

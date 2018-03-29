@@ -1942,16 +1942,22 @@ class merchant extends ecjia_merchant {
 				}
 			}
 		}
-		$this->assign('order'				, $order);
-		$this->assign('exist_real_goods'	, $exist_real_goods);
-		$this->assign('goods_attr'			, $attr);
-		$this->assign('goods_list'			, $goods_list);
-		$this->assign('order_id'			, $order_id); // 订单id
-		$this->assign('operation'			, 'split'); // 订单id
-		$this->assign('action_note'			, $action_note); // 发货操作信息
+		
+		if (!empty($order['shipping_id'])) {
+			$shipping_info = ecjia_shipping::getPluginDataById($order['shipping_id']);
+			$this->assign('shipping_code', $shipping_info['shipping_code']);
+		}
+		
+		$this->assign('order', $order);
+		$this->assign('exist_real_goods', $exist_real_goods);
+		$this->assign('goods_attr', $attr);
+		$this->assign('goods_list', $goods_list);
+		$this->assign('order_id', $order_id); // 订单id
+		$this->assign('operation', 'split'); // 订单id
+		$this->assign('action_note', $action_note); // 发货操作信息
 		/* 显示模板 */
-		$this->assign('ur_here'				, RC_Lang::get('orders::order.order_operate') . RC_Lang::get('orders::order.op_split'));
-		$this->assign('form_action'			, RC_Uri::url('orders/merchant/operate_post'));
+		$this->assign('ur_here', RC_Lang::get('orders::order.order_operate') . RC_Lang::get('orders::order.op_split'));
+		$this->assign('form_action', RC_Uri::url('orders/merchant/operate_post'));
 		
 		$this->assign_lang();
 		$this->display('order_delivery_info.dwt');

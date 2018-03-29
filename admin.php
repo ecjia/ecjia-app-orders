@@ -2009,6 +2009,11 @@ class admin extends ecjia_admin {
 				}
 			}
 		}
+		
+		if (!empty($order['shipping_id'])) {
+			$shipping_info = ecjia_shipping::getPluginDataById($order['shipping_id']);
+			$this->assign('shipping_code', $shipping_info['shipping_code']);
+		}
 		$this->assign('order', $order);
 		$this->assign('exist_real_goods', $exist_real_goods);
 		$this->assign('goods_attr', $attr);

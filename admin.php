@@ -3726,10 +3726,10 @@ class admin extends ecjia_admin {
 			$arr['composite_status'] = intval($_GET['composite_status']);
 		}
 		if (isset($_GET['keywords'])) {
-			$arr['keywords'] = intval($_GET['keywords']);
+			$arr['keywords'] = trim($_GET['keywords']);
 		}
 		if (isset($_GET['merchant_keywords'])) {
-			$arr['merchant_keywords'] = intval($_GET['merchant_keywords']);
+			$arr['merchant_keywords'] = trim($_GET['merchant_keywords']);
 		}
 		
 		return RC_Uri::url('orders/admin/init', $arr);

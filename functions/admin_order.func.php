@@ -761,7 +761,16 @@ function integral_to_give($order) {
         $group_buy = group_buy_info(intval($order['extension_id']));
         return array('custom_points' => $group_buy['gift_integral'], 'rank_points' => $order['goods_amount']);
     } else {
-        return RC_DB::table('order_goods as o')->leftJoin('goods as g', RC_DB::raw('o.goods_id'), '=', RC_DB::raw('g.goods_id'))->select(RC_DB::raw('SUM(o.goods_number * IF(g.give_integral > -1, g.give_integral, o.goods_price)) AS custom_points, SUM(o.goods_number * IF(g.rank_integral > -1, g.rank_integral, o.goods_price)) AS rank_points'))->where(RC_DB::raw('o.order_id'), $order['order_id'])->where(RC_DB::raw('o.goods_id'), '>', 0)->where(RC_DB::raw('o.parent_id'), '=', 0)->where(RC_DB::raw('o.is_gift'), '=', 0)->where(RC_DB::raw('o.extension_code'), '!=', 'package_buy')->first();
+        return RC_DB::table('order_goods as o')
+        	->leftJoin('goods as g', RC_DB::raw('o.goods_id'), '=', RC_DB::raw('g.goods_id'))
+        	->select(RC_DB::raw('SUM(o.goods_number * IF(g.give_integral > -1, g.give_integral, o.goods_price)) AS custom_points, 
+        			SUM(o.goods_number * IF(g.rank_integral > -1, g.rank_integral, o.goods_price)) AS rank_points'))
+       		->where(RC_DB::raw('o.order_id'), $order['order_id'])
+        	->where(RC_DB::raw('o.goods_id'), '>', 0)
+        	->where(RC_DB::raw('o.parent_id'), '=', 0)
+        	->where(RC_DB::raw('o.is_gift'), '=', 0)
+        	->whereRaw('o.extension_code' != 'package_buy')
+        	->first();
     }
 }
 /**

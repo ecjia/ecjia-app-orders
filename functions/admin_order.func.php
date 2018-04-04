@@ -769,7 +769,6 @@ function integral_to_give($order) {
         	->where(RC_DB::raw('o.goods_id'), '>', 0)
         	->where(RC_DB::raw('o.parent_id'), '=', 0)
         	->where(RC_DB::raw('o.is_gift'), '=', 0)
-        	->whereRaw('o.extension_code' != 'package_buy')
         	->first();
     }
 }

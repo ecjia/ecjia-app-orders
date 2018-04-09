@@ -1199,18 +1199,15 @@ function deleteRepeat($array) {
  * @return  array   订单商品数组
  */
 function EM_order_goods($order_id, $page = 1, $pagesize = 10) {
-    /* $dbview = RC_Model::model('orders/order_goods_comment_viewmodel');
-    $dbview->view = array('goods' => array('type' => Component_Model_View::TYPE_LEFT_JOIN, 'alias' => 'g', 'on' => 'og.goods_id = g.goods_id'), 'term_relationship' => array('type' => Component_Model_View::TYPE_LEFT_JOIN, 'alias' => 'tr', 'on' => 'tr.object_id = og.rec_id and object_type = "ecjia.comment"'));
-    $res = $dbview->field($field)->where(array('og.order_id' => $order_id))->limit(($page - 1) * $pagesize, $pagesize)->select(); */
+	
     $field = 'og.*, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, g.store_id, c.comment_id, c.comment_rank, c.content as comment_content';
     
     $db_view = RC_DB::table('order_goods as og')
         ->leftJoin('goods as g', RC_DB::raw('og.goods_id'), '=', RC_DB::raw('g.goods_id'))
         ->leftJoin('comment as c', RC_DB::raw('og.rec_id'), '=', RC_DB::raw('c.rec_id'));
-    $res = $db_view->selectRaw($field)->where(RC_DB::raw('og.order_id'), $order_id)
-        ->groupBy(RC_DB::raw('og.rec_id'))
-        ->take($pagesize)->skip(($page-1)*$pagesize)
-		->get();
+    
+    $res = $db_view->selectRaw($field)->where(RC_DB::raw('og.order_id'), $order_id)->groupBy(RC_DB::raw('og.rec_id'))->get();
+    
     $goods_list = array();
     if (!empty($res)) {
         RC_Loader::load_app_func('global', 'goods');

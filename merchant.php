@@ -241,6 +241,9 @@ class merchant extends ecjia_merchant {
 		$this->assign('ps', RC_Lang::get('orders::order.ps'));
 		$this->assign('ss', RC_Lang::get('orders::order.ss'));
 		
+		$search_url = $this->get_search_url();
+		$this->assign('search_url', $search_url);
+		
 		$this->assign_lang();
 		$this->display('mh_order_list.dwt');
 	}
@@ -1939,16 +1942,22 @@ class merchant extends ecjia_merchant {
 				}
 			}
 		}
-		$this->assign('order'				, $order);
-		$this->assign('exist_real_goods'	, $exist_real_goods);
-		$this->assign('goods_attr'			, $attr);
-		$this->assign('goods_list'			, $goods_list);
-		$this->assign('order_id'			, $order_id); // 订单id
-		$this->assign('operation'			, 'split'); // 订单id
-		$this->assign('action_note'			, $action_note); // 发货操作信息
+		
+		if (!empty($order['shipping_id'])) {
+			$shipping_info = ecjia_shipping::getPluginDataById($order['shipping_id']);
+			$this->assign('shipping_code', $shipping_info['shipping_code']);
+		}
+		
+		$this->assign('order', $order);
+		$this->assign('exist_real_goods', $exist_real_goods);
+		$this->assign('goods_attr', $attr);
+		$this->assign('goods_list', $goods_list);
+		$this->assign('order_id', $order_id); // 订单id
+		$this->assign('operation', 'split'); // 订单id
+		$this->assign('action_note', $action_note); // 发货操作信息
 		/* 显示模板 */
-		$this->assign('ur_here'				, RC_Lang::get('orders::order.order_operate') . RC_Lang::get('orders::order.op_split'));
-		$this->assign('form_action'			, RC_Uri::url('orders/merchant/operate_post'));
+		$this->assign('ur_here', RC_Lang::get('orders::order.order_operate') . RC_Lang::get('orders::order.op_split'));
+		$this->assign('form_action', RC_Uri::url('orders/merchant/operate_post'));
 		
 		$this->assign_lang();
 		$this->display('order_delivery_info.dwt');
@@ -3134,8 +3143,9 @@ class merchant extends ecjia_merchant {
 				);
 				RC_DB::table('order_status_log')->insert($data);
 				//update commission_bill
-				RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => 1, 'order_id' => $order_id, 'order_amount' => $order['order_amount']));
-				RC_Api::api('goods', 'update_goods_sales', array('order_id' => $order_id));
+// 				RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => 'buy', 'order_id' => $order_id, 'order_amount' => $order['order_amount']));
+				RC_Api::api('commission', 'add_bill_queue', array('order_type' => 'buy', 'order_id' => $order_id));
+		        RC_Api::api('goods', 'update_goods_sales', array('order_id' => $order_id));
 			}
 			
 			/* 记录log */
@@ -3381,7 +3391,7 @@ class merchant extends ecjia_merchant {
 // 				);
 // 				$this->db_order_good->where(array('order_id' => $order_id))->update($data);
 // 				//update commission_bill
-// 				RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => 2, 'order_id' => $order_id, 'order_amount' => $order['order_amount']));
+// 				RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => '', 'order_id' => $order_id, 'order_amount' => $order['order_amount']));
 				
 // 		} 
 		
@@ -3756,7 +3766,8 @@ class merchant extends ecjia_merchant {
 		$this->db_order_good->where(array('order_id' => $order_id))->update(array('send_number' => 0));
 		
 		//update commission_bill
-		RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => 2, 'order_id' => $order_id, 'order_amount' => $order['order_amount']));
+// 		RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => 'refund', 'order_id' => $order_id, 'order_amount' => $order['order_amount']));
+		RC_Api::api('commission', 'add_bill_queue', array('order_type' => 'refund', 'order_id' => $refund_id));
 		
 		//仅退款---同意---进入打款表
 		$refund_info = RC_DB::table('refund_order')->where('refund_id', $refund_id)->first();
@@ -3832,6 +3843,70 @@ class merchant extends ecjia_merchant {
 		
 		/* 操作成功 */
 		return $this->showmessage('申请操作成功', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS,array('pjaxurl' => RC_Uri::url('orders/merchant/info', array('order_id' => $order_id))));
+	}
+	
+	private function get_search_url() {
+		$arr = array();
+		if (isset($_GET['order_sn'])) {
+			$arr['order_sn'] = trim($_GET['order_sn']);
+		}
+		if (isset($_GET['start_time'])) {
+			$arr['start_time'] = trim($_GET['start_time']);
+		}
+		if (isset($_GET['end_time'])) {
+			$arr['end_time'] = trim($_GET['end_time']);
+		}
+		if (isset($_GET['email'])) {
+			$arr['email'] = trim($_GET['email']);
+		}
+		if (isset($_GET['user_name'])) {
+			$arr['user_name'] = trim($_GET['user_name']);
+		}
+		if (isset($_GET['consignee'])) {
+			$arr['consignee'] = trim($_GET['consignee']);
+		}
+		if (isset($_GET['tel'])) {
+			$arr['tel'] = trim($_GET['tel']);
+		}
+		if (isset($_GET['mobile'])) {
+			$arr['mobile'] = trim($_GET['mobile']);
+		}
+		if (isset($_GET['merchants_name'])) {
+			$arr['merchants_name'] = trim($_GET['merchants_name']);
+		}
+		if (isset($_GET['address'])) {
+			$arr['address'] = trim($_GET['address']);
+		}
+	
+		if (isset($_GET['zipcode'])) {
+			$arr['zipcode'] = trim($_GET['zipcode']);
+		}
+		if (isset($_GET['order_status'])) {
+			$arr['order_status'] = trim($_GET['order_status']);
+		}
+		if (isset($_GET['pay_status'])) {
+			$arr['pay_status'] = intval($_GET['pay_status']);
+		}
+		if (isset($_GET['shipping_status'])) {
+			$arr['shipping_status'] = intval($_GET['shipping_status']);
+		}
+		if (isset($_GET['shipping_id'])) {
+			$arr['shipping_id'] = intval($_GET['shipping_id']);
+		}
+		if (isset($_GET['pay_id'])) {
+			$arr['pay_id'] = intval($_GET['pay_id']);
+		}
+		if (isset($_GET['composite_status'])) {
+			$arr['composite_status'] = intval($_GET['composite_status']);
+		}
+		if (isset($_GET['keywords'])) {
+			$arr['keywords'] = intval($_GET['keywords']);
+		}
+		if (isset($_GET['merchant_keywords'])) {
+			$arr['merchant_keywords'] = intval($_GET['merchant_keywords']);
+		}
+	
+		return RC_Uri::url('orders/merchant/init', $arr);
 	}
 }
 

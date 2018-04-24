@@ -163,7 +163,14 @@ class detail_module extends api_front implements api_interface {
 		
 		/*返回数据处理*/
 		$order['order_id'] 			= intval($order['order_id']);
-		$order['order_mode'] 		= in_array($order['extension_code'], array('storebuy', 'cashdesk')) ? 'storebuy' : 'default';
+		//$order['order_mode'] 		= in_array($order['extension_code'], array('storebuy', 'cashdesk')) ? 'storebuy' : 'default';
+		if (in_array($order['extension_code'], array('storebuy', 'cashdesk'))) {
+			$order['order_mode'] = 'storebuy';
+		} elseif ($order['extension_code'] == 'storepickup') {
+			$order['order_mode'] = 'storepickup';
+		} else {
+			$order['order_mode'] = 'default';
+		}
 		$order['user_id'] 			= intval($order['user_id']);
 		$order['order_status'] 		= intval($order['order_status']);
 		$order['shipping_status'] 	= intval($order['shipping_status']);

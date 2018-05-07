@@ -125,6 +125,7 @@ return array(
 	'op_receive' 		=> '已收货',
 	'op_assign' 		=> '指派给',
 	'op_after_service' 	=> '售后',
+	'op_return_confirm' => '退货确认',
 	'act_ok' 			=> '操作成功',
 	'act_false' 		=> '操作失败',
 	'act_ship_num' 		=> '此单发货数量不能超出订单商品数量',
@@ -262,7 +263,7 @@ return array(
 	'order_status' 		=> '订单状态',
 	'pay_status' 		=> '付款状态',
 	'shipping_status' 	=> '发货状态',
-	'action_note' 		=> '备注：',
+	'action_note' 		=> '备注',
 	'pay_note' 			=> '支付备注：',
 	
 	'sms_time_format' 	=> 'm月j日G时',
@@ -552,6 +553,7 @@ return array(
 	'label_await_confirm'			=> '待收货',
 	'label_canceled'				=> '已取消',
 	'label_shipped_part'			=> '部分发货',
+	'label_refunded'				=> '退款',
 	
 	'order_back_list'				=>	'退货单列表',
 	'return_look'					=>	'退货单操作：查看',
@@ -818,6 +820,7 @@ return array(
     'order_cancel'				=> '订单已取消',
     'merchant_process'			=> '等待商家接单',
     'express_user_pickup'		=> '配送员已取货',
+    'order_pickup_success'		=> '已提货',
     
     'submit_order'				=> '提交订单',
     'pay_for_order'				=> '支付订单',

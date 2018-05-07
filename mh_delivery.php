@@ -149,6 +149,9 @@ class mh_delivery extends ecjia_merchant {
 		/* 取得用户名 */
 		if ($delivery_order['user_id'] > 0) {
 			$user = user_info($delivery_order['user_id']);
+			if (is_ecjia_error($user)) {
+				$user = array();
+			}
 			if (!empty($user)) {
 				$delivery_order['user_name'] = $user['user_name'];
 			}
@@ -204,6 +207,7 @@ class mh_delivery extends ecjia_merchant {
 // 		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
 		$shipping_info = ecjia_shipping::pluginData(intval($delivery_order['shipping_id']));
 		if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
+			
 			/* 获取正在派单的配送员*/
 			$staff_list = RC_DB::table('staff_user')
 				->where('store_id', $_SESSION['store_id'])
@@ -215,13 +219,15 @@ class mh_delivery extends ecjia_merchant {
 			
 			$express_order = RC_DB::table('express_order')->where('delivery_id', $delivery_order['delivery_id'])->first();
 			$this->assign('express_order', $express_order);
+			
+			$order = RC_Api::api('orders', 'order_info', array('order_id' => $delivery_order['order_id']));
+			$this->assign('expect_shipping_time', $order['expect_shipping_time']);
 		}
 		
 		//获取shopping_code
 		if(empty($delivery_order['invoice_no'])) {
 		    $shipping_id = $delivery_order['shipping_id'];
 		    $shipping_info = RC_DB::table('shipping')->where('shipping_id', $shipping_id)->first();
-			//配送方式为ship_o2o_express或ship_ecjia_express时自动生成运单号
 		    if ($shipping_info['shipping_code'] == 'ship_o2o_express' || $shipping_info['shipping_code'] == 'ship_ecjia_express') {
 		        $rand1 = mt_rand(100000,999999);
 		        $rand2 = mt_rand(1000000,9999999);
@@ -231,11 +237,11 @@ class mh_delivery extends ecjia_merchant {
 		}
 		
 		/* 模板赋值 */
-		$this->assign('action_list'			, $act_list);
-		$this->assign('delivery_order'		, $delivery_order);
-		$this->assign('exist_real_goods'	, $exist_real_goods);
-		$this->assign('goods_list'			, $goods_list);
-		$this->assign('delivery_id'			, $delivery_id); // 发货单id
+		$this->assign('action_list', $act_list);
+		$this->assign('delivery_order', $delivery_order);
+		$this->assign('exist_real_goods', $exist_real_goods);
+		$this->assign('goods_list', $goods_list);
+		$this->assign('delivery_id', $delivery_id); // 发货单id
 		
 		/* 显示模板 */
 		$this->assign('ur_here'				, RC_Lang::get('orders::order.order_operate_view'));
@@ -458,6 +464,7 @@ class mh_delivery extends ecjia_merchant {
 				'best_time'		=> $delivery_order['best_time'],
 				'remark'		=> '',
 				'shipping_fee'	=> $delivery_order['shipping_fee'],
+				'shipping_code' => $shipping_info['shipping_code'],
 				'commision'		=> '',
 				'add_time'		=> RC_Time::gmtime(),
 				'longitude'		=> $delivery_order['longitude'],
@@ -470,8 +477,6 @@ class mh_delivery extends ecjia_merchant {
 			if ($staff_id > 0) {
 				$express_data['receive_time'] = RC_Time::gmtime();
 				$staff_info = RC_DB::table('staff_user')->where('user_id', $staff_id)->first();
-				$express_data['commision']	= '5.00';
-				$express_data['commision_status']	= '0';
 				$express_data['express_user']	= $staff_info['name'];
 				$express_data['express_mobile']	= $staff_info['mobile'];
 			}
@@ -497,17 +502,18 @@ class mh_delivery extends ecjia_merchant {
 				$express_id = RC_DB::table('express_order')->insertGetId($express_data);
 			}
 			
+			$params = array(
+					'express_id' => $express_id,
+			);
+				
 			/*配送单生成后，自动派单。只有订单配送方式是众包配送时才去自动派单*/
-	        if ($shipping_info['shipping_code'] == 'ship_ecjia_express' && empty($staff_id)) {
-	        	$params = array(
-	        			'express_id' => $express_id,
-	        	);
-	        	
-	        	$result = RC_Api::api('express', 'auto_assign_expressOrder', $params);
-	        }
+			if ($shipping_info['shipping_code'] == 'ship_ecjia_express' && empty($staff_id)) {
+				$result = RC_Api::api('express', 'ecjiaauto_assign_expressOrder', $params);
+			} elseif ($shipping_info['shipping_code'] == 'ship_o2o_express' && empty($staff_id)) {
+				$result = RC_Api::api('express', 'o2oauto_assign_expressOrder', $params);
+			}
 			
 			/* 如果派单*/
-			//手动派单
 			if ($staff_id > 0) {
 			    /* 消息插入 */
 			    $orm_staff_user_db = RC_Model::model('orders/orm_staff_user_model');
@@ -515,7 +521,7 @@ class mh_delivery extends ecjia_merchant {
 			    
 			    $express_order_viewdb = RC_Model::model('orders/express_order_viewmodel');
 			    $where = array('express_id' => $express_id);
-			    $field = 'eo.*, oi.add_time as order_time, oi.pay_time, oi.order_amount, oi.pay_name, sf.merchants_name, sf.address as merchant_address, sf.longitude as merchant_longitude, sf.latitude as merchant_latitude';
+			    $field = 'eo.*, oi.add_time as order_time, oi.pay_time, oi.order_amount, oi.pay_name, sf.merchants_name, sf.district as sf_district, sf.street as sf_street, sf.address as merchant_address, sf.longitude as merchant_longitude, sf.latitude as merchant_latitude';
 			    $express_order_info = $express_order_viewdb->field($field)->join(array('delivery_order', 'order_info', 'store_franchisee'))->where($where)->find();
 			    
 			    /* 派单发短信 */
@@ -862,7 +868,7 @@ class mh_delivery extends ecjia_merchant {
 		/* 判断发货单，取消配送单*/
 // 		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
 		$shipping_info = ecjia_shipping::pluginData($delivery_order['shipping_id']);
-		if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
+		if ($shipping_info['shipping_code'] == 'ship_o2o_express' || $shipping_info['shipping_code'] == 'ship_ecjia_express') {
 		    /* 如果是o2o速递，退货的时候删除ecjia_express_track_record相对应的记录 */
 		    RC_DB::table('express_track_record')->where('track_number', $delivery['invoice_no'])->delete();
 		}
@@ -906,7 +912,7 @@ class mh_delivery extends ecjia_merchant {
 				/* 如果是o2o速递，退货的时候删除ecjia_express_track_record相对应的记录 */
 // 				$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
 				$shipping_info = ecjia_shipping::pluginData($delivery_order['shipping_id']);
-				if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
+				if ($shipping_info['shipping_code'] == 'ship_o2o_express' || $shipping_info['shipping_code'] == 'ship_ecjia_express') {
 				    RC_DB::table('express_track_record')->where('track_number', $delivery_order['invoice_no'])->delete();
 				}
 				/* 记录日志 */

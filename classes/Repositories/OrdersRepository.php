@@ -156,6 +156,7 @@ class OrdersRepository extends AbstractRepository
         	'order_info.pay_id',
         	'order_info.order_amount',
         	'order_info.store_id',
+            'order_info.extension_code',
         ];
         
         if (!empty($keywords)) {
@@ -167,6 +168,8 @@ class OrdersRepository extends AbstractRepository
         if (!empty($type)) {
             $whereQuery = OrderStatus::getQueryOrder($type);
         }
+        
+        
         
         $table = RC_DB::getTableFullName('order_info');
         $count = $this->findWhereCount($where, RC_DB::raw("DISTINCT {$table}.order_id"), function($query) use ($keywords, $whereQuery) {
@@ -200,9 +203,9 @@ class OrdersRepository extends AbstractRepository
                     $query->where('order_goods.goods_name', 'like', '%' . $keywords .'%')
                           ->orWhere('order_info.order_sn', 'like', '%' . $keywords .'%');
                 });
-                
-                $query->groupby('order_info.order_id');
             }
+            
+            $query->groupby('order_info.order_id');
             
             if (is_callable($whereQuery)) {
                 $whereQuery($query);

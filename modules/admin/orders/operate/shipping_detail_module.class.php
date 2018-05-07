@@ -124,7 +124,7 @@ class shipping_detail_module extends api_admin implements api_interface {
 				//期望送达时间
 				$expect_shipping_time = trim($val['expect_shipping_time']);
 				$expect_shipping_time = explode(" ", $expect_shipping_time );  
-				
+
 				$delivery_info = array(
 					'order_id'		=> $val['order_id'],
 					'order_sn'		=> $val['order_sn'],
@@ -151,6 +151,7 @@ class shipping_detail_module extends api_admin implements api_interface {
 				);
 				
 				if ($order['shipping_code'] == 'ship_o2o_express' || $order['shipping_code'] == 'ship_ecjia_express') {
+					
 					$delivery_info['expect_shipping_time'] = array('date' => $expect_shipping_time['0'], 'time' => $expect_shipping_time['1']);
 					$shipping_area_info = RC_DB::table('shipping_area')
 								->where('store_id', $_SESSION['store_id'])
@@ -185,6 +186,7 @@ class shipping_detail_module extends api_admin implements api_interface {
 						}
 					}
 					$delivery_info['shipping_date'] = array_merge($delivery_info['shipping_date']);
+					
 				}
 				
 				/* 判断订单商品的发货情况*/

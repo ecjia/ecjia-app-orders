@@ -201,7 +201,7 @@ class merchant_order_list {
 			$this->db_order_info->where(RC_DB::raw('o.add_time'), '>=', $start_time);
 		}
 		if ($filter['end_time']) {
-			$end_time = RC_Time::local_strtotime($filter['end_time']);
+			$end_time = RC_Time::local_strtotime($filter['end_time']) + 86399;
 			$this->db_order_info->where(RC_DB::raw('o.add_time'), '<=', $end_time);
 		}
 		
@@ -351,7 +351,7 @@ class merchant_order_list {
 	public function order_amount_field($alias = '') {
 		return "   {$alias}goods_amount + {$alias}tax + {$alias}shipping_fee" .
 		" + {$alias}insure_fee + {$alias}pay_fee + {$alias}pack_fee" .
-		" + {$alias}card_fee ";
+		" + {$alias}card_fee  - {$alias}discount";
 	}
 }
 

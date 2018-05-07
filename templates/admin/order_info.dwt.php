@@ -149,7 +149,7 @@
 										{if $order_finished neq 1 && $order.shipping_status neq 1 && !$invalid_order}
 										<a class="data-pjax" href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=shipping"}'>{lang key='system::system.edit'}</a>
 										{/if}
-										({lang key='orders::order.action_note'}<span>{if $order.pay_note}{$order.pay_note}{else}暂无{/if}</span>)
+										({lang key='orders::order.label_action_note'}<span>{if $order.pay_note}{$order.pay_note}{else}暂无{/if}</span>)
 									</td>
 									<td><div align="right"><strong>{lang key='orders::order.label_pay_time'}</strong></div></td>
 									<td>{$order.pay_time}</td>
@@ -542,9 +542,11 @@
 										<button class="btn operatesubmit" type="submit" name="cancel">{lang key='orders::order.op_cancel'}</button>
 										{/if} {if $operable_list.invalid}
 										<button class="btn operatesubmit" type="submit" name="invalid">{lang key='orders::order.op_invalid'}</button>
-										{/if} {if $operable_list.return}
-										<button class="btn operatesubmit" type="submit" name="return">{lang key='orders::order.op_return'}</button>
-										{/if} {if $operable_list.to_delivery}
+										{/if} 
+<!-- 										{if $operable_list.return} -->
+<!-- 										<button class="btn operatesubmit" type="submit" name="return">{lang key='orders::order.op_return'}</button> -->
+<!-- 										{/if}  -->
+										{if $operable_list.to_delivery}
 										<button class="btn operatesubmit" type="submit" name="to_delivery">{lang key='orders::order.op_to_delivery'}</button>
 										<input name="order_sn" type="hidden" value="{$order.order_sn}" />
 										{/if}

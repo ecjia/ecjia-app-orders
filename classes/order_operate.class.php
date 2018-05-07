@@ -433,7 +433,7 @@ class order_operate {
 	/* 收货确认 */
 	private function order_receive($order, $note) {
 		/* 标记订单为“收货确认”，如果是货到付款，同时修改订单为已付款 */
-		$arr = array('shipping_status' => SS_RECEIVED);
+		$arr = array('shipping_status' => SS_RECEIVED, 'order_status' => OS_SPLITED);
 		$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
 		$payment = $payment_method->payment_info($order['pay_id']);
 		if ($payment['is_cod']) {
@@ -443,7 +443,8 @@ class order_operate {
 		if ($this->update_order($order['order_id'], $arr)) {
 		    /* 记录log */
 		    $this->order_action($order['order_sn'], $order['order_status'], SS_RECEIVED, $order['pay_status'], $note['action_note']);
-		    RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => 1, 'order_id' => $order['order_id'], 'order_amount' => $order['order_amount']));
+// 		    RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => 'buy', 'order_id' => $order['order_id'], 'order_amount' => $order['order_amount']));
+		    RC_Api::api('commission', 'add_bill_queue', array('order_type' => 'buy', 'order_id' => $order['order_id']));
 		    RC_Api::api('goods', 'update_goods_sales', array('order_id' => $order['order_id']));
 		    
 		    return true;

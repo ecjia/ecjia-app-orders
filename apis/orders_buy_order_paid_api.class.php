@@ -93,21 +93,42 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    $order_id = $order['order_id'];
 	    $order_sn = $order['order_sn'];
 	    
-	    /* 修改订单状态为已付款 */
-	    $data = array(
-	        'order_status' => OS_CONFIRMED,
-	        'confirm_time' => RC_Time::gmtime(),
-	        'pay_status'   => $pay_status,
-	        'pay_time'     => RC_Time::gmtime(),
-	        'money_paid'   => $order['order_amount'],
-	        'order_amount' => 0,
-	    );
-	    RC_Logger::getLogger('error')->info($data);
 	    
-	    RC_DB::table('order_info')->where('order_id', $order_id)->update($data);
-	    /* 记录订单操作记录 */
-	    order_action($order_sn, OS_CONFIRMED, SS_UNSHIPPED, $pay_status, '', RC_Lang::get('orders::order.buyers'));
 	    
+	    //判断订单类型，到店付款订单修改订单状态和发货状态
+	    if (in_array($order['extension_code'], array('storebuy', 'cashdesk'))) {
+	        /* 修改订单状态为已完成 */
+	        $data = array(
+	            'order_status' => OS_CONFIRMED,
+	            'confirm_time' => RC_Time::gmtime(),
+	            'pay_status'   => $pay_status,
+	            'pay_time'     => RC_Time::gmtime(),
+	            'money_paid'   => $order['order_amount'],
+	            'order_amount' => 0,
+	        );
+	         
+	        RC_DB::table('order_info')->where('order_id', $order_id)->update($data);
+	        /* 记录订单操作记录 */
+	        order_action($order_sn, OS_CONFIRMED, SS_SHIPPED_ING, $pay_status, '', RC_Lang::get('orders::order.buyers'));
+	        $order_operate = RC_Loader::load_app_class('order_operate', 'orders');
+	        
+	        $order_operate->operate($order, 'receive', array('action_note' => '系统操作'));
+	    } else {
+	        /* 修改订单状态为已付款 */
+	        $data = array(
+	            'order_status' => OS_CONFIRMED,
+	            'confirm_time' => RC_Time::gmtime(),
+	            'pay_status'   => $pay_status,
+	            'pay_time'     => RC_Time::gmtime(),
+	            'money_paid'   => $order['order_amount'],
+	            'order_amount' => 0,
+	        );
+	        //RC_Logger::getLogger('error')->info($data);
+	         
+	        RC_DB::table('order_info')->where('order_id', $order_id)->update($data);
+	        /* 记录订单操作记录 */
+	        order_action($order_sn, OS_CONFIRMED, SS_UNSHIPPED, $pay_status, '', RC_Lang::get('orders::order.buyers'));
+	    }
 	    
 	    RC_DB::table('order_status_log')->insert(array(
     	    'order_status'	=> RC_Lang::get('orders::order.ps.'.PS_PAYED),
@@ -126,14 +147,23 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    if ($order['shipping_id'] > 0) {
 	    	$shipping_info = RC_DB::table('shipping')->where('shipping_id', $order['shipping_id'])->first();
 	    	if ($shipping_info['shipping_code'] == 'ship_cac') {
+	    		/*生成提货码*/
+	    		$db_term_meta = RC_DB::table('term_meta');
+	    		$max_code = $db_term_meta->where('object_type', 'ecjia.order')->where('object_group', 'order')->where('meta_key', 'receipt_verification')->max('meta_value');
+	    		
+	    		$max_code = $max_code ? ceil($max_code/10000) : 1000000;
+	    		$code = $max_code . str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT);
+	    		$meta_data = array(
+	    				'object_type'	=> 'ecjia.order',
+	    				'object_group'	=> 'order',
+	    				'object_id'		=> $order_id,
+	    				'meta_key'		=> 'receipt_verification',
+	    				'meta_value'	=> $code,
+	    		);
+	    		$db_term_meta->insert($meta_data);
 	    		/*短信给用户发送收货验证码*/
-	    		if (ecjia::config('sms_shop_mobile') != '') {
-	    			$db_term_meta = RC_DB::table('term_meta');
-	    			$max_code = $db_term_meta->where('object_type', 'ecjia.order')->where('object_group', 'order')->where('meta_key', 'receipt_verification')->max('meta_value');
-	    			 
-	    			$max_code = $max_code ? ceil($max_code/10000) : 1000000;
-	    			$code = $max_code . str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT);
-	    			$mobile = RC_DB::table('users')->where('user_id', $order['user_id'])->pluck('mobile_phone');
+	    		$mobile = RC_DB::table('users')->where('user_id', $order['user_id'])->pluck('mobile_phone');
+	    		if (!empty($mobile)) {
 	    			$options = array(
 	    					'mobile' => $mobile,
 	    					'event'	 => 'sms_order_pickup',
@@ -145,15 +175,6 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    					),
 	    			);
 	    			RC_Api::api('sms', 'send_event_sms', $options);
-	    			 
-	    			$meta_data = array(
-	    					'object_type'	=> 'ecjia.order',
-	    					'object_group'	=> 'order',
-	    					'object_id'		=> $order_id,
-	    					'meta_key'		=> 'receipt_verification',
-	    					'meta_value'	=> $code,
-	    			);
-	    			$db_term_meta->insert($meta_data);
 	    		}
 	    	}
 	    }
@@ -224,6 +245,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
         if (is_ecjia_error($res)) {
             RC_Logger::getLogger('error')->error($res->get_error_message());
         }
+        
 
     }
 }

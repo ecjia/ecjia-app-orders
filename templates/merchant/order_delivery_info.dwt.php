@@ -111,7 +111,15 @@
 							<td><div align="right"><strong>{lang key='orders::order.label_sign_building'}</strong></div></td>
 							<td>{$order.sign_building|escape}</td>
 							<td><div align="right"><strong>{lang key='orders::order.label_best_time'}</strong></div></td>
-							<td>{$order.best_time|escape}</td>
+							<td>
+								{if $shipping_code eq 'ship_o2o_express'}
+									{$order.expect_shipping_time|escape}
+								{elseif $shipping_code eq 'ship_ecjia_express'}
+									{$order.expect_shipping_time|escape}
+								{else}
+									{$order.best_time|escape}
+								{/if}
+							</td>
 						</tr>
 						<tr>
 							<td><div align="right"><strong>{lang key='orders::order.label_postscript'}</strong></div></td>
@@ -257,6 +265,7 @@
 									<input name="delivery[province]" type="hidden" value="{$order.province}">
 									<input name="delivery[city]" type="hidden" value="{$order.city}">
 									<input name="delivery[district]" type="hidden" value="{$order.district}">
+									<input name="delivery[street]" type="hidden" value="{$order.street}">
 									<input name="delivery[sign_building]" type="hidden" value="{$order.sign_building}">
 									<input name="delivery[email]" type="hidden" value="{$order.email}">
 									<input name="delivery[zipcode]" type="hidden" value="{$order.zipcode}">

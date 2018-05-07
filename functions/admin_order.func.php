@@ -186,6 +186,7 @@ function order_info($order_id, $order_sn = '', $type = '') {
         $order['formated_surplus'] = price_format($order['surplus'], false);
         $order['formated_order_amount'] = price_format(abs($order['order_amount']), false);
         $order['formated_add_time'] = RC_Time::local_date(ecjia::config('time_format'), $order['add_time']);
+        $order['pay_code'] = RC_DB::table('payment')->where('pay_id', $order['pay_id'])->pluck('pay_code');
     }
     return $order;
 }
@@ -507,7 +508,7 @@ function get_order_sn() {
 * @param   int	 $user_id	用户id
 * @return  array   用户信息
 */
-function user_info($user_id, $mobile) {
+function user_info($user_id, $mobile = '') {
 	if (!empty($user_id)) {
 		$user = RC_DB::table('users')->where('user_id', $user_id)->first();
 	} elseif (!empty($mobile)){
@@ -760,7 +761,15 @@ function integral_to_give($order) {
         $group_buy = group_buy_info(intval($order['extension_id']));
         return array('custom_points' => $group_buy['gift_integral'], 'rank_points' => $order['goods_amount']);
     } else {
-        return RC_DB::table('order_goods as o')->leftJoin('goods as g', RC_DB::raw('o.goods_id'), '=', RC_DB::raw('g.goods_id'))->select(RC_DB::raw('SUM(o.goods_number * IF(g.give_integral > -1, g.give_integral, o.goods_price)) AS custom_points, SUM(o.goods_number * IF(g.rank_integral > -1, g.rank_integral, o.goods_price)) AS rank_points'))->where(RC_DB::raw('o.order_id'), $order['order_id'])->where(RC_DB::raw('o.goods_id'), '>', 0)->where(RC_DB::raw('o.parent_id'), '=', 0)->where(RC_DB::raw('o.is_gift'), '=', 0)->where(RC_DB::raw('o.extension_code'), '!=', 'package_buy')->first();
+        return RC_DB::table('order_goods as o')
+        	->leftJoin('goods as g', RC_DB::raw('o.goods_id'), '=', RC_DB::raw('g.goods_id'))
+        	->select(RC_DB::raw('SUM(o.goods_number * IF(g.give_integral > -1, g.give_integral, o.goods_price)) AS custom_points, 
+        			SUM(o.goods_number * IF(g.rank_integral > -1, g.rank_integral, o.goods_price)) AS rank_points'))
+       		->where(RC_DB::raw('o.order_id'), $order['order_id'])
+        	->where(RC_DB::raw('o.goods_id'), '>', 0)
+        	->where(RC_DB::raw('o.parent_id'), '=', 0)
+        	->where(RC_DB::raw('o.is_gift'), '=', 0)
+        	->first();
     }
 }
 /**
@@ -1190,18 +1199,15 @@ function deleteRepeat($array) {
  * @return  array   订单商品数组
  */
 function EM_order_goods($order_id, $page = 1, $pagesize = 10) {
-    /* $dbview = RC_Model::model('orders/order_goods_comment_viewmodel');
-    $dbview->view = array('goods' => array('type' => Component_Model_View::TYPE_LEFT_JOIN, 'alias' => 'g', 'on' => 'og.goods_id = g.goods_id'), 'term_relationship' => array('type' => Component_Model_View::TYPE_LEFT_JOIN, 'alias' => 'tr', 'on' => 'tr.object_id = og.rec_id and object_type = "ecjia.comment"'));
-    $res = $dbview->field($field)->where(array('og.order_id' => $order_id))->limit(($page - 1) * $pagesize, $pagesize)->select(); */
+	
     $field = 'og.*, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, g.store_id, c.comment_id, c.comment_rank, c.content as comment_content';
     
     $db_view = RC_DB::table('order_goods as og')
         ->leftJoin('goods as g', RC_DB::raw('og.goods_id'), '=', RC_DB::raw('g.goods_id'))
         ->leftJoin('comment as c', RC_DB::raw('og.rec_id'), '=', RC_DB::raw('c.rec_id'));
-    $res = $db_view->selectRaw($field)->where(RC_DB::raw('og.order_id'), $order_id)
-        ->groupBy(RC_DB::raw('og.rec_id'))
-        ->take($pagesize)->skip(($page-1)*$pagesize)
-		->get();
+    
+    $res = $db_view->selectRaw($field)->where(RC_DB::raw('og.order_id'), $order_id)->groupBy(RC_DB::raw('og.rec_id'))->get();
+    
     $goods_list = array();
     if (!empty($res)) {
         RC_Loader::load_app_func('global', 'goods');
@@ -1244,7 +1250,7 @@ function EM_order_query_sql($type = 'finished', $alias = '') {
         return "{$alias}order_status " . db_create_in(array(OS_UNCONFIRMED, OS_CONFIRMED)) . " AND {$alias}shipping_status " . db_create_in(array(SS_UNSHIPPED, SS_PREPARING)) . " AND {$alias}pay_status = '" . PS_UNPAYED . "' ";
     } elseif ($type == 'shipped') {
         /* 已发货订单：不论是否付款 */
-        return "{$alias}shipping_status " . db_create_in(array(SS_SHIPPED)) . " ";
+        return "{$alias}shipping_status " . db_create_in(array(SS_SHIPPED)) . " AND {$alias}order_status != '".OS_RETURNED."'";
     } else {
         die('函数 order_query_sql 参数错误');
     }

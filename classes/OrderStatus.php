@@ -60,7 +60,7 @@ class OrderStatus
     ];
 
     
-    public static function getOrderStatusLabel($order_status, $shipping_status, $pay_status, $is_cod) 
+    public static function getOrderStatusLabel($order_status, $shipping_status, $pay_status, $is_cod, $refund_info) 
     {
         if (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED)) &&
             in_array($shipping_status, array(SS_RECEIVED)) &&
@@ -69,7 +69,7 @@ class OrderStatus
             $label_order_status = RC_Lang::get('orders::order.cs.'.CS_FINISHED);
             $status_code = 'finished';
         }
-        elseif (in_array($shipping_status, array(SS_SHIPPED)))
+        elseif (in_array($shipping_status, array(SS_SHIPPED)) && $order_status != OS_RETURNED)
         {
             $label_order_status = RC_Lang::get('orders::order.label_await_confirm');
             $status_code = 'shipped';
@@ -98,10 +98,13 @@ class OrderStatus
             $label_order_status = RC_Lang::get('orders::order.label_canceled');
             $status_code = 'canceled';
         }
+        elseif (in_array($order_status, array(OS_RETURNED)) && $pay_status == PS_PAYED) {
+        	$label_order_status = RC_Lang::get('orders::order.label_refunded');
+        	$status_code = 'refund';
+        }
         
         return array($label_order_status, $status_code);
     }
-    
     
     public static function getQueryOrder($type)
     {
@@ -139,17 +142,25 @@ class OrderStatus
         $payment_method = RC_Loader::load_app_class('payment_method','payment');
         $payment_ids = $payment_method->payment_id_list(true);
         
-    	return function ($query) use ($payment_ids) {
-    		$query->whereIn('order_info.order_status', array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))
-    		      ->whereIn('order_info.shipping_status', array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING))
-    		      ->where(function ($query) use ($payment_ids) {
-    		          $query->whereIn('order_info.pay_status', array(PS_PAYED, PS_PAYING))
-    		                ->orWhere(function ($query) use ($payment_ids) {
-    		                	$query->whereIn('pay_id', $payment_ids);
-    		                });
-    		      });
-    		
-    	};
+        if (!empty($payment_ids)) {
+        	return function ($query) use ($payment_ids) {
+        		$query->whereIn('order_info.order_status', array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))
+        		->whereIn('order_info.shipping_status', array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING))
+        		->where(function ($query) use ($payment_ids) {
+        			$query->whereIn('order_info.pay_status', array(PS_PAYED, PS_PAYING))
+        			->orWhere(function ($query) use ($payment_ids) {
+        				$query->whereIn('pay_id', $payment_ids);
+        			});
+        		});
+        	
+        	};
+        } else {
+        	return function ($query) {
+        		$query->whereIn('order_info.order_status', array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))
+        			  ->whereIn('order_info.shipping_status', array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING))
+        			  ->whereIn('order_info.pay_status', array(PS_PAYED, PS_PAYING));
+        	};
+        }
     }
     
     /* 未确认订单 */
@@ -185,15 +196,18 @@ class OrderStatus
     public static function queryOrderShipped() 
     {
     	return function ($query) {
-    		$query->where('order_info.shipping_status', SS_SHIPPED);
+    		$query->where('order_info.shipping_status', SS_SHIPPED)
+    			  ->where('order_info.order_status', '<>', OS_RETURNED);
     	};
     }
     
-    /* 退货 */
+    
+    
+    /* 退款 */
     public static function queryOrderRefund() 
     {
     	return function ($query) {
-    		$query->where('order_info.order_status', OS_RETURNED);
+    		 $query->where('order_info.order_status', OS_RETURNED);
     	};
     }
     

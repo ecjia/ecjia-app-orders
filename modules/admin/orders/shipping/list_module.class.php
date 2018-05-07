@@ -90,14 +90,12 @@ class list_module extends api_admin implements api_interface {
 		//$shipping_list     = $shipping_method->available_shipping_list($region_id_list, $order_info['store_id']);
 		$shipping_list     = ecjia_shipping::availableUserShippings($region_id_list, $order_info['store_id']);
 		
-		
-		
 		$consignee = array(
 				'country'		=> $order_info['country'],
 				'province'		=> $order_info['province'],
 				'city'			=> $order_info['city'],
 				'district'		=> $order_info['district'],
-				'street'		=> $order_info['streets'],
+				'street'		=> $order_info['street'],
 		);
 		
 		RC_Loader::load_app_func('global', 'orders');
@@ -159,8 +157,6 @@ class list_module extends api_admin implements api_interface {
 			$distance = isset($distance_info['result']['elements'][0]['distance']) ? $distance_info['result']['elements'][0]['distance'] : 0;
 		}
 		/* ===== 计算收件人距离 ===== */
-		
-		
 		if (!empty($shipping_list)) {
 			foreach ($shipping_list AS $key => $shipping) {
 				$shipping_cfg = ecjia_shipping::unserializeConfig($shipping['configure']);
@@ -208,7 +204,9 @@ class list_module extends api_admin implements api_interface {
 						}
 					}
 					$shipping_list[$key]['shipping_date'] = array_merge($shipping_list[$key]['shipping_date']);
+				
 				}
+				
 				
 				$shipping_list = array_values($shipping_list);
 			}
@@ -220,8 +218,8 @@ class list_module extends api_admin implements api_interface {
 				unset($shipping_list[$a]['support_cod']);
 				unset($shipping_list[$a]['shipping_area_id']);
 			}
+			
 		}
-		
 		return $shipping_list;
 	} 
 }

@@ -66,7 +66,8 @@ class affirmReceived_module extends api_front implements api_interface {
 		
 		$result = affirm_received(intval($order_id), $user_id);	
 		if (!is_ecjia_error($result)) {
-		    RC_Api::api('commission', 'add_bill_detail', array('order_type' => 1, 'order_id' => $order_id));
+// 		    RC_Api::api('commission', 'add_bill_detail', array('order_type' => 'buy', 'order_id' => $order_id));
+		    RC_Api::api('commission', 'add_bill_queue', array('order_type' => 'buy', 'order_id' => $order_id));
 		    RC_Api::api('goods', 'update_goods_sales', array('order_id' => $order_id));
 		    
 		    return array();
@@ -240,7 +241,7 @@ function affirm_received($order_id, $user_id = 0) {
             	if ($express_order_info['shipping_id'] > 0) {
 //             		$shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
             		$shipping_info = ecjia_shipping::pluginData($express_order_info['shipping_id']);
-            		if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
+            		if ($shipping_info['shipping_code'] == 'ship_o2o_express' || $shipping_info['shipping_code'] == 'ship_ecjia_express') {
             			$data = array(
             					'express_code' => $shipping_info['shipping_code'],
             					'track_number' => $express_order_info['invoice_no'],

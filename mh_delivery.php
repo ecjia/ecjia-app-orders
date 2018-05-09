@@ -224,7 +224,7 @@ class mh_delivery extends ecjia_merchant {
 			$this->assign('expect_shipping_time', $order['expect_shipping_time']);
 		}
 		
-		//获取shopping_code
+		/*配送方式为o2o速递或众包配送时，自动生成运单号*/
 		if(empty($delivery_order['invoice_no'])) {
 		    $shipping_id = $delivery_order['shipping_id'];
 		    $shipping_info = RC_DB::table('shipping')->where('shipping_id', $shipping_id)->first();
@@ -502,14 +502,17 @@ class mh_delivery extends ecjia_merchant {
 				$express_id = RC_DB::table('express_order')->insertGetId($express_data);
 			}
 			
-			$params = array(
-					'express_id' => $express_id,
-			);
-				
 			/*配送单生成后，自动派单。只有订单配送方式是众包配送时才去自动派单*/
 			if ($shipping_info['shipping_code'] == 'ship_ecjia_express' && empty($staff_id)) {
+				$params = array(
+						'express_id' => $express_id,
+				);
 				$result = RC_Api::api('express', 'ecjiaauto_assign_expressOrder', $params);
 			} elseif ($shipping_info['shipping_code'] == 'ship_o2o_express' && empty($staff_id)) {
+				$params = array(
+						'express_id' => $express_id,
+						'store_id'	 => $_SESSION['store_id']
+				);
 				$result = RC_Api::api('express', 'o2oauto_assign_expressOrder', $params);
 			}
 			

@@ -192,7 +192,7 @@ class admin_order_delivery extends ecjia_admin {
 			}
 		}
 		
-		//获取shopping_code
+		/*配送方式为o2o速递或众包配送时，自动生成运单号*/
 		if(empty($delivery_order['invoice_no'])) {
 		    $shipping_id = $delivery_order['shipping_id'];
 		    $shipping_info = RC_DB::table('shipping')->where('shipping_id', $shipping_id)->first();
@@ -760,12 +760,16 @@ class admin_order_delivery extends ecjia_admin {
                 $express_id = RC_DB::table('express_order')->insertGetId($express_data);
             }
             /*配送单生成后，自动派单。只有订单配送方式是众包配送时才去自动派单*/
-            $params = array(
-            		'express_id' => $express_id,
-            );
             if ($shipping_info['shipping_code'] == 'ship_ecjia_express' && empty($staff_id)) {
+            	$params = array(
+            			'express_id' => $express_id,
+            	);
             	$result = RC_Api::api('express', 'ecjiaauto_assign_expressOrder', $params);
             } elseif ($shipping_info['shipping_code'] == 'ship_o2o_express' && empty($staff_id)) {
+            	$params = array(
+            			'express_id' => $express_id,
+            			'store_id'   => $delivery_order['store_id']
+            	);
             	$result = RC_Api::api('express', 'o2oauto_assign_expressOrder', $params);
             }
             return true;

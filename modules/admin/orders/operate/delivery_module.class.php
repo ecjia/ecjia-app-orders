@@ -590,10 +590,12 @@ function delivery_order($delivery_id, $order) {
 			/* 计算并发放积分 */
 			$integral = integral_to_give($order);
 			$options = array(
-					'user_id'		=> $order['user_id'],
-					'rank_points'	=> intval($integral['rank_points']),
-					'pay_points'	=> intval($integral['custom_points']),
-					'change_desc'	=> sprintf('订单 %s 赠送的积分', $order['order_sn'])
+					'user_id'			=> $order['user_id'],
+					'rank_points'		=> intval($integral['rank_points']),
+					'pay_points'		=> intval($integral['custom_points']),
+					'change_desc'		=> sprintf('订单 %s 赠送的积分', $order['order_sn']),
+					'from_type'			=> 'order_give_integral',
+					'from_value'		=> $order['order_sn']
 			);
 			RC_Api::api('user', 'account_change_log',$options);
 			/* 发放红包 */

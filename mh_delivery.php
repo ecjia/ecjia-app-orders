@@ -630,10 +630,12 @@ class mh_delivery extends ecjia_merchant {
 				$integral = integral_to_give($order);
 
 				$options = array(
-					'user_id'		=> $order['user_id'],
-					'rank_points'	=> intval($integral['rank_points']),
-					'pay_points'	=> intval($integral['custom_points']),
-					'change_desc'	=> sprintf(RC_Lang::get('orders::order.order_gift_integral'), $order['order_sn'])
+					'user_id'			=> $order['user_id'],
+					'rank_points'		=> intval($integral['rank_points']),
+					'pay_points'		=> intval($integral['custom_points']),
+					'change_desc'		=> sprintf(RC_Lang::get('orders::order.order_gift_integral'), $order['order_sn']),
+					'from_type'			=> 'order_give_integral',
+					'from_value'		=> $order['order_sn']
 				);
 				RC_Api::api('user', 'account_change_log',$options);
 				/* 发放红包 */

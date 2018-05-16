@@ -647,6 +647,12 @@ function delivery_order($delivery_id, $order) {
 
 function create_express_order($delivery_id) {
     $delivery_order = delivery_order_info($delivery_id);
+    
+    RC_Logger::getLogger('error')->info('testaaa');
+    RC_Logger::getLogger('error')->info($delivery_id);
+    RC_Logger::getLogger('error')->info($delivery_order);
+    RC_Logger::getLogger('error')->info('testbbb');
+    
     /* 判断发货单，生成配送单*/
 //     $shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
     $shipping_info = ecjia_shipping::pluginData(intval($delivery_order['shipping_id']));
@@ -717,9 +723,17 @@ function create_express_order($delivery_id) {
         $params = array(
         		'express_id' => $express_id,
         );
+        /*配送单生成后，自动派单。只有订单配送方式是众包配送时才去自动派单*/
         if ($shipping_info['shipping_code'] == 'ship_ecjia_express' && empty($staff_id)) {
+        	$params = array(
+        			'express_id' => $express_id,
+        	);
         	$result = RC_Api::api('express', 'ecjiaauto_assign_expressOrder', $params);
         } elseif ($shipping_info['shipping_code'] == 'ship_o2o_express' && empty($staff_id)) {
+        	$params = array(
+        			'express_id' => $express_id,
+        			'store_id'	 => $_SESSION['store_id']
+        	);
         	$result = RC_Api::api('express', 'o2oauto_assign_expressOrder', $params);
         }
     }

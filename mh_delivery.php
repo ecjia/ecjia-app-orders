@@ -249,6 +249,27 @@ class mh_delivery extends ecjia_merchant {
 		$this->assign('action_act'			, ($delivery_order['status'] == 2) ? 'delivery_ship' : 'delivery_cancel_ship');
 		$this->assign('form_action'			, ($delivery_order['status'] == 2) ? RC_Uri::url('orders/mh_delivery/delivery_ship') : RC_Uri::url('orders/mh_delivery/delivery_cancel_ship'));
 
+		$express_order = array();
+        $express_order_db = RC_Model::model('express/express_order_viewmodel');
+        $where = array('eo.store_id' => $_SESSION['store_id'], 'eo.delivery_sn' => $delivery_order['delivery_sn'], 'eo.status' => 1, 'eo.shipping_code' => 'ship_o2o_express');
+        $field = 'eo.*, oi.add_time as order_time, oi.pay_time, oi.order_amount, oi.pay_name, sf.merchants_name, sf.district as sf_district, sf.street as sf_street, sf.address as merchant_address, sf.longitude as merchant_longitude, sf.latitude as merchant_latitude';
+        $express_order_info = $express_order_db->field($field)->join(array('delivery_order', 'order_info', 'store_franchisee'))->where($where)->find();
+
+        $show_taked_ship = true;
+        if (empty($express_order_info)) {
+            $show_taked_ship = false;
+        } elseif ($express_order_info['status'] > 1) {
+            $show_taked_ship = false;
+        } elseif ($express_order_info['store_id'] != $_SESSION['store_id']) {
+            $show_taked_ship = false;
+        } elseif (empty($express_order_info['staff_id']) || $express_order_info['status'] == '0') {
+            $show_taked_ship = false;
+        }
+        if ($order['shipping_status'] > SS_UNSHIPPED) {
+            $show_taked_ship = false;
+		}
+		$this->assign('show_taked_ship', $show_taked_ship);
+
 		$this->assign_lang();
 		$this->display('delivery_info.dwt');
 	}
@@ -881,6 +902,52 @@ class mh_delivery extends ecjia_merchant {
 		$links[] = array('text' => RC_Lang::get('orders::order.delivery_sn') . RC_Lang::get('orders::order.detail'), 'href' => RC_Uri::url('orders/mh_delivery/delivery_info', 'delivery_id=' . $delivery_id));
 		return $this->showmessage(RC_Lang::get('orders::order.act_ok'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('orders/mh_delivery/delivery_info', array('delivery_id' => $delivery_id)), 'links' => $links));
 	}
+
+	public function taked_ship() {
+        /* 检查权限 */
+        $this->admin_priv('delivery_view', ecjia::MSGTYPE_JSON);
+
+        $delivery_sn = trim($_POST['sn']);
+
+        if (empty($delivery_sn)) {
+            return $this->showmessage('发货单号不能为空', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+        }
+
+        $express_order = array();
+        $express_order_db = RC_Model::model('express/express_order_viewmodel');
+        $where = array('eo.store_id' => $_SESSION['store_id'], 'eo.delivery_sn' => $delivery_sn, 'eo.status' => 1, 'eo.shipping_code' => 'ship_o2o_express');
+        $field = 'eo.*, oi.add_time as order_time, oi.pay_time, oi.order_amount, oi.pay_name, sf.merchants_name, sf.district as sf_district, sf.street as sf_street, sf.address as merchant_address, sf.longitude as merchant_longitude, sf.latitude as merchant_latitude';
+        $express_order_info = $express_order_db->field($field)->join(array('delivery_order', 'order_info', 'store_franchisee'))->where($where)->find();
+
+        if (empty($express_order_info)) {
+            return $this->showmessage('此配送单不存在！', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+        } elseif ($express_order_info['status'] > 1) {
+            return $this->showmessage('此单已被取走！', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+        } elseif ($express_order_info['store_id'] != $_SESSION['store_id']) {
+            return $this->showmessage('此配送单不属于当前商家！', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+        } elseif (empty($express_order_info['staff_id']) || $express_order_info['status'] == '0') {
+            return $this->showmessage('此配送单并未有配送员接单！', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+        }
+
+        $where = array('store_id' => $_SESSION['store_id'], 'staff_id' => $express_order_info['staff_id'], 'delivery_sn' => $delivery_sn);
+        RC_Model::model('express/express_order_model')->where($where)->update(array('status' => 2, 'express_time' => RC_Time::gmtime()));
+
+        /*当订单配送方式为o2o速递时,记录o2o速递物流信息*/
+        $order_info = RC_DB::table('order_info')->where('order_id', $express_order_info['order_id'])->first();
+        if ($order_info['shipping_id'] > 0) {
+            $shipping_info = ecjia_shipping::pluginData($order_info['shipping_id']);
+            if ($shipping_info['shipping_code'] == 'ship_o2o_express' || $shipping_info['shipping_code'] == 'ship_ecjia_express') {
+                $data = array(
+                    'express_code' => $shipping_info['shipping_code'],
+                    'track_number' => $order_info['invoice_no'],
+                    'time' => RC_Time::local_date(ecjia::config('time_format'), RC_Time::gmtime()),
+                    'context' => '配送员已取货，正在向您奔去，配送员：' . $_SESSION['staff_name'],
+                );
+                RC_DB::table('express_track_record')->insert($data);
+            }
+        }
+        return $this->showmessage('操作成功', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
+    }
 
 	/* 发货单删除 */
 	public function remove() {

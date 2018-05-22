@@ -50,6 +50,7 @@
 		},
 		info : function() {
 			app.order_delivery.deliveryForm();
+			app.order_delivery.toggleState();
 		},
 		deliveryForm : function() {
 			$("form[name='deliveryForm']").on('submit', function(e){
@@ -74,6 +75,23 @@
 				ecjia.pjax(url);
 			});
 		},
+		toggleState: function () {
+			$('[data-toggle="toggleState"]').off('click').on('click', function (e) {
+				console.log(11);
+				e.preventDefault();
+				var $this = $(this),
+					url = $this.attr('data-url'),
+					sn = $this.attr('data-sn');
+				var info = {
+					sn: sn
+				};
+				console.log(info);
+				$.post(url, info, function (data) {
+					console.log(data);
+					ecjia.merchant.showmessage(data);
+				})
+			});
+		}
 	}
 	
 })(ecjia.merchant, jQuery);

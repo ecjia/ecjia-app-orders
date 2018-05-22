@@ -76,6 +76,13 @@ class order_query extends order {
 		foreach ($payment_id_row as $v) {
 			$payment_id .= empty($payment_id) ? $v : ','.$v ;
 		}
+		
+		/*货到付款订单不在待付款里显示*/
+		$pay_cod_id = RC_DB::table('payment')->where('pay_code', 'pay_cod')->pluck('pay_id'); 
+		if (!empty($pay_cod_id)) {
+			$where[] = "pay_id != '.$pay_cod_id.'";
+		}
+		
 		$payment_id = empty($payment_id) ? "''" : $payment_id;
     	$where[$alias.'order_status'] = array(OS_UNCONFIRMED, OS_CONFIRMED,OS_SPLITED);
         $where[$alias.'pay_status'] = PS_UNPAYED;

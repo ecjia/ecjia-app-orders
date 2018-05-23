@@ -249,27 +249,6 @@ class mh_delivery extends ecjia_merchant {
 		$this->assign('action_act'			, ($delivery_order['status'] == 2) ? 'delivery_ship' : 'delivery_cancel_ship');
 		$this->assign('form_action'			, ($delivery_order['status'] == 2) ? RC_Uri::url('orders/mh_delivery/delivery_ship') : RC_Uri::url('orders/mh_delivery/delivery_cancel_ship'));
 
-		$express_order = array();
-        $express_order_db = RC_Model::model('express/express_order_viewmodel');
-        $where = array('eo.store_id' => $_SESSION['store_id'], 'eo.delivery_sn' => $delivery_order['delivery_sn'], 'eo.status' => 1);
-        $field = 'eo.*, oi.add_time as order_time, oi.pay_time, oi.order_amount, oi.pay_name, sf.merchants_name, sf.district as sf_district, sf.street as sf_street, sf.address as merchant_address, sf.longitude as merchant_longitude, sf.latitude as merchant_latitude';
-        $express_order_info = $express_order_db->field($field)->join(array('delivery_order', 'order_info', 'store_franchisee'))->where($where)->find();
-
-        $show_taked_ship = true;
-        if (empty($express_order_info)) {
-            $show_taked_ship = false;
-        } elseif ($express_order_info['status'] > 1) {
-            $show_taked_ship = false;
-        } elseif ($express_order_info['store_id'] != $_SESSION['store_id']) {
-            $show_taked_ship = false;
-        } elseif (empty($express_order_info['staff_id']) || $express_order_info['status'] == '0') {
-            $show_taked_ship = false;
-        }
-        if ($order['shipping_status'] > SS_UNSHIPPED) {
-            $show_taked_ship = false;
-		}
-		$this->assign('show_taked_ship', $show_taked_ship);
-
 		$this->assign_lang();
 		$this->display('delivery_info.dwt');
 	}

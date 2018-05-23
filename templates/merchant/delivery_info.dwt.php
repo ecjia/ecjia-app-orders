@@ -257,9 +257,6 @@
 									{if $delivery_order.status eq 2}
 									<button class="btn btn-info" type="submit">{lang key='orders::order.op_ship'}</button>
 									{else}
-									{if $show_taked_ship}
-									<a class="btn btn-info" data-toggle="toggleState" data-url="{RC_Uri::url('orders/mh_delivery/taked_ship')}" data-sn="{$delivery_order.delivery_sn}">已取货</a>
-									{/if}
 									<button class="btn btn-info" type="submit">{lang key='orders::order.op_cancel_ship'}</button>
 									{/if}
 									<input name="order_id" type="hidden" value="{$delivery_order.order_id}">

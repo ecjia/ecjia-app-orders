@@ -74,20 +74,20 @@ class confirm_module extends api_admin implements api_interface {
 		}
 		
 		if (empty($order_info)) {
-			return new ecjia_error('order_info_not_exist', '订单信息不存在！');
+			return new ecjia_error('order_info_not_exist', '该验证码对应的订单信息不存在！');
 		}
 		
 		if ($order_info['pay_status'] != PS_PAYED) {
-			return new ecjia_error('order_unpay', '该订单还未付款！');
+			return new ecjia_error('order_unpay', '该验证码对应的订单还未付款！');
 		}
 		
 		if ($order_info['store_id'] != $_SESSION['store_id']) {
-			return new ecjia_error('order_error', '订单不属于当前商家！');
+			return new ecjia_error('order_error', '该验证码对应的订单不属于当前商家！');
 		}
 		
 		/* 判断发货情况*/
 		if ($order_info['shipping_status'] > SS_UNSHIPPED) {
-			return new ecjia_error('order_shipped', '订单已发货！');
+			return new ecjia_error('order_shipped', '该验证码对应的订单已发货！');
 		}
 		
 		/*配货*/

@@ -94,9 +94,9 @@ class detail_module extends api_admin implements api_interface {
         	}
         	
         	/* 判断发货情况*/
-        	if ($order_info['shipping_status'] > SS_UNSHIPPED) {
-        		return new ecjia_error('order_already_checked', '该验证码对应的订单已验证提货了！');
-        	}
+        	//if ($order_info['shipping_status'] > SS_UNSHIPPED) {
+        	//	return new ecjia_error('order_already_checked', '该验证码对应的订单已验证提货了！');
+        	//}
         	
         	if ($order_info['order_status'] == OS_CANCELED || $order_info['order_status'] == OS_INVALID) {
         		return new ecjia_error('vinvalid_order', '验证码对应的订单已取消或是无效订单！');

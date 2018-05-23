@@ -647,12 +647,6 @@ function delivery_order($delivery_id, $order) {
 
 function create_express_order($delivery_id) {
     $delivery_order = delivery_order_info($delivery_id);
-    
-    RC_Logger::getLogger('error')->info('testaaa');
-    RC_Logger::getLogger('error')->info($delivery_id);
-    RC_Logger::getLogger('error')->info($delivery_order);
-    RC_Logger::getLogger('error')->info('testbbb');
-    
     /* 判断发货单，生成配送单*/
 //     $shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
     $shipping_info = ecjia_shipping::pluginData(intval($delivery_order['shipping_id']));

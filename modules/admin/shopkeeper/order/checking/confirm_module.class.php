@@ -628,12 +628,8 @@ function delivery_ship($order_id, $delivery_id) {
 	$arr['invoice_no']			= trim($order['invoice_no'] . '<br>' . $invoice_no, '<br>');
 	update_order($order_id, $arr);
 
-	/* 记录日志 */
-	//ecjia_merchant::admin_log('发货,订单号是'.$order['order_sn'], 'setup', 'order');
 	//记录管理员操作log
-	//Ecjia\App\Express\Helper::assign_adminlog_content();
 	RC_Api::api('merchant', 'admin_log', array('text'=> '发货,订单号是'.$order['order_sn'].'【来源掌柜】', 'action'=>'setup', 'object'=>'order'));
-	
 	
 	/* 发货单发货记录log */
 	order_action($order['order_sn'], OS_CONFIRMED, $shipping_status, $order['pay_status'], $action_note, null, 1);

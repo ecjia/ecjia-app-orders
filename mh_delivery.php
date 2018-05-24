@@ -502,7 +502,7 @@ class mh_delivery extends ecjia_merchant {
 				$express_id = RC_DB::table('express_order')->insertGetId($express_data);
 			}
 			
-			/*配送单生成后，自动派单。只有订单配送方式是众包配送时才去自动派单*/
+			/*配送单生成后，自动派单。只有订单配送方式是众包配送和商家配送时才去自动派单*/
 			if ($shipping_info['shipping_code'] == 'ship_ecjia_express' && empty($staff_id)) {
 				$params = array(
 						'express_id' => $express_id,

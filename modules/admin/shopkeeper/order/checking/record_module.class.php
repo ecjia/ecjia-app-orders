@@ -67,7 +67,10 @@ class record_module extends api_admin implements api_interface {
 		$dbview = RC_DB::table('order_info as oi')->leftJoin('term_meta as tm', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('tm.object_id'));
 		
 		$dbview->where(RC_DB::raw('oi.store_id'), $_SESSION['store_id'])
-				->where(RC_DB::raw('oi.shipping_status'), '>', 0)
+				->where(RC_DB::raw('oi.pay_status'), PS_PAYED)
+				->where(RC_DB::raw('oi.shipping_status'), '>', SS_UNSHIPPED)
+				->where(RC_DB::raw('oi.order_status'), '<>', OS_CANCELED)
+				->where(RC_DB::raw('oi.order_status'), '<>', OS_INVALID)
 				->where(RC_DB::raw('tm.object_type'), 'ecjia.order')
 				->where(RC_DB::raw('tm.meta_key'), 'receipt_verification')
 				->where(RC_DB::raw('tm.object_group'), 'order');

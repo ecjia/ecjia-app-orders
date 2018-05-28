@@ -840,6 +840,7 @@ return array(
     'current_os_already_confirmed' 	=> '当前订单已经被确认，无法取消，请与店主联系。',
     'return_surplus_on_cancel' 		=> '取消订单 %s，退回支付订单时使用的预付款',
     'return_integral_on_cancel' 	=> '取消订单 %s，退回支付订单时使用的积分',
+    'return_integral_order_cancel' 	=> '取消订单 %s，退回下订单时使用的积分',
     'buyer_cancel' 					=> '用户取消',
     'self'							=> '自营',
     'validate_order'				=> '验单查询',

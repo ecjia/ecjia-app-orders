@@ -722,6 +722,7 @@ return array(
     'sale_order_stats'		=> '销售排行',
     'visit_sold_stats'		=> '访问购买率',
     'adsense_conversion_stats' => '广告转化率',
+    'validate_order' 		=> '验单查询',
     
     'invalid_parameter'		=> '参数无效',
     'etc'					=> '等',

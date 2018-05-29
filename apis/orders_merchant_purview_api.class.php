@@ -71,6 +71,7 @@ class orders_merchant_purview_api extends Component_Event_Api {
         	array('action_name' => __('销售排行'), 'action_code' => 'sale_order_stats', 		'relevance'   => ''),
         		
         	array('action_name' => __('订单打印'), 'action_code' => 'mh_orders_order_print', 'relevance'   => ''),
+        	array('action_name' => RC_Lang::get('orders::order.validate_order'), 		'action_code' => 'validate_order', 'relevance' => '')
         );
         
         return $purviews;

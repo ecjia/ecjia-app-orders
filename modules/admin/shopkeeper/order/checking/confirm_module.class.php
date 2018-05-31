@@ -647,7 +647,9 @@ function delivery_ship($order_id, $delivery_id) {
 					'user_id'		=> $order['user_id'],
 					'rank_points'	=> intval($integral['rank_points']),
 					'pay_points'	=> intval($integral['custom_points']),
-					'change_desc'	=> sprintf(RC_Lang::get('orders::order.order_gift_integral'), $order['order_sn'])
+					'change_desc'	=> sprintf(RC_Lang::get('orders::order.order_gift_integral'), $order['order_sn']),
+					'from_type'		=> 'order_give_integral',
+					'from_value'	=> $order['order_sn']
 			);
 			RC_Api::api('user', 'account_change_log',$options);
 			/* 发放红包 */

@@ -526,7 +526,7 @@ class merchant extends ecjia_merchant {
 			$this->assign('print_time'		, RC_Time::local_date(ecjia::config('time_format')));
 			$this->assign('action_user'		, $_SESSION['staff_name']);
 			/* 参数赋值：订单 */
-			$this->assign('order'	, $order);
+			$this->assign('order', $order);
 			
 			$this->display('order_print.dwt');
 		} elseif (isset($_GET['shipping_print'])) {
@@ -562,7 +562,7 @@ class merchant extends ecjia_merchant {
 				/* 判断模板图片位置 */
 				if (!empty($shipping['print_bg']) && trim($shipping['print_bg']) !='') {
 					$uploads_dir_info    = RC_Upload::upload_dir();
-					$shipping['print_bg'] = $uploads_dir_info[baseurl] . $shipping['print_bg'];
+					$shipping['print_bg'] = $uploads_dir_info[baseurl] .'/'. $shipping['print_bg'];
 				} else {
 					/* 使用插件默认快递单图片 */
 					$plugin_handle = ecjia_shipping::channel($shipping['shipping_code']);

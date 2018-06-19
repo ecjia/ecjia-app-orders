@@ -543,6 +543,10 @@
 							<p>
 								<label class="label-title">{lang key='orders::order.label_inv_payee'}</label>
 								<input name="inv_payee" class="span8" value="{$order.inv_payee}" type="text" />
+								<span class="help-block">	
+									<label class="label-title"></label>
+									发票抬头及发票识别码，请用英文逗号（“,”）隔开，例：抬头,识别码。如没有英文逗号，则默认为发票抬头。
+								</span>
 							</p>
 							<p>
 								<label class="label-title">{lang key='orders::order.label_inv_content'}</label>

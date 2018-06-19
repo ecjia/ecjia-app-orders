@@ -271,6 +271,8 @@ class merchant extends ecjia_merchant {
 				$inv = explode(',', $order['inv_payee']);
 				$this->assign('inv_payee', $inv['0']);
 				$this->assign('inv_tax_no', $inv['1']);
+			} else {
+				$this->assign('inv_payee', $order['inv_payee']);
 			}
 		} else {
 			$this->assign('inv_payee', $order['inv_payee']);

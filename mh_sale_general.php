@@ -75,7 +75,7 @@ class mh_sale_general extends ecjia_merchant {
         
         RC_Style::enqueue_style('stats-css', RC_App::apps_url('statics/css/merchant_stats.css', __FILE__));
         
-        ecjia_merchant_screen::get_current_screen()->set_parentage('stats');
+        ecjia_merchant_screen::get_current_screen()->set_parentage('stats', 'stats/mh_sale_general.php');
 	}
 	
 	/**

@@ -683,7 +683,7 @@ class merchant extends ecjia_merchant {
 				$return_shipping_content['staff_name']  = $Manager['name'];
 				$return_shipping_content['staff_mobile']= $Manager['mobile'];
 				$return_shipping_content['store_name']  = $_SESSION['store_name'];
-				$store_info = RC_DB::TABLE('store_franchisee')->where('store_id', $_SESSION['store_id'])->select('province', 'city', 'district', 'street', 'address')->first();
+				$store_info = RC_DB::table('store_franchisee')->where('store_id', $_SESSION['store_id'])->select('province', 'city', 'district', 'street', 'address')->first();
 				$return_shipping_content['address']	= ecjia_region::getRegionName($store_info['province']).ecjia_region::getRegionName($store_info['city']).ecjia_region::getRegionName($store_info['district']).ecjia_region::getRegionName($store_info['street']).$store_info['address'];
 				$return_shipping_content['shop_kf_mobile'] = RC_DB::table('merchants_config')->where('store_id', $_SESSION['store_id'])->where('code', 'shop_kf_mobile')->pluck('value');;
 				$this->assign('return_shipping_content', $return_shipping_content);
@@ -3687,7 +3687,7 @@ class merchant extends ecjia_merchant {
 			$return_status = 1;
 			$refund_status = 0;
 		}
-		$user_name = RC_DB::TABLE('users')->where('user_id', $order['user_id'])->pluck('user_name');
+		$user_name = RC_DB::table('users')->where('user_id', $order['user_id'])->pluck('user_name');
 		/* 进入售后 */
 		$refund_data = array(
 				'store_id'		=> $order['store_id'],
@@ -3774,12 +3774,12 @@ class merchant extends ecjia_merchant {
 		//仅退款---同意---进入打款表
 		$refund_info = RC_DB::table('refund_order')->where('refund_id', $refund_id)->first();
 		if($refund_type == 'refund') {
-			$payment_record_id = RC_DB::TABLE('payment_record')->where('order_sn', $refund_info['order_sn'])->pluck('id');
+			$payment_record_id = RC_DB::table('payment_record')->where('order_sn', $refund_info['order_sn'])->pluck('id');
 				
 			//实际支付费用
 			$order_money_paid = $refund_info['surplus'] + $refund_info['money_paid'];
 			//退款总金额
-			$shipping_status = RC_DB::TABLE('order_info')->where('order_id', $refund_info['order_id'])->pluck('shipping_status');
+			$shipping_status = RC_DB::table('order_info')->where('order_id', $refund_info['order_id'])->pluck('shipping_status');
 			if ($shipping_status > SS_UNSHIPPED) {
 				$back_money_total  = $refund_info['money_paid'] + $refund_info['surplus'] - $refund_info['pay_fee'] - $refund_info['shipping_fee'] - $refund_info['insure_fee'];
 				$back_shipping_fee = $refund_info['shipping_fee'];

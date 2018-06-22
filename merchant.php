@@ -562,9 +562,13 @@ class merchant extends ecjia_merchant {
 			if ($shipping['print_model'] == 2) {
 				/* 可视化 快递单*/
 				/* 判断模板图片位置 */
-				if (!empty($shipping['print_bg']) && trim($shipping['print_bg']) !='') {
+				if (!empty($shipping['print_bg']) && trim($shipping['print_bg']) != '') {
 					$uploads_dir_info    = RC_Upload::upload_dir();
-					$shipping['print_bg'] = $uploads_dir_info[baseurl] .'/'. $shipping['print_bg'];
+					if (mb_strstr($shipping['print_bg'], 'data/receipt')) {
+						$shipping['print_bg'] = $uploads_dir_info[baseurl] .'/'. $shipping['print_bg'];
+					} else {
+						$shipping['print_bg'] = $shipping['print_bg'];
+					}
 				} else {
 					/* 使用插件默认快递单图片 */
 					$plugin_handle = ecjia_shipping::channel($shipping['shipping_code']);

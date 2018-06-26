@@ -342,7 +342,12 @@
 						<tr class="{if $val.default_address}info{/if}">
 							<td><input type="radio" name='user_address' value="{$val.address_id}"/></td>
 							<td>{$val.consignee|escape}<br>{if $val.default_address}{lang key='orders::order.default_shipping_address'}{/if}</td>
-							<td>{$val.country_name} {$val.province_name} {$val.city_name} {$val.district_name}</td>
+							<td>
+								{if $val.province}{ecjia_region::getRegionName($val.province)} {/if}
+								{if $val.city}{ecjia_region::getRegionName($val.city)} {/if}
+								{if $val.district}{ecjia_region::getRegionName($val.district)} {/if}
+								{if $val.street}{ecjia_region::getRegionName($val.street)} {/if}
+							</td>
 							<td>{$val.address|escape}{$val.address_info|escape}</td>
 							<td>{$val.zipcode|escape}</td>
 							<td>{lang key='orders::order.label_tel'}{$val.tel}<br/>

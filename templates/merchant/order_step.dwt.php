@@ -200,7 +200,13 @@ ecjia.merchant.order.addedit();
 								<label for="radio_{$val.address_id}"></label>
 							</td>
 							<td>{$val.consignee|escape}<br>{if $val.default_address}(默认收货地址){/if}</td>
-							<td>{$val.country_name} {$val.province_name} {$val.city_name} {$val.district_name}</td>
+							<td>
+								{if $val.province}{ecjia_region::getRegionName($val.province)} {/if}
+								{if $val.city}{ecjia_region::getRegionName($val.city)} {/if}
+								{if $val.district}{ecjia_region::getRegionName($val.district)} {/if}
+								{if $val.street}{ecjia_region::getRegionName($val.street)} {/if}
+							</td>
+							
 							<td>{$val.address|escape}{$val.address_info|escape}</td>
 							<td>{$val.zipcode|escape}</td>
 							<td>

@@ -79,7 +79,7 @@ class mh_order_stats extends ecjia_merchant {
         $this->db_payment_view = RC_Loader::load_app_model('payment_viewmodel', 'orders');
         $this->db_shipping_view = RC_Loader::load_app_model('shipping_viewmodel', 'orders');
         $this->db_orderinfo_view = RC_Loader::load_app_model('order_order_infogoods_viewmodel', 'orders');
-        ecjia_merchant_screen::get_current_screen()->set_parentage('stats');
+        ecjia_merchant_screen::get_current_screen()->set_parentage('stats', 'orders/mh_order_stats.php');
     }
     /**
      * 订单统计

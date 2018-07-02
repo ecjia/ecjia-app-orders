@@ -1199,7 +1199,7 @@ function deleteRepeat($array) {
  * @param   int     $order_id   订单id
  * @return  array   订单商品数组
  */
-function EM_order_goods($order_id, $page = 1, $pagesize = 10) {
+function EM_order_goods($order_id) {
 	
     $field = 'og.*, og.goods_price * og.goods_number AS subtotal, g.goods_thumb, g.original_img, g.goods_img, g.store_id, c.comment_id, c.comment_rank, c.content as comment_content';
     

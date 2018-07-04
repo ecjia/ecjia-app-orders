@@ -1055,7 +1055,7 @@ function judge_package_stock($package_id, $package_num = 1) {
  *
  * @return arr $order 订单所有信息的数组
  */
-function get_order_detail($order_id, $user_id = 0, $type) {
+function get_order_detail($order_id, $user_id = 0, $type = '') {
     $pay_method = RC_Loader::load_app_class('payment_method', 'payment');
     $order_id = intval($order_id);
     if ($order_id <= 0) {

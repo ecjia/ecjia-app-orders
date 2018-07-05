@@ -154,7 +154,7 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		RC_Api::api('affiliate', 'invite_reward', array('user_id' => $order_info['user_id'], 'invite_type' => 'orderpay'));
 		
 		//团购活动，有保证金的；订单order_status_log区分
-		if ($order_info['extension_code'] == 'groupbuy' && $order_info['extension_id'] > 0) {
+		if ($order_info['extension_code'] == 'group_buy' && $order_info['extension_id'] > 0) {
 			RC_Loader::load_app_func('admin_goods', 'goods');
 			$group_buy = group_buy_info($order_info['extension_id']);
 			if ($group_buy['deposit'] > 0 && empty($order_info['surplus'])) {

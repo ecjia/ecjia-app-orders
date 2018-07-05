@@ -57,7 +57,7 @@ class CustomizeOrderList
             } elseif ($item->extension_code == 'storepickup') {
             	$data['order_mode'] = 'storepickup';
             	$data['label_order_mode'] = '自提';
-            } elseif ($item->extension_code == 'groupbuy') {
+            } elseif ($item->extension_code == 'group_buy') {
             	$data['order_mode'] = 'groupbuy';
             	$data['label_order_mode'] = '团购';
             } else {

@@ -130,7 +130,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	        order_action($order_sn, OS_CONFIRMED, SS_UNSHIPPED, $pay_status, '', RC_Lang::get('orders::order.buyers'));
 	    }
 	    //团购活动，有保证金的；订单order_status_log区分
-	    if ($order['extension_code'] == 'groupbuy' && $order['extension_id'] > 0) {
+	    if ($order['extension_code'] == 'group_buy' && $order['extension_id'] > 0) {
 	    	RC_Loader::load_app_func('admin_goods', 'goods');
 	    	$group_buy = group_buy_info($order['extension_id']);
 	    	if ($group_buy['deposit'] > 0 && empty($order['money_paid'])) {

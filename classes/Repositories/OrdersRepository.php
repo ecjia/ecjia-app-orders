@@ -129,9 +129,9 @@ class OrdersRepository extends AbstractRepository
         ];
         
         if (!empty($extension_code)) {
-        	if ($extension_code == 'groupbuy') {
+        	if ($extension_code == 'group_buy') {
         		$where = [
-        			'order_info.extension_code' => 'groupbuy'
+        			'order_info.extension_code' => 'group_buy'
         		];
         	}
         } else {

@@ -589,11 +589,9 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
     $user_id = $order['user_id'];
     if ($user_id == 0 && $refund_type == 1) {
         if (isset($_SESSION['store_id'])) {
-            ecjia_merchant::$controller->showmessage(__('匿名用户不能返回退款到帐户余额！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-            return false;
+            return ecjia_merchant::$controller->showmessage(__('匿名用户不能返回退款到帐户余额！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
         } else {
-            ecjia_admin::$controller->showmessage(RC_Lang::get('orders::order.refund_error_notice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-            return false;
+            return ecjia_admin::$controller->showmessage(RC_Lang::get('orders::order.refund_error_notice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
         }
     }
     $amount = $refund_amount > 0 ? $refund_amount : $order['money_paid'];
@@ -602,11 +600,9 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
     }
     if (!in_array($refund_type, array(1, 2, 3))) {
         if (isset($_SESSION['store_id'])) {
-            ecjia_merchant::$controller->showmessage(__('操作有误！请重新操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-            return false;
+            return ecjia_merchant::$controller->showmessage(__('操作有误！请重新操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
         } else {
-            ecjia_admin::$controller->showmessage(RC_Lang::get('orders::order.error_notice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-            return false;
+            return ecjia_admin::$controller->showmessage(RC_Lang::get('orders::order.error_notice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
         }
     }
     /* 备注信息 */

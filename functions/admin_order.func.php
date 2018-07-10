@@ -493,6 +493,15 @@ function update_order($order_id, $order) {
     if (!empty($_SESSION['store_id'])) {
         $db_order_info->where('store_id', $_SESSION['store_id']);
     }
+    //过滤多余字段
+    $order_info = RC_DB::table('order_info')->where('order_id', $order_id)->select('*')->first();
+    if (!empty($order)) {
+    	foreach ($order as $k => $v) {
+    		if (!array_key_exists($k, $order_info)) {
+    			unset($order[$k]);
+    		}
+    	}
+    }
     return $db_order_info->update($order);
 }
 /**

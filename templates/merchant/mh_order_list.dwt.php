@@ -108,9 +108,7 @@ ecjia.merchant.order.init();
         						<th class="w150">{lang key='orders::order.order_time'}</th>
         						<th>{lang key='orders::order.user_purchase_information'}</th>
         						<th class="w120">{lang key='orders::order.total_fee'}</th>
-        						{if $group_buy_id neq 0}
         						<th class="w110">{lang key='orders::order.bond'}</th>
-        						{/if}
         						<th class="w110">{lang key='orders::order.order_amount'}</th>
         						<th class="w200">{lang key='orders::order.all_status'}</th>
         					</tr>
@@ -144,9 +142,7 @@ ecjia.merchant.order.init();
     							{$order.consignee} [TEL：{$order.mobile}]<br/>{$order.address}
     						</td>
     						<td>{$order.formated_total_fee}</td>
-    						{if $group_buy_id neq 0}
     						<td>{$order.formated_bond}</td>
-    						{/if}
     						<td>{$order.formated_order_amount}</td>
     						<td {if $order.pay_status eq $payed}class="ecjiafc-red"{/if}>{$os[$order.order_status]},{$ps[$order.pay_status]},{$ss[$order.shipping_status]}</td>
     					</tr>

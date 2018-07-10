@@ -147,7 +147,7 @@ ecjia.merchant.order.init();
     						<td {if $order.pay_status eq $payed}class="ecjiafc-red"{/if}>{$os[$order.order_status]},{$ps[$order.pay_status]},{$ss[$order.shipping_status]}</td>
     					</tr>
     					<!-- {foreachelse}-->
-    					<tr><td class="no-records" colspan="{if $group_buy_id neq 0}8{else}7{/if}">{lang key='system::system.no_records'}</td></tr>
+    					<tr><td class="no-records" colspan="8">{lang key='system::system.no_records'}</td></tr>
     					<!-- {/foreach} -->
 				        </tbody>
 			         </table>

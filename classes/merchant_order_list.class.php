@@ -117,6 +117,7 @@ class merchant_order_list {
 				} else {
 					$order[$key]['can_remove'] = 0;
 				}
+				$order[$key]['formated_bond']	= price_format($value['total_fee'] - $value['order_amount']);
 			}
 		}
 		return array('orders' => $order, 'filter' => $this->filter, 'page' => $page->show(2), 'desc' => $page->page_desc(), 'count' => $count);

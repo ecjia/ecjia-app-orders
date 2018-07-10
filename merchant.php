@@ -244,6 +244,9 @@ class merchant extends ecjia_merchant {
 		$search_url = $this->get_search_url();
 		$this->assign('search_url', $search_url);
 		
+		$group_buy_id = isset($_GET['group_buy_id']) ? intval($_GET['group_buy_id']) : 0;
+		$this->assign('group_buy_id', $group_buy_id);
+		
 		$this->assign_lang();
 		$this->display('mh_order_list.dwt');
 	}
@@ -3904,9 +3907,6 @@ class merchant extends ecjia_merchant {
 		}
 		if (isset($_GET['composite_status'])) {
 			$arr['composite_status'] = intval($_GET['composite_status']);
-		}
-		if (isset($_GET['keywords'])) {
-			$arr['keywords'] = intval($_GET['keywords']);
 		}
 		if (isset($_GET['merchant_keywords'])) {
 			$arr['merchant_keywords'] = intval($_GET['merchant_keywords']);

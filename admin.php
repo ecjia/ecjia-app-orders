@@ -1027,7 +1027,7 @@ class admin extends ecjia_admin {
 						$order['country'], $order['province'], $order['city'], $order['district']
 				);
 				$shipping_method = RC_Loader::load_app_class('shipping_method','shipping');
-				$shipping_list = $shipping_method->available_shipping_list($region_id_list, $order['store_id']);
+				$shipping_list = ecjia_shipping::availableUserShippings($region_id_list, $order['store_id']);
 				
 				if (empty($shipping_list)) {
 					$this->assign('shipping_list_error', 1);
@@ -1036,7 +1036,8 @@ class admin extends ecjia_admin {
 				$total = order_weight_price($order_id);
 				if (!empty($shipping_list)) {
 					foreach ($shipping_list AS $key => $shipping) {
-						$shipping_fee = $shipping_method->shipping_fee($shipping['shipping_code'], unserialize($shipping['configure']), $total['weight'], $total['amount'], $total['number']);
+						$shipping_fee = ecjia_shipping::fee($shipping['shipping_area_id'], $total['weight'], $total['amount'], $total['number']);
+						
 						$shipping_list[$key]['shipping_fee']		= $shipping_fee;
 						$shipping_list[$key]['format_shipping_fee']	= price_format($shipping_fee);
 						$shipping_list[$key]['free_money']			= price_format($shipping['configure']['free_money']);

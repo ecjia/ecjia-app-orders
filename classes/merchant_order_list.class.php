@@ -75,7 +75,7 @@ class merchant_order_list {
 		
 		$page = new ecjia_merchant_page($count, 15, 3);
 		
-		$fields = "o.order_id, o.store_id, o.order_sn, o.add_time, o.order_status, o.shipping_status, o.order_amount, o.money_paid, o.pay_status, o.consignee, o.address, o.email, o.tel, o.mobile, o.extension_code, o.extension_id ,(" . $this->order_amount_field('o.') . ") AS total_fee, s.merchants_name, u.user_name";
+		$fields = "o.order_id, o.store_id, o.order_sn, o.add_time, o.order_status, o.shipping_status, o.order_amount, o.money_paid, o.pay_status, o.consignee, o.address, o.email, o.tel, o.mobile, o.extension_code, o.extension_id ,(" . $this->order_amount_field('o.') . ") AS total_fee, s.merchants_name, u.user_name, o.surplus";
 		 
 		$row = $this->db_order_info
 			->leftJoin('order_goods as og', RC_DB::raw('o.order_id'), '=', RC_DB::raw('og.order_id'))
@@ -110,14 +110,14 @@ class merchant_order_list {
 				$order[$key]['extension_id']			= $value['extension_id'];
 				$order[$key]['total_fee']				= $value['total_fee'];
 				$order[$key]['merchants_name']			= $value['merchants_name'];
-				 
+				$order[$key]['formated_bond']           = $value['extension_code'] == 'group_buy' ? price_format($value['money_paid'] + $value['surplus']) : 0;
+				
 				if ($value['order_status'] == OS_INVALID || $value['order_status'] == OS_CANCELED) {
 					/* 如果该订单为无效或取消则显示删除链接 */
 					$order[$key]['can_remove'] = 1;
 				} else {
 					$order[$key]['can_remove'] = 0;
 				}
-				$order[$key]['formated_bond']	= price_format($value['total_fee'] - $value['order_amount']);
 			}
 		}
 		return array('orders' => $order, 'filter' => $this->filter, 'page' => $page->show(2), 'desc' => $page->page_desc(), 'count' => $count);

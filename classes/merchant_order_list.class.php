@@ -75,7 +75,13 @@ class merchant_order_list {
 		
 		$page = new ecjia_merchant_page($count, 15, 3);
 		
-		$fields = "o.order_id, o.store_id, o.order_sn, o.add_time, o.order_status, o.shipping_status, o.order_amount, o.money_paid, o.pay_status, o.consignee, o.address, o.email, o.tel, o.mobile, o.extension_code, o.extension_id ,(" . $this->order_amount_field('o.') . ") AS total_fee, s.merchants_name, u.user_name, og.goods_number";
+		$fields = "o.order_id, o.store_id, o.order_sn, 
+		o.add_time, o.order_status, o.shipping_status, 
+		o.order_amount, o.money_paid, o.pay_status, 
+		o.consignee, o.address, o.email, o.tel, o.mobile, 
+		o.extension_code, o.extension_id ,(" . $this->order_amount_field('o.') . ") AS total_fee, 
+		o.surplus, o.integral_money, o.bonus, 
+		s.merchants_name, u.user_name, og.goods_number";
 		 
 		$row = $this->db_order_info
 			->leftJoin('order_goods as og', RC_DB::raw('o.order_id'), '=', RC_DB::raw('og.order_id'))
@@ -92,7 +98,7 @@ class merchant_order_list {
 		/* 格式话数据 */
 		if (!empty($row)) {
 			foreach ($row AS $key => $value) {
-				$order[$key]['formated_order_amount']	= price_format($value['order_amount']);
+				$order[$key]['formated_order_amount']	= $value['extension_code'] == 'group_buy' ? price_format($value['total_fee']-$value['money_paid']-$value['surplus']-$value['integral_money']-$value['bonus']) : price_format($value['order_amount']);
 				$order[$key]['formated_money_paid']		= price_format($value['money_paid']);
 				$order[$key]['formated_total_fee']		= price_format($value['total_fee']);
 				$order[$key]['short_order_time']		= RC_Time::local_date('Y-m-d H:i', $value['add_time']);

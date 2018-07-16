@@ -1415,7 +1415,7 @@ class merchant extends ecjia_merchant {
 			$order = array(
 				'shipping_id'	=> $shipping_id,
 				'shipping_name'	=> addslashes($shipping['shipping_name']),
-				'shipping_fee'	=> $shipping_fee
+				// 'shipping_fee'	=> $shipping_fee //修改配送方式 配送费不变，价格自行商家承担
 			);
 			
 			if (isset($_POST['insure'])) {

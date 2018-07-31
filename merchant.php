@@ -172,9 +172,8 @@ class merchant extends ecjia_merchant {
 			$this->assign('current_order', 1);
 			$this->assign('back_order_list', array('href' => RC_Uri::url('orders/merchant/init'), 'text' => RC_Lang::get('orders::order.order_list')));
 			
-			$t = RC_Time::gmtime();
-			$start_time = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date("m", $t), RC_Time::local_date("d", $t), RC_Time::local_date("Y", $t));  //当天开始时间
-			$end_time = RC_Time::local_mktime(23, 59, 59, RC_Time::local_date("m", $t), RC_Time::local_date("d", $t), RC_Time::local_date("Y", $t)); //当天结束时间
+			$start_time = RC_Time::local_mktime(0, 0, 0, date('m'), date('d'), date('Y'));  //当天开始时间
+			$end_time = RC_Time::local_mktime(0, 0, 0, date('m'), date('d')+1, date('Y'))-1; //当天结束时间
 			
 			$count = get_merchant_order_count();
 			$cache_key = 'count_pay'.$start_time.$end_time;

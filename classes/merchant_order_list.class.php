@@ -221,10 +221,8 @@ class merchant_order_list {
 		}
 		
 		if ($filter['date'] == 'today') {
-			$filter['start_time'] = RC_Time::local_date("Y", $t).'-'.RC_Time::local_date("m", $t).'-'.RC_Time::local_date("d", $t);
-			$filter['end_time'] = RC_Time::local_date("Y", $t).'-'.RC_Time::local_date("m", $t).'-'.(RC_Time::local_date("d", $t)+1);
-			$start_time = RC_Time::local_strtotime($filter['start_time']);
-			$end_time = RC_Time::local_strtotime($filter['end_time']);
+			$start_time = RC_Time::local_mktime(0, 0, 0, date('m'), date('d'), date('Y'));
+			$end_time = RC_Time::local_mktime(0, 0, 0, date('m'), date('d')+1, date('Y'))-1;
 			$this->db_order_info->where(RC_DB::raw('o.add_time'), '>=', $start_time)->where(RC_DB::raw('o.add_time'), '<=', $end_time);
 		}
 		

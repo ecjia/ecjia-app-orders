@@ -64,8 +64,6 @@ class mh_delivery extends ecjia_merchant {
 	public function __construct() {
 		parent::__construct();
 
-		RC_Lang::load('order');
-
 		RC_Loader::load_app_func('admin_order', 'orders');
 		RC_Loader::load_app_func('merchant_order', 'orders');
 		RC_Loader::load_app_func('global', 'goods');

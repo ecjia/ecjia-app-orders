@@ -63,7 +63,6 @@ class mh_sale_general extends ecjia_merchant {
 		RC_Style::enqueue_style('uniform-aristo');
 
 		/*自定义*/
-		RC_Lang::load('statistic');
 		RC_Loader::load_app_func('global', 'orders');
 		
 		$this->db_order_info = RC_Loader::load_app_model('order_info_model', 'orders');

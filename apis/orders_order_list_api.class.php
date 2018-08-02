@@ -61,11 +61,11 @@ class orders_order_list_api extends Component_Event_Api {
             return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
         }
 
-        $user_id = $_SESSION['user_id'];
-        $type = !empty($options['type']) ? $options['type'] : '';
+        $user_id = array_get($options, 'user_id', $_SESSION['user_id']);
+        $type = array_get($options, 'type');
 
-        $size = $options['size'];
-        $page = $options['page'];
+        $size = array_get($options, 'size', 15);
+        $page = array_get($options, 'page', 1);
         $keywords = $options['keywords'];
         $store_id = $options['store_id'];
         $extension_code = empty($options['extension_code']) ? null : $options['extension_code'];

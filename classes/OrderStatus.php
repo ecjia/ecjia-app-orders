@@ -41,6 +41,15 @@ class OrderStatus
     /* 待评论 */
     const ALLOW_COMMENT = 'allow_comment';
     
+    /* 备货中订单 */
+    const PREPARING = 'preparing';
+    
+    /* 发货中订单 */
+    const SHIPPED_ING = 'shipped_ing';
+
+    /* 已发货（部分商品） */
+    const SHIPPED_PART = 'shipped_part';    
+    
     /**
      * 订单状态映射
      * 
@@ -58,6 +67,9 @@ class OrderStatus
         self::INVALID         => 'queryOrderInvalid',
         self::CANCELED        => 'queryOrderCanceled',
         self::ALLOW_COMMENT   => 'queryOrderAllowComment',
+        self::PREPARING   	  => 'queryOrderPreparing',
+        self::SHIPPED_ING     => 'queryOrderShippedIng',
+        self::SHIPPED_PART    => 'queryOrderShippedPart',
     ];
 
     
@@ -102,6 +114,15 @@ class OrderStatus
         elseif (in_array($order_status, array(OS_RETURNED)) && $pay_status == PS_PAYED) {
         	$label_order_status = RC_Lang::get('orders::order.label_refunded');
         	$status_code = 'refund';
+        }
+        
+        elseif (in_array($order_status, array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) && in_array($shipping_status, array(SS_PREPARING))) {
+        	$label_order_status = RC_Lang::get('orders::order.label_preparing');
+        	$status_code = 'refund';
+        }
+        elseif (in_array($order_status, array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) && in_array($shipping_status, array(SS_SHIPPED_ING))) {
+        	$label_order_status = RC_Lang::get('orders::order.label_shipped_ing');
+        	$status_code = 'shipped_ing';
         }
         
         return array($label_order_status, $status_code);
@@ -182,7 +203,6 @@ class OrderStatus
         };
     }
     
-    
     /* 未处理订单：用户可操作 */
     public static function queryOrderUnprocessed() 
     {
@@ -211,8 +231,6 @@ class OrderStatus
     			  ->where('order_info.order_status', '<>', OS_RETURNED);
     	};
     }
-    
-    
     
     /* 退款 */
     public static function queryOrderRefund() 
@@ -260,6 +278,33 @@ class OrderStatus
             $query->addSelect($fields);
             $query->whereNull('comment.comment_id');
         };
+    }
+    
+    /* 备货中订单 */
+    public static function queryOrderPreparing()
+    {
+    	return function ($query) {
+    		$query->whereIn('order_info.order_status', array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))
+    			  ->where('order_info.shipping_status', SS_PREPARING);
+    	};
+    }
+    
+   	/* 发货中订单 */
+    public static function queryOrderShippedIng()
+    {
+    	return function ($query) {
+    		$query->whereIn('order_info.order_status', array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))
+    			  ->where('order_info.shipping_status', SS_SHIPPED_ING);
+    	};
+    }
+    
+    /* 已发货（部分商品） */
+    public static function queryOrderShippedPart()
+    {
+    	return function ($query) {
+    		$query->whereIn('order_info.order_status', array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))
+    			  ->where('order_info.shipping_status', OS_SHIPPED_PART);
+    	};
     }
 
 }

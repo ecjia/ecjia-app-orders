@@ -112,25 +112,32 @@ class admin extends ecjia_admin {
 		RC_Script::enqueue_script('order_query', RC_Uri::home_url('content/apps/orders/statics/js/order_query.js'));
 		RC_Script::enqueue_script('order_delivery', RC_Uri::home_url('content/apps/orders/statics/js/order_delivery.js'));
 		
-		$order_query = RC_Loader::load_app_class('order_query', 'orders');
-		$order_list = $order_query->get_order_list();
-    	
-		/* 模板赋值 */
+		$filter = $_GET;
+		$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+		$size = 15;
+		$with = null;
+		$with = ['orderGoods', 'orderGoods.goods', 'store', 'payment', 'orderGoods.comment' => function ($query) {
+			$query->select('comment_id', 'has_image')->where('comment_type', 0)->where('parent_id', 0);
+		}];
+		$filter['extension_code'] = 'default';
+		$order_list = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
+			->getOrderList($filter, $page, $size, $with, ['Ecjia\App\Orders\CustomizeOrderList', 'exportOrderListAdmin']);
+		
 		$this->assign('ur_here', 		RC_Lang::get('system::system.02_order_list'));
 		$this->assign('action_link', 	array('href' => RC_Uri::url('orders/admin/order_query'), 'text' => RC_Lang::get('system::system.03_order_query')));
+		
 		$this->assign('status_list', 	RC_Lang::get('orders::order.cs'));
 		$this->assign('order_list', 	$order_list);
-		$this->assign('filter',			$order_list['filter']);
-		$this->assign('count', 			$order_list['count']);
-		
+
+		$this->assign('filter',			$filter);
+		$this->assign('count', 			$order_list['filter_count']);
 		$this->assign('form_action', 	RC_Uri::url('orders/admin/operate', array('batch' => 1)));
 		
 		$this->assign('os', RC_Lang::get('orders::order.os'));
 		$this->assign('ps', RC_Lang::get('orders::order.ps'));
 		$this->assign('ss', RC_Lang::get('orders::order.ss'));
 		
-		$search_url = $this->get_search_url();
-		$this->assign('search_url', $search_url);
+		$this->assign('search_url', RC_Uri::url('orders/admin/init'));
 		
 		$this->display('order_list.dwt');
 	}
@@ -1779,7 +1786,7 @@ class admin extends ecjia_admin {
 			if (isset($_POST['finish'])) {
 				/* 完成 */
 				if ($step_act == 'add') {
-					/* 订单改为已确认，（已付款） */
+					/* 订单改为已接单，（已付款） */
 					$arr['order_status']	= OS_CONFIRMED;
 					$arr['confirm_time']	= RC_Time::gmtime();
 					if ($order['order_amount'] <= 0) {
@@ -2410,7 +2417,7 @@ class admin extends ecjia_admin {
 					} else {
 						$order_id = $order['order_id'];
 
-						/* 标记订单为已确认 */
+						/* 标记订单为已接单 */
 						update_order($order_id, array('order_status' => OS_CONFIRMED, 'confirm_time' => RC_Time::gmtime()));
 						update_order_amount($order_id);
 
@@ -2628,7 +2635,7 @@ class admin extends ecjia_admin {
 
 		/* 确认 */
 		if ('confirm' == $operation) {
-			/* 标记订单为已确认 */
+			/* 标记订单为已接单 */
 			update_order($order_id, array('order_status' => OS_CONFIRMED, 'confirm_time' => RC_Time::gmtime()));
 			update_order_amount($order_id);
 
@@ -2637,7 +2644,7 @@ class admin extends ecjia_admin {
 			/* 记录log */
 			order_action($order['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_UNPAYED, $action_note);
 		
-			/* 如果原来状态不是“未确认”，且使用库存，且下订单时减库存，则减少库存 */
+			/* 如果原来状态不是“未接单”，且使用库存，且下订单时减库存，则减少库存 */
 			if ($order['order_status'] != OS_UNCONFIRMED && ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_PLACE) {
 				change_order_goods_storage($order_id, true, SDT_PLACE);
 			}
@@ -2671,7 +2678,7 @@ class admin extends ecjia_admin {
 			/* 检查权限 */
 			$this->admin_priv('order_ps_edit', ecjia::MSGTYPE_JSON);
 		
-			/* 标记订单为已确认、已付款，更新付款时间和已支付金额，如果是货到付款，同时修改订单为“收货确认” */
+			/* 标记订单为已接单、已付款，更新付款时间和已支付金额，如果是货到付款，同时修改订单为“收货确认” */
 			if ($order['order_status'] != OS_CONFIRMED) {
 				$arr['order_status']	= OS_CONFIRMED;
 				$arr['confirm_time']	= RC_Time::gmtime();
@@ -2728,7 +2735,7 @@ class admin extends ecjia_admin {
 			order_action($order['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_UNPAYED, $action_note);
 		} elseif ('prepare' == $operation) {
 			/* 配货 */
-			/* 标记订单为已确认，配货中 */
+			/* 标记订单为已接单，配货中 */
 			if ($order['order_status'] != OS_CONFIRMED) {
 				$arr['order_status']	= OS_CONFIRMED;
 				$arr['confirm_time']	= RC_Time::gmtime();
@@ -3082,7 +3089,7 @@ class admin extends ecjia_admin {
 				/* 更新订单的非虚拟商品信息 即：商品（实货）（货品）、商品（超值礼包）*/
 				update_order_goods($order_id, $_sended, $_goods['goods_list']);
 		
-				/* 标记订单为已确认 “发货中” */
+				/* 标记订单为已接单 “发货中” */
 				/* 更新发货时间 */
 				$order_finish = get_order_finish($order_id);
 				$shipping_status = SS_SHIPPED_ING;
@@ -3724,9 +3731,9 @@ class admin extends ecjia_admin {
 		if (isset($_GET['pay_id'])) {
 			$arr['pay_id'] = intval($_GET['pay_id']);
 		}
-		if (isset($_GET['composite_status'])) {
-			$arr['composite_status'] = intval($_GET['composite_status']);
-		}
+// 		if (isset($_GET['composite_status'])) {
+// 			$arr['composite_status'] = intval($_GET['composite_status']);
+// 		}
 		if (isset($_GET['keywords'])) {
 			$arr['keywords'] = trim($_GET['keywords']);
 		}

@@ -202,7 +202,6 @@ class orders_admin_plugin {
 	    $menu = array(
 	        ecjia_admin::make_admin_menu('divider', '', '', 50)->add_purview(array('order_stats', 'guest_stats', 'sale_general_stats', 'users_order_stats', 'sale_list_stats', 'sale_order_stats', 'visit_sold_stats', 'adsense_conversion_stats')),
 	        ecjia_admin::make_admin_menu('guest_stats', __('客户统计'), RC_Uri::url('orders/admin_guest_stats/init'), 51)->add_purview('guest_stats'),
-	        ecjia_admin::make_admin_menu('order_stats', __('订单统计'), RC_Uri::url('orders/admin_order_stats/init'), 52)->add_purview('order_stats'),
 	        ecjia_admin::make_admin_menu('sale_general', __('销售概况'), RC_Uri::url('orders/admin_sale_general/init'), 53)->add_purview('sale_general_stats'),
 	        ecjia_admin::make_admin_menu('users_order', __('会员排行'), RC_Uri::url('orders/admin_users_order/init'), 54)->add_purview('users_order_stats'),
 	        ecjia_admin::make_admin_menu('sale_list', __('销售明细'), RC_Uri::url('orders/admin_sale_list/init'), 55)->add_purview('sale_list_stats'),

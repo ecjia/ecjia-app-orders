@@ -144,10 +144,10 @@ class admin extends ecjia_admin
 
         $this->assign('search_url', RC_Uri::url('orders/admin/init'));
 	
-        if ($filter['extension_code'] == 'storebuy') {
-        	$this->display('storebuy_order_list.dwt');
-        } else {
+        if ($filter['extension_code'] == 'default') {
         	$this->display('order_list.dwt');
+        } else {
+        	$this->display('other_order_list.dwt');
         }
     }
 
@@ -548,10 +548,10 @@ class admin extends ecjia_admin
                 $order_finishied = 1;
                 $this->assign('order_finished', $order_finishied);
             }
-            if ($order['extension_code'] == 'storebuy') {
-                $this->display('storebuy_order_info.dwt');
-            } else {
+            if (empty($order['extension_code'])) {
                 $this->display('order_info.dwt');
+            } else {
+            	$this->display('other_order_info.dwt');
             }
         }
     }

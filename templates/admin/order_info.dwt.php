@@ -293,11 +293,11 @@
 				
 				<div class="accordion-group">
 					<div class="accordion-heading accordion-heading-url">
-						<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseTwo-a">
+						<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseDelivery">
 							<strong>发货单信息</strong>
 						</div>
 					</div>
-					<div class="accordion-body in collapse" id="collapseTwo-a">
+					<div class="accordion-body in collapse" id="collapseDelivery">
 						<table class="table table-oddtd m_b0">
 							<tbody class="first-td-no-leftbd">
 								<tr>

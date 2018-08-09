@@ -116,8 +116,8 @@
 								{/if}
 							</div>
 						</td>
-						<td class="ecjiafc-red">
-							{$order.seller_name}{if $order.manage_mode eq 'self'}（自营）{/if}
+						<td>
+							{$order.seller_name}{if $order.manage_mode eq 'self'}<span class="ecjiafc-red">（自营）</span>{/if}
 						</td>
 						<td>
 							{$order.order_time}

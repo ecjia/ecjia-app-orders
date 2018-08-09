@@ -131,7 +131,109 @@
 			</div>
 			<!-- {/if} -->
 			<!-- 店铺信息 end -->
-
+			
+			{if $order.extension_code eq 'storepickup'}
+			<div class="accordion-group">
+				<div class="accordion-heading accordion-heading-url">
+					<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapsePickup">
+						<strong>自提信息</strong>
+					</div>
+				</div>
+				<div class="accordion-body in collapse" id="collapsePickup">
+					<table class="table table-oddtd m_b0">
+						<tbody class="first-td-no-leftbd">
+							<tr>
+								<td>
+									<div align="right">
+										<strong>提货码：</strong>
+									</div>
+								</td>
+								<td></td>
+								<td>
+									<div align="right">
+										<strong>提货状态：</strong>
+									</div>
+								</td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>
+									<div align="right">
+										<strong>预约提货时间：</strong>
+									</div>
+								</td>
+								<td colspan="3"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			
+			<div class="accordion-group">
+				<div class="accordion-heading accordion-heading-url">
+					<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseTwo-a">
+						<strong>{lang key='orders::order.invoice_information'}</strong>
+					</div>
+				</div>
+				<div class="accordion-body in collapse" id="collapseTwo-a">
+					<table class="table table-oddtd m_b0">
+						<tbody class="first-td-no-leftbd">
+							<tr>
+								<td>
+									<div align="right">
+										<strong>{lang key='orders::order.label_inv_type'}</strong>
+									</div>
+								</td>
+								<td>{$order.inv_type}</td>
+								<td>
+									<div align="right">
+										<strong>纳税人识别码：</strong>
+									</div>
+								</td>
+								<td>{$inv_payee}</td>
+							</tr>
+							<tr>
+								<td>
+									<div align="right">
+										<strong>发票抬头：</strong>
+									</div>
+								</td>
+								<td>{$inv_tax_no}</td>
+								<td>
+									<div align="right">
+										<strong>{lang key='orders::order.label_inv_content'}</strong>
+									</div>
+								</td>
+								<td>{$order.inv_content}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			
+			<div class="accordion-group">
+				<div class="accordion-heading accordion-heading-url">
+					<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseTwo">
+						<strong>{lang key='orders::order.other_info'}</strong>
+					</div>
+				</div>
+				<div class="accordion-body in collapse" id="collapseTwo">
+					<table class="table table-oddtd m_b0">
+						<tbody class="first-td-no-leftbd">
+							<tr>
+								<td>
+									<div align="right">
+										<strong>订单备注：</strong>
+									</div>
+								</td>
+								<td colspan="3">{$order.postscript}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			{/if}
+				
 			<div class="accordion-group">
 				<div class="accordion-heading accordion-heading-url">
 					<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseFour">

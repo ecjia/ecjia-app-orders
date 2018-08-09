@@ -17,7 +17,6 @@
 	</h3>
 </div>
 
-
 <div class="row-fluid batch" >
 	<form action="{$search_url}
 		{if $filter.composite_status}&composite_status={$filter.composite_status}{/if}
@@ -33,6 +32,7 @@
 					<span class="badge badge-info">{if $count.all}{$count.all}{else}0{/if}</span> 
 				</a>
 			</li>
+			{if $filter.extension_code eq 'storebuy'}
 			<li class="{if $filter.composite_status eq 102}active{/if}">
 				<a class="data-pjax" href="{$search_url}&composite_status=102
 					{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
@@ -42,6 +42,29 @@
 					<span class="badge badge-info">{if $count.finished}{$count.finished}{else}0{/if}</span> 
 				</a>
 			</li>
+			{/if}
+			
+			{if $filter.extension_code eq 'storepickup'}
+			<li class="{if $filter.composite_status eq 101}active{/if}">
+				<a class="data-pjax" href="{$search_url}&composite_status=101
+					{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
+					{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
+					{if $filter.keywords}&keywords={$filter.keywords}{/if}
+					">未提货
+					<span class="badge badge-info">{if $count.await_ship}{$count.await_ship}{else}0{/if}</span> 
+				</a>
+			</li>
+			<li class="{if $filter.composite_status eq 102}active{/if}">
+				<a class="data-pjax" href="{$search_url}&composite_status=102
+					{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
+					{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
+					{if $filter.keywords}&keywords={$filter.keywords}{/if}
+					">已提货
+					<span class="badge badge-info">{if $count.finished}{$count.finished}{else}0{/if}</span> 
+				</a>
+			</li>			
+			{/if}
+			
 			<li class="{if $filter.composite_status eq 100}active{/if}">
 				<a class="data-pjax" href="{$search_url}&composite_status=100
 					{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}

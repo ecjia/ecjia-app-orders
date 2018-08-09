@@ -287,6 +287,12 @@ class admin extends ecjia_admin
         } else {
         }
 
+        //订单发货单流水号
+        $order['delivery_sn'] = RC_DB::table('order_info as oi')
+        	->leftJoin('delivery_order as do', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('do.order_id'))
+        	->where(RC_DB::raw('oi.order_id'), $order['order_id'])
+        	->pluck('delivery_sn');
+        
         /* 取得订单商品总重量 */
         $weight_price = order_weight_price($order_id);
         $order['total_weight'] = $weight_price['formated_weight'];

@@ -294,6 +294,28 @@
 				<div class="accordion-group">
 					<div class="accordion-heading accordion-heading-url">
 						<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseTwo-a">
+							<strong>发货单信息</strong>
+						</div>
+					</div>
+					<div class="accordion-body in collapse" id="collapseTwo-a">
+						<table class="table table-oddtd m_b0">
+							<tbody class="first-td-no-leftbd">
+								<tr>
+									<td>
+										<div align="right">
+											<strong>发货单流水号：</strong>
+										</div>
+									</td>
+									<td colspan="3">{$order.delivery_sn}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				
+				<div class="accordion-group">
+					<div class="accordion-heading accordion-heading-url">
+						<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseTwo-a">
 							<strong>{lang key='orders::order.invoice_information'}</strong>
 						</div>
 					</div>
@@ -309,18 +331,18 @@
 									<td>{$order.inv_type}</td>
 									<td>
 										<div align="right">
-											<strong>{lang key='orders::order.label_inv_tax_no'}</strong>
-										</div>
-									</td>
-									<td>{$inv_tax_no}</td>
-								</tr>
-								<tr>
-									<td>
-										<div align="right">
 											<strong>纳税人识别码：</strong>
 										</div>
 									</td>
 									<td>{$inv_payee}</td>
+								</tr>
+								<tr>
+									<td>
+										<div align="right">
+											<strong>发票抬头：</strong>
+										</div>
+									</td>
+									<td>{$inv_tax_no}</td>
 									<td>
 										<div align="right">
 											<strong>{lang key='orders::order.label_inv_content'}</strong>

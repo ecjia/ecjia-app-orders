@@ -183,6 +183,10 @@
 	float: left;
 }
 
+.order-status-base.order-five-base ul li {
+	width: 20%;
+}
+
 .order-status-base.order-third-base ul li {
 	width: 33.11111%;
 }

@@ -455,7 +455,7 @@ class OrdersRepository extends AbstractRepository
                         break;
 
                     case CS_AWAIT_SHIP:
-                        $whereQuery = OrderStatus::getQueryOrder('await_ship');
+                        $whereQuery = OrderStatus::getQueryOrder('admin_await_ship');
                         $whereQuery($query);
                         break;
 
@@ -477,7 +477,7 @@ class OrdersRepository extends AbstractRepository
 
                     //未接单
                     case CS_UNCONFIRMED:
-                        $whereQuery = OrderStatus::getQueryOrder('unconfirmed');
+                        $whereQuery = OrderStatus::getQueryOrder('admin_unconfirmed');
                         $whereQuery($query);
                         break;
 

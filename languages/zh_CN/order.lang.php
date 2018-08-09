@@ -115,6 +115,13 @@ return array(
 	'ss_admin' => array(
 		SS_SHIPPED_ING => '发货中（前台状态：未发货）'
 	),
+	
+	'order_extension_code' => array(
+		'default' => '配送订单',
+		'storebuy' => '到店订单',
+		'storepickup' => '自提订单',
+		'group_buy' => '团购订单',
+	),
 				
 	/* 订单操作 */
 	'label_operable_act'	=> '当前可执行操作：',
@@ -573,6 +580,7 @@ return array(
 	'label_refunded'				=> '退款',
 	'label_preparing'				=> '备货中',
 	'label_shipped_ing'				=> '发货中',
+	'label_unpay'					=> '未付款',
 	
 	'order_back_list'				=>	'退货单列表',
 	'return_look'					=>	'退货单操作：查看',

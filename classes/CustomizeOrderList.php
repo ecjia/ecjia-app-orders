@@ -104,7 +104,7 @@ class CustomizeOrderList
             //计算订单总价格
             $total_fee = $item->goods_amount + $item->shipping_fee + $item->insure_fee + $item->pay_fee + $item->pack_fee + $item->card_fee + $item->tax - $item->integral_money - $item->bonus - $item->discount;
             $goods_number = 0;
-            list($label_order_status, $status_code) = OrderStatus::getOrderStatusLabel($item->order_status, $item->shipping_status, $item->pay_status, $item->payment->is_cod);
+            list($label_order_status, $status_code) = OrderStatus::getAdminOrderStatusLabel($item->order_status, $item->shipping_status, $item->pay_status, $item->payment->is_cod);
 
             $data = [
                 'seller_id' => $item->store->store_id,

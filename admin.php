@@ -143,8 +143,12 @@ class admin extends ecjia_admin
         $this->assign('ss', RC_Lang::get('orders::order.ss'));
 
         $this->assign('search_url', RC_Uri::url('orders/admin/init'));
-
-        $this->display('order_list.dwt');
+	
+        if ($filter['extension_code'] == 'storebuy') {
+        	$this->display('storebuy_order_list.dwt');
+        } else {
+        	$this->display('order_list.dwt');
+        }
     }
 
     /**
@@ -164,12 +168,6 @@ class admin extends ecjia_admin
         }
         if (empty($order)) {
             return $this->showmessage(RC_Lang::get('orders::order.not_exist_order'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR, array('links' => array(array('text' => RC_Lang::get('orders::order.return_list'), 'href' => RC_Uri::url('orders/admin/init')))));
-        }
-
-        /*判断订单来源，自助购订单*/
-        $storebuy_order = false;
-        if ($order['referer'] == 'ecjia-storebuy') {
-            $storebuy_order = true;
         }
 
         /*发票抬头和发票识别码处理*/
@@ -535,7 +533,7 @@ class admin extends ecjia_admin
             $this->assign('invalid_order', $invalid_order);
 
             /* 参数赋值：订单 */
-            if ($storebuy_order) {
+            if ($order['extension_code'] == 'storebuy') {
                 $order['formated_order_amount'] = price_format($order['goods_amount'] - ($order['discount'] + $order['integral_money'] + $order['bonus']));
             }
             $this->assign('order', $order);
@@ -550,7 +548,7 @@ class admin extends ecjia_admin
                 $order_finishied = 1;
                 $this->assign('order_finished', $order_finishied);
             }
-            if ($storebuy_order) {
+            if ($order['extension_code'] == 'storebuy') {
                 $this->display('storebuy_order_info.dwt');
             } else {
                 $this->display('order_info.dwt');

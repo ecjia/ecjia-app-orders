@@ -20,56 +20,32 @@
 <div class="order-status-base order-third-base m_b20">
 	<ul class="">
 		<li class="step-first">
-			<div class="{if $time_key lt '2'}step-cur{else}step-done{/if}">
-				<div class="step-no">{if $time_key lt '2'}1{/if}</div>
+			<div class="{if $flow_status.key eq '1'}step-cur{else}step-done{/if}">
+				<div class="step-no">{if $flow_status.key lt '2'}1{/if}</div>
 				<div class="m_t5">{lang key='orders::order.submit_order'}</div>
 				<div class="m_t5 ecjiafc-blue">{$order.formated_add_time}</div>
 			</div>
 		</li>
 		<li>
-			<div class="{if $time_key eq '2'}step-cur{elseif $time_key gt '2' && $pay_key}step-done{else}step-pay{/if}">
-				<div class="step-no">{if $time_key eq '2' || !$pay_key}2{/if}</div>
-				<div class="m_t5">{lang key='orders::order.pay_for_order'}</div>
-				{if $pay_key}
-					<div class="m_t5 ecjiafc-blue">{$order.pay_time}</div>
-				{/if}
+			<div class="{if $flow_status.key eq '2'}step-cur{elseif $flow_status.key gt '2'}step-done{/if}">
+				<div class="step-no">{if $flow_status.key lt '3'}2{/if}</div>
+				<div class="m_t5">{$flow_status.pay}</div>
+				<div class="m_t5 ecjiafc-blue">{$order.pay_time}</div>
 			</div>
 		</li>
 		<li class="step-last">
-			<div class="{if $time_key eq '3'}step-cur{elseif $time_key gt '3'}step-done{/if}">
-				<div class="step-no">{if $time_key lt '4'}3{/if}</div>
-				<div class="m_t5">{lang key='orders::order.label_finished'}</div>
-				{if $pay_key}
-					<div class="m_t5 ecjiafc-blue">{$order.pay_time}</div>
-				{/if}
+			<div class="{if $flow_status.key eq '5'}step-cur{elseif $flow_status.key gt '5'}step-done{/if}">
+				<div class="step-no">{if $flow_status.key lt '6'}3{/if}</div>
+				<div class="m_t5">交易完成</div>
 			</div>
 		</li>
 	</ul>
 </div>
 
 <div class="row-fluid">
-	<form name="queryinfo" action='{url path="orders/admin/query_info"}' method="post">
-		<div class="span12 ecjiaf-tac">
-			<div class="ecjiaf-fl"><h3>{lang key='orders::order.label_order_sn'}{$order.order_sn}</h3></div>
-			<span class="choose_list"><input type="text" name="keywords" class="ecjiaf-fn" placeholder="{lang key='orders::order.pls_order_id'}" /><button class="btn ecjiaf-fn" type="submit">{lang key='orders::order.search'}</button></span>
-			<div class="f_r">
-		      	{if $next_id}
-				<a class="data-pjax ecjiaf-tdn" href='{url path="orders/admin/info" args="order_id={$next_id}"}'>
-				{/if}
-					<button class="btn btn-small" type="button" {if !$next_id}disabled="disabled"{/if}>{lang key='orders::order.prev'}</button>
-				{if $next_id}
-				</a>
-				{/if}
-				{if $prev_id}
-				<a class="data-pjax ecjiaf-tdn" href='{url path="orders/admin/info" args="order_id={$prev_id}"}' >
-				{/if}
-					<button class="btn btn-small" type="button" {if !$prev_id}disabled="disabled"{/if}>{lang key='orders::order.next'}</button>
-				{if $prev_id}
-				</a>
-				{/if}
-			</div>
-		</div>
-	</form>
+	<div class="span12 ecjiaf-tac">
+		<div class="ecjiaf-fl"><h3>{lang key='orders::order.label_order_sn'}{$order.order_sn}</h3></div>
+	</div>
 </div>
 <div class="row-fluid">
 	<div class="span12">
@@ -82,7 +58,7 @@
 					<table class="table table-oddtd m_b0">
 						<tbody class="first-td-no-leftbd">
 							<tr>
-								<td><div align="right"><strong>{lang key='orders::order.label_order_sn'}</strong></div></td>
+								<td><div align="right"><strong>订单编号：</strong></div></td>
 								<td>
 									{$order.order_sn}
 									{if $order.extension_code eq "group_buy"}
@@ -93,7 +69,7 @@
 								<td>{$order.status}</td>
 							</tr>
 							<tr>
-								<td><div align="right"><strong>{lang key='orders::order.label_user_name'}</strong></div></td>
+								<td><div align="right"><strong>购买人：</strong></div></td>
 								<td>
 									{$order.user_name|default:{lang key='orders::order.anonymous'}}
 								</td>
@@ -105,13 +81,13 @@
 								<td>
 									{$order.pay_name}
 								</td>
-								<td><div align="right"><strong>{lang key='orders::order.label_pay_time'}</strong></div></td>
-								<td>{$order.pay_time}</td>
+								<td><div align="right"><strong>{lang key='orders::order.label_order_time'}</strong></div></td>
+								<td>{$order.formated_add_time}</td>
 							</tr>
 							
 							<tr>
-								<td><div align="right"><strong>{lang key='orders::order.label_order_time'}</strong></div></td>
-								<td>{$order.formated_add_time}</td>
+								<td><div align="right"><strong>{lang key='orders::order.label_pay_time'}</strong></div></td>
+								<td>{$order.pay_time}</td>
 								<td><div align="right"><strong>{lang key='orders::order.from_order'}</strong></div></td>
 								<td>{if $order.referer eq 'ecjia-cashdesk'}收银台{elseif $order.referer eq 'ecjia-storebuy'}小程序自助购物{else}{$order.referer}{/if}</td>
 							</tr>
@@ -213,9 +189,6 @@
 					<div class="accordion-toggle acc-in" data-toggle="collapse"  data-target="#collapseFive">
 						<strong>{lang key='orders::order.fee_info'}</strong>
 					</div>
-					{if $order_finished neq 1 && $order.shipping_status neq 1 && !$invalid_order}
-						<a class="data-pjax accordion-url" href='{url path="orders/admin/edit" args="order_id={$order.order_id}&step=money"}'>{lang key='system::system.edit'}</a>
-					{/if}
 				</div>
 				<div class="accordion-body in collapse" id="collapseFive">
 					<table class="table m_b0">

@@ -2357,8 +2357,410 @@ class merchant extends ecjia_merchant {
 				return $this->showmessage(__('请填写备注信息！') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 			}
 			/* 去发货 */
-			$url = RC_Uri::url('orders/mh_delivery/init', array('order_sn' => $_GET['order_sn'], 'type' => 2));
-			return $this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS , array('url' => $url));
+// 			$url = RC_Uri::url('orders/mh_delivery/init', array('order_sn' => $_GET['order_sn'], 'type' => 2));
+// 			return $this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS , array('url' => $url));
+			
+			/* 一键发货 */
+			$order = RC_Api::api('orders', 'merchant_order_info', array('order_id' => $order_id));
+			
+			/* 查询：取得订单商品 */
+			$_goods = get_order_goods(array('order_id' => $order['order_id'], 'order_sn' => $order['order_sn']));
+			
+			$attr = $_goods['attr'];
+			$goods_list = $_goods['goods_list'];
+			unset($_goods);
+			
+			$send_number = [];
+			/* 查询：商品已发货数量 此单可发货数量 */
+			if ($goods_list) {
+				foreach ($goods_list as $key => $goods_value) {
+					if (!$goods_value['goods_id']) {
+						continue;
+					}
+					$send_number[$goods_value['rec_id']] = $goods_value['goods_number'] - $goods_value['send_number'];
+					
+					/* 是否缺货 */
+					if ($goods_value['storage'] <= 0 && ecjia::config('use_storage') == '1'  && ecjia::config('stock_dec_time') == SDT_SHIP) {
+						$send_number[$goods_value['rec_id']] = RC_Lang::get('orders::order.act_good_vacancy');
+					} elseif ($send_number[$goods_value['rec_id']] <= 0) {
+						$send_number[$goods_value['rec_id']] = RC_Lang::get('orders::order.act_good_delivery');
+					}
+				}
+			}
+			
+			/* 获取表单提交数据 */
+			$suppliers_id = isset($_POST['suppliers_id']) ? intval(trim($_POST['suppliers_id'])) : '0'; //供货商
+				
+			$data = array(
+				'order_sn' => $order['order_sn'],
+				'add_time' => $order['order_time'],
+				'user_id' => $order['user_id'],
+				'how_oos' => $order['how_oos'],
+				'shipping_id' => $order['shipping_id'],
+				'shipping_fee' => $order['shipping_fee'],
+				'consignee' => $order['consignee'],
+				'address' => $order['address'],
+				'country' => $order['country'],
+				'province' => $order['province'],
+				'city' => $order['city'],
+				'district' => $order['district'],
+				'street' => $order['street'],
+				'sign_building' => $order['sign_building'],
+				'email' => $order['email'],
+				'mobile' => $order['mobile'],
+				'best_time' => $order['best_time'],
+				'postscript' => $order['postscript'],
+				'insure_fee' => $order['insure_fee'],
+				'agency_id' => $order['agency_id'],
+				'shipping_name' => $order['shipping_name']
+			);
+			array_walk($data, 'trim_array_walk');
+			$delivery = $data;
+			array_walk($send_number, 'trim_array_walk');
+			array_walk($send_number, 'intval_array_walk');
+				
+			$action_note = isset($_POST['action_note']) ? trim($_POST['action_note']) : '';
+				
+			$delivery['user_id']		= intval($delivery['user_id']);
+
+			$delivery['country']		= trim($delivery['country']);
+			$delivery['province']		= trim($delivery['province']);
+			$delivery['city']			= trim($delivery['city']);
+			$delivery['district']		= trim($delivery['district']);
+			$delivery['street']			= trim($delivery['street']);
+				
+			$delivery['agency_id']		= intval($delivery['agency_id']);
+			$delivery['insure_fee']		= floatval($delivery['insure_fee']);
+			$delivery['shipping_fee']	= floatval($delivery['shipping_fee']);
+			
+			/* 订单是否已全部分单检查 */
+			if ($order['order_status'] == OS_SPLITED) {
+				/* 操作失败 */
+				$links[] = array('text' => RC_Lang::get('orders::order.order_info'), 'href' => RC_Uri::url('orders/merchant/info', 'order_id=' . $order_id));
+				return $this->showmessage(sprintf(RC_Lang::get('orders::order.order_splited_sms'), $order['order_sn'], RC_Lang::get('orders::order.os.'.OS_SPLITED), RC_Lang::get('orders::order.ss.'.SS_SHIPPED_ING), ecjia::config('shop_name')) , ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_ERROR , array('links' => $links));
+			}
+				
+			/* 检查此单发货数量填写是否正确 合并计算相同商品和货品 */
+			if (!empty($send_number) && !empty($goods_list)) {
+				$goods_no_package = array();
+				foreach ($goods_list as $key => $value) {
+					/* 去除 此单发货数量 等于 0 的商品 */
+					if (!isset($value['package_goods_list']) || !is_array($value['package_goods_list'])) {
+						// 如果是货品则键值为商品ID与货品ID的组合
+						$_key = empty($value['product_id']) ? $value['goods_id'] : ($value['goods_id'] . '_' . $value['product_id']);
+			
+						// 统计此单商品总发货数 合并计算相同ID商品或货品的发货数
+						if (empty($goods_no_package[$_key])) {
+							$goods_no_package[$_key] = $send_number[$value['rec_id']];
+						} else {
+							$goods_no_package[$_key] += $send_number[$value['rec_id']];
+						}
+			
+						//去除
+						if ($send_number[$value['rec_id']] <= 0) {
+							unset($send_number[$value['rec_id']], $goods_list[$key]);
+							continue;
+						}
+					} else {
+						/* 组合超值礼包信息 */
+						$goods_list[$key]['package_goods_list'] = package_goods($value['package_goods_list'], $value['goods_number'], $value['order_id'], $value['extension_code'], $value['goods_id']);
+			
+						/* 超值礼包 */
+						foreach ($value['package_goods_list'] as $pg_key => $pg_value) {
+							// 如果是货品则键值为商品ID与货品ID的组合
+							$_key = empty($pg_value['product_id']) ? $pg_value['goods_id'] : ($pg_value['goods_id'] . '_' . $pg_value['product_id']);
+			
+							//统计此单商品总发货数 合并计算相同ID产品的发货数
+							if (empty($goods_no_package[$_key])) {
+								$goods_no_package[$_key] = $send_number[$value['rec_id']][$pg_value['g_p']];
+							} else {
+								//否则已经存在此键值
+								$goods_no_package[$_key] += $send_number[$value['rec_id']][$pg_value['g_p']];
+							}
+			
+							//去除
+							if ($send_number[$value['rec_id']][$pg_value['g_p']] <= 0) {
+								unset($send_number[$value['rec_id']][$pg_value['g_p']], $goods_list[$key]['package_goods_list'][$pg_key]);
+							}
+						}
+			
+						if (count($goods_list[$key]['package_goods_list']) <= 0) {
+							unset($send_number[$value['rec_id']], $goods_list[$key]);
+							continue;
+						}
+					}
+			
+					/* 发货数量与总量不符 */
+					if (!isset($value['package_goods_list']) || !is_array($value['package_goods_list'])) {
+						$sended = order_delivery_num($order_id, $value['goods_id'], $value['product_id']);
+						if (($value['goods_number'] - $sended - $send_number[$value['rec_id']]) < 0) {
+							/* 操作失败 */
+							$links[] = array('text' => RC_Lang::get('orders::order.order_info'), 'href' => RC_Uri::url('orders/merchant/info', 'order_id=' . $order_id));
+							return $this->showmessage(RC_Lang::get('orders::order.act_ship_num'), ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_ERROR , array('links' => $links));
+			
+						}
+					} else {
+						/* 超值礼包 */
+						foreach ($goods_list[$key]['package_goods_list'] as $pg_key => $pg_value) {
+							if (($pg_value['order_send_number'] - $pg_value['sended'] - $send_number[$value['rec_id']][$pg_value['g_p']]) < 0) {
+								/* 操作失败 */
+								$links[] = array('text' => RC_Lang::get('orders::order.order_info'), 'href' => RC_Uri::url('orders/merchant/info', 'order_id=' . $order_id));
+								return $this->showmessage(RC_Lang::get('orders::order.act_ship_num'), ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_ERROR , array('links' => $links));
+							}
+						}
+					}
+				}
+			}
+			
+			/* 对上一步处理结果进行判断 兼容 上一步判断为假情况的处理 */
+			if (empty($send_number) || empty($goods_list)) {
+				/* 操作失败 */
+				$links[] = array('text' => RC_Lang::get('orders::order.order_info'), 'href' => RC_Uri::url('orders/merchant/info', 'order_id=' . $order_id));
+				return $this->showmessage('发货数量或商品不能为空', ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_ERROR , array('links' => $links));
+			}
+			
+			/* 检查此单发货商品库存缺货情况 */
+			/* $goods_list已经过处理 超值礼包中商品库存已取得 */
+			$virtual_goods = array();
+			$package_virtual_goods = array();
+			foreach ($goods_list as $key => $value) {
+				// 商品（超值礼包）
+				if ($value['extension_code'] == 'package_buy') {
+					foreach ($value['package_goods_list'] as $pg_key => $pg_value) {
+						if ($pg_value['goods_number'] < $goods_no_package[$pg_value['g_p']] &&
+						((ecjia::config('use_storage') == '1'  && ecjia::config('stock_dec_time') == SDT_SHIP) ||
+								(ecjia::config('use_storage') == '0' && $pg_value['is_real'] == 0))) {
+							/* 操作失败 */
+							$links[] = array('text' => RC_Lang::get('orders::order.order_info'), 'href' => RC_Uri::url('orders/merchant/info', array('order_id' => $order_id)));
+							return $this->showmessage(sprintf(RC_Lang::get('orders::order.act_goods_vacancy'), $pg_value['goods_name']), ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_ERROR , array('links' => $links));
+						}
+			
+						/* 商品（超值礼包） 虚拟商品列表 package_virtual_goods*/
+						if ($pg_value['is_real'] == 0) {
+							$package_virtual_goods[] = array(
+									'goods_id'		=> $pg_value['goods_id'],
+									'goods_name'	=> $pg_value['goods_name'],
+									'num'			=> $send_number[$value['rec_id']][$pg_value['g_p']]
+							);
+						}
+					}
+				} elseif ($value['extension_code'] == 'virtual_card' || $value['is_real'] == 0) {
+					// 商品（虚货）
+					$num = $this->db_virtual_card->where(array('goods_id' => $value['goods_id'] , 'is_saled' => 0))->count();
+						
+					if (($num < $goods_no_package[$value['goods_id']]) && !(ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_PLACE)) {
+						/* 操作失败 */
+						$links[] = array('text' => RC_Lang::get('orders::order.order_info'), 'href' => RC_Uri::url('orders/merchant/info', array('order_id' => $order_id)));
+						return $this->showmessage(sprintf(RC_Lang::get('orders::order.virtual_card_oos'), $value['goods_name']), ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_ERROR , array('links' => $links));
+					}
+			
+					/* 虚拟商品列表 virtual_card*/
+					if ($value['extension_code'] == 'virtual_card') {
+						$virtual_goods[$value['extension_code']][] = array('goods_id' => $value['goods_id'], 'goods_name' => $value['goods_name'], 'num' => $send_number[$value['rec_id']]);
+					}
+				} else {
+					// 商品（实货）、（货品）
+					//如果是货品则键值为商品ID与货品ID的组合
+					$_key = empty($value['product_id']) ? $value['goods_id'] : ($value['goods_id'] . '_' . $value['product_id']);
+			
+					/* （实货） */
+					if (empty($value['product_id'])) {
+						$num = $this->db_goods->where(array('goods_id' => $value['goods_id']))->get_field('goods_number');
+					} else {
+						/* （货品） */
+						$num = $this->db_products->where(array('goods_id' => $value['goods_id'] , 'product_id' => $value['product_id']))->get_field('product_number');
+					}
+			
+					if (($num < $goods_no_package[$_key]) && ecjia::config('use_storage') == '1'  && ecjia::config('stock_dec_time') == SDT_SHIP) {
+						/* 操作失败 */
+						$links[] = array('text' => RC_Lang::get('orders::order.order_info'), 'href' => RC_Uri::url('orders/merchant/info', array('order_id' => $order_id)));
+						return $this->showmessage(sprintf(RC_Lang::get('orders::order.act_goods_vacancy'), $value['goods_name']) , ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_ERROR , array('links' => $links));
+			
+					}
+				}
+			}
+			
+			/* 生成发货单 */
+			/* 获取发货单号和流水号 */
+			$delivery['delivery_sn']	= get_delivery_sn();
+			$delivery_sn = $delivery['delivery_sn'];
+			/* 获取当前操作员 */
+			$delivery['action_user']	= $_SESSION['staff_name'];
+			/* 获取发货单生成时间 */
+			$delivery['update_time']	= GMTIME_UTC;
+			$delivery_time = $delivery['update_time'];
+			
+			$delivery['add_time']       = RC_DB::table('order_info')->where('order_sn', $delivery['order_sn'])->pluck('add_time');
+				
+			/* 获取发货单所属供应商 */
+			$delivery['suppliers_id']	= $suppliers_id;
+			/* 设置默认值 */
+			$delivery['status']			= 2; // 正常
+			$delivery['order_id']		= $order_id;
+				
+			/*地区经纬度赋值*/
+			$delivery['longitude']		= $order['longitude'];
+			$delivery['latitude']		= $order['latitude'];
+			/* 期望送货时间*/
+			$delivery['best_time']		= $order['expect_shipping_time'];
+				
+			if (empty($delivery['longitude']) || empty($delivery['latitude'])) {
+				$province_name 	= ecjia_region::getRegionName($delivery['province']);
+				$city_name 		= ecjia_region::getRegionName($delivery['city']);
+				$district_name 	= ecjia_region::getRegionName($delivery['district']);
+				$street_name 	= ecjia_region::getRegionName($delivery['street']);
+			
+				$consignee_address = '';
+				if (!empty($province_name)) {
+					$consignee_address .= $province_name;
+				}
+				if (!empty($city_name)) {
+					$consignee_address .= $city_name;
+				}
+				if (!empty($district_name)) {
+					$consignee_address .= $district_name;
+				}
+				if (!empty($street_name)) {
+					$consignee_address .= $street_name;
+				}
+				$consignee_address .= $delivery['address'];
+				$consignee_address = urlencode($consignee_address);
+			
+				//腾讯地图api 地址解析（地址转坐标）
+				$key = ecjia::config('map_qq_key');
+				$shop_point = RC_Http::remote_get("https://apis.map.qq.com/ws/geocoder/v1/?address=".$consignee_address."&key=".$key);
+				$shop_point = json_decode($shop_point['body'], true);
+				if (isset($shop_point['result']) && !empty($shop_point['result']['location'])) {
+					$delivery['longitude']	= $shop_point['result']['location']['lng'];
+					$delivery['latitude']	= $shop_point['result']['location']['lat'];
+				}
+			}
+				
+			/* 过滤字段项 */
+			$filter_fileds = array(
+					'order_sn', 'add_time', 'user_id', 'how_oos', 'shipping_id', 'shipping_fee',
+					'consignee', 'address', 'longitude', 'latitude', 'country', 'province', 'city', 'district', 'street', 'sign_building',
+					'email', 'zipcode', 'tel', 'mobile', 'best_time', 'postscript', 'insure_fee',
+					'agency_id', 'delivery_sn', 'action_user', 'update_time',
+					'suppliers_id', 'status', 'order_id', 'shipping_name'
+			);
+			$_delivery = array();
+			foreach ($filter_fileds as $value) {
+				$_delivery[$value] = $delivery[$value];
+			}
+				
+			$_delivery['store_id'] = $_SESSION['store_id'];
+				
+			/* 发货单入库 */
+			$delivery_id = RC_DB::table('delivery_order')->insertGetId($_delivery);
+			
+			if ($delivery_id) {
+				$data = array(
+					'order_status' 	=> RC_Lang::get('orders::order.ss.'.SS_PREPARING),
+					'order_id'   	=> $order_id,
+					'message'		=> sprintf(RC_Lang::get('orders::order.order_prepare_message'), $order['order_sn']),
+					'add_time'     	=> RC_Time::gmtime()
+				);
+				RC_DB::table('order_status_log')->insert($data);
+			}
+				
+			if ($delivery_id) {
+				$delivery_goods = array();
+				if (!empty($goods_list)) {
+					foreach ($goods_list as $value) {
+						// 商品（实货）（虚货）
+						if (empty($value['extension_code']) || $value['extension_code'] == 'virtual_card') {
+							$delivery_goods = array(
+								'delivery_id'	=> $delivery_id,
+								'goods_id'		=> $value['goods_id'],
+								'product_id'	=> $value['product_id'],
+								'product_sn'	=> $value['product_sn'],
+								'goods_id'		=> $value['goods_id'],
+								'goods_name'	=> addslashes($value['goods_name']),
+								'brand_name'	=> addslashes($value['brand_name']),
+								'goods_sn'		=> $value['goods_sn'],
+								'send_number'	=> $send_number[$value['rec_id']],
+								'parent_id'		=> 0,
+								'is_real'		=> $value['is_real'],
+								'goods_attr'	=> addslashes($value['goods_attr'])
+							);
+			
+							/* 如果是货品 */
+							if (!empty($value['product_id'])) {
+								$delivery_goods['product_id'] = $value['product_id'];
+							}
+							RC_DB::table('delivery_goods')->insert($delivery_goods);
+						} elseif ($value['extension_code'] == 'package_buy') {
+							// 商品（超值礼包）
+							foreach ($value['package_goods_list'] as $pg_key => $pg_value) {
+								$delivery_pg_goods = array(
+									'delivery_id'		=> $delivery_id,
+									'goods_id'			=> $pg_value['goods_id'],
+									'product_id'		=> $pg_value['product_id'],
+									'product_sn'		=> $pg_value['product_sn'],
+									'goods_name'		=> $pg_value['goods_name'],
+									'brand_name'		=> '',
+									'goods_sn'			=> $pg_value['goods_sn'],
+									'send_number'		=> $send_number[$value['rec_id']][$pg_value['g_p']],
+									'parent_id'			=> $value['goods_id'], // 礼包ID
+									'extension_code'	=> $value['extension_code'], // 礼包
+									'is_real'			=> $pg_value['is_real']
+								);
+								RC_DB::table('delivery_goods')->insert($delivery_pg_goods);
+							}
+						}
+					}
+				}
+			} else {
+				/* 操作失败 */
+				$links[] = array('text' => RC_Lang::get('orders::order.order_info'), 'href' => RC_Uri::url('orders/merchant/info', array('order_id' => $order_id)));
+				return $this->showmessage(RC_Lang::get('orders::order.act_false'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR , array('links' => $links));
+			
+			}
+			unset($filter_fileds, $delivery, $_delivery, $order_finish);
+			
+			/* 订单信息更新处理 */
+			if (true) {
+				/* 订单信息 */
+				$_sended = & $send_number;
+				foreach ($_goods['goods_list'] as $key => $value) {
+					if ($value['extension_code'] != 'package_buy') {
+						unset($_goods['goods_list'][$key]);
+					}
+				}
+				foreach ($goods_list as $key => $value) {
+					if ($value['extension_code'] == 'package_buy') {
+						unset($goods_list[$key]);
+					}
+				}
+				$_goods['goods_list'] = $goods_list + $_goods['goods_list'];
+				unset($goods_list);
+			
+				/* 更新订单的虚拟卡 商品（虚货） */
+				$_virtual_goods = isset($virtual_goods['virtual_card']) ? $virtual_goods['virtual_card'] : '';
+				update_order_virtual_goods($order_id, $_sended, $_virtual_goods);
+			
+				/* 更新订单的非虚拟商品信息 即：商品（实货）（货品）、商品（超值礼包）*/
+				update_order_goods($order_id, $_sended, $_goods['goods_list']);
+			
+				/* 标记订单为已确认 “发货中” */
+				/* 更新发货时间 */
+				$order_finish = get_order_finish($order_id);
+				$shipping_status = SS_SHIPPED_ING;
+				if ($order['order_status'] != OS_CONFIRMED && $order['order_status'] != OS_SPLITED && $order['order_status'] != OS_SPLITING_PART) {
+					$arr['order_status']	= OS_CONFIRMED;
+					$arr['confirm_time']	= GMTIME_UTC;
+				}
+			
+				$arr['order_status']		= $order_finish ? OS_SPLITED : OS_SPLITING_PART; // 全部分单、部分分单
+				$arr['shipping_status']		= $shipping_status;
+				update_order($order_id, $arr);
+			}
+			
+			/* 记录log */
+			order_action($order['order_sn'], $arr['order_status'], $shipping_status, $order['pay_status'], $action_note);
+			$url = RC_Uri::url('orders/mh_delivery/delivery_info', array('delivery_id' => $delivery_id));
+			return $this->showmessage(RC_Lang::get('orders::order.act_ok') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS , array('pjaxurl' => $url));
 		}
   
 		/*判断备注是否填写*/

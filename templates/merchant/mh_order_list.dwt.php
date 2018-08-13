@@ -32,6 +32,8 @@ ecjia.merchant.order.init();
 </div>
 
 <!-- #BeginLibraryItem "/library/order_operate.lbi" --><!-- #EndLibraryItem -->
+
+
 <div class="row">
 	<div class="col-lg-12">
 	    <div class="panel">
@@ -52,23 +54,77 @@ ecjia.merchant.order.init();
 			        </div>
 				</div>
 			</div>
+			{else}
+			<div class="panel-body panel-body-small">
+		    	<ul class="nav nav-pills">
+					<li class="{if $filter.composite_status eq ''}active{/if}">
+						<a class="data-pjax" href="{$search_url}
+							{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
+							{if $filter.keywords}&keywords={$filter.keywords}{/if}
+							">{lang key='orders::order.all'} 
+							<span class="badge badge-info">{if $count.all}{$count.all}{else}0{/if}</span> 
+						</a>
+					</li>
+					<li class="{if $filter.composite_status eq 100}active{/if}">
+						<a class="data-pjax" href="{$search_url}&composite_status=100
+							{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
+							{if $filter.keywords}&keywords={$filter.keywords}{/if}
+							">待付款
+							<span class="badge badge-info">{if $count.await_pay}{$count.await_pay}{else}0{/if}</span> 
+						</a>
+					</li>
+					
+					<li class="{if $filter.composite_status eq 105}active{/if}">
+						<a class="data-pjax" href="{$search_url}&composite_status=105
+							{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
+							{if $filter.keywords}&keywords={$filter.keywords}{/if}
+							">待接单
+							<span class="badge badge-info">{if $count.unconfirmed}{$count.unconfirmed}{else}0{/if}</span> 
+						</a>
+					</li>
+					<li class="{if $filter.composite_status eq 101}active{/if}">
+						<a class="data-pjax" href="{$search_url}&composite_status=101
+							{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
+							{if $filter.keywords}&keywords={$filter.keywords}{/if}
+							">待发货
+							<span class="badge badge-info">{if $count.await_ship}{$count.await_ship}{else}0{/if}</span> 
+						</a>
+					</li>
+					<li class="{if $filter.composite_status eq 104}active{/if}">
+						<a class="data-pjax" href="{$search_url}&composite_status=104
+							{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
+							{if $filter.keywords}&keywords={$filter.keywords}{/if}
+							">待收货
+							<span class="badge badge-info">{if $count.shipped}{$count.shipped}{else}0{/if}</span> 
+						</a>
+					</li>
+					
+					<li class="{if $filter.composite_status eq 102}active{/if}">
+						<a class="data-pjax" href="{$search_url}&composite_status=102
+							{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
+							{if $filter.keywords}&keywords={$filter.keywords}{/if}
+							">已完成
+							<span class="badge badge-info">{if $count.finished}{$count.finished}{else}0{/if}</span> 
+						</a>
+					</li>
+				</ul>
+			</div>
 			{/if}
 	        <div class='{if $date}panel-body panel-body-small{else}col-lg-12 panel-heading form-inline{/if}'>
 	        	{if !$date}
         		<div class="btn-group form-group">
         			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cogs"></i> {lang key='goods::goods.batch_handle'} <span class="caret"></span></button>
         			<ul class="dropdown-menu operate_note" data-url='{url path="orders/merchant/operate_note"}'>
-        				<li><a class="batch-del-btn" data-toggle="ecjiabatch" data-name="order_id" data-idClass=".checkbox:checked" data-url="{$form_action}&operation=confirm" data-msg="{lang key='orders::order.confirm_approval_order'}" data-noSelectMsg="{lang key='orders::order.pls_select_order'}" href="javascript:;"><i class="fa fa-check"></i> {lang key='orders::order.op_confirm'}</a></li>
-        				<li><a class="batch-operate batch-operate-invalid" data-operatetype="invalid" data-url="{$form_action}&operation=invalid" data-invalid-msg="{lang key='orders::order.confirm_order_invalid'}" href="javascript:;"><i class="fa fa-ban"></i> {lang key='orders::order.op_invalid'}</a></li>
+        				<li><a class="batch-del-btn" data-toggle="ecjiabatch" data-name="order_id" data-idClass=".checkbox:checked" data-url="{$form_action}&operation=confirm" data-msg="{lang key='orders::order.confirm_approval_order'}" data-noSelectMsg="{lang key='orders::order.pls_select_order'}" href="javascript:;"><i class="fa fa-check"></i> 接单</a></li>
         				<li><a class="batch-operate batch-operate-cancel" data-operatetype="cancel" data-url="{$form_action}&operation=cancel" data-cancel-msg="{lang key='orders::order.confirm_order_cancel'}" href="javascript:;"><i class="fa fa-times"></i> {lang key='orders::order.op_cancel'}</a></li>
         				<li><a class="batch-del-btn" data-toggle="ecjiabatch" data-name="order_id" data-idClass=".checkbox:checked" data-url="{$form_action}&operation=remove" data-msg="{lang key='orders::order.remove_confirm'}" href="javascript:;"><i class="fa fa-trash-o"></i> {lang key='system::system.remove'}</a></li>
         				<li><a class="batch-print" data-url="{$form_action}&print=1" href="javascript:;"><i class="fa fa-print"></i> {lang key='orders::order.print_order'}</a></li>
                    	</ul>
         		</div>
         		<div class="form-group">
-        			<select class="w130" name="status" id="select-rank">
+        			<select class="w180" name="status" id="select-rank">
         				<option value="-1">{lang key='orders::order.all_status'}</option>
-        				<!-- {html_options options=$status_list selected=$order_list.filter.composite_status } -->
+        				<!-- {html_options options=$status_list selected=$filter.composite_status } -->
         			</select>
         		</div>
         		<button class="btn btn-primary screen-btn" type="button"><i class="fa fa-search"></i> {lang key='orders::order.filter'} </button>
@@ -82,9 +138,9 @@ ecjia.merchant.order.init();
 				</ul>
         		{/if}
         		
-        		<form class="form-inline pull-right" action='{$search_url}{if $group_buy_id neq 0}&group_buy_id={$group_buy_id}{/if}{if $smarty.get.date}&date={$smarty.get.date}{/if}' method="post" name="searchForm">
+        		<form class="form-inline pull-right" action='{$search_url}{if $group_buy_id neq 0}&group_buy_id={$group_buy_id}{/if}{if $smarty.get.date}&date={$smarty.get.date}{/if}{if $filter.composite_status}&composite_status={$filter.composite_status}{/if}' method="post" name="searchForm">
         			<div class="form-group">
-        				<input type="text" class="form-control" name="keywords" value="{$smarty.get.keywords}" placeholder="{lang key='orders::order.pls_consignee'}">
+        				<input type="text" class="form-control w230" name="keywords" value="{$smarty.get.keywords}" placeholder="请输入订单编号或购买者信息">
         			</div>
         			<button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> {lang key='orders::order.search_order'}</button>
         		</form>
@@ -104,19 +160,16 @@ ecjia.merchant.order.init();
         							</div>
 						        </th>
 						        {/if}
-        						<th class="w100">{lang key='orders::order.order_sn'}</th>
-        						<th class="w150">{lang key='orders::order.order_time'}</th>
+        						<th class="w130">{lang key='orders::order.order_sn'}</th>
+        						<th class="w180">{lang key='orders::order.order_time'}</th>
         						<th>{lang key='orders::order.user_purchase_information'}</th>
         						<th class="w120">{lang key='orders::order.total_fee'}</th>
-        						{if $group_buy_id}
-        						<th class="w110">{lang key='orders::order.bond'}</th>
-        						{/if}
         						<th class="w110">{lang key='orders::order.order_amount'}</th>
-        						<th class="w200">{lang key='orders::order.all_status'}</th>
+        						<th class="w150">{lang key='orders::order.all_status'}</th>
         					</tr>
 				        </thead>
 				        <tbody>
-					    <!-- {foreach from=$order_list.orders item=order key=okey} -->
+					    <!-- {foreach from=$order_list.order_list item=order key=okey} -->
     					<tr>
     						{if !$date}
     						<td class="check-list">
@@ -138,17 +191,14 @@ ecjia.merchant.order.init();
     							</div>
     						</td>
     						<td>
-    							{$order.short_order_time}
+    							{$order.order_time}
     						</td>
     						<td align="left">
     							{$order.consignee} [TEL：{$order.mobile}]<br/>{$order.address}
     						</td>
     						<td>{$order.formated_total_fee}</td>
-    						{if $group_buy_id}
-    						<td>{$order.formated_bond}</td>
-    						{/if}
     						<td>{$order.formated_order_amount}</td>
-    						<td {if $order.pay_status eq $payed}class="ecjiafc-red"{/if}>{$os[$order.order_status]},{$ps[$order.pay_status]},{$ss[$order.shipping_status]}</td>
+    						<td {if $order.pay_status eq $payed}class="ecjiafc-red"{/if}>{$order.label_order_status}</td>
     					</tr>
     					<!-- {foreachelse}-->
     					<tr><td class="no-records" colspan="8">{lang key='system::system.no_records'}</td></tr>

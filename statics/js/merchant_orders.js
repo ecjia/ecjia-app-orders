@@ -295,6 +295,7 @@
 			app.order.operatesubmit();
 			app.order.batchForm();
 			app.order.toggle_view();
+			app.order.unconfirmForm();
 		},
 		
 		//商家进行退款
@@ -354,7 +355,6 @@
 				  			'merchant_action_note':merchant_action_note,
 				  	 };
 				}
-				console.log(option);
 			    $.post(url, option, function (data) {
 			         if (data.state == 'success') {
 						$('#actionmodal').modal('hide');
@@ -460,6 +460,30 @@
 				});
 			});
 		},
+		
+		unconfirmForm: function() {
+			var $this = $("form[name='unconfirm_form']");
+			var option = {	 
+				rules : {
+					unconfirm_reason : {required : true},
+				},
+				messages : {
+					unconfirm_reason : {required : "请填写拒绝原因", min: 1},
+				},
+				submitHandler:function(){
+					$this.ajaxSubmit({
+						dataType:"json",
+						success:function(data){
+							$('#unconfirmmodal').modal('hide');
+							ecjia.merchant.showmessage(data);
+						}
+					});
+				}
+			}
+			var options = $.extend(ecjia.merchant.defaultOptions.validate, option);
+			$this.validate(options);
+		},
+		
 		//以下为添加与编辑订单
 		addedit : function() {
 			$(":radio").click(function(){

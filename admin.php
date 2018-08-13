@@ -118,9 +118,9 @@ class admin extends ecjia_admin
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $size = 15;
         $with = null;
-        $with = ['orderGoods', 'orderGoods.goods', 'store', 'payment', 'orderGoods.comment' => function ($query) {
-            $query->select('comment_id', 'has_image')->where('comment_type', 0)->where('parent_id', 0);
-        }];
+//         $with = ['orderGoods', 'orderGoods.goods', 'store', 'payment', 'orderGoods.comment' => function ($query) {
+//             $query->select('comment_id', 'has_image')->where('comment_type', 0)->where('parent_id', 0);
+//         }];
         $filter['extension_code'] = !empty($_GET['extension_code']) ? trim($_GET['extension_code']) : 'default';
         $order_list = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
             ->getOrderList($filter, $page, $size, $with, ['Ecjia\App\Orders\CustomizeOrderList', 'exportOrderListAdmin']);

@@ -265,7 +265,8 @@ class OrdersRepository extends AbstractRepository
         $filter['is_delete'] = intval(array_get($filter, 'is_delete', 0));
 
         $filter['extension_code'] = trim(array_get($filter, 'extension_code'));
-
+        $filter['store_id'] = trim(array_get($filter, 'store_id'));
+        
         $field = [
             'order_info.order_id',
             'order_info.order_sn',

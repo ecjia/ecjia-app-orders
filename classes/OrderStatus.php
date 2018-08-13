@@ -410,39 +410,35 @@ class OrderStatus
     	$label_shipping = '商家未发货';
     	
     	if ($order['pay_time'] > 0 || $order['pay_code'] == 'pay_cod') {
-    		if ($order['pay_status'] == PS_UNPAYED) {
-    			$label_pay = '卖家未付款';
-    		}
-    		if ($order['pay_code'] == 'pay_cod') {
-    			$time_key = 2;
-    			$label_pay = '货到付款';
-    		}
-    		if ($order['pay_status'] == PS_PAYED) {
-    			$time_key = 2;
-    			$label_pay = '卖家已付款';
-    		}
-	    	if (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))) {
-	    		$time_key = 3;
-	    		$label_confirm = '商家已接单';
-	    	}
-	    	
-	    	if ($order['shipping_status'] == SS_UNSHIPPED) {
-	    		$time_key = 3;
+    		if ($order['shipping_status'] == SS_UNSHIPPED) {
+	    		if ($order['pay_status'] == PS_UNPAYED) {
+	    			$label_pay = '卖家未付款';
+	    		}
+	    		if ($order['pay_code'] == 'pay_cod') {
+	    			$time_key = 2;
+	    			$label_pay = '货到付款';
+	    		}
+	    		if ($order['pay_status'] == PS_PAYED) {
+	    			$time_key = 2;
+	    			$label_pay = '卖家已付款';
+	    		}
+		    	if (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))) {
+		    		$time_key = 3;
+		    		$label_confirm = '商家已接单';
+		    	}
+	    	} else {
+	    		$time_key = 4;
 	    	}
 	    	if ($order['shipping_status'] == SS_PREPARING) {
-	    		$time_key = 4;
 	    		$label_shipping = '备货中';
 	    	}
 	    	if ($order['shipping_status'] == SS_SHIPPED_ING) {
-	    		$time_key = 4;
 	    		$label_shipping = '发货中';
 	    	}
 	    	if ($order['shipping_status'] == SS_SHIPPED) {
-	    		$time_key = 4;
 	    		$label_shipping = '已发货';
 	    	}
 	    	if ($order['shipping_status'] == SS_SHIPPED_PART) {
-	    		$time_key = 4;
 	    		$label_shipping = '已发货（部分商品）';
 	    	}
     		if ($order['shipping_status'] == SS_RECEIVED) {

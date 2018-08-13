@@ -215,3 +215,7 @@
 	 color: #737373;
 }
 
+
+.form-inline .form-control.w230 {
+	width: 230px;
+}

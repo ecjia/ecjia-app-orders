@@ -82,7 +82,7 @@
 		
 		<div class="choose_list f_r" >
 			<input type="text" name="merchant_keywords" value="{$filter.merchant_keywords}" placeholder="{lang key='orders::order.enter_merchant_keywords'}"/> 
-			<input type="text" name="keywords" value="{$filter.keywords}" placeholder="请输入订单编号或购买者姓名"/> 
+			<input type="text" name="keywords" value="{$filter.keywords}" placeholder="请输入订单编号或购买者信息"/> 
 			<button class="btn" type="submit">搜索</button>
 		</div>
 	</form>

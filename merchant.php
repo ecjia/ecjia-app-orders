@@ -140,9 +140,18 @@ class merchant extends ecjia_merchant {
 	    ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here($nav_here));
 		RC_Script::enqueue_script('order_query', RC_App::apps_url('statics/js/merchant_order_query.js', __FILE__));
 		
-		RC_Loader::load_app_class('merchant_order_list', 'orders', false);
-		$order = new merchant_order_list();
-		$order_list = $order->get_order_list();
+// 		RC_Loader::load_app_class('merchant_order_list', 'orders', false);
+// 		$order = new merchant_order_list();
+// 		$order_list = $order->get_order_list();
+		
+		$filter = $_GET;
+		$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+		$size = 15;
+		$with = null;
+		$filter['store_id'] = $_SESSION['store_id'];
+		$filter['extension_code'] = !empty($_GET['extension_code']) ? trim($_GET['extension_code']) : 'default';
+		$order_list = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
+			->getOrderList($filter, $page, $size, $with, ['Ecjia\App\Orders\CustomizeOrderList', 'exportOrderListMerchant']);
 		
 		/* 模板赋值 */
 		$this->assign('ur_here', $nav_here);
@@ -229,8 +238,11 @@ class merchant extends ecjia_merchant {
 			}
 			$this->assign('payed', PS_PAYED);
 		}
-		
 		$this->assign('order_list', $order_list);
+		
+		$this->assign('filter', $filter);
+		$this->assign('count', $order_list['filter_count']);
+		
 		$this->assign('form_action', RC_Uri::url('orders/merchant/operate', 'batch=1'));
 		$this->assign('search_action', RC_Uri::url('orders/merchant/init'));
 		$this->assign('status_list', RC_Lang::get('orders::order.cs'));
@@ -239,8 +251,7 @@ class merchant extends ecjia_merchant {
 		$this->assign('ps', RC_Lang::get('orders::order.ps'));
 		$this->assign('ss', RC_Lang::get('orders::order.ss'));
 		
-		$search_url = $this->get_search_url();
-		$this->assign('search_url', $search_url);
+		$this->assign('search_url', RC_Uri::url('orders/merchant/init'));
 		
 		$group_buy_id = isset($_GET['group_buy_id']) ? intval($_GET['group_buy_id']) : 0;
 		$this->assign('group_buy_id', $group_buy_id);
@@ -293,6 +304,7 @@ class merchant extends ecjia_merchant {
 		RC_Loader::load_app_class('merchant_order_list', 'orders', false);
 		$getlast_db = new merchant_order_list();
 		$getnext_db = new merchant_order_list();
+		
 		/* 取得上一个、下一个订单号 */
 		$composite_status = RC_Cookie::get('composite_status');
 		if (!empty($composite_status)) {
@@ -345,37 +357,45 @@ class merchant extends ecjia_merchant {
 			$order['formated_money_refund']	= price_format(abs($order['order_amount']));
 		}
 		
+		$flow_status = with(new Ecjia\App\Orders\OrderStatus())->getOrderFlowLabel($order);
+		$this->assign('flow_status', $flow_status);
+		
 		//订单流程状态
-		$time_key = 1;
-		if (!$storebuy_order && $order['pay_time'] > 0) {
-			$time_key = 2;
-			$this->assign('pay_key', true);
-		} elseif ($storebuy_order  && $order['pay_time'] > 0) {
-			$time_key = 3;
-			$this->assign('pay_key', true);
-		}
+// 		$time_key = 1;
+// 		if (!$storebuy_order && $order['pay_time'] > 0) {
+// 			$time_key = 2;
+// 			$this->assign('pay_key', true);
+// 		} elseif ($storebuy_order  && $order['pay_time'] > 0) {
+// 			$time_key = 3;
+// 			$this->assign('pay_key', true);
+// 		}
 
-		if (!$storebuy_order && $order['shipping_time'] > 0) {
-			if ($order['shipping_status'] == SS_RECEIVED) {
-				$time_key = 4;
-			} else {
-				$time_key = 3;
-			}
-		}
-		$this->assign('time_key', $time_key);
+// 		if (!$storebuy_order && $order['shipping_time'] > 0) {
+// 			if ($order['shipping_status'] == SS_RECEIVED) {
+// 				$time_key = 4;
+// 			} else {
+// 				$time_key = 3;
+// 			}
+// 		}
+// 		$this->assign('time_key', $time_key);
 		
 		/* 其他处理 */
-		$order['order_time']		= RC_Time::local_date(ecjia::config('time_format'), $order['add_time']);
-		$order['pay_time']			= $order['pay_time'] > 0 ? RC_Time::local_date(ecjia::config('time_format'), $order['pay_time']) : RC_Lang::get('orders::order.ps.'.PS_UNPAYED);
-		$order['shipping_time']		= $order['shipping_time'] > 0 ? RC_Time::local_date(ecjia::config('time_format'), $order['shipping_time']) : RC_Lang::get('orders::order.ss.'.SS_UNSHIPPED);
-		$order['status']			= RC_Lang::get('orders::order.os.'.$order['order_status']) . ',' . RC_Lang::get('orders::order.ps.'.$order['pay_status']) . ',' . RC_Lang::get('orders::order.ss.'.$order['shipping_status']);
+        $order['order_time'] = RC_Time::local_date(ecjia::config('time_format'), $order['add_time']);
+        $order['pay_time'] = RC_Time::local_date(ecjia::config('time_format'), $order['pay_time']);
+        $order['shipping_time'] = RC_Time::local_date(ecjia::config('time_format'), $order['shipping_time']);
+        $order['confirm_time'] = RC_Time::local_date(ecjia::config('time_format'), $order['confirm_time']);
 
-		if ($storebuy_order) {
-			$order['status'] = RC_Lang::get('orders::order.os.'.$order['order_status']) . ',' . RC_Lang::get('orders::order.ps.'.$order['pay_status']);
-			if ($order['pay_status'] == PS_PAYED) {
-				$order['status'] .= ',' . RC_Lang::get('orders::order.cs.'.CS_FINISHED);
-			}
-		}
+// 		if ($storebuy_order) {
+// 			$order['status'] = RC_Lang::get('orders::order.os.'.$order['order_status']) . ',' . RC_Lang::get('orders::order.ps.'.$order['pay_status']);
+// 			if ($order['pay_status'] == PS_PAYED) {
+// 				$order['status'] .= ',' . RC_Lang::get('orders::order.cs.'.CS_FINISHED);
+// 			}
+// 		}
+
+		$is_cod = $order['pay_code'] == 'pay_cod' ? 1 : 0;
+		$status = with(new Ecjia\App\Orders\OrderStatus())->getOrderStatusLabel($order['order_status'], $order['shipping_status'], $order['pay_status'], $is_cod);
+		$order['status'] = $status['0'];
+		
 		$order['invoice_no']		= $order['shipping_status'] == SS_UNSHIPPED || $order['shipping_status'] == SS_PREPARING ? RC_Lang::get('orders::order.ss.'.SS_UNSHIPPED) : $order['invoice_no'];
 
 		/* 取得订单的来源 */
@@ -479,9 +499,12 @@ class merchant extends ecjia_merchant {
 		$data = $this->db_order_action ->where(array('order_id' => $order['order_id']))->order(array('log_time' => 'asc' ,'action_id' => 'asc'))->select();
 		if(!empty($data)) {
 			foreach ($data as $key => $row) {
-				$row['order_status']	= RC_Lang::get('orders::order.os.'.$row['order_status']);
-				$row['pay_status']		= RC_Lang::get('orders::order.ps.'.$row['pay_status']);
-				$row['shipping_status']	= RC_Lang::get('orders::order.ss.'.$row['shipping_status']);
+// 				$row['order_status']	= RC_Lang::get('orders::order.os.'.$row['order_status']);
+// 				$row['pay_status']		= RC_Lang::get('orders::order.ps.'.$row['pay_status']);
+// 				$row['shipping_status']	= RC_Lang::get('orders::order.ss.'.$row['shipping_status']);
+				$label_status = with(new Ecjia\App\Orders\OrderStatus())->getOrderStatusLabel($row['order_status'], $row['shipping_status'], $row['pay_status'], $is_cod);
+				$row['action_status'] = $label_status[0];
+				
 				$row['action_time']		= RC_Time::local_date(ecjia::config('time_format'), $row['log_time']);
 				$act_list[]				= $row;
 			}
@@ -2615,8 +2638,7 @@ class merchant extends ecjia_merchant {
 		if (!isset($operable_list[$operation])) {
 			return $this->showmessage("无法对订单执行该操作", ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
-	
-		/* 确认 */
+
 		if ('confirm' == $operation) {
 			/* 标记订单为已确认 */
 			update_order($order_id, array('order_status' => OS_CONFIRMED, 'confirm_time' => RC_Time::gmtime()));
@@ -3647,7 +3669,7 @@ class merchant extends ecjia_merchant {
 	
 	/* 退货退款功能 songqianqian */
 	public function mer_action_return() {
-		$this->admin_priv('order_os_edit');
+		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
 		
 		RC_Loader::load_app_class('order_refund', 'refund', false);
 		RC_Loader::load_app_class('OrderStatusLog', 'orders', false);
@@ -3852,66 +3874,169 @@ class merchant extends ecjia_merchant {
 		return $this->showmessage('申请操作成功', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS,array('pjaxurl' => RC_Uri::url('orders/merchant/info', array('order_id' => $order_id))));
 	}
 	
-	private function get_search_url() {
-		$arr = array();
-		if (isset($_GET['order_sn'])) {
-			$arr['order_sn'] = trim($_GET['order_sn']);
+	public function unconfirm_order() {
+		$this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
+
+		RC_Loader::load_app_class('order_refund', 'refund', false);
+		RC_Loader::load_app_class('OrderStatusLog', 'orders', false);
+		RC_Loader::load_app_class('RefundStatusLog', 'refund', false);
+		
+		$order_id	= intval($_POST['order_id']);
+		$unconfirm_reason_key = intval($_POST['unconfirm_reason']); //拒单原因
+		$reason_list = array(
+			1 => '该订单商品已售完',
+			2 => '由于天气原因，本店铺暂不接单',
+			3 => '商家忙碌，暂时无法接单',
+ 		);
+		$order = order_info($order_id);//查询订单信息
+		$unconfirm_reason = array_get($reason_list, $unconfirm_reason_key);
+		
+		/* 检查能否操作 */
+		$operable_list = merchant_operable_list($order);
+		if (!isset($operable_list['unconfirm'])) {
+			return $this->showmessage("无法对订单执行该操作", ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
-		if (isset($_GET['start_time'])) {
-			$arr['start_time'] = trim($_GET['start_time']);
+		
+		//配送方式信息
+		$shipping_code = NULL;
+			
+		//支付方式信息
+		if (!empty($order['pay_id'])) {
+			$payment_info = with(new Ecjia\App\Payment\PaymentPlugin)->getPluginDataById($order['pay_id']);
+			$pay_code = $payment_info['pay_code'];
+		} else {
+			$pay_code = NULL;
 		}
-		if (isset($_GET['end_time'])) {
-			$arr['end_time'] = trim($_GET['end_time']);
-		}
-		if (isset($_GET['email'])) {
-			$arr['email'] = trim($_GET['email']);
-		}
-		if (isset($_GET['user_name'])) {
-			$arr['user_name'] = trim($_GET['user_name']);
-		}
-		if (isset($_GET['consignee'])) {
-			$arr['consignee'] = trim($_GET['consignee']);
-		}
-		if (isset($_GET['tel'])) {
-			$arr['tel'] = trim($_GET['tel']);
-		}
-		if (isset($_GET['mobile'])) {
-			$arr['mobile'] = trim($_GET['mobile']);
-		}
-		if (isset($_GET['merchants_name'])) {
-			$arr['merchants_name'] = trim($_GET['merchants_name']);
-		}
-		if (isset($_GET['address'])) {
-			$arr['address'] = trim($_GET['address']);
-		}
+			
+		//退款编号
+		$refund_sn = order_refund::get_refund_sn();
+		
+		//仅退款
+		$refund_type = 'refund';
+		$return_status = 0;
+		$refund_status = 1;
+		
+		$user_name = RC_DB::table('users')->where('user_id', $order['user_id'])->pluck('user_name');
+		/* 进入售后 */
+		$refund_data = array(
+			'store_id'		=> $order['store_id'],
+			'user_id'		=> $order['user_id'],
+			'user_name'		=> $user_name,
+			'refund_type'	=> $refund_type,
+			'refund_sn'		=> $refund_sn,
+			'order_id'		=> $order_id,
+			'order_sn'		=> $order['order_sn'],
+			'shipping_code'	=> $shipping_code,
+			'shipping_name'	=> $order['shipping_name'],
+			'shipping_fee'	=> $order['shipping_fee'],
+			'insure_fee'	=> $order['insure_fee'],
+			'pay_code'		=> $pay_code,
+			'pay_name'		=> $payment_info['pay_name'],
+			'goods_amount'	=> $order['goods_amount'],
+			'pay_fee'		=> $order['pay_fee'],
+			'pack_id'		=> $order['pack_id'],
+			'pack_fee'		=> $order['pack_fee'],
+			'card_id'		=> $order['card_id'],
+			'card_fee'		=> $order['card_fee'],
+			'bonus_id'		=> $order['bonus_id'],
+			'bonus'			=> $order['bonus'],
+			'surplus'		=> $order['surplus'],
+			'integral'		=> $order['integral'],
+			'integral_money'=> $order['integral_money'],
+			'discount'		=> $order['discount'],
+			'inv_tax'		=> $order['tax'],
+			'order_amount'	=> $order['order_amount'],
+			'money_paid'	=> $order['money_paid'],
+			'status'		=> 1,
+			'refund_status'	=> $refund_status,
+			'return_status'	=> $return_status,
+			'refund_content'=> $unconfirm_reason,
+			'refund_reason'	=> $unconfirm_reason,
+			'add_time'		=> RC_Time::gmtime(),
+			'referer'		=> 'merchant'
+		);
+		$refund_id = RC_DB::table('refund_order')->insertGetId($refund_data);
+		
+		/* 订单状态为“退货” */
+		RC_DB::table('order_info')->where('order_id', $order_id)->update(array('order_status' => OS_CANCELED));
+		
+		/* 记录log */
+		$action_note = trim($_POST['action_note']);
+		order_refund::order_action($order_id, OS_RETURNED, $order['shipping_status'], $order['pay_status'], $action_note, $_SESSION['staff_name']);
+		
+		//update commission_bill
+		RC_Api::api('commission', 'add_bill_queue', array('order_type' => 'refund', 'order_id' => $refund_id));
+		
+		//仅退款---同意---进入打款表
+		$refund_info = RC_DB::table('refund_order')->where('refund_id', $refund_id)->first();
+		$payment_record_id = RC_DB::table('payment_record')->where('order_sn', $refund_info['order_sn'])->pluck('id');
 	
-		if (isset($_GET['zipcode'])) {
-			$arr['zipcode'] = trim($_GET['zipcode']);
+		//实际支付费用
+		$order_money_paid = $refund_info['surplus'] + $refund_info['money_paid'];
+		//退款总金额
+		$shipping_status = RC_DB::table('order_info')->where('order_id', $refund_info['order_id'])->pluck('shipping_status');
+		if ($shipping_status > SS_UNSHIPPED) {
+			$back_money_total  = $refund_info['money_paid'] + $refund_info['surplus'] - $refund_info['pay_fee'] - $refund_info['shipping_fee'] - $refund_info['insure_fee'];
+			$back_shipping_fee = $refund_info['shipping_fee'];
+			$back_insure_fee   = $refund_info['insure_fee'];
+		} else {
+			$back_money_total  = $refund_info['money_paid'] + $refund_info['surplus'] - $refund_info['pay_fee'];
+			$back_shipping_fee = 0;
+			$back_insure_fee   = 0;
 		}
-		if (isset($_GET['order_status'])) {
-			$arr['order_status'] = trim($_GET['order_status']);
-		}
-		if (isset($_GET['pay_status'])) {
-			$arr['pay_status'] = intval($_GET['pay_status']);
-		}
-		if (isset($_GET['shipping_status'])) {
-			$arr['shipping_status'] = intval($_GET['shipping_status']);
-		}
-		if (isset($_GET['shipping_id'])) {
-			$arr['shipping_id'] = intval($_GET['shipping_id']);
-		}
-		if (isset($_GET['pay_id'])) {
-			$arr['pay_id'] = intval($_GET['pay_id']);
-		}
-		if (isset($_GET['composite_status'])) {
-			$arr['composite_status'] = intval($_GET['composite_status']);
-		}
-		if (isset($_GET['merchant_keywords'])) {
-			$arr['merchant_keywords'] = intval($_GET['merchant_keywords']);
-		}
-	
-		return RC_Uri::url('orders/merchant/init', $arr);
+		$data = array(
+			'store_id'	=>	$_SESSION['store_id'],
+			'order_id'	=>	$refund_info['order_id'],
+			'order_sn'	=>	$refund_info['order_sn'],
+			'refund_id'	=>	$refund_info['refund_id'],
+			'refund_sn'	=>	$refund_info['refund_sn'],
+			'refund_type'		=>	$refund_info['refund_type'],
+			'goods_amount'		=>	$refund_info['goods_amount'],
+			'back_pay_code'		=>	$refund_info['pay_code'],
+			'back_pay_name'		=>	$refund_info['pay_name'],
+			'back_pay_fee'		=>	$refund_info['pay_fee'],
+			'back_shipping_fee'	=>	$back_shipping_fee,
+			'back_insure_fee'	=>	$back_insure_fee,
+			'back_pack_id'	=>	$refund_info['pack_id'],
+			'back_pack_fee'	=>	$refund_info['pack_fee'],
+			'back_card_id'	=>	$refund_info['card_id'],
+			'back_card_fee'	=>	$refund_info['card_fee'],
+			'back_bonus_id'	=>	$refund_info['bonus_id'],
+			'back_bonus'	=>	$refund_info['bonus'],
+			'back_surplus'	=>  $refund_info['surplus'],
+			'back_integral'	=>  $refund_info['integral'],
+			'back_integral_money'	=> $refund_info['integral_money'],
+			'back_inv_tax'			=> $refund_info['inv_tax'],
+			'order_money_paid'		=> $order_money_paid,
+			'back_money_total'		=> $back_money_total,
+			'payment_record_id'		=> $payment_record_id,
+			'add_time'	=> RC_Time::gmtime()
+		);
+		RC_DB::table('refund_payrecord')->insertGetId($data);
+		
+		//录入退款操作日志表
+		$data = array(
+			'refund_id' 		=> $refund_id,
+			'action_user_type'	=>	'merchant',
+			'action_user_id'	=>  $_SESSION['staff_id'],
+			'action_user_name'	=>	$_SESSION['staff_name'],
+			'status'		    =>  1,
+			'refund_status'		=>  $refund_status,
+			'return_status'		=>  $refund_status,
+			'action_note'		=>  $merchant_action_note,
+			'log_time'			=>  RC_Time::gmtime(),
+		);
+		RC_DB::table('refund_order_action')->insertGetId($data);
+		
+		//售后订单状态变动日志表
+		RefundStatusLog::refund_order_process(array('refund_id' => $refund_id, 'status' => 1));
+		//普通订单状态变动日志表
+		OrderStatusLog::refund_order_process(array('order_id' => $refund_info['order_id'], 'status' => 1));
+		
+		/* 操作成功 */
+		return $this->showmessage('操作成功', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('orders/merchant/info', array('order_id' => $order_id))));
 	}
+	
 }
 
 // end

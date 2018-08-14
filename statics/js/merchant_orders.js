@@ -296,6 +296,7 @@
 			app.order.batchForm();
 			app.order.toggle_view();
 			app.order.unconfirmForm();
+			app.order.change_shipping();
 		},
 		
 		//商家进行退款
@@ -482,6 +483,19 @@
 			}
 			var options = $.extend(ecjia.merchant.defaultOptions.validate, option);
 			$this.validate(options);
+		},
+		
+		change_shipping: function() {
+			$('select[name="shipping_id"]').on('change', function() {
+				var $this = $(this),
+					code = $this.find('option:selected').attr('data-code');
+				console.log(code);
+				if (code == 'ship_ecjia_express' || code == 'ship_o2o_express' || code == undefined) {
+					$('#shipmodal').find('.invoice-no-group').addClass('hide');
+				} else {
+					$('#shipmodal').find('.invoice-no-group').removeClass('hide');
+				}
+			});
 		},
 		
 		//以下为添加与编辑订单

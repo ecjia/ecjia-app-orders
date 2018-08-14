@@ -152,6 +152,52 @@ ecjia.merchant.order.info();
         </div>
    	</div>
    	
+	<div id="shipmodal" class="modal fade">
+        <div class="modal-dialog" style="margin-top: 200px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button">×</button>
+                    <h4 class="modal-title">一键发货</h4>
+                </div>
+                
+                <div class="modal-body">
+                	  <div class="success-msg"></div>
+		              <div class="error-msg"></div>
+                      <form class="form-horizontal" method="post" name="unconfirm_form" action='{url path="orders/merchant/operate_post"}'>
+						<div class="form-group">
+							<label class="control-label col-lg-3">配送方式：</label>
+							<div class="controls col-lg-6">
+								<select class="form-control" name="shipping_id" style="width: 299px;">
+									<option value="">请选择…</option>
+									{foreach from=$shipping_list item=val}
+									<option value="{$val.shipping_id}" {if $order.shipping_id eq $val.shipping_id}selected{/if} data-code="{$val.shipping_code}">{$val.shipping_name}</option>
+									{/foreach}
+					            </select>
+							</div>
+							<span class="input-must">*</span>
+						</div>
+						
+						<div class="form-group invoice-no-group {if $shipping_code eq 'ship_o2o_express' || $shipping_code eq 'ship_ecjia_express'}hide{/if}">
+							<label class="control-label col-lg-3">运单编号：</label>
+							<div class="controls col-lg-6">
+								<input class="form-control" type="text" name="invoice_no" placeholder="请输入此订单的运单编号" />
+							</div>
+							<span class="input-must">*</span>
+						</div>
+						
+                        <div class="form-group">
+                        	<label class="control-label col-lg-3"></label>
+                        	<div class="controls col-lg-6">
+								<button class="btn btn-info" name="to_delivery" type="submit">{t}确定{/t}</button>
+								<input type="hidden" name="order_id" value="{$order_id}" />
+							</div>
+						</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+   	</div>
+   	
 <div class="modal fade" id="consigneeinfo" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -636,7 +682,7 @@ ecjia.merchant.order.info();
 									{/if}
 
 									{if $operable_list.to_delivery}
-									<button class="btn operatesubmit btn-info" type="submit" name="to_delivery">一键发货</button>
+									<a style="cursor: pointer;" class="btn btn-info" href="#shipmodal" data-toggle="modal" id="shipmodal">一键发货</a>
 									{/if}
 									
 									{if $operable_list.prepare}
@@ -679,7 +725,6 @@ ecjia.merchant.order.info();
 									<button class="btn operatesubmit btn-info" type="submit" name="after_service">添加备注</button>
 									{/if}
 									
-									
 									{if $operable_list.remove}
 									<button class="btn operatesubmit btn-info" type="submit" name="remove">{lang key='orders::order.remove'}</button>
 									{/if}
@@ -691,19 +736,19 @@ ecjia.merchant.order.info();
 							<tr>
 								<td width="15%"><div align="right"> <strong>操作说明：</strong></div></td>
 								<td colspan="3">
-								{if $operable_list.cancel}【取消】设置该订单为无效/作废订单<br>{/if}
-								{if $operable_list.confirm}【确认接单】标记订单为已发货状态；<br>{/if}
-								{if $operable_list.unconfirm}【拒单】标记订单为取消状态，取消后，系统自动将款项退回给用户；<br>{/if}
-								
-								{if $operable_list.to_delivery}【一键发货】标记订单为已发货状态；<br>{/if}
-								{if $operable_list.prepare}【配货】标记订单为配货状态，对订单商品进行配货；<br>{/if}
-								{if $operable_list.split}【生成发货单】对已经配货完成的订单进行发货，并且生成发货单详细信息；<br>{/if}
-								{if $operable_list.return}【退款/退货】设置该订单进入售后处理流程；<br>{/if}
-								{if $operable_list.after_service}【添加备注】对该订单的补充说明；<br>{/if}
-								
-								{if $operable_list.confirm_return}【确认】操作人员对该订单的确认操作记录；<br>{/if}
-								{if $operable_list.invalid}【无效】设置该订单为无效/作废订单；<br>{/if}
-								{if $operable_list.remove}【移除】对已经标记取消或无效的订单删除<br>{/if}
+									{if $operable_list.cancel}【取消】设置该订单为无效/作废订单<br>{/if}
+									{if $operable_list.confirm}【确认接单】标记订单为已发货状态；<br>{/if}
+									{if $operable_list.unconfirm}【拒单】标记订单为取消状态，取消后，系统自动将款项退回给用户；<br>{/if}
+									
+									{if $operable_list.to_delivery}【一键发货】标记订单为已发货状态；<br>{/if}
+									{if $operable_list.prepare}【配货】标记订单为配货状态，对订单商品进行配货；<br>{/if}
+									{if $operable_list.split}【生成发货单】对已经配货完成的订单进行发货，并且生成发货单详细信息；<br>{/if}
+									{if $operable_list.return}【退款/退货】设置该订单进入售后处理流程；<br>{/if}
+									{if $operable_list.after_service}【添加备注】对该订单的补充说明；<br>{/if}
+									
+									{if $operable_list.confirm_return}【确认】操作人员对该订单的确认操作记录；<br>{/if}
+									{if $operable_list.invalid}【无效】设置该订单为无效/作废订单；<br>{/if}
+									{if $operable_list.remove}【移除】对已经标记取消或无效的订单删除<br>{/if}
 								</td>
 							</tr>
 						</tbody>

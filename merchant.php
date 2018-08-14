@@ -689,6 +689,17 @@ class merchant extends ecjia_merchant
                 $reason_list = RefundReasonList::get_refund_reason();
                 $this->assign('reason_list', $reason_list);
 
+                //一键发货配送方式
+                $region_id_list = array(
+                	$order['country'], $order['province'], $order['city'], $order['district'],
+                );
+                $shipping_list = ecjia_shipping::availableUserShippings($region_id_list, $_SESSION['store_id']);
+                $this->assign('shipping_list', $shipping_list);
+                
+                if (!empty($order['shipping_id'])) {
+                	$shipping_info = ecjia_shipping::getPluginDataById($order['shipping_id']);
+                	$this->assign('shipping_code', $shipping_info['shipping_code']);
+                }
                 $this->display('order_info.dwt');
             }
         }

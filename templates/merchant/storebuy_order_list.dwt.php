@@ -14,95 +14,55 @@ ecjia.merchant.order.init();
 		<h2><!-- {if $ur_here}{$ur_here}{/if} --></h2>
   	</div>
   	<div class="pull-right">
-  		<a href="{RC_Uri::url('orders/merchant/today_order')}" class="btn btn-primary nopjax" target="__blank">当天订单</a>
-  		{if $action_link}
-		<a href="{$action_link.href}" class="btn btn-primary data-pjax">
-			<i class="fa fa-search"></i> {$action_link.text}
-		</a>
+  		{if $back_order_list}
+  			<a href="{$back_order_list.href}" class="btn btn-primary nopjax">
+				<i class="fa fa-reply"></i> {$back_order_list.text}
+			</a>
+  		{else}
+	  		{if $action_link}
+			<a href="{$action_link.href}" class="btn btn-primary data-pjax">
+				<i class="fa fa-search"></i> {$action_link.text}
+			</a>
+			{/if}
 		{/if}
   	</div>
   	<div class="clearfix"></div>
 </div>
-
-<!-- #BeginLibraryItem "/library/order_operate.lbi" --><!-- #EndLibraryItem -->
 
 <div class="row">
 	<div class="col-lg-12">
 	    <div class="panel">
 			<div class="panel-body panel-body-small">
 		    	<ul class="nav nav-pills">
-					<li class="{if $filter.composite_status eq ''}active{/if}">
+					<li class="{if $filter.composite_status eq 102 || !$filter.composite_status}active{/if}">
 						<a class="data-pjax" href="{$search_url}
-							{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
-							{if $filter.keywords}&keywords={$filter.keywords}{/if}
-							">{lang key='orders::order.all'} 
-							<span class="badge badge-info">{if $count.all}{$count.all}{else}0{/if}</span> 
+						&composite_status=102
+						{if $filter.keywords}&keywords={$filter.keywords}{/if}
+						">已完成
+							<span class="badge badge-info">{if $count.finished}{$count.finished}{else}0{/if}</span> 
 						</a>
 					</li>
 					<li class="{if $filter.composite_status eq 100}active{/if}">
-						<a class="data-pjax" href="{$search_url}&composite_status=100
-							{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
+						<a class="data-pjax" href="{$search_url}
+							&composite_status=100
 							{if $filter.keywords}&keywords={$filter.keywords}{/if}
 							">待付款
 							<span class="badge badge-info">{if $count.await_pay}{$count.await_pay}{else}0{/if}</span> 
 						</a>
 					</li>
-					
-					<li class="{if $filter.composite_status eq 105}active{/if}">
-						<a class="data-pjax" href="{$search_url}&composite_status=105
-							{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
-							{if $filter.keywords}&keywords={$filter.keywords}{/if}
-							">待接单
-							<span class="badge badge-info">{if $count.unconfirmed}{$count.unconfirmed}{else}0{/if}</span> 
-						</a>
-					</li>
-					<li class="{if $filter.composite_status eq 101}active{/if}">
-						<a class="data-pjax" href="{$search_url}&composite_status=101
-							{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
-							{if $filter.keywords}&keywords={$filter.keywords}{/if}
-							">待发货
-							<span class="badge badge-info">{if $count.await_ship}{$count.await_ship}{else}0{/if}</span> 
-						</a>
-					</li>
-					<li class="{if $filter.composite_status eq 104}active{/if}">
-						<a class="data-pjax" href="{$search_url}&composite_status=104
-							{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
-							{if $filter.keywords}&keywords={$filter.keywords}{/if}
-							">待收货
-							<span class="badge badge-info">{if $count.shipped}{$count.shipped}{else}0{/if}</span> 
-						</a>
-					</li>
-					
-					<li class="{if $filter.composite_status eq 102}active{/if}">
-						<a class="data-pjax" href="{$search_url}&composite_status=102
-							{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
-							{if $filter.keywords}&keywords={$filter.keywords}{/if}
-							">已完成
-							<span class="badge badge-info">{if $count.finished}{$count.finished}{else}0{/if}</span> 
-						</a>
-					</li>
 				</ul>
 			</div>
-
-			<div class='col-lg-12 panel-heading form-inline'>
+			
+	        <div class='{if $date}panel-body panel-body-small{else}col-lg-12 panel-heading form-inline{/if}'>
         		<div class="btn-group form-group">
         			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cogs"></i> {lang key='goods::goods.batch_handle'} <span class="caret"></span></button>
         			<ul class="dropdown-menu operate_note" data-url='{url path="orders/merchant/operate_note"}'>
-        				<li><a class="batch-del-btn" data-toggle="ecjiabatch" data-name="order_id" data-idClass=".checkbox:checked" data-url="{$form_action}&operation=confirm" data-msg="{lang key='orders::order.confirm_approval_order'}" data-noSelectMsg="{lang key='orders::order.pls_select_order'}" href="javascript:;"><i class="fa fa-check"></i> 接单</a></li>
         				<li><a class="batch-operate batch-operate-cancel" data-operatetype="cancel" data-url="{$form_action}&operation=cancel" data-cancel-msg="{lang key='orders::order.confirm_order_cancel'}" href="javascript:;"><i class="fa fa-times"></i> {lang key='orders::order.op_cancel'}</a></li>
-        				<li><a class="batch-del-btn" data-toggle="ecjiabatch" data-name="order_id" data-idClass=".checkbox:checked" data-url="{$form_action}&operation=remove" data-msg="{lang key='orders::order.remove_confirm'}" href="javascript:;"><i class="fa fa-trash-o"></i> {lang key='system::system.remove'}</a></li>
         				<li><a class="batch-print" data-url="{$form_action}&print=1" href="javascript:;"><i class="fa fa-print"></i> {lang key='orders::order.print_order'}</a></li>
                    	</ul>
         		</div>
-        		<div class="form-group">
-        			<select class="w180" name="status" id="select-rank">
-        				<option value="-1">{lang key='orders::order.all_status'}</option>
-        				<!-- {html_options options=$status_list selected=$filter.composite_status } -->
-        			</select>
-        		</div>
-        		<button class="btn btn-primary screen-btn" type="button"><i class="fa fa-search"></i> {lang key='orders::order.filter'} </button>
         		
-        		<form class="form-inline pull-right" action='{$search_url}{if $group_buy_id neq 0}&group_buy_id={$group_buy_id}{/if}{if $smarty.get.date}&date={$smarty.get.date}{/if}{if $filter.composite_status}&composite_status={$filter.composite_status}{/if}' method="post" name="searchForm">
+        		<form class="form-inline pull-right" action="{$search_url}{if $filter.composite_status}&composite_status={$filter.composite_status}{/if}" method="post" name="searchForm">
         			<div class="form-group">
         				<input type="text" class="form-control w230" name="keywords" value="{$smarty.get.keywords}" placeholder="请输入订单编号或购买者信息">
         			</div>
@@ -140,8 +100,7 @@ ecjia.merchant.order.init();
     							</div>
 				            </td>
     						<td class="hide-edit-area">
-    							{$order.order_sn}{if $order.extension_code eq "group_buy"}{lang key='orders::order.group_buy'}{elseif $order.extension_code eq "exchange_goods"}{lang key='orders::order.exchange_goods'}{/if}
-    							{if $order.stet eq 1}<font style="color:#0e92d0;">(子订单)</font>{elseif $order.stet eq 2}<font style="color:#F00;"><span data-original-title="{foreach from=$order.children_order item=val}{$val};{/foreach}" data-toggle="tooltip">(主订单)</span></font>{/if}
+    							{$order.order_sn}
     							<div class="edit-list">
     								<a href='{url path="orders/merchant/info" args="order_id={$order.order_id}"}' class="data-pjax" title="{lang key='orders::order.detail'}">{t}查看详情{/t}</a>
     								{if $order.can_remove}
@@ -172,5 +131,4 @@ ecjia.merchant.order.init();
 	     </div>
      </div>
 </div>
-<form action="{$form_action}" name="orderpostForm" id="listForm" data-pjax-url="{$search_action}" method="post"></form>
 <!-- {/block} -->

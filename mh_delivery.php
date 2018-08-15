@@ -191,11 +191,18 @@ class mh_delivery extends ecjia_merchant {
 				->orderBy('action_id', 'asc')
 				->get();
 
+		$pay_id = RC_DB::table('order_info')->where('order_id', $delivery_order['order_id'])->where('store_id', $_SESSION['store_id'])->pluck('pay_id');
+		$payment_info = with(new Ecjia\App\Payment\PaymentPlugin)->getPluginDataById($pay_id);
+		$is_cod = $payment_info['pay_code'] == 'pay_cod' ? 1 : 0;
+		
 		if(!empty($data)) {
 			foreach ($data as $key => $row) {
-				$row['order_status']	= RC_Lang::get('orders::order.os.'.$row['order_status']);
-				$row['pay_status']		= RC_Lang::get('orders::order.ps.'.$row['pay_status']);
-				$row['shipping_status']	= ($row['shipping_status'] == SS_SHIPPED_ING) ? RC_Lang::get('orders::order.ss_admin.'.SS_SHIPPED_ING) : RC_Lang::get('orders::order.ss.'.$row['shipping_status']);
+// 				$row['order_status']	= RC_Lang::get('orders::order.os.'.$row['order_status']);
+// 				$row['pay_status']		= RC_Lang::get('orders::order.ps.'.$row['pay_status']);
+// 				$row['shipping_status']	= ($row['shipping_status'] == SS_SHIPPED_ING) ? RC_Lang::get('orders::order.ss_admin.'.SS_SHIPPED_ING) : RC_Lang::get('orders::order.ss.'.$row['shipping_status']);
+				
+				$label_status = with(new Ecjia\App\Orders\OrderStatus())->getOrderStatusLabel($row['order_status'], $row['shipping_status'], $row['pay_status'], $is_cod);
+				$row['action_status'] = $label_status[0];
 				$row['action_time']		= RC_Time::local_date(ecjia::config('time_format'), $row['log_time']);
 				$act_list[]				= $row;
 			}

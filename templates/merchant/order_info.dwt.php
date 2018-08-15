@@ -163,7 +163,7 @@ ecjia.merchant.order.info();
                 <div class="modal-body">
                 	  <div class="success-msg"></div>
 		              <div class="error-msg"></div>
-                      <form class="form-horizontal" method="post" name="unconfirm_form" action='{url path="orders/merchant/operate_post"}'>
+                      <form class="form-horizontal" method="post" name="ship_form" action='{url path="orders/merchant/ship"}'>
 						<div class="form-group">
 							<label class="control-label col-lg-3">配送方式：</label>
 							<div class="controls col-lg-6">
@@ -190,6 +190,7 @@ ecjia.merchant.order.info();
                         	<div class="controls col-lg-6">
 								<button class="btn btn-info" name="to_delivery" type="submit">{t}确定{/t}</button>
 								<input type="hidden" name="order_id" value="{$order_id}" />
+								<input type="hidden" name="action_note" />
 							</div>
 						</div>
                     </form>
@@ -236,7 +237,7 @@ ecjia.merchant.order.info();
 
 <div class="panel panel-body">
 	<div class="order-status-base order-five-base m_b20">
-		<ul class="">
+		<ul>
 			<li class="step-first">
 				<div class="{if $flow_status.key eq '1'}step-cur{else}step-done{/if}">
 					<div class="step-no">{if $flow_status.key lt '2'}1{/if}</div>
@@ -402,6 +403,29 @@ ecjia.merchant.order.info();
 					</table>
 				</div>
 			</div>
+			
+			{if $order_finished eq 1 || $order.shipping_status eq 2}
+			<div class="accordion-group panel panel-default">
+				<div class="panel-heading accordion-group-heading-relative">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#delivery_info">
+                        <h4 class="panel-title">
+                            <strong>{t}发货单信息{/t}</strong>
+                        </h4>
+                    </a>
+                </div>
+                <div class="accordion-body in collapse" id="delivery_inf">
+                	<table class="table table-oddtd m_b0">
+						<tbody class="first-td-no-leftbd">
+							<tr>
+								<td><div align="right"><strong>发货单流水号：</strong></div></td>
+								<td colspan="3"><a href="{RC_Uri::url('orders/mh_delivery/delivery_info')}&delivery_id={$delivery_info.delivery_id}" target="__blank">{$delivery_info.delivery_sn}</a></td>
+							</tr>
+						</tbody>
+					</table>
+                </div>
+			</div>
+			{/if}
+			
 			<div class="accordion-group panel panel-default">
 				<div class="panel-heading accordion-group-heading-relative">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
@@ -682,7 +706,7 @@ ecjia.merchant.order.info();
 									{/if}
 
 									{if $operable_list.to_delivery}
-									<a style="cursor: pointer;" class="btn btn-info" href="#shipmodal" data-toggle="modal" id="shipmodal">一键发货</a>
+									<a style="cursor: pointer;" class="btn btn-info" href="#shipmodal" data-toggle="modal" id="shipmodal-btn">一键发货</a>
 									{/if}
 									
 									{if $operable_list.prepare}
@@ -693,21 +717,9 @@ ecjia.merchant.order.info();
 									<button class="btn operatesubmit btn-info" type="submit" name="ship">{lang key='orders::order.op_split'}</button>
 									{/if}
 
-<!-- 									{if $operable_list.unship} -->
-<!-- 									<button class="btn operatesubmit btn-info" type="submit" name="unship">{lang key='orders::order.op_unship'}</button> -->
-<!-- 									{/if} -->
-
-<!-- 									{if $operable_list.receive} -->
-<!-- 									<button class="btn operatesubmit btn-info" type="submit" name="receive">{lang key='orders::order.op_receive'}</button> -->
-<!-- 									{/if}  -->
-
 									{if $operable_list.cancel}
 									<button class="btn operatesubmit btn-info" type="submit" name="cancel">{lang key='orders::order.op_cancel'}</button>
 									{/if}
-
-<!-- 									{if $operable_list.invalid} -->
-<!-- 									<button class="btn operatesubmit btn-info" type="submit" name="invalid">{lang key='orders::order.op_invalid'}</button> -->
-<!-- 									{/if} -->
 
 									{if $operable_list.unconfirm}
 									<a style="cursor: pointer;" class="btn btn-info" href="#unconfirmmodal" data-toggle="modal" id="unconfirmmodal">拒单</a>

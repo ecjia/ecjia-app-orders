@@ -428,6 +428,8 @@ class OrderStatus
 		    	}
 	    	} else {
 	    		$time_key = 4;
+	    		$label_pay = '买家已付款';
+	    		$label_confirm = '商家已接单';
 	    	}
 	    	if ($order['shipping_status'] == SS_PREPARING) {
 	    		$label_shipping = '备货中';

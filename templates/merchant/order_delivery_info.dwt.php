@@ -31,11 +31,6 @@
 							<td><div align="right"><strong>{lang key='orders::order.label_order_sn'}</strong></div></td>
 							<td>
 								{$order.order_sn}
-								<!-- {if $order.extension_code eq "group_buy"} -->
-<!-- 									<a href="group_buy.php?act=edit&id={$order.extension_id}">{lang key='orders::order.group_buy'}</a> -->
-								<!-- {elseif $order.extension_code eq "exchange_goods"}  -->
-<!-- 									<a href="exchange_goods.php?act=edit&id={$order.extension_id}">{lang key='orders::order.exchange_goods'}</a> -->
-								<!-- {/if}  -->
 							</td>
 							<td><div align="right"><strong>{lang key='orders::order.label_order_time'}</strong></div></td>
 							<td>{$order.formated_add_time}</td>
@@ -69,12 +64,6 @@
 							<td><div align="right"><strong>{lang key='orders::order.label_insure_fee'}</strong></div></td>
 							<td>{$order.insure_fee|default:0.00}</td>
 						</tr>
-						<!-- {if $exist_real_goods}-->
-<!-- 					  	<tr class="form-inline"> -->
-<!-- 							<td><div align="right"><strong>{lang key='orders::order.label_invoice_no'}</strong></div></td> -->
-<!-- 							<td colspan="3"><input class="form-control " name="delivery[invoice_no]" type="text" id="invoice_no" value="" size="20"/><input name="delivery_hidden" type="hidden" value="{$exist_real_goods}" /></td> -->
-<!-- 					  	</tr> -->
-					  	<!-- {/if} -->
 					</table>
 				</div>
 			</div>

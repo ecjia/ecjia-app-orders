@@ -282,14 +282,15 @@ class admin extends ecjia_admin
             $order['referer'] = empty($order['referer']) ? RC_Lang::get('orders::order.from_self_site') : $order['referer'];
         } elseif ($order['from_ad'] == -1) {
             $order['referer'] = RC_Lang::get('orders::order.from_goods_js') . ' (' . RC_Lang::get('orders::order.from') . $order['referer'] . ')';
-        } else {
         }
 
         //订单发货单流水号
-        $order['delivery_sn'] = RC_DB::table('order_info as oi')
+        $delivery_info = RC_DB::table('order_info as oi')
         	->leftJoin('delivery_order as do', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('do.order_id'))
         	->where(RC_DB::raw('oi.order_id'), $order['order_id'])
-        	->pluck('delivery_sn');
+        	->orderBy(RC_DB::raw('do.delivery_id'), 'desc')
+        	->first();
+        $this->assign('delivery_info', $delivery_info);
         
         /* 取得订单商品总重量 */
         $weight_price = order_weight_price($order_id);

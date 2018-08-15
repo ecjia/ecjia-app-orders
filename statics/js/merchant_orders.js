@@ -296,6 +296,7 @@
 			app.order.batchForm();
 			app.order.toggle_view();
 			app.order.unconfirmForm();
+			app.order.ship_form();
 			app.order.change_shipping();
 		},
 		
@@ -485,11 +486,44 @@
 			$this.validate(options);
 		},
 		
+		ship_form: function() {
+			$('#shipmodal-btn').off('click').on('click', function() {
+				var action_note = $('.action_note').val();
+				if (action_note != '' && action_note != undefined) {
+					$("form[name='ship_form']").find('input[name="action_note"]').val(action_note);
+				} else {
+					$("form[name='ship_form']").find('input[name="action_note"]').val('');
+				}
+			});
+			var $this = $("form[name='ship_form']");
+			var option = {	 
+				rules : {
+					shipping_id : {required : true},
+					invoice_no : {required : true},
+				},
+				messages : {
+					shipping_id : {required : "请选择配送方式", min: 1},
+					invoice_no: {required : "请填写运单编号"},
+				},
+				submitHandler:function(){
+					
+					$this.ajaxSubmit({
+						dataType:"json",
+						success:function(data){
+							$('#shipmodal').modal('hide');
+							ecjia.merchant.showmessage(data);
+						}
+					});
+				}
+			}
+			var options = $.extend(ecjia.merchant.defaultOptions.validate, option);
+			$this.validate(options);
+		},
+		
 		change_shipping: function() {
 			$('select[name="shipping_id"]').on('change', function() {
 				var $this = $(this),
 					code = $this.find('option:selected').attr('data-code');
-				console.log(code);
 				if (code == 'ship_ecjia_express' || code == 'ship_o2o_express' || code == undefined) {
 					$('#shipmodal').find('.invoice-no-group').addClass('hide');
 				} else {

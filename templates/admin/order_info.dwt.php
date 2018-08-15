@@ -291,6 +291,7 @@
 					</div>
 				</div>
 				
+				{if $order_finished eq 1 || $order.shipping_status eq 2}
 				<div class="accordion-group">
 					<div class="accordion-heading accordion-heading-url">
 						<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseDelivery">
@@ -306,12 +307,13 @@
 											<strong>发货单流水号：</strong>
 										</div>
 									</td>
-									<td colspan="3">{$order.delivery_sn}</td>
+									<td colspan="3"><a href="{RC_Uri::url('orders/admin_order_delivery/delivery_info')}&delivery_id={$delivery_info.delivery_id}" target="__blank">{$delivery_info.delivery_sn}</a></td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 				</div>
+				{/if}
 				
 				<div class="accordion-group">
 					<div class="accordion-heading accordion-heading-url">

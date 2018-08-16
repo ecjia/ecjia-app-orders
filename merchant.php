@@ -153,11 +153,11 @@ class merchant extends ecjia_merchant
         if (in_array($filter['extension_code'], array('storebuy', 'cashdesk'))) {
         	$order_model = 'storebuy';
         	$ur_here = '到店订单';
-        	$filter['composite_status'] = 102;
+        	$filter['composite_status'] = !empty($_GET['composite_status']) ? intval($_GET['composite_status']) : 102;
         } elseif ($filter['extension_code'] == 'storepickup') {
         	$order_model = 'storepickup';
         	$ur_here = '自提订单';
-        	$filter['composite_status'] = 101;
+        	$filter['composite_status'] = !empty($_GET['composite_status']) ? intval($_GET['composite_status']) : 101;
         } elseif ($filter['extension_code'] == 'group_buy') {
         	$order_model = 'groupbuy';
         	$ur_here = '团购订单';

@@ -55,7 +55,7 @@ class orders_merchant_menu_api extends Component_Event_Api {
 	public function call(&$options) {	
 		$menus = ecjia_merchant::make_admin_menu('04_order', __('订单'), '', 2)->add_icon('fa-list')->add_purview(array('order_view','order_os_edit','delivery_view','back_view','remind_order_view','validate_order','refund_manage'))->add_base('order');
 		$submenus = array(
-			ecjia_merchant::make_admin_menu('01_today_order', __('当天订单'), RC_Uri::url('orders/merchant/init', array('date' => 'today')), 1)->add_purview('order_view')->add_icon('fa-sun-o'),
+			ecjia_merchant::make_admin_menu('01_today_order', __('当天订单'), RC_Uri::url('orders/merchant/today_order'), 1)->add_purview('order_view')->add_icon('fa-sun-o'),
 			ecjia_merchant::make_admin_menu('02_back_order', __('催单提醒'), RC_Uri::url('orders/mh_reminder/init'), 2)->add_purview('remind_order_view')->add_icon('fa-file-o'),
 			ecjia_merchant::make_admin_menu('03_validate_order', __('验单查询'), RC_Uri::url('orders/mh_validate_order/init'), 3)->add_purview('validate_order')->add_icon('fa-check-circle'),
 			ecjia_merchant::make_admin_menu('divider', '', '', 4)->add_purview(array('category_manage', 'brand_manage', 'attr_manage')),

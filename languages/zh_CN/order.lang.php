@@ -73,17 +73,18 @@ return array(
 	*/
 		
 	'cs' => array(
-		CS_AWAIT_PAY 	=> '未付款',
-		CS_UNCONFIRMED 	=> '未接单',
-		CS_AWAIT_SHIP 	=> '已接单',
-		CS_PREPARING  	=> '备货中',
-		CS_SHIPPED_ING 	=> '发货中',
+		CS_AWAIT_PAY 	=> '待付款',
+		CS_UNCONFIRMED 	=> '待接单',
+		CS_AWAIT_SHIP 	=> '待发货',
+// 		CS_PREPARING  	=> '备货中',
+// 		CS_SHIPPED_ING 	=> '发货中',
 		CS_SHIPPED		=> '已发货',
-		CS_SHIPPED_PART => '已发货（部分商品）',
-		CS_FINISHED 	=> '交易完成',
-		CS_CANCELED 	=> '已取消',
-		CS_INVALID 		=> '无效',
-		CS_REFUND 		=> '已申请退货',
+// 		CS_SHIPPED_PART => '已发货（部分商品）',
+		CS_FINISHED 	=> '已完成',
+		CS_CANCELED 	=> '取消',
+// 		CS_INVALID 		=> '无效',
+		CS_REFUND 		=> '退货',
+		CS_SHIPPED_PART => '部分发货',
 	),
 		
 	/* 订单状态 */

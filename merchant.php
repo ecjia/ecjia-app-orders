@@ -359,7 +359,7 @@ class merchant extends ecjia_merchant
         	$order_model = 'default';
         	$ur_here = '配送订单信息';
         }
-        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here($ur_here));
+        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here('订单信息'));
 
         /*发票抬头和发票识别码处理*/
         if (!empty($order['inv_payee'])) {
@@ -723,7 +723,7 @@ class merchant extends ecjia_merchant
                 }
             }
         } else {
-            $this->assign('ur_here', RC_Lang::get('orders::order.order_info'));
+            $this->assign('ur_here', $ur_here);
             $this->assign('action_link', array('href' => RC_Uri::url('orders/merchant/init'), 'text' => RC_Lang::get('orders::order.order_list')));
             $this->assign('form_action', RC_Uri::url('orders/merchant/operate'));
             $this->assign('remove_action', RC_Uri::url('orders/merchant/remove_order'));
@@ -780,6 +780,8 @@ class merchant extends ecjia_merchant
                 }
                 if ($order_model == 'storebuy') {
                 	$this->display('order_storebuy_info.dwt');
+                } elseif ($order_model == 'storepickup') {
+                	$this->display('order_storepickup_info.dwt');
                 } else {
                 	$this->display('order_info.dwt');
                 }

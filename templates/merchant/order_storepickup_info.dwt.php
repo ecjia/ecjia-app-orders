@@ -14,7 +14,7 @@ ecjia.merchant.order.info();
   	</div>
   	<div class="pull-right">
   		{if $action_link}
-		<a href="{RC_Uri::url('orders/merchant/init')}&extension_code=storebuy" class="btn btn-primary data-pjax">
+		<a href="{RC_Uri::url('orders/merchant/init')}&extension_code=storepickup" class="btn btn-primary data-pjax">
 			<i class="fa fa-reply"></i> {$action_link.text}
 		</a>
 		{/if}
@@ -89,7 +89,7 @@ ecjia.merchant.order.info();
 								<td>{$order.status}</td>
 							</tr>
 							<tr>
-								<td><div align="right"><strong>购买人姓名：</strong></div></td>
+								<td><div align="right"><strong>购买人：</strong></div></td>
 								<td>
 									{$order.user_name|default:{lang key='orders::order.anonymous'}}
 								</td>
@@ -101,28 +101,50 @@ ecjia.merchant.order.info();
 								<td>
 									{$order.pay_name}
 								</td>
+								<td><div align="right"><strong>{lang key='orders::order.label_order_time'}</strong></div></td>
+								<td>{$order.formated_add_time}</td>
+							</tr>
+							<tr>
+								<td><div align="right"><strong>{lang key='orders::order.label_shipping'}</strong></div></td>
+								<td>
+									{if $order.shipping_name}{$order.shipping_name}{/if}
+								</td>
 								<td><div align="right"><strong>{lang key='orders::order.label_pay_time'}</strong></div></td>
 								<td>{$order.pay_time}</td>
 							</tr>
-
 							<tr>
-								<td><div align="right"><strong>{lang key='orders::order.label_order_time'}</strong></div></td>
-								<td>{$order.formated_add_time}</td>
 								<td><div align="right"><strong>{lang key='orders::order.from_order'}</strong></div></td>
-								<td>{if $order.referer eq 'ecjia-cashdesk'}收银台{else if $order.referer eq 'ecjia-storebuy'}小程序自助购物{else}{$order.referer}{/if}</td>
+								<td colspan="3">{if $order.referer eq 'ecjia-cashdesk'}收银台{else if $order.referer eq 'ecjia-storebuy'}小程序自助购物{else}{$order.referer}{/if}</td>
 							</tr>
-
-							<!-- {if $order.express_user} -->
-							<tr>
-								<td><div align="right"><strong>{lang key='orders::order.label_express_user'}</strong></div></td>
-								<td>{$order.express_user}</td>
-								<td><div align="right"><strong>{lang key='orders::order.label_express_user_mobile'}</strong></div></td>
-								<td>{$order.express_mobile}</td>
-							</tr>
-							<!-- {/if}  -->
 						</tbody>
 					</table>
 				</div>
+			</div>
+			
+			<div class="accordion-group panel panel-default">
+				<div class="panel-heading accordion-group-heading-relative">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapsePickup">
+                        <h4 class="panel-title">
+                            <strong>自提信息</strong>
+                        </h4>
+                    </a>
+                </div>
+                <div class="accordion-body in collapse " id="collapsePickup">
+					<table class="table table-oddtd m_b0">
+						<tbody class="first-td-no-leftbd">
+							<tr>
+								<td><div align="right"><strong>提货码：</strong></div></td>
+								<td>{if $meta_value neq ''}{$meta_value}{else}暂无{/if}</td>
+								<td><div align="right"><strong>提货状态：</strong></div></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td><div align="right"><strong>预约提货时间：</strong></div></td>
+								<td colspan="3">{if $order.expect_shipping_time}{$order.expect_shipping_time}{else}暂无{/if}</td>
+							</tr>
+						</tbody>
+					</table>
+                </div>
 			</div>
 
 			<div class="accordion-group panel panel-default">

@@ -118,9 +118,6 @@ class admin extends ecjia_admin
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $size = 15;
         $with = null;
-//         $with = ['orderGoods', 'orderGoods.goods', 'store', 'payment', 'orderGoods.comment' => function ($query) {
-//             $query->select('comment_id', 'has_image')->where('comment_type', 0)->where('parent_id', 0);
-//         }];
         $filter['extension_code'] = !empty($_GET['extension_code']) ? trim($_GET['extension_code']) : 'default';
         $order_list = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
             ->getOrderList($filter, $page, $size, $with, ['Ecjia\App\Orders\CustomizeOrderList', 'exportOrderListAdmin']);
@@ -129,8 +126,10 @@ class admin extends ecjia_admin
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here($ur_here));
         
         $this->assign('ur_here', $ur_here);
-        $this->assign('action_link', array('href' => RC_Uri::url('orders/admin/order_query'), 'text' => RC_Lang::get('system::system.03_order_query')));
-
+        if ($filter['extension_code'] == 'default') {
+        	$this->assign('action_link', array('href' => RC_Uri::url('orders/admin/order_query'), 'text' => RC_Lang::get('system::system.03_order_query')));
+        }
+        
         $this->assign('status_list', RC_Lang::get('orders::order.cs'));
         $this->assign('order_list', $order_list);
 
@@ -144,7 +143,7 @@ class admin extends ecjia_admin
 
         $this->assign('search_url', RC_Uri::url('orders/admin/init'));
 	
-        if ($filter['extension_code'] == 'default') {
+        if ($filter['extension_code'] == 'default' || $filter['extension_code'] == 'group_buy') {
         	$this->display('order_list.dwt');
         } else {
         	$this->display('other_order_list.dwt');
@@ -521,8 +520,24 @@ class admin extends ecjia_admin
                 }
             }
         } else {
-            $this->assign('ur_here', RC_Lang::get('orders::order.order_info'));
-            $this->assign('action_link', array('href' => RC_Uri::url('orders/admin/init'), 'text' => RC_Lang::get('system::system.02_order_list')));
+        	$action_link = array('href' => RC_Uri::url('orders/admin/init'), 'text' => '订单列表');
+            if (in_array($order['extension_code'], array('storebuy', 'cashdesk'))) {
+            	$order_model = 'storebuy'; //到店订单
+            	$ur_here = '到店订单信息';
+            } elseif ($order['extension_code'] == 'storepickup') {
+            	$order_model = 'storepickup';
+            	$ur_here = '自提订单信息';
+            } elseif ($order['extension_code'] == 'group_buy') {
+            	$order_model = 'groupbuy';
+            	$ur_here = '团购订单信息';
+            	$action_link = array('href' => RC_Uri::url('orders/admin/init', array('extension_code' => 'group_buy')), 'text' => '订单列表');
+            } else {
+            	$order_model = 'default';
+            	$ur_here = '配送订单信息';
+            }
+            $this->assign('ur_here', $ur_here);
+            $this->assign('action_link', $action_link);
+            
             $this->assign('form_action', RC_Uri::url('orders/admin/operate'));
             $this->assign('remove_action', RC_Uri::url('orders/admin/remove_order'));
 
@@ -549,7 +564,7 @@ class admin extends ecjia_admin
                 $order_finishied = 1;
                 $this->assign('order_finished', $order_finishied);
             }
-            if (empty($order['extension_code'])) {
+            if (empty($order['extension_code']) || $order['extension_code'] == 'group_buy') {
                 $this->display('order_info.dwt');
             } else {
             	$this->display('other_order_info.dwt');

@@ -99,7 +99,14 @@
 						<th class="w150">{lang key='orders::order.order_time'}</th>
 						<th class="w150">购买者信息</th>
 						<th class="w150">{lang key='orders::order.total_fee'}</th>
+						{if $filter.extension_code eq "group_buy"}
+						<th class="w150">保证金</th>
+						{/if}
 						<th class="w110">{lang key='orders::order.order_amount'}</th>
+						{if $filter.extension_code eq "group_buy"}
+						<th class="w150">团购数量</th>
+						<th class="w150">订单状态</th>
+						{/if}
 						<th class="w100">{lang key='orders::order.all_status'}</th>
 					</tr>
 				</thead>
@@ -107,7 +114,7 @@
 					<!-- {foreach from=$order_list.order_list item=order key=okey} -->
 					<tr>
 						<td class="hide-edit-area">
-							{$order.order_sn}{if $order.extension_code eq "group_buy"}{lang key='orders::order.group_buy'}{elseif $order.extension_code eq "exchange_goods"}{lang key='orders::order.exchange_goods'}{/if}
+							{$order.order_sn}
 							<div class="edit-list">
 								<a href='{url path="orders/admin/info" args="order_id={$order.order_id}"}' class="data-pjax" title="{lang key='orders::order.detail'}">{lang key='orders::order.detail'}</a>
 								{if $order.can_remove}
@@ -126,11 +133,33 @@
 							{$order.consignee}
 						</td>
 						<td align="right" valign="top" nowrap="nowrap">{$order.formated_total_fee}</td>
+						{if $filter.extension_code eq "group_buy"}
+						<td>{$order.formated_bond}</td>
+						{/if}
 						<td align="right" valign="top" nowrap="nowrap">{$order.formated_order_amount}</td>
+						{if $filter.extension_code eq "group_buy"}
+						<td>{$order.groupbuy_valid_goods}</td>
+						<td>
+							<span class="
+								{if $order.groupbuy_status eq 0}
+								badge badge-success
+								{elseif $order.groupbuy_status eq 1}
+								badge badge-info
+								{else if $order.groupbuy_status eq 2}
+								badge badge-important
+								{else if $order.groupbuy_status eq 3}
+								badge badge-primary
+								{else if $order.groupbuy_status eq 4}
+								badge badge-warning
+								{/if}">
+								{$order.groupbuy_status_desc}
+							</span>
+						</td>
+						{/if}
 						<td align="center" valign="top" nowrap="nowrap" {if $order.pay_status eq 0}class="ecjiafc-red" {/if}>{$order.label_order_status}</td>
 					</tr>
 					<!-- {foreachelse}-->
-					<tr><td class="no-records" colspan="9">{lang key='system::system.no_records'}</td></tr>
+					<tr><td class="no-records" colspan="{if $order.extension_code eq 'group_buy'}10{else}7{/if}">{lang key='system::system.no_records'}</td></tr>
 					<!-- {/foreach} -->
 				</tbody>
 			</table>

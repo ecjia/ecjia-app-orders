@@ -21,21 +21,21 @@
 	<ul class="">
 		<li class="step-first">
 			<div class="{if $flow_status.key eq '1'}step-cur{else}step-done{/if}">
-				<div class="step-no">{if $flow_status.key lt '2'}1{/if}</div>
+				<div class="step-no">{if $flow_status.key eq 1}1{/if}</div>
 				<div class="m_t5">{lang key='orders::order.submit_order'}</div>
 				<div class="m_t5 ecjiafc-blue">{$order.formated_add_time}</div>
 			</div>
 		</li>
 		<li>
-			<div class="{if $flow_status.key eq '2'}step-cur{elseif $flow_status.key gt '2'}step-done{/if}">
-				<div class="step-no">{if $flow_status.key lt '3'}2{/if}</div>
+			<div class="{if $flow_status.key eq '3'}step-cur{elseif $flow_status.key gt '3'}step-done{/if}">
+				<div class="step-no">{if $flow_status.key lt '4'}2{/if}</div>
 				<div class="m_t5">{$flow_status.pay}</div>
 				<div class="m_t5 ecjiafc-blue">{$order.pay_time}</div>
 			</div>
 		</li>
 		<li class="step-last">
-			<div class="{if $flow_status.key eq '5'}step-cur{elseif $flow_status.key gt '5'}step-done{/if}">
-				<div class="step-no">{if $flow_status.key lt '6'}3{/if}</div>
+			<div class="{if $flow_status.key eq '5'}step-cur{elseif $flow_status.key gt '3'}step-done{/if}">
+				<div class="step-no">3</div>
 				<div class="m_t5">交易完成</div>
 			</div>
 		</li>

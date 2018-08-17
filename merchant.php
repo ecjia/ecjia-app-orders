@@ -730,9 +730,6 @@ class merchant extends ecjia_merchant
 
             //无效订单 只能查看和删除 不能进行其他操作
             $invalid_order = false;
-//             if ($order['order_status'] == OS_INVALID) {
-            //                 $invalid_order = true;
-            //             }
             $this->assign('invalid_order', $invalid_order);
 
             if ($order['pay_status'] == PS_PAYED) {
@@ -781,7 +778,11 @@ class merchant extends ecjia_merchant
                     $shipping_info = ecjia_shipping::getPluginDataById($order['shipping_id']);
                     $this->assign('shipping_code', $shipping_info['shipping_code']);
                 }
-                $this->display('order_info.dwt');
+                if ($order_model == 'storebuy') {
+                	$this->display('order_storebuy_info.dwt');
+                } else {
+                	$this->display('order_info.dwt');
+                }
             }
         }
     }

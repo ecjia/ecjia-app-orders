@@ -447,6 +447,10 @@ class OrdersRepository extends AbstractRepository
                 $query->orderBy('order_info.' . $filter['sort_by'], array_get($filter, 'sort_order'));
             }
 
+            if (array_get($filter, 'store_id')) {
+            	$query->where('order_info.store_id', array_get($filter, 'store_id'));
+            }
+
             if (array_get($filter, 'composite_status')) {
                 //综合状态
                 switch (array_get($filter, 'composite_status')) {

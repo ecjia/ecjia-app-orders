@@ -6,6 +6,7 @@ use Ecjia\App\Orders\GoodsAttr;
 use ecjia_page;
 use ecjia_merchant_page;
 use Royalcms\Component\Database\Eloquent\Collection;
+use RC_Loader;
 
 class CustomizeOrderList
 {
@@ -167,12 +168,27 @@ class CustomizeOrderList
     
     public static function exportOrderListMerchant(Collection $orders, $count, $pagesize, $filter_count)
     {
+    	RC_Loader::load_app_func('admin_goods', 'goods');
+    	$order_deposit = 0;
+    	
     	$orderlist = $orders->map(function ($item) {
     		//计算订单总价格
     		$total_fee = $item->goods_amount + $item->shipping_fee + $item->insure_fee + $item->pay_fee + $item->pack_fee + $item->card_fee + $item->tax - $item->integral_money - $item->bonus - $item->discount;
-    		$goods_number = 0;
+    		
     		list($label_order_status, $status_code) = OrderStatus::getAdminOrderStatusLabel($item->order_status, $item->shipping_status, $item->pay_status, $item->payment->is_cod);
     
+    		$goods_number = 0;
+    		$goods_number = $item->orderGoods->map(function ($item) use (&$goods_number) {
+    			$goods_number += $item->goods_number;
+    			return $goods_number;
+    		})->toArray();
+    		$goods_number = $goods_number[0];
+    		
+    		$group_buy = group_buy_info($item->extension_id);
+    		if ($group_buy['deposit'] > 0) {
+    			$order_deposit = price_format($goods_number * $group_buy['deposit']);
+    		}
+    		
     		$data = [
 	    		'seller_id' => $item->store->store_id,
 	    		'seller_name' => $item->store->merchants_name,
@@ -210,6 +226,11 @@ class CustomizeOrderList
 	    		],
 	    		'goods_list' => [],
 	    		'consignee' => $item->consignee,
+	    		
+	    		'formated_bond' => $order_deposit,
+	    		'groupbuy_valid_goods' => $group_buy['valid_goods'],
+	    		'groupbuy_status_desc' => $group_buy['status_desc'],
+	    		'groupbuy_status' => $group_buy['status']
     		];
     		if (in_array($item->extension_code, array('storebuy', 'cashdesk'))) {
     			$data['order_mode'] = 'storebuy';

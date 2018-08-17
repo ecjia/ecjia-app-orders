@@ -135,14 +135,14 @@
 										</div>
 									</th>
 									<th class="w130">订单编号</th>
-									<th class="w130">{lang key='orders::order.order_time'}</th>
+									<th class="w150">{lang key='orders::order.order_time'}</th>
 									<th>购买者信息</th>
 									<th class="w120">{lang key='orders::order.total_fee'}</th>
 									<th class="w110">{lang key='orders::order.bond'}</th>
 									<th class="w110">{lang key='orders::order.order_amount'}</th>
 									<th class="w110">团购数量</th>
 									<th class="w110">团购状态</th>
-									<th class="w110">{lang key='orders::order.all_status'}</th>
+									<th class="w80">{lang key='orders::order.all_status'}</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -174,8 +174,23 @@
 									<td>{$order.formated_total_fee}</td>
 									<td>{$order.formated_bond}</td>
 									<td>{$order.formated_order_amount}</td>
-									<td></td>
-									<td></td>
+									<td>{$order.groupbuy_valid_goods}</td>
+									<td>
+										<span class="
+											{if $order.groupbuy_status eq 0}
+											badge bg-success
+											{elseif $order.groupbuy_status eq 1}
+											badge bg-info
+											{else if $order.groupbuy_status eq 2}
+											badge bg-important
+											{else if $order.groupbuy_status eq 3}
+											badge bg-primary
+											{else if $order.groupbuy_status eq 4}
+											badge bg-warning
+											{/if}">
+											{$order.groupbuy_status_desc}
+										</span>
+									</td>
 									<td {if $order.pay_status eq $payed}class="ecjiafc-red" {/if}>{$order.label_order_status}</td>
 								</tr>
 								<!-- {foreachelse}-->

@@ -724,7 +724,11 @@ class merchant extends ecjia_merchant
             }
         } else {
             $this->assign('ur_here', $ur_here);
-            $this->assign('action_link', array('href' => RC_Uri::url('orders/merchant/init'), 'text' => RC_Lang::get('orders::order.order_list')));
+            $action_link = array('href' => RC_Uri::url('orders/merchant/init'), 'text' => RC_Lang::get('orders::order.order_list'));
+            if ($order['extension_code'] == 'group_buy') {
+            	$action_link = array('href' => RC_Uri::url('orders/merchant/init', array('extension_code' => 'group_buy')), 'text' => RC_Lang::get('orders::order.order_list'));
+            }
+            $this->assign('action_link', $action_link);
             $this->assign('form_action', RC_Uri::url('orders/merchant/operate'));
             $this->assign('remove_action', RC_Uri::url('orders/merchant/remove_order'));
 

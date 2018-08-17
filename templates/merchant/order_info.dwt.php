@@ -630,7 +630,10 @@ ecjia.merchant.order.info();
 									{else}
 									{lang key='orders::order.label_money_refund'}<strong>{$order.formated_money_refund}</strong>
 									{/if}
-									{if $order.extension_code eq "group_buy"}<br />{lang key='orders::order.notice_gb_order_amount'}{/if}
+									
+									{if $order.extension_code eq "group_buy"}<br />
+										{lang key='orders::order.notice_gb_order_amount'}
+									{/if}
 								</div>
 							</td>
 						</tr>
@@ -741,7 +744,9 @@ ecjia.merchant.order.info();
 									<button class="btn operatesubmit btn-info" type="submit" name="remove">{lang key='orders::order.remove'}</button>
 									{/if}
 
-									{if $order.extension_code eq "group_buy"}{lang key='orders::order.notice_gb_ship'}{/if}
+									{if $order.extension_code eq "group_buy"}
+									<div class="m_t10">{lang key='orders::order.notice_gb_ship'}</div>
+									{/if}
 									<input name="order_id" class="order_id" type="hidden" value="{$order.order_id}">
 								</td>
 							</tr>

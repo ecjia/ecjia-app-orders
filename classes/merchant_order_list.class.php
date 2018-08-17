@@ -216,13 +216,13 @@ class merchant_order_list {
 			$this->db_order_info->where(RC_DB::raw('o.add_time'), '>=', $start_time);
 		}
 		if ($filter['end_time']) {
-			$end_time = RC_Time::local_strtotime($filter['end_time']) + 86399;
+			$end_time = RC_Time::local_strtotime($filter['end_time']);
 			$this->db_order_info->where(RC_DB::raw('o.add_time'), '<=', $end_time);
 		}
 		
 		if ($filter['date'] == 'today') {
-			$start_time = RC_Time::local_mktime(0, 0, 0, date('m'), date('d'), date('Y'));
-			$end_time = RC_Time::local_mktime(0, 0, 0, date('m'), date('d')+1, date('Y'))-1;
+			$start_time = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date('m'), RC_Time::local_date('d'), RC_Time::local_date('Y'));
+			$end_time = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date('m'), RC_Time::local_date('d')+1, RC_Time::local_date('Y'))-1;
 			$this->db_order_info->where(RC_DB::raw('o.add_time'), '>=', $start_time)->where(RC_DB::raw('o.add_time'), '<=', $end_time);
 		}
 		

@@ -425,10 +425,10 @@ class OrdersRepository extends AbstractRepository
                 $query->where('order_info.pay_status', array_get($filter, 'pay_status'));
             }
             if (array_get($filter, 'start_time')) {
-                $query->where('order_info.start_time', array_get($filter, '>=', 'start_time'));
+                $query->where('order_info.add_time', array_get($filter, '>=', 'start_time'));
             }
             if (array_get($filter, 'end_time')) {
-                $query->where('order_info.start_time', array_get($filter, '<=', 'start_time'));
+                $query->where('order_info.add_time', array_get($filter, '<=', 'end_time'));
             }
             if (array_get($filter, 'group_buy_id')) {
                 $query->where('order_info.extension_code', 'group_buy');

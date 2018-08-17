@@ -92,10 +92,10 @@ class orders_admin_plugin {
 		);
 		
 		//本月开始时间
-		$start_month = mktime(0,0,0,date('m'),1,date('Y'))-8*3600;
+		$start_month = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date('m'), 1, RC_Time::local_date('Y'));
 		
 		//今日开始时间
-		$start_time = mktime(0,0,0,date('m'),date('d'),date('Y'))-8*3600;
+		$start_time = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date('m'), RC_Time::local_date('d'), RC_Time::local_date('Y'));
 		
 		$month_order = RC_DB::table('order_info as oi')
 			->leftJoin('order_goods as g', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('g.order_id'))

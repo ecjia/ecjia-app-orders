@@ -212,10 +212,16 @@ class merchant extends ecjia_merchant
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here('当天订单'));
         RC_Script::enqueue_script('order_query', RC_App::apps_url('statics/js/merchant_order_query.js', __FILE__));
 
+        $start_time = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date('m'), RC_Time::local_date('d'), RC_Time::local_date('Y')); //当天开始时间
+        $end_time = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date('m'), RC_Time::local_date('d') + 1, RC_Time::local_date('Y')) - 1; //当天结束时间
+        
         $filter = $_GET;
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $size = 15;
         $with = null;
+        $filter['start_time'] = $start_time;
+        $filter['add_time'] = $end_time;
+        
         $filter['store_id'] = $_SESSION['store_id'];
         $filter['extension_code'] = !empty($_GET['extension_code']) ? trim($_GET['extension_code']) : 'default';
         $order_list = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
@@ -244,9 +250,6 @@ class merchant extends ecjia_merchant
         $this->assign('composite_status', $composite_status);
 
         $this->assign('back_order_list', array('href' => RC_Uri::url('orders/merchant/init'), 'text' => RC_Lang::get('orders::order.order_list')));
-
-        $start_time = RC_Time::local_mktime(0, 0, 0, date('m'), date('d'), date('Y')); //当天开始时间
-        $end_time = RC_Time::local_mktime(0, 0, 0, date('m'), date('d') + 1, date('Y')) - 1; //当天结束时间
 
         $count = get_merchant_order_count();
         $cache_key = 'count_pay' . $start_time . $end_time;

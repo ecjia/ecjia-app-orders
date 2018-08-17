@@ -127,7 +127,7 @@
 						</td>
 						<td align="right" valign="top" nowrap="nowrap">{$order.formated_total_fee}</td>
 						<td align="right" valign="top" nowrap="nowrap">{$order.formated_order_amount}</td>
-						<td align="center" valign="top" nowrap="nowrap">{$order.label_order_status}</td>
+						<td align="center" valign="top" nowrap="nowrap" {if $order.pay_status eq 0}class="ecjiafc-red" {/if}>{$order.label_order_status}</td>
 					</tr>
 					<!-- {foreachelse}-->
 					<tr><td class="no-records" colspan="9">{lang key='system::system.no_records'}</td></tr>

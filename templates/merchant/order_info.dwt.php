@@ -717,12 +717,12 @@ ecjia.merchant.order.info();
 									<button class="btn operatesubmit btn-info" type="submit" name="ship">{lang key='orders::order.op_split'}</button>
 									{/if}
 
-									{if $operable_list.cancel}
-									<button class="btn operatesubmit btn-info" type="submit" name="cancel">{lang key='orders::order.op_cancel'}</button>
-									{/if}
-
 									{if $operable_list.unconfirm}
 									<a style="cursor: pointer;" class="btn btn-info" href="#unconfirmmodal" data-toggle="modal" id="unconfirmmodal">拒单</a>
+									{/if}
+									
+									{if $operable_list.cancel}
+									<button class="btn operatesubmit btn-info" type="submit" name="cancel">{lang key='orders::order.op_cancel'}</button>
 									{/if}
 									
 									{if $operable_list.return}

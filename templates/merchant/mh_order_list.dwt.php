@@ -236,7 +236,7 @@
 									</td>
 									<td>{$order.formated_total_fee}</td>
 									<td>{$order.formated_order_amount}</td>
-									<td {if $order.pay_status eq $payed}class="ecjiafc-red" {/if}>{$order.label_order_status}</td>
+									<td {if $order.pay_status eq 0}class="ecjiafc-red" {/if}>{$order.label_order_status}</td>
 								</tr>
 								<!-- {foreachelse}-->
 								<tr>

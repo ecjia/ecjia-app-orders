@@ -428,10 +428,6 @@ class merchant extends ecjia_merchant
             $order['formated_money_refund'] = price_format(abs($order['order_amount']));
         }
 
-        //订单流程
-        $flow_status = with(new Ecjia\App\Orders\OrderStatus())->getOrderFlowLabel($order);
-        $this->assign('flow_status', $flow_status);
-
         /* 其他处理 */
         $order['order_time'] = RC_Time::local_date(ecjia::config('time_format'), $order['add_time']);
         $order['pay_time'] = RC_Time::local_date(ecjia::config('time_format'), $order['pay_time']);
@@ -439,13 +435,16 @@ class merchant extends ecjia_merchant
         $order['confirm_time'] = RC_Time::local_date(ecjia::config('time_format'), $order['confirm_time']);
 
         $payment_info = with(new Ecjia\App\Payment\PaymentPlugin)->getPluginDataById($order['pay_id']);
-        $order['pay_code'] = $payment_info['pay_code'];
+        $order['is_cod'] = $payment_info->is_cod;
 
-        $is_cod = $order['pay_code'] == 'pay_cod' ? 1 : 0;
-        $status = with(new Ecjia\App\Orders\OrderStatus())->getOrderStatusLabel($order['order_status'], $order['shipping_status'], $order['pay_status'], $is_cod);
+        $status = with(new Ecjia\App\Orders\OrderStatus())->getOrderStatusLabel($order['order_status'], $order['shipping_status'], $order['pay_status'], $order['is_cod']);
         $order['status'] = $status['0'];
         $order['invoice_no'] = $order['shipping_status'] == SS_UNSHIPPED || $order['shipping_status'] == SS_PREPARING ? RC_Lang::get('orders::order.ss.' . SS_UNSHIPPED) : $order['invoice_no'];
 
+        //订单流程
+        $flow_status = with(new Ecjia\App\Orders\OrderStatus())->getOrderFlowLabel($order);
+        $this->assign('flow_status', $flow_status);
+        
         /* 取得订单的来源 */
         if ($order['from_ad'] == 0) {
             $order['referer'] = empty($order['referer']) ? RC_Lang::get('orders::order.from_self_site') : $order['referer'];

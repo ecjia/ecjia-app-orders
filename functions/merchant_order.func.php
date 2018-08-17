@@ -80,15 +80,10 @@ function merchant_operable_list($order) {
     if (OS_UNCONFIRMED == $os) {
         /* 状态：未确认 => 未付款、未发货 */
         if ($priv_list['os']) {
-            
-            // 确认
-//             $list['invalid'] = true;
-            // 无效
-//             $list['cancel'] = true;
 			if (PS_UNPAYED == $ps) {
 				$list['cancel'] = true;
 			}
-            if (PS_PAYED == $ps) {
+            if (PS_PAYED == $ps || $is_cod) {
             	$list['confirm'] = true;
            		$list['unconfirm'] = true; //拒单
             }
@@ -96,9 +91,9 @@ function merchant_operable_list($order) {
             if ($is_cod) {
                 /* 货到付款 */
                 if ($priv_list['ss']) {
-                    $list['prepare'] = true;
+//                     $list['prepare'] = true;
                     // 配货
-                    $list['split'] = true;
+//                     $list['split'] = true;
                     // 分单
                 }
             } else {

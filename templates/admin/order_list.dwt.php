@@ -11,18 +11,20 @@
 <div>
 	<h3 class="heading">
 		<!-- {if $ur_here}{$ur_here}{/if} -->
-		<!-- {if $action_link} -->
-		<a class="btn plus_or_reply data-pjax" href="{$action_link.href}">
-			<i class=" fontello-icon-search"></i>{$action_link.text}</a>
-		<!-- {/if} -->
+		<a class="btn plus_or_reply show_order_search" href="javascript:;">
+			<i class="fontello-icon-search"></i>高级查询</a>
 	</h3>
 </div>
 <!-- #BeginLibraryItem "/library/order_operate.lbi" -->
 <!-- #EndLibraryItem -->
 
+<!-- #BeginLibraryItem "/library/order_search.lbi" -->
+<!-- #EndLibraryItem -->
+
 <ul class="nav nav-pills">
 	<li class="{if $filter.composite_status eq ''}active{/if}">
 		<a class="data-pjax" href="{$search_url}
+			{if $filter.user_id}&user_id={$filter.user_id}{/if}
 			{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
 			{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
 			{if $filter.keywords}&keywords={$filter.keywords}{/if}
@@ -32,6 +34,7 @@
 	</li>
 	<li class="{if $filter.composite_status eq 100}active{/if}">
 		<a class="data-pjax" href="{$search_url}
+			{if $filter.user_id}&user_id={$filter.user_id}{/if}
 			{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
 			&composite_status=100
 			{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
@@ -43,6 +46,7 @@
 
 	<li class="{if $filter.composite_status eq 105}active{/if}">
 		<a class="data-pjax" href="{$search_url}
+			{if $filter.user_id}&user_id={$filter.user_id}{/if}
 			{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
 			&composite_status=105
 			{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
@@ -53,6 +57,7 @@
 	</li>
 	<li class="{if $filter.composite_status eq 101}active{/if}">
 		<a class="data-pjax" href="{$search_url}
+			{if $filter.user_id}&user_id={$filter.user_id}{/if}
 			{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
 			&composite_status=101
 			{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
@@ -63,6 +68,7 @@
 	</li>
 	<li class="{if $filter.composite_status eq 104}active{/if}">
 		<a class="data-pjax" href="{$search_url}
+			{if $filter.user_id}&user_id={$filter.user_id}{/if}
 			{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
 			&composite_status=104
 			{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
@@ -74,6 +80,7 @@
 
 	<li class="{if $filter.composite_status eq 102}active{/if}">
 		<a class="data-pjax" href="{$search_url}
+			{if $filter.user_id}&user_id={$filter.user_id}{/if}
 			{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
 			&composite_status=102
 			{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
@@ -83,7 +90,6 @@
 		</a>
 	</li>
 </ul>
-
 
 <div class="row-fluid batch">
 	<form action="{$search_url}{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}" name="searchForm" method="post">

@@ -10,6 +10,7 @@
 //			app.order.operate();
 			app.order.batchForm();
 			app.order.tooltip();
+			app.order.showSearch();
 		},
 		
 		tooltip : function(){
@@ -18,6 +19,23 @@
 				delay : 0,
 				placement : 'right'
 			})
+		},
+		
+		showSearch: function() {
+			$(".date").datepicker({
+				format: "yyyy-mm-dd",
+				container : '.main_content',
+			});
+			
+			$('.show_order_search').off('click').on('click', function() {
+				if ($('.ecjia-order-search').hasClass('display-none')) {
+					$('.ecjia-order-search').slideDown('slow', 'easeOutQuint');
+					$('.ecjia-order-search').removeClass('display-none');
+				} else {
+					$('.ecjia-order-search').slideUp('slow', 'easeInQuart');
+					$('.ecjia-order-search').addClass('display-none');
+				}
+			});
 		},
 		
 		screen : function() {

@@ -450,6 +450,10 @@ class OrdersRepository extends AbstractRepository
             if (array_get($filter, 'store_id')) {
             	$query->where('order_info.store_id', array_get($filter, 'store_id'));
             }
+            
+            if (array_get($filter, 'user_id')) {
+            	$query->leftJoin('users', 'order_info.user_id', '=', 'users.user_id')->where('users.user_id', array_get($filter, 'user_id'));
+            }
 
             if (array_get($filter, 'composite_status')) {
                 //综合状态

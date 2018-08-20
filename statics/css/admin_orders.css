@@ -235,3 +235,39 @@
     border-radius: 4px;
     margin-left: 2px;
 }
+
+.ecjia-order-search.display-none {
+	display: none;
+}
+
+.search-form.form-horizontal {
+	background-color: #F6F6F7;
+    overflow: hidden;
+    padding: 25px 0px 10px 0;
+    margin: 0;
+    margin-bottom: 18px;
+    border-radius: 5px;
+}
+
+.search-form.form-horizontal .control-label {
+	width: 100px;
+}
+
+.search-form.form-horizontal .controls {
+	margin-left: 120px;
+}
+
+.search-form.form-horizontal .search-item {
+	float: left;
+	width: 100%;
+	margin: 0;
+}
+
+.search-form.form-horizontal .search-item .item {
+	float: left;
+	width: 300px;
+}
+
+.search-form.form-horizontal .search-item .item.w500 {
+	width: 500px;
+}

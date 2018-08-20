@@ -152,8 +152,8 @@
 								<i class="fa fa-check"></i> 接单</a>
 						</li>
 						<li>
-							<a class="batch-operate batch-operate-cancel" data-operatetype="cancel" data-url="{$form_action}&operation=cancel"
-							    data-cancel-msg="{lang key='orders::order.confirm_order_cancel'}" href="javascript:;">
+							<a class="batch-operate batch-operate-cancel" data-operatetype="cancel" data-url="{$form_action}&operation=cancel" data-cancel-msg="{lang key='orders::order.confirm_order_cancel'}"
+							    href="javascript:;">
 								<i class="fa fa-times"></i> {lang key='orders::order.op_cancel'}</a>
 						</li>
 						{/if}
@@ -178,7 +178,7 @@
 				<button class="btn btn-primary screen-btn" type="button">
 					<i class="fa fa-search"></i> {lang key='orders::order.filter'} </button>
 				{/if}
-				<form class="form-inline pull-right" action="{$search_url}{if $smarty.get.extension_code}&extension_code={$smarty.get.extension_code}{/if}{if $group_buy_id neq 0}&group_buy_id={$group_buy_id}{/if}{if $smarty.get.date}&date={$smarty.get.date}{/if}{if $filter.composite_status}&composite_status={$filter.composite_status}{/if}"
+				<form class="form-inline pull-right" action="{$search_url}{if $smarty.get.extension_code}&extension_code={$smarty.get.extension_code}{/if}{if $smarty.get.date}&date={$smarty.get.date}{/if}"
 				    method="post" name="searchForm">
 					<div class="form-group">
 						<input type="text" class="form-control w230" name="keywords" value="{$smarty.get.keywords}" placeholder="请输入订单编号或购买者信息">

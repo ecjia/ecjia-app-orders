@@ -12,77 +12,91 @@
 	<h3 class="heading">
 		<!-- {if $ur_here}{$ur_here}{/if} -->
 		<!-- {if $action_link} -->
-		<a class="btn plus_or_reply data-pjax" href="{$action_link.href}"><i class=" fontello-icon-search"></i>{$action_link.text}</a>
+		<a class="btn plus_or_reply data-pjax" href="{$action_link.href}">
+			<i class=" fontello-icon-search"></i>{$action_link.text}</a>
 		<!-- {/if} -->
 	</h3>
 </div>
-<!-- #BeginLibraryItem "/library/order_operate.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/order_operate.lbi" -->
+<!-- #EndLibraryItem -->
 
 <ul class="nav nav-pills">
 	<li class="{if $filter.composite_status eq ''}active{/if}">
 		<a class="data-pjax" href="{$search_url}
+			{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
 			{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
 			{if $filter.keywords}&keywords={$filter.keywords}{/if}
-			">{lang key='orders::order.all'} 
-			<span class="badge badge-info">{if $count.all}{$count.all}{else}0{/if}</span> 
+			">{lang key='orders::order.all'}
+			<span class="badge badge-info">{if $count.all}{$count.all}{else}0{/if}</span>
 		</a>
 	</li>
 	<li class="{if $filter.composite_status eq 100}active{/if}">
-		<a class="data-pjax" href="{$search_url}&composite_status=100
+		<a class="data-pjax" href="{$search_url}
+			{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
+			&composite_status=100
 			{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
 			{if $filter.keywords}&keywords={$filter.keywords}{/if}
 			">待付款
-			<span class="badge badge-info">{if $count.await_pay}{$count.await_pay}{else}0{/if}</span> 
+			<span class="badge badge-info">{if $count.await_pay}{$count.await_pay}{else}0{/if}</span>
 		</a>
 	</li>
-	
+
 	<li class="{if $filter.composite_status eq 105}active{/if}">
-		<a class="data-pjax" href="{$search_url}&composite_status=105
+		<a class="data-pjax" href="{$search_url}
+			{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
+			&composite_status=105
 			{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
 			{if $filter.keywords}&keywords={$filter.keywords}{/if}
 			">待接单
-			<span class="badge badge-info">{if $count.unconfirmed}{$count.unconfirmed}{else}0{/if}</span> 
+			<span class="badge badge-info">{if $count.unconfirmed}{$count.unconfirmed}{else}0{/if}</span>
 		</a>
 	</li>
 	<li class="{if $filter.composite_status eq 101}active{/if}">
-		<a class="data-pjax" href="{$search_url}&composite_status=101
+		<a class="data-pjax" href="{$search_url}
+			{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
+			&composite_status=101
 			{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
 			{if $filter.keywords}&keywords={$filter.keywords}{/if}
 			">待发货
-			<span class="badge badge-info">{if $count.await_ship}{$count.await_ship}{else}0{/if}</span> 
+			<span class="badge badge-info">{if $count.await_ship}{$count.await_ship}{else}0{/if}</span>
 		</a>
 	</li>
 	<li class="{if $filter.composite_status eq 104}active{/if}">
-		<a class="data-pjax" href="{$search_url}&composite_status=104
+		<a class="data-pjax" href="{$search_url}
+			{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
+			&composite_status=104
 			{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
 			{if $filter.keywords}&keywords={$filter.keywords}{/if}
 			">待收货
-			<span class="badge badge-info">{if $count.shipped}{$count.shipped}{else}0{/if}</span> 
+			<span class="badge badge-info">{if $count.shipped}{$count.shipped}{else}0{/if}</span>
 		</a>
 	</li>
-	
+
 	<li class="{if $filter.composite_status eq 102}active{/if}">
-		<a class="data-pjax" href="{$search_url}&composite_status=102
+		<a class="data-pjax" href="{$search_url}
+			{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
+			&composite_status=102
 			{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
 			{if $filter.keywords}&keywords={$filter.keywords}{/if}
 			">已完成
-			<span class="badge badge-info">{if $count.finished}{$count.finished}{else}0{/if}</span> 
+			<span class="badge badge-info">{if $count.finished}{$count.finished}{else}0{/if}</span>
 		</a>
 	</li>
 </ul>
 
 
-<div class="row-fluid batch" >
-	<form action="{$search_url}{if $filter.composite_status}&composite_status={$filter.composite_status}{/if}" name="searchForm" method="post" >
+<div class="row-fluid batch">
+	<form action="{$search_url}{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}" name="searchForm" method="post">
 		<select class="down-menu w180" name="status" id="select-rank">
 			<option value="-1">{lang key='orders::order.all_status'}</option>
 			<!-- {html_options options=$status_list selected=$filter.composite_status} -->
 		</select>
 		<a class="btn m_l5 screen-btn">{t}筛选{/t}</a>
-		
-		<div class="choose_list f_r" >
-			<input type="text" name="merchant_keywords" value="{$filter.merchant_keywords}" placeholder="{lang key='orders::order.enter_merchant_keywords'}"/> 
-			<input type="text" name="keywords" value="{$filter.keywords}" placeholder="请输入订单编号或购买者信息"/> 
+
+		<div class="choose_list f_r">
+			<input type="text" name="merchant_keywords" value="{$filter.merchant_keywords}" placeholder="{lang key='orders::order.enter_merchant_keywords'}"
+			/>
+			<input type="text" name="keywords" value="{$filter.keywords}" placeholder="请输入订单编号或购买者信息" />
 			<button class="btn" type="submit">搜索</button>
 		</div>
 	</form>
@@ -105,7 +119,7 @@
 						<th class="w110">{lang key='orders::order.order_amount'}</th>
 						{if $filter.extension_code eq "group_buy"}
 						<th class="w150">团购数量</th>
-						<th class="w150">订单状态</th>
+						<th class="w130">订单状态</th>
 						{/if}
 						<th class="w100">{lang key='orders::order.all_status'}</th>
 					</tr>
@@ -117,14 +131,15 @@
 							{$order.order_sn}
 							<div class="edit-list">
 								<a href='{url path="orders/admin/info" args="order_id={$order.order_id}"}' class="data-pjax" title="{lang key='orders::order.detail'}">{lang key='orders::order.detail'}</a>
-								{if $order.can_remove}
-								&nbsp;|&nbsp;
-								<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg='{lang key='orders::order.confirm_delete_order'}' href='{url path="orders/admin/remove_order" args="order_id={$order.order_id}"}' title="{lang key='orders::order.op_remove'}">{lang key='orders::order.op_remove'}</a>
+								{if $order.can_remove} &nbsp;|&nbsp;
+								<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg='{lang key=' orders::order.confirm_delete_order '}' href='{url path="orders/admin/remove_order" args="order_id={$order.order_id}"}'
+								    title="{lang key='orders::order.op_remove'}">{lang key='orders::order.op_remove'}</a>
 								{/if}
 							</div>
 						</td>
 						<td>
-							{$order.seller_name}{if $order.manage_mode eq 'self'}<span class="ecjiafc-red">（自营）</span>{/if}
+							{$order.seller_name}{if $order.manage_mode eq 'self'}
+							<span class="ecjiafc-red">（自营）</span>{/if}
 						</td>
 						<td>
 							{$order.order_time}
@@ -159,11 +174,13 @@
 						<td align="center" valign="top" nowrap="nowrap" {if $order.pay_status eq 0}class="ecjiafc-red" {/if}>{$order.label_order_status}</td>
 					</tr>
 					<!-- {foreachelse}-->
-					<tr><td class="no-records" colspan="{if $order.extension_code eq 'group_buy'}10{else}7{/if}">{lang key='system::system.no_records'}</td></tr>
+					<tr>
+						<td class="no-records" colspan="{if $filter.extension_code eq 'group_buy'}10{else}7{/if}">{lang key='system::system.no_records'}</td>
+					</tr>
 					<!-- {/foreach} -->
 				</tbody>
 			</table>
-			<!-- {$order_list.page} -->	
+			<!-- {$order_list.page} -->
 		</div>
 	</div>
 </div>

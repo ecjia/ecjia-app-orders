@@ -127,7 +127,7 @@ class merchant extends ecjia_merchant
         RC_Style::enqueue_style('merchant_orders', RC_App::apps_url('statics/css/merchant_orders.css', __FILE__), array(), false, false);
         RC_Script::enqueue_script('order_delivery', RC_App::apps_url('statics/js/merchant_order_delivery.js', __FILE__));
         RC_Style::enqueue_style('orders', RC_App::apps_url('statics/css/admin_orders.css', __FILE__), array());
-        
+
         RC_Script::enqueue_script('order_delivery', RC_App::apps_url('statics/js/merchant_order_delivery.js', __FILE__));
 
         ecjia_merchant_screen::get_current_screen()->set_parentage('order', 'order/merchant.php');
@@ -148,25 +148,25 @@ class merchant extends ecjia_merchant
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $size = 15;
         $with = null;
-        
+
         //判断订单类型
         if (in_array($filter['extension_code'], array('storebuy', 'cashdesk'))) {
-        	$order_model = 'storebuy';
-        	$ur_here = '到店订单';
-        	$filter['composite_status'] = !empty($_GET['composite_status']) ? intval($_GET['composite_status']) : 102;
+            $order_model = 'storebuy';
+            $ur_here = '到店订单';
+            $filter['composite_status'] = !empty($_GET['composite_status']) ? intval($_GET['composite_status']) : 102;
         } elseif ($filter['extension_code'] == 'storepickup') {
-        	$order_model = 'storepickup';
-        	$ur_here = '自提订单';
-        	$filter['composite_status'] = !empty($_GET['composite_status']) ? intval($_GET['composite_status']) : 101;
+            $order_model = 'storepickup';
+            $ur_here = '自提订单';
+            $filter['composite_status'] = !empty($_GET['composite_status']) ? intval($_GET['composite_status']) : 101;
         } elseif ($filter['extension_code'] == 'group_buy') {
-        	$order_model = 'groupbuy';
-        	$ur_here = '团购订单';
+            $order_model = 'groupbuy';
+            $ur_here = '团购订单';
         } else {
-        	$order_model = 'default';
-        	$ur_here = '配送订单';
+            $order_model = 'default';
+            $ur_here = '配送订单';
         }
         $this->assign('order_model', $order_model);
-        
+
         $filter['store_id'] = $_SESSION['store_id'];
         $filter['extension_code'] = !empty($_GET['extension_code']) ? trim($_GET['extension_code']) : 'default';
         $order_list = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
@@ -197,9 +197,9 @@ class merchant extends ecjia_merchant
         $this->assign('group_buy_id', $group_buy_id);
 
         if ($order_model == 'groupbuy') {
-        	$this->display('mh_groupbuy_order_list.dwt');
+            $this->display('mh_groupbuy_order_list.dwt');
         } else {
-        	$this->display('mh_order_list.dwt');
+            $this->display('mh_order_list.dwt');
         }
     }
 
@@ -214,14 +214,14 @@ class merchant extends ecjia_merchant
 
         $start_time = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date('m'), RC_Time::local_date('d'), RC_Time::local_date('Y')); //当天开始时间
         $end_time = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date('m'), RC_Time::local_date('d') + 1, RC_Time::local_date('Y')) - 1; //当天结束时间
-        
+
         $filter = $_GET;
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $size = 15;
         $with = null;
         $filter['start_time'] = $start_time;
         $filter['add_time'] = $end_time;
-        
+
         $filter['store_id'] = $_SESSION['store_id'];
         $filter['extension_code'] = !empty($_GET['extension_code']) ? trim($_GET['extension_code']) : 'default';
         $order_list = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
@@ -338,14 +338,14 @@ class merchant extends ecjia_merchant
         if (empty($order) || is_ecjia_error($order) || $order['store_id'] != $_SESSION['store_id']) {
             return $this->showmessage(__('无法找到对应的订单！'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
         }
-        
+
         /* 根据订单是否完成检查权限 */
         if (order_finished($order)) {
-        	$this->admin_priv('order_view_finished');
+            $this->admin_priv('order_view_finished');
         } else {
-        	$this->admin_priv('order_view');
+            $this->admin_priv('order_view');
         }
-        
+
         if (in_array($order['extension_code'], array('storebuy', 'cashdesk'))) {
             $order_model = 'storebuy'; //到店订单
             $ur_here = '到店订单信息';
@@ -356,8 +356,8 @@ class merchant extends ecjia_merchant
             $order_model = 'groupbuy';
             $ur_here = '团购订单信息';
         } else {
-        	$order_model = 'default';
-        	$ur_here = '配送订单信息';
+            $order_model = 'default';
+            $ur_here = '配送订单信息';
         }
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here('订单信息'));
 
@@ -444,7 +444,7 @@ class merchant extends ecjia_merchant
         //订单流程
         $flow_status = with(new Ecjia\App\Orders\OrderStatus())->getOrderFlowLabel($order);
         $this->assign('flow_status', $flow_status);
-        
+
         /* 取得订单的来源 */
         if ($order['from_ad'] == 0) {
             $order['referer'] = empty($order['referer']) ? RC_Lang::get('orders::order.from_self_site') : $order['referer'];
@@ -590,7 +590,7 @@ class merchant extends ecjia_merchant
         /* 取得是否存在实体商品 */
         $this->assign('exist_real_goods', exist_real_goods($order['order_id']));
         $this->assign_lang();
-        
+
         /* 是否打印订单，分别赋值 */
         if (isset($_GET['print'])) {
             /* 此订单的发货备注(此订单的最后一条操作记录) 打印订单中用到*/
@@ -726,7 +726,7 @@ class merchant extends ecjia_merchant
             $this->assign('ur_here', $ur_here);
             $action_link = array('href' => RC_Uri::url('orders/merchant/init'), 'text' => RC_Lang::get('orders::order.order_list'));
             if ($order['extension_code'] == 'group_buy') {
-            	$action_link = array('href' => RC_Uri::url('orders/merchant/init', array('extension_code' => 'group_buy')), 'text' => RC_Lang::get('orders::order.order_list'));
+                $action_link = array('href' => RC_Uri::url('orders/merchant/init', array('extension_code' => 'group_buy')), 'text' => RC_Lang::get('orders::order.order_list'));
             }
             $this->assign('action_link', $action_link);
             $this->assign('form_action', RC_Uri::url('orders/merchant/operate'));
@@ -783,11 +783,11 @@ class merchant extends ecjia_merchant
                     $this->assign('shipping_code', $shipping_info['shipping_code']);
                 }
                 if ($order_model == 'storebuy') {
-                	$this->display('order_storebuy_info.dwt');
+                    $this->display('order_storebuy_info.dwt');
                 } elseif ($order_model == 'storepickup') {
-                	$this->display('order_storepickup_info.dwt');
+                    $this->display('order_storepickup_info.dwt');
                 } else {
-                	$this->display('order_info.dwt');
+                    $this->display('order_info.dwt');
                 }
             }
         }

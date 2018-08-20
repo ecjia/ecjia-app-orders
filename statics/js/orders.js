@@ -55,16 +55,34 @@
 			//搜索功能
 			$("form[name='searchForm']").on('submit', function(e){
 				e.preventDefault();
-				var url = $(this).attr('action');
-				var keywords = $("input[name='keywords']").val();
-				var merchant_keywords = $("input[name='merchant_keywords']").val();
-				
+				var $this = $(this);
+					url = $this.attr('action'),
+					keywords = $("input[name='keywords']").val(),
+					merchant_keywords = $("input[name='merchant_keywords']").val();
+					
 				if (keywords != '') {
 					url += '&keywords=' + keywords;
 				}
 				if (merchant_keywords != '') {
 					url += '&merchant_keywords=' + merchant_keywords;
 				}
+				ecjia.pjax(url);
+			});
+			
+			$("form[name='advancedSearchForm']").on('submit', function(e){
+				e.preventDefault();
+				var $this = $(this);
+					url = $this.attr('action'),
+					keywords = $("input[name='keywords']").val(),
+					merchant_keywords = $("input[name='merchant_keywords']").val();
+					
+				if (keywords != '') {
+					url += '&keywords=' + keywords;
+				}
+				if (merchant_keywords != '') {
+					url += '&merchant_keywords=' + merchant_keywords;
+				}
+				url += '&show_search=1';
 				ecjia.pjax(url);
 			});
 		},
@@ -1020,5 +1038,4 @@
 	};
 
 })(ecjia.admin, jQuery);
-
 // end

@@ -230,10 +230,10 @@
 
 .groupbuy-icon {
 	background-color: #E95454;
-    color: #fff;
-    padding: 2px;
-    border-radius: 4px;
-    margin-left: 2px;
+	color: #fff;
+	padding: 2px;
+	border-radius: 4px;
+	margin-left: 2px;
 }
 
 .ecjia-order-search.display-none {
@@ -242,15 +242,19 @@
 
 .search-form.form-horizontal {
 	background-color: #F6F6F7;
-    overflow: hidden;
-    padding: 25px 0px 10px 0;
-    margin: 0;
-    margin-bottom: 18px;
-    border-radius: 5px;
+	overflow: hidden;
+	padding: 25px 0px 10px 0;
+	margin: 0;
+	margin-bottom: 18px;
+	border-radius: 5px;
 }
 
 .search-form.form-horizontal .control-label {
 	width: 100px;
+}
+
+.w165 {
+	width: 165px;
 }
 
 .search-form.form-horizontal .controls {
@@ -268,6 +272,6 @@
 	width: 300px;
 }
 
-.search-form.form-horizontal .search-item .item.w500 {
-	width: 500px;
+.search-form.form-horizontal .search-item .item.w520 {
+	width: 520px;
 }

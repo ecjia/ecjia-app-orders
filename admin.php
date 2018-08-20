@@ -144,6 +144,20 @@ class admin extends ecjia_admin
         $this->assign('search_url', RC_Uri::url('orders/admin/init'));
 
         if ($filter['extension_code'] == 'default' || $filter['extension_code'] == 'group_buy') {
+            if ($filter['extension_code'] == 'default') {
+                //商家列表
+                $merchant_list = RC_DB::table('store_franchisee')->where('status', 1)->where('identity_status', 2)->select('store_id', 'merchants_name')->get();
+                $this->assign('merchant_list', $merchant_list);
+
+                //配送方式
+                $shipping_list = ecjia_shipping::getEnableList();
+                $this->assign('shipping_list', $shipping_list);
+
+                //支付方式
+                $pay_list = with(new Ecjia\App\Payment\PaymentPlugin)->getEnableList();
+                $this->assign('pay_list', $pay_list);
+            }
+
             $this->display('order_list.dwt');
         } else {
             $this->display('other_order_list.dwt');
@@ -433,7 +447,7 @@ class admin extends ecjia_admin
                 $meta_value_encryption = substr_replace($meta_value, str_repeat('*', $len), 0, $len);
                 $this->assign('meta_value', array('normal' => $meta_value, 'encryption' => $meta_value_encryption));
             }
-            
+
             if ((($order['pay_status'] == PS_PAYED || $is_cod) && $order['shipping_status'] == SS_RECEIVED)) {
                 $pickup_status = '已提货';
             }

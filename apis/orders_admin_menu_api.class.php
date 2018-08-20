@@ -59,7 +59,6 @@ class orders_admin_menu_api extends Component_Event_Api {
 			ecjia_admin::make_admin_menu('02_order_list', '到店订单', RC_Uri::url('orders/admin/init', array('extension_code' => 'storebuy')), 2)->add_purview('order_manage'),
 			ecjia_admin::make_admin_menu('03_order_list', '自提订单', RC_Uri::url('orders/admin/init', array('extension_code' => 'storepickup')), 3)->add_purview('order_manage'),
 			ecjia_admin::make_admin_menu('04_order_list', '团购订单', RC_Uri::url('orders/admin/init', array('extension_code' => 'group_buy')), 4)->add_purview('order_manage'),
-			ecjia_admin::make_admin_menu('05_order_query', '订单查询', RC_Uri::url('orders/admin/order_query'), 5)->add_purview('order_manage'),
 				
 			ecjia_admin::make_admin_menu('divider', '', '', 6)->add_purview(array('order_manage')),
 			

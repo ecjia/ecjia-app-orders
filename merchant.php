@@ -572,26 +572,30 @@ class merchant extends ecjia_merchant
         $order['express_user'] = $express_info['express_user'];
         $order['express_mobile'] = $express_info['express_mobile'];
 
-        /* 判断是否为立即配送*/
+        /* 判断是否为上门取货*/
         $shipping_info = ecjia_shipping::getPluginDataById($order['shipping_id']);
-
-        if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
-            $this->assign('is_o2o_express', true);
-            $express_order = RC_DB::table('express_order')->where('order_sn', $order['order_sn'])->orderBy('express_id', 'desc')->first();
-            $this->assign('express_order', $express_order);
-        }
-
         if ($shipping_info['shipping_code'] == "ship_cac") {
             $meta_value = RC_DB::table('term_meta')
-                ->select('meta_value')
                 ->where('object_type', 'ecjia.order')
                 ->where('object_group', 'order')
                 ->where('meta_key', 'receipt_verification')
                 ->where('object_id', $order_id)
-                ->first();
+                ->pluck('meta_value');
 
-            $this->assign('meta_value', $meta_value['meta_value']);
-            $this->assign('shipping_code', $shipping_info['shipping_code']);
+            $meta_value = 'abcdef';
+            $pickup_status = '暂无';
+            if (!empty($meta_value)) {
+                $pickup_status = '未提货';
+                $meta_value_encryption = '';
+                $len = strlen($meta_value);
+                $meta_value_encryption = substr_replace($meta_value, str_repeat('*', $len), 0, $len);
+                $this->assign('meta_value', array('normal' => $meta_value, 'encryption' => $meta_value_encryption));
+            }
+            
+            if ((($order['pay_status'] == PS_PAYED || $is_cod) && $order['shipping_status'] == SS_RECEIVED)) {
+                $pickup_status = '已提货';
+            }
+            $this->assign('pickup_status', $pickup_status);
         }
 
         /* 取得是否存在实体商品 */

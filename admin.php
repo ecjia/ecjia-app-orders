@@ -122,14 +122,14 @@ class admin extends ecjia_admin
         $order_list = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
             ->getOrderList($filter, $page, $size, $with, ['Ecjia\App\Orders\CustomizeOrderList', 'exportOrderListAdmin']);
 
-        $ur_here = in_array($filter['extension_code'], array('default', 'storebuy', 'storepickup', 'group_buy')) ? RC_Lang::get('orders::order.order_extension_code.'.$filter['extension_code']) : '配送订单';
+        $ur_here = in_array($filter['extension_code'], array('default', 'storebuy', 'storepickup', 'group_buy')) ? RC_Lang::get('orders::order.order_extension_code.' . $filter['extension_code']) : '配送订单';
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here($ur_here));
-        
+
         $this->assign('ur_here', $ur_here);
         if ($filter['extension_code'] == 'default') {
-        	$this->assign('action_link', array('href' => RC_Uri::url('orders/admin/order_query'), 'text' => RC_Lang::get('system::system.03_order_query')));
+            $this->assign('action_link', array('href' => RC_Uri::url('orders/admin/order_query'), 'text' => RC_Lang::get('system::system.03_order_query')));
         }
-        
+
         $this->assign('status_list', RC_Lang::get('orders::order.cs'));
         $this->assign('order_list', $order_list);
 
@@ -142,11 +142,11 @@ class admin extends ecjia_admin
         $this->assign('ss', RC_Lang::get('orders::order.ss'));
 
         $this->assign('search_url', RC_Uri::url('orders/admin/init'));
-	
+
         if ($filter['extension_code'] == 'default' || $filter['extension_code'] == 'group_buy') {
-        	$this->display('order_list.dwt');
+            $this->display('order_list.dwt');
         } else {
-        	$this->display('other_order_list.dwt');
+            $this->display('other_order_list.dwt');
         }
     }
 
@@ -211,7 +211,7 @@ class admin extends ecjia_admin
         $this->assign('ur_here', $ur_here);
         $this->assign('action_link', $action_link);
 
-        $nav_here = in_array($order_model, array('default', 'storebuy', 'storepickup', 'group_buy')) ? RC_Lang::get('orders::order.order_extension_code.'.$order_model) : '配送订单';
+        $nav_here = in_array($order_model, array('default', 'storebuy', 'storepickup', 'group_buy')) ? RC_Lang::get('orders::order.order_extension_code.' . $order_model) : '配送订单';
 
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here($nav_here, $url));
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here('订单信息'));
@@ -287,13 +287,13 @@ class admin extends ecjia_admin
 
         $flow_status = with(new Ecjia\App\Orders\OrderStatus())->getOrderFlowLabel($order);
         $this->assign('flow_status', $flow_status);
-        
+
         /* 其他处理 */
         $order['order_time'] = RC_Time::local_date(ecjia::config('time_format'), $order['add_time']);
         $order['pay_time'] = RC_Time::local_date(ecjia::config('time_format'), $order['pay_time']);
         $order['shipping_time'] = RC_Time::local_date(ecjia::config('time_format'), $order['shipping_time']);
         $order['confirm_time'] = RC_Time::local_date(ecjia::config('time_format'), $order['confirm_time']);
-        
+
         $order['invoice_no'] = $order['shipping_status'] == SS_UNSHIPPED || $order['shipping_status'] == SS_PREPARING ? RC_Lang::get('orders::order.ss.' . SS_UNSHIPPED) : $order['invoice_no'];
 
         $is_cod = $order['pay_code'] == 'pay_cod' ? 1 : 0;
@@ -309,12 +309,12 @@ class admin extends ecjia_admin
 
         //订单发货单流水号
         $delivery_info = RC_DB::table('order_info as oi')
-        	->leftJoin('delivery_order as do', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('do.order_id'))
-        	->where(RC_DB::raw('oi.order_id'), $order['order_id'])
-        	->orderBy(RC_DB::raw('do.delivery_id'), 'desc')
-        	->first();
+            ->leftJoin('delivery_order as do', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('do.order_id'))
+            ->where(RC_DB::raw('oi.order_id'), $order['order_id'])
+            ->orderBy(RC_DB::raw('do.delivery_id'), 'desc')
+            ->first();
         $this->assign('delivery_info', $delivery_info);
-        
+
         /* 取得订单商品总重量 */
         $weight_price = order_weight_price($order_id);
         $order['total_weight'] = $weight_price['formated_weight'];
@@ -403,8 +403,8 @@ class admin extends ecjia_admin
 
         if (!empty($data)) {
             foreach ($data as $key => $row) {
-            	$label_status = with(new Ecjia\App\Orders\OrderStatus())->getOrderStatusLabel($row['order_status'], $row['shipping_status'], $row['pay_status'], $is_cod);
-            	$row['action_status'] = $label_status[0];
+                $label_status = with(new Ecjia\App\Orders\OrderStatus())->getOrderStatusLabel($row['order_status'], $row['shipping_status'], $row['pay_status'], $is_cod);
+                $row['action_status'] = $label_status[0];
                 $row['action_time'] = RC_Time::local_date(ecjia::config('time_format'), $row['log_time']);
                 $act_list[] = $row;
             }
@@ -414,6 +414,31 @@ class admin extends ecjia_admin
         $express_info = RC_DB::table('express_order')->where('order_sn', $order['order_sn'])->orderBy('express_id', 'desc')->first();
         $order['express_user'] = $express_info['express_user'];
         $order['express_mobile'] = $express_info['express_mobile'];
+
+        /* 判断是否为上门取货*/
+        $shipping_info = ecjia_shipping::getPluginDataById($order['shipping_id']);
+        if ($shipping_info['shipping_code'] == "ship_cac") {
+            $meta_value = RC_DB::table('term_meta')
+                ->where('object_type', 'ecjia.order')
+                ->where('object_group', 'order')
+                ->where('meta_key', 'receipt_verification')
+                ->where('object_id', $order_id)
+                ->pluck('meta_value');
+
+            $pickup_status = '暂无';
+            if (!empty($meta_value)) {
+                $pickup_status = '未提货';
+                $meta_value_encryption = '';
+                $len = strlen($meta_value);
+                $meta_value_encryption = substr_replace($meta_value, str_repeat('*', $len), 0, $len);
+                $this->assign('meta_value', array('normal' => $meta_value, 'encryption' => $meta_value_encryption));
+            }
+            
+            if ((($order['pay_status'] == PS_PAYED || $is_cod) && $order['shipping_status'] == SS_RECEIVED)) {
+                $pickup_status = '已提货';
+            }
+            $this->assign('pickup_status', $pickup_status);
+        }
 
         /* 取得是否存在实体商品 */
         $this->assign('exist_real_goods', exist_real_goods($order['order_id']));
@@ -528,7 +553,7 @@ class admin extends ecjia_admin
                 $shipping_code = RC_DB::table('shipping')->where('shipping_id', $order['shipping_id'])->pluck('shipping_code');
 
                 if ($shipping_code) {
-                 	//@todo 暂时注释
+                    //@todo 暂时注释
                     //include_once(ROOT_PATH . 'includes/modules/shipping/' . $shipping_code . '.php');
                 }
 
@@ -569,7 +594,7 @@ class admin extends ecjia_admin
             if (empty($order['extension_code']) || $order['extension_code'] == 'group_buy') {
                 $this->display('order_info.dwt');
             } else {
-            	$this->display('other_order_info.dwt');
+                $this->display('other_order_info.dwt');
             }
         }
     }
@@ -3075,8 +3100,7 @@ class admin extends ecjia_admin
             }
             /* 退货用户余额、积分、红包 */
             return_user_surplus_integral_bonus($order);
-        }
-        elseif ('after_service' == $operation) {
+        } elseif ('after_service' == $operation) {
             /* 记录log */
             order_action($order['order_sn'], $order['order_status'], $order['shipping_status'], $order['pay_status'], '[' . RC_Lang::get('orders::order.op_after_service') . '] ' . $action_note);
         } else {

@@ -295,6 +295,7 @@
 			app.order.queryinfo();
 			app.order.operatesubmit();
 			app.order.batchForm();
+			app.order.showCode();
 		},
 
 		//退款按钮
@@ -979,6 +980,23 @@
 						}
 					}
 				});
+			});
+		},
+		showCode: function() {
+			$('.show_meta_value').off('click').on('click', function() {
+				var $this = $(this).parent(),
+					normal_value = $this.attr('data-val'),
+					enc_value = $this.attr('data-enc'),
+					$i = $this.children('i'),
+					$span = $this.children('span');
+
+				if ($i.hasClass('fontello-icon-eye')) {
+					$span.text(normal_value);
+					$i.removeClass('fontello-icon-eye').addClass('fontello-icon-eye-off');
+				} else {
+					$span.text(enc_value);
+					$i.addClass('fontello-icon-eye').removeClass('fontello-icon-eye-off');
+				}
 			});
 		},
 	};

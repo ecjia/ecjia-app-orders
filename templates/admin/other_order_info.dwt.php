@@ -12,7 +12,8 @@
 	<h3 class="heading">
 		<!-- {if $ur_here}{$ur_here}{/if} -->
 		<!-- {if $action_link} -->
-		<a href="{$action_link.href}" class="btn plus_or_reply data-pjax" ><i class="fontello-icon-reply"></i>{$action_link.text}</a>
+		<a href="{$action_link.href}" class="btn plus_or_reply data-pjax">
+			<i class="fontello-icon-reply"></i>{$action_link.text}</a>
 		<!-- {/if} -->
 	</h3>
 </div>
@@ -44,7 +45,9 @@
 
 <div class="row-fluid">
 	<div class="span12 ecjiaf-tac">
-		<div class="ecjiaf-fl"><h3>{lang key='orders::order.label_order_sn'}{$order.order_sn}</h3></div>
+		<div class="ecjiaf-fl">
+			<h3>{lang key='orders::order.label_order_sn'}{$order.order_sn}</h3>
+		</div>
 	</div>
 </div>
 <div class="row-fluid">
@@ -52,43 +55,76 @@
 		<div id="accordion2" class="foldable-list form-inline">
 			<div class="accordion-group">
 				<div class="accordion-heading">
-					<a class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseOne"><strong>{lang key='orders::order.base_info'}</strong></a>
+					<a class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseOne">
+						<strong>{lang key='orders::order.base_info'}</strong>
+					</a>
 				</div>
 				<div class="accordion-body in collapse" id="collapseOne">
 					<table class="table table-oddtd m_b0">
 						<tbody class="first-td-no-leftbd">
 							<tr>
-								<td><div align="right"><strong>订单编号：</strong></div></td>
 								<td>
-									{$order.order_sn}
-									{if $order.extension_code eq "group_buy"}
+									<div align="right">
+										<strong>订单编号：</strong>
+									</div>
+								</td>
+								<td>
+									{$order.order_sn} {if $order.extension_code eq "group_buy"}
 									<a href='{url path="groupbuy/admin/edit" args="id={$order.extension_id}"}' target="_blank">{lang key='orders::order.group_buy'}</a>
 									{/if}
 								</td>
-								<td><div align="right"><strong>{lang key='orders::order.label_order_status'}</strong></div></td>
+								<td>
+									<div align="right">
+										<strong>{lang key='orders::order.label_order_status'}</strong>
+									</div>
+								</td>
 								<td>{$order.status}</td>
 							</tr>
 							<tr>
-								<td><div align="right"><strong>购买人：</strong></div></td>
+								<td>
+									<div align="right">
+										<strong>购买人：</strong>
+									</div>
+								</td>
 								<td>
 									{$order.user_name|default:{lang key='orders::order.anonymous'}}
 								</td>
-								<td><div align="right"><strong>购买人手机号：</strong></div></td>
+								<td>
+									<div align="right">
+										<strong>购买人手机号：</strong>
+									</div>
+								</td>
 								<td>{$order.mobile_phone}</td>
 							</tr>
 							<tr>
-								<td><div align="right"><strong>{lang key='orders::order.label_payment'}</strong></div></td>
+								<td>
+									<div align="right">
+										<strong>{lang key='orders::order.label_payment'}</strong>
+									</div>
+								</td>
 								<td>
 									{$order.pay_name}
 								</td>
-								<td><div align="right"><strong>{lang key='orders::order.label_order_time'}</strong></div></td>
+								<td>
+									<div align="right">
+										<strong>{lang key='orders::order.label_order_time'}</strong>
+									</div>
+								</td>
 								<td>{$order.formated_add_time}</td>
 							</tr>
-							
+
 							<tr>
-								<td><div align="right"><strong>{lang key='orders::order.label_pay_time'}</strong></div></td>
+								<td>
+									<div align="right">
+										<strong>{lang key='orders::order.label_pay_time'}</strong>
+									</div>
+								</td>
 								<td>{$order.pay_time}</td>
-								<td><div align="right"><strong>{lang key='orders::order.from_order'}</strong></div></td>
+								<td>
+									<div align="right">
+										<strong>{lang key='orders::order.from_order'}</strong>
+									</div>
+								</td>
 								<td>{if $order.referer eq 'ecjia-cashdesk'}收银台{elseif $order.referer eq 'ecjia-storebuy'}小程序自助购物{else}{$order.referer}{/if}</td>
 							</tr>
 						</tbody>
@@ -108,20 +144,42 @@
 					<table class="table table-oddtd m_b0">
 						<tbody class="first-td-no-leftbd">
 							<tr>
-								<td><div align="right"><strong>{lang key='orders::order.label_merchants_name'}</strong></div></td>
-								<td><a href='{url path="store/admin/preview" args="store_id={$order.store_id}"}' target="__blank">{$order.merchants_name}</a></td>
-								<td><div align="right"><strong>{lang key='orders::order.label_responsible_person'}</strong></div></td>
+								<td>
+									<div align="right">
+										<strong>{lang key='orders::order.label_merchants_name'}</strong>
+									</div>
+								</td>
+								<td>
+									<a href='{url path="store/admin/preview" args="store_id={$order.store_id}"}' target="__blank">{$order.merchants_name}</a>
+								</td>
+								<td>
+									<div align="right">
+										<strong>{lang key='orders::order.label_responsible_person'}</strong>
+									</div>
+								</td>
 								<td>{$order.responsible_person}</td>
 							</tr>
 							<tr>
-								<td><div align="right"><strong>{lang key='orders::order.label_contact_mobile'}</strong></div></td>
+								<td>
+									<div align="right">
+										<strong>{lang key='orders::order.label_contact_mobile'}</strong>
+									</div>
+								</td>
 								<td>{$order.contact_mobile}</td>
-								<td><div align="right"><strong>{lang key='orders::order.label_email'}</strong></div></td>
+								<td>
+									<div align="right">
+										<strong>{lang key='orders::order.label_email'}</strong>
+									</div>
+								</td>
 								<td>{$order.merchants_email}</td>
 							</tr>
 							{if $order.validate_type eq 2}
 							<tr>
-								<td><div align="right"><strong>{lang key='orders::order.label_company_name'}</strong></div></td>
+								<td>
+									<div align="right">
+										<strong>{lang key='orders::order.label_company_name'}</strong>
+									</div>
+								</td>
 								<td colspan="3">{$order.company_name}</td>
 							</tr>
 							{/if}
@@ -131,7 +189,7 @@
 			</div>
 			<!-- {/if} -->
 			<!-- 店铺信息 end -->
-			
+
 			{if $order.extension_code eq 'storepickup'}
 			<div class="accordion-group">
 				<div class="accordion-heading accordion-heading-url">
@@ -148,13 +206,20 @@
 										<strong>提货码：</strong>
 									</div>
 								</td>
-								<td></td>
+								<td data-val="{$meta_value.normal}" data-enc="{$meta_value.encryption}">
+									{if $meta_value}
+										<span class="w150">{$meta_value.encryption}</span>
+										<i class="show_meta_value fontello-icon-eye cursor_pointer"></i>
+									{else}
+										暂无
+									{/if}
+								</td>
 								<td>
 									<div align="right">
 										<strong>提货状态：</strong>
 									</div>
 								</td>
-								<td></td>
+								<td>{$pickup_status}</td>
 							</tr>
 							<tr>
 								<td>
@@ -162,13 +227,16 @@
 										<strong>预约提货时间：</strong>
 									</div>
 								</td>
-								<td colspan="3"></td>
+								<td colspan="3">
+									{if $order.expect_shipping_time} {RC_Time::local_date(ecjia::config('time_format'), $order.expect_shipping_time)} {else}
+									暂无 {/if}
+								</td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
 			</div>
-			
+
 			<div class="accordion-group">
 				<div class="accordion-heading accordion-heading-url">
 					<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseTwo-a">
@@ -210,7 +278,7 @@
 					</table>
 				</div>
 			</div>
-			
+
 			<div class="accordion-group">
 				<div class="accordion-heading accordion-heading-url">
 					<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseTwo">
@@ -233,7 +301,7 @@
 				</div>
 			</div>
 			{/if}
-				
+
 			<div class="accordion-group">
 				<div class="accordion-heading accordion-heading-url">
 					<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseFour">
@@ -258,20 +326,32 @@
 						<tbody>
 							<!-- {foreach from=$goods_list item=goods} -->
 							<tr class="table-list">
-								<td><img src="{$goods.goods_img}" width='50'/></td>
+								<td>
+									<img src="{$goods.goods_img}" width='50' />
+								</td>
 								<td>
 									{if $goods.goods_id gt 0 and $goods.extension_code neq 'package_buy'}
-									<a href='{url path="goods/admin/preview" args="id={$goods.goods_id}"}' target="_blank">{$goods.goods_name} {if $goods.brand_name}[ {$goods.brand_name} ]{/if}{if $goods.is_gift}{if $goods.goods_price gt 0}{lang key='orders::order.remark_favourable'}{else}{lang key='orders::order.remark_gift'}{/if}{/if}{if $goods.parent_id gt 0}{lang key='orders::order.remark_fittings'}{/if}</a>
+									<a href='{url path="goods/admin/preview" args="id={$goods.goods_id}"}' target="_blank">{$goods.goods_name} {if $goods.brand_name}[ {$goods.brand_name} ]{/if}{if $goods.is_gift}{if $goods.goods_price
+										gt 0}{lang key='orders::order.remark_favourable'}{else}{lang key='orders::order.remark_gift'}{/if}{/if}{if $goods.parent_id
+										gt 0}{lang key='orders::order.remark_fittings'}{/if}</a>
 									{/if}
 								</td>
 								<td>{$goods.goods_sn}</td>
 								<td>{$goods.product_sn}</td>
-								<td><div>{$goods.formated_goods_price}</div></td>
-								<td><div>{$goods.goods_number}
-								</div></td>
+								<td>
+									<div>{$goods.formated_goods_price}</div>
+								</td>
+								<td>
+									<div>{$goods.goods_number}
+									</div>
+								</td>
 								<td>{$goods.goods_attr|nl2br}</td>
-								<td><div>{$goods.storage}</div></td>
-								<td><div>{$goods.formated_subtotal}</div></td>
+								<td>
+									<div>{$goods.storage}</div>
+								</td>
+								<td>
+									<div>{$goods.formated_subtotal}</div>
+								</td>
 							</tr>
 							<!-- {foreachelse} -->
 							<tr>
@@ -279,8 +359,14 @@
 							</tr>
 							<!-- {/foreach} -->
 							<tr>
-								<td colspan="8"><div align="right"><strong>{lang key='orders::order.label_total'}</strong></div></td>
-								<td><div align="right">{$order.formated_goods_amount}</div></td>
+								<td colspan="8">
+									<div align="right">
+										<strong>{lang key='orders::order.label_total'}</strong>
+									</div>
+								</td>
+								<td>
+									<div align="right">{$order.formated_goods_amount}</div>
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -288,7 +374,7 @@
 			</div>
 			<div class="accordion-group">
 				<div class="accordion-heading accordion-heading-url">
-					<div class="accordion-toggle acc-in" data-toggle="collapse"  data-target="#collapseFive">
+					<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseFive">
 						<strong>{lang key='orders::order.fee_info'}</strong>
 					</div>
 				</div>
@@ -297,18 +383,22 @@
 						<tr>
 							<td>
 								<div align="right">
-									{lang key='orders::order.label_goods_amount'}<strong>{$order.formated_goods_amount}</strong>
-									- {lang key='orders::order.label_discount'}<strong>{$order.formated_discount}</strong>
-									- {lang key='orders::order.label_integral'} <strong>{$order.formated_integral_money}</strong>
-									- {lang key='orders::order.label_bonus'} <strong>{$order.formated_bonus}</strong>
+									{lang key='orders::order.label_goods_amount'}
+									<strong>{$order.formated_goods_amount}</strong>
+									- {lang key='orders::order.label_discount'}
+									<strong>{$order.formated_discount}</strong>
+									- {lang key='orders::order.label_integral'}
+									<strong>{$order.formated_integral_money}</strong>
+									- {lang key='orders::order.label_bonus'}
+									<strong>{$order.formated_bonus}</strong>
 								</div>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<div align="right">
-									= {if $order.order_amount >= 0}
-									买单实付金额：<strong>{$order.formated_order_amount}</strong>
+									= {if $order.order_amount >= 0} 买单实付金额：
+									<strong>{$order.formated_order_amount}</strong>
 									{/if}
 								</div>
 							</td>
@@ -318,16 +408,26 @@
 			</div>
 			<div class="accordion-group">
 				<div class="accordion-heading">
-					<a class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseSix"><strong>{lang key='orders::order.operation_record'}</strong></a>
+					<a class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseSix">
+						<strong>{lang key='orders::order.operation_record'}</strong>
+					</a>
 				</div>
 				<div class="accordion-body in collapse" id="collapseSix">
 					<table class="table table-striped m_b0">
 						<thead>
 							<tr>
-								<th class="w130"><strong>{lang key='orders::order.action_user_two'}</strong></th>
-								<th class="w180"><strong>{lang key='orders::order.action_time'}</strong></th>
-								<th class="w130"><strong>{lang key='orders::order.order_status'}</strong></th>
-								<th class="w130"><strong>{lang key='orders::order.pay_status'}</strong></th>
+								<th class="w130">
+									<strong>{lang key='orders::order.action_user_two'}</strong>
+								</th>
+								<th class="w180">
+									<strong>{lang key='orders::order.action_time'}</strong>
+								</th>
+								<th class="w130">
+									<strong>{lang key='orders::order.order_status'}</strong>
+								</th>
+								<th class="w130">
+									<strong>{lang key='orders::order.pay_status'}</strong>
+								</th>
 							</tr>
 						</thead>
 						<tbody>

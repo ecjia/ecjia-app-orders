@@ -298,6 +298,7 @@
 			app.order.unconfirmForm();
 			app.order.ship_form();
 			app.order.change_shipping();
+			app.order.showCode();
 		},
 		
 		//商家进行退款
@@ -528,6 +529,24 @@
 					$('#shipmodal').find('.invoice-no-group').addClass('hide');
 				} else {
 					$('#shipmodal').find('.invoice-no-group').removeClass('hide');
+				}
+			});
+		},
+
+		showCode: function() {
+			$('.show_meta_value').off('click').on('click', function() {
+				var $this = $(this).parent(),
+					normal_value = $this.attr('data-val'),
+					enc_value = $this.attr('data-enc'),
+					$i = $this.children('i'),
+					$span = $this.children('span');
+
+				if ($i.hasClass('fa-eye')) {
+					$span.text(normal_value);
+					$i.removeClass('fa-eye').addClass('fa-eye-slash');
+				} else {
+					$span.text(enc_value);
+					$i.addClass('fa-eye').removeClass('fa-eye-slash');
 				}
 			});
 		},

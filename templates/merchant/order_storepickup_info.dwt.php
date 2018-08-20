@@ -134,13 +134,23 @@ ecjia.merchant.order.info();
 						<tbody class="first-td-no-leftbd">
 							<tr>
 								<td><div align="right"><strong>提货码：</strong></div></td>
-								<td>{if $meta_value neq ''}{$meta_value}{else}暂无{/if}</td>
+								<td data-val="{$meta_value.normal}" data-enc="{$meta_value.encryption}">
+									{if $meta_value}
+										<span class="w150">{$meta_value.encryption}</span>
+										<i class="show_meta_value fa fa-eye cursor_pointer"></i>
+									{else}
+										暂无
+									{/if}
+								</td>
 								<td><div align="right"><strong>提货状态：</strong></div></td>
-								<td></td>
+								<td>{$pickup_status}</td>
 							</tr>
 							<tr>
 								<td><div align="right"><strong>预约提货时间：</strong></div></td>
-								<td colspan="3">{if $order.expect_shipping_time}{$order.expect_shipping_time}{else}暂无{/if}</td>
+								<td colspan="3">
+									{if $order.expect_shipping_time} {RC_Time::local_date(ecjia::config('time_format'), $order.expect_shipping_time)} {else}
+									暂无 {/if}
+								</td>
 							</tr>
 						</tbody>
 					</table>

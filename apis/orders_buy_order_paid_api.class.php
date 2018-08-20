@@ -127,13 +127,13 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	        order_action($order_sn, OS_CONFIRMED, SS_UNSHIPPED, $pay_status, '', RC_Lang::get('orders::order.buyers'));
 	    }
 	    
-	    //会员店铺消费过，记录为店铺会员
-	    if (!empty($order['user_id'])) {
-	    	if (!empty($order['store_id'])) {
-	    		RC_Loader::load_app_class('add_storeuser', 'user', false);
-	    		add_storeuser::add_store_user(array('user_id' => $order['user_id'], 'store_id' => $order['store_id']));
-	    	}
-	    }
+	    //会员店铺消费过，记录为店铺会员 TODO暂时不启用
+	    //if (!empty($order['user_id'])) {
+	    //	if (!empty($order['store_id'])) {
+	    //		RC_Loader::load_app_class('add_storeuser', 'user', false);
+	    //		add_storeuser::add_store_user(array('user_id' => $order['user_id'], 'store_id' => $order['store_id']));
+	    //	}
+	    //}
 	    
 	    //团购活动，有保证金的；订单order_status_log区分
 	    RC_Loader::load_app_class('OrderStatusLog', 'orders');

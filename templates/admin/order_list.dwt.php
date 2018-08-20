@@ -109,7 +109,7 @@
 				<thead>
 					<tr>
 						<th class="w100">订单编号</th>
-						<th class="w150">{lang key='orders::order.merchants_name'}</th>
+						<th class="w180">{lang key='orders::order.merchants_name'}</th>
 						<th class="w150">{lang key='orders::order.order_time'}</th>
 						<th class="w150">购买者信息</th>
 						<th class="w150">{lang key='orders::order.total_fee'}</th>

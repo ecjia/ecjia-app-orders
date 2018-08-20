@@ -189,8 +189,32 @@ class admin extends ecjia_admin
             $this->admin_priv('order_view', ecjia::MSGTYPE_JSON);
         }
 
-        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('system::system.02_order_list'), RC_Uri::url('orders/admin/init')));
-        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.order_info')));
+        if (in_array($order['extension_code'], array('storebuy', 'cashdesk'))) {
+            $order_model = 'storebuy'; //到店订单
+            $ur_here = '到店订单信息';
+        } elseif ($order['extension_code'] == 'storepickup') {
+            $order_model = 'storepickup';
+            $ur_here = '自提订单信息';
+        } elseif ($order['extension_code'] == 'group_buy') {
+            $order_model = 'group_buy';
+            $ur_here = '团购订单信息';
+        } else {
+            $order_model = 'default';
+            $ur_here = '配送订单信息';
+        }
+        $url = RC_Uri::url('orders/admin/init', array('extension_code' => $order_model));
+        if ($order_model == 'default') {
+            $url = RC_Uri::url('orders/admin/init');
+        }
+        $action_link = array('href' => $url, 'text' => '订单列表');
+
+        $this->assign('ur_here', $ur_here);
+        $this->assign('action_link', $action_link);
+
+        $nav_here = in_array($order_model, array('default', 'storebuy', 'storepickup', 'group_buy')) ? RC_Lang::get('orders::order.order_extension_code.'.$order_model) : '配送订单';
+
+        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here($nav_here, $url));
+        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here('订单信息'));
         ecjia_screen::get_current_screen()->add_help_tab(array(
             'id' => 'overview',
             'title' => RC_Lang::get('orders::order.overview'),
@@ -379,10 +403,6 @@ class admin extends ecjia_admin
 
         if (!empty($data)) {
             foreach ($data as $key => $row) {
-//                 $row['order_status'] = RC_Lang::get('orders::order.os.' . $row['order_status']);
-//                 $row['pay_status'] = RC_Lang::get('orders::order.ps.' . $row['pay_status']);
-//                 $row['shipping_status'] = RC_Lang::get('orders::order.ss.' . $row['shipping_status']);
-                
             	$label_status = with(new Ecjia\App\Orders\OrderStatus())->getOrderStatusLabel($row['order_status'], $row['shipping_status'], $row['pay_status'], $is_cod);
             	$row['action_status'] = $label_status[0];
                 $row['action_time'] = RC_Time::local_date(ecjia::config('time_format'), $row['log_time']);
@@ -520,24 +540,6 @@ class admin extends ecjia_admin
                 }
             }
         } else {
-        	$action_link = array('href' => RC_Uri::url('orders/admin/init'), 'text' => '订单列表');
-            if (in_array($order['extension_code'], array('storebuy', 'cashdesk'))) {
-            	$order_model = 'storebuy'; //到店订单
-            	$ur_here = '到店订单信息';
-            } elseif ($order['extension_code'] == 'storepickup') {
-            	$order_model = 'storepickup';
-            	$ur_here = '自提订单信息';
-            } elseif ($order['extension_code'] == 'group_buy') {
-            	$order_model = 'groupbuy';
-            	$ur_here = '团购订单信息';
-            	$action_link = array('href' => RC_Uri::url('orders/admin/init', array('extension_code' => 'group_buy')), 'text' => '订单列表');
-            } else {
-            	$order_model = 'default';
-            	$ur_here = '配送订单信息';
-            }
-            $this->assign('ur_here', $ur_here);
-            $this->assign('action_link', $action_link);
-            
             $this->assign('form_action', RC_Uri::url('orders/admin/operate'));
             $this->assign('remove_action', RC_Uri::url('orders/admin/remove_order'));
 

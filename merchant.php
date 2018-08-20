@@ -353,12 +353,19 @@ class merchant extends ecjia_merchant
             $order_model = 'storepickup';
             $ur_here = '自提订单信息';
         } elseif ($order['extension_code'] == 'group_buy') {
-            $order_model = 'groupbuy';
+            $order_model = 'group_buy';
             $ur_here = '团购订单信息';
         } else {
             $order_model = 'default';
             $ur_here = '配送订单信息';
         }
+        $url = RC_Uri::url('orders/merchant/init', array('extension_code' => $order_model));
+        if ($order_model == 'default') {
+            $url = RC_Uri::url('orders/merchant/init');
+        }
+        $nav_here = in_array($order_model, array('default', 'storebuy', 'storepickup', 'group_buy')) ? RC_Lang::get('orders::order.order_extension_code.'.$order_model) : '配送订单';
+
+        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here($nav_here, $url));
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here('订单信息'));
 
         /*发票抬头和发票识别码处理*/

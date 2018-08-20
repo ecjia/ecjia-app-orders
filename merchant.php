@@ -582,7 +582,6 @@ class merchant extends ecjia_merchant
                 ->where('object_id', $order_id)
                 ->pluck('meta_value');
 
-            $meta_value = 'abcdef';
             $pickup_status = '暂无';
             if (!empty($meta_value)) {
                 $pickup_status = '未提货';

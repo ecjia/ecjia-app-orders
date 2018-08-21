@@ -199,7 +199,7 @@ class OrderStatus
 
         if (!empty($payment_ids)) {
             return function ($query) use ($payment_ids) {
-                $query->whereIn('order_info.order_status', array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))
+                $query->whereIn('order_info.order_status', array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))
                     ->whereIn('order_info.shipping_status', array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING))
                     ->where(function ($query) use ($payment_ids) {
                         $query->whereIn('order_info.pay_status', array(PS_PAYED, PS_PAYING))
@@ -343,8 +343,7 @@ class OrderStatus
     public static function getAdminOrderStatusLabel($order_status, $shipping_status, $pay_status, $is_cod)
     {
         if (in_array($order_status, array(OS_SPLITED, OS_UNCONFIRMED)) &&
-            in_array($pay_status, array(PS_UNPAYED)) &&
-            (in_array($shipping_status, array(SS_SHIPPED, SS_RECEIVED)) || !$is_cod)) {
+            in_array($pay_status, array(PS_UNPAYED))) {
             $label_order_status = '未付款';
             $status_code = 'await_pay';
         } elseif (in_array($order_status, array(OS_UNCONFIRMED)) &&

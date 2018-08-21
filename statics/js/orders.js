@@ -140,14 +140,14 @@
 			});
 			//重置
 			$('.btn-reset').off('click').on('click', function () {
-//				$('.search-form').find("input[type='text']").val("");
-//				$('.search-form').find('select').each(function() {
-//					$(this).find('option').eq('').prop("selected", true);
-//				})
-//				$('.search-form').find('select').trigger("liszt:updated");
-				var url = $("form[name='advancedSearchForm']").attr('action');
-				url += '&show_search=1';
-				ecjia.pjax(url);
+				$('.search-form').find("input[type='text']").val("");
+				$('.search-form').find('select').each(function() {
+					$(this).find('option').eq('').prop("selected", true);
+				})
+				$('.search-form').find('select').trigger("liszt:updated");
+//				var url = $("form[name='advancedSearchForm']").attr('action');
+//				url += '&show_search=1';
+//				ecjia.pjax(url);
 			});
 			
 		},

@@ -50,6 +50,7 @@ namespace Ecjia\App\Orders\Repositories;
 use Ecjia\App\Orders\OrderStatus;
 use RC_DB;
 use Royalcms\Component\Repository\Repositories\AbstractRepository;
+use RC_Time;
 
 class OrdersRepository extends AbstractRepository
 {
@@ -425,10 +426,12 @@ class OrdersRepository extends AbstractRepository
                 $query->where('order_info.pay_status', array_get($filter, 'pay_status'));
             }
             if (array_get($filter, 'start_time')) {
-                $query->where('order_info.add_time', array_get($filter, '>=', 'start_time'));
+            	$start_time = RC_Time::local_strtotime(array_get($filter, 'start_time'));
+                $query->where('order_info.add_time', '>=', $start_time);
             }
             if (array_get($filter, 'end_time')) {
-                $query->where('order_info.add_time', array_get($filter, '<=', 'end_time'));
+            	$end_time = RC_Time::local_strtotime(array_get($filter, 'end_time'));
+                $query->where('order_info.add_time', '<', $end_time);
             }
             if (array_get($filter, 'group_buy_id')) {
                 $query->where('order_info.extension_code', 'group_buy');

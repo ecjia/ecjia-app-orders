@@ -125,8 +125,8 @@
 					<div class="controls">
 						<input class="btn btn-gebo" type="submit" value="查询" />
 						<input class="btn m_l10 btn-reset" type="button" value="重置" />
-						{if $filter.show_search && $order_list.order_list}
-						<input class="btn m_l10" type="button" value="导出报表" />
+						{if $filter.show_search}
+						<a class="btn m_l10" href="{$import_url}{if $smarty.get.composite_status}&composite_status={$smarty.get.composite_status}{/if}">导出报表</a>
 						{/if}
 					</div>
 				</div>

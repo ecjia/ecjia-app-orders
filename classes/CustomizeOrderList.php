@@ -271,6 +271,29 @@ class CustomizeOrderList
     
     	return array('order_list' => $orderlist->toArray(), 'count' => $count, 'page' => $page->show(2), 'desc' => $page->page_desc(), 'filter_count' => $filter_count);
     }
+    
+    public static function exportAllOrderListAdmin(Collection $orders)
+    {
+    	$orderlist = $orders->map(function ($item) {
+    		//计算订单总价格
+    		$total_fee = $item->goods_amount + $item->shipping_fee + $item->insure_fee + $item->pay_fee + $item->pack_fee + $item->card_fee + $item->tax - $item->integral_money - $item->bonus - $item->discount;
+    
+    		list($label_order_status, $status_code) = OrderStatus::getAdminOrderStatusLabel($item->order_status, $item->shipping_status, $item->pay_status, $item->payment->is_cod);
+    		$data = [
+	    		'order_sn' => $item->order_sn,
+	    		'seller_name' => $item->store->merchants_name,
+	    		'order_time' => ecjia_time_format($item->add_time),
+	    		'consignee' => $item->consignee,
+	    		'formated_total_fee' => ecjia_price_format($total_fee, false),
+	    		'formated_order_amount' => ecjia_price_format($item->order_amount, false),
+	    		'label_order_status' => $label_order_status,
+    		];
+    		
+    		return $data;
+    	});
+    
+    	return $orderlist->toArray();
+    }
 }
 
 // end

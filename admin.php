@@ -117,12 +117,10 @@ class admin extends ecjia_admin
         $filter = $_GET;
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $size = 15;
-        $with = null;
-        
         $filter['extension_code'] = !empty($_GET['extension_code']) ? trim($_GET['extension_code']) : 'default';
         $order_list = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
-            ->getOrderList($filter, $page, $size, $with, ['Ecjia\App\Orders\CustomizeOrderList', 'exportOrderListAdmin']);
-
+            ->getOrderList($filter, $page, $size, null, ['Ecjia\App\Orders\CustomizeOrderList', 'exportOrderListAdmin']);
+        
         $ur_here = in_array($filter['extension_code'], array('default', 'storebuy', 'storepickup', 'group_buy')) ? RC_Lang::get('orders::order.order_extension_code.' . $filter['extension_code']) : '配送订单';
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here($ur_here));
 
@@ -138,7 +136,15 @@ class admin extends ecjia_admin
         $this->assign('count', $order_list['filter_count']);
         $this->assign('form_action', RC_Uri::url('orders/admin/operate', array('batch' => 1)));
 
-        $this->assign('search_url', $this->get_search_url($filter));
+        $url_info = $this->get_search_url($filter);
+        $this->assign('search_url', $url_info['url']);
+        
+        $import_url = RC_Uri::url('orders/admin/import');
+        if (!empty($url_info['param'])) {
+        	$import_url = RC_Uri::url('orders/admin/import', $url_info['param']);
+        }
+        $this->assign('import_url', $import_url);
+        
 
         if ($filter['extension_code'] == 'default' || $filter['extension_code'] == 'group_buy') {
             if ($filter['extension_code'] == 'default') {
@@ -3362,6 +3368,21 @@ class admin extends ecjia_admin
         }
     }
     
+    public function import() {
+    	$filter = $_GET;
+    	$filter['extension_code'] = !empty($_GET['extension_code']) ? trim($_GET['extension_code']) : 'default';
+    	$orders = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
+    		->getOrderList($filter, 0, 0, null, ['Ecjia\App\Orders\CustomizeOrderList', 'exportAllOrderListAdmin']);
+    	
+    	RC_Excel::load(RC_APP_PATH . 'orders' . DIRECTORY_SEPARATOR .'statics/files/orders.xls', function($excel) use ($orders){
+    		$excel->sheet('First sheet', function($sheet) use ($orders) {
+    			foreach ($orders as $key => $item) {
+    				$sheet->appendRow($key+2, $item);
+    			}
+    		});
+    	})->download('xls');
+    }
+    
     private function get_search_url() {
     	$url = RC_Uri::url('orders/admin/init');
     	$param = [];
@@ -3402,10 +3423,6 @@ class admin extends ecjia_admin
     		if (!empty($filter['store_id'])) {
     			$param['store_id'] = intval($filter['store_id']);
     		}
-    		//订单状态
-    		if (!empty($filter['advanced_order_status'])) {
-    			$param['advanced_order_status'] = $filter['advanced_order_status'];
-    		}
     		//配送方式
     		if (!empty($filter['shipping_id'])) {
     			$param['shipping_id'] = intval($filter['shipping_id']);
@@ -3434,7 +3451,7 @@ class admin extends ecjia_admin
     	if (!empty($param)) {
     		$url = RC_Uri::url('orders/admin/init', $param);
     	}
-    	return $url;
+    	return array('url' => $url, 'param' => $param);
     }
 }
 

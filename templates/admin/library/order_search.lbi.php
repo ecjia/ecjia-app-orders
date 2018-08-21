@@ -1,5 +1,5 @@
 <div class="row-fluid ecjia-order-search {if !$smarty.get.show_search}display-none{/if}">
-	<form class="form-horizontal search-form" action="{$search_url}" name="advancedSearchForm" method="post">
+	<form class="form-horizontal search-form" action="{RC_Uri::url('orders/admin/init')}" name="advancedSearchForm" method="post">
 		<div class="search-item">
 			<div class="item">
 				<div class="control-group">
@@ -25,10 +25,10 @@
 				<div class="control-group">
 					<label class="control-label">商家：</label>
 					<div class="controls">
-						<select name="merchants_name" class="w180">
+						<select name="store_id" class="w180">
 							<option value="">请选择商家</option>
 							{foreach from=$merchant_list item=val}
-							<option value="{$val.store_id}">{$val.merchants_name}</option>
+							<option value="{$val.store_id}" {if $filter.store_id eq $val.store_id}selected{/if}>{$val.merchants_name}</option>
 							{/foreach}
 						</select>
 					</div>
@@ -38,7 +38,7 @@
 				<div class="control-group">
 					<label class="control-label">订单状态：</label>
 					<div class="controls">
-						<select name="order_status" class="w180">
+						<select name="composite_status" class="w180">
 							<option value="">请选择订单状态</option>
 							<!-- {html_options options=$status_list selected=$filter.composite_status} -->
 						</select>
@@ -52,7 +52,7 @@
 						<select name="shipping_id" class="w180">
 							<option value="">请选择配送方式</option>
 							{foreach from=$shipping_list item=val}
-							<option value="{$val.shipping_id}">{$val.shipping_name}</option>
+							<option value="{$val.shipping_id}" {if $filter.shipping_id eq $val.shipping_id}selected{/if}>{$val.shipping_name}</option>
 							{/foreach}
 						</select>
 					</div>
@@ -68,7 +68,7 @@
 						<select name="pay_id" class="w180">
 							<option value="">请选择支付方式</option>
 							{foreach from=$pay_list item=val}
-							<option value="{$val.pay_id}">{$val.pay_name}</option>
+							<option value="{$val.pay_id}" {if $filter.pay_id eq $val.pay_id}selected{/if}>{$val.pay_name}</option>
 							{/foreach}
 						</select>
 					</div>
@@ -80,11 +80,9 @@
 					<div class="controls">
 						<select name="referer" class="w180">
 							<option value="">请选择下单渠道</option>
-							<option value="iphone">iPhone端</option>
-							<option value="android">Andriod端</option>
-							<option value="mobile">H5端</option>
-							<option value="ecjia-cashdesk">收银台</option>
-							<option value="weapp">小程序</option>
+							{foreach from=$referer_list key=key item=val}
+							<option value="{$key}" {if $filter.referer eq $key}selected{/if}>{$val}</option>
+							{/foreach}
 						</select>
 					</div>
 				</div>
@@ -93,7 +91,8 @@
 				<div class="control-group">
 					<label class="control-label">商品名称：</label>
 					<div class="controls">
-						<input class="w165" name="goods_keywords" type="text" size="40" placeholder="请输入商品名称关键字" />
+						<input class="w165" name="goods_keywords" type="text" value="{$filter.goods_keywords}" size="40" placeholder="请输入商品名称关键字"
+						/>
 					</div>
 				</div>
 			</div>
@@ -104,7 +103,8 @@
 				<div class="control-group">
 					<label class="control-label">购买人：</label>
 					<div class="controls">
-						<input class="w165" name="consignee_keywords" type="text" size="40" />
+						<input class="w165" name="consignee_keywords" type="text" value="{$filter.consignee_keywords}" size="40" placeholder="请输入购买人关键字"
+						/>
 					</div>
 				</div>
 			</div>
@@ -112,20 +112,22 @@
 				<div class="control-group">
 					<label class="control-label">手机号：</label>
 					<div class="controls">
-						<input class="w165" name="mobile_keywords" type="text" size="40" />
+						<input class="w165" name="mobile_keywords" type="text" value="{$filter.mobile_keywords}" size="40" placeholder="请输入手机号" />
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<div class="search-item">
-			<div class="item">
+		<div class="search-item w520">
+			<div class="item w350">
 				<div class="control-group">
 					<label class="control-label"></label>
 					<div class="controls">
 						<input class="btn btn-gebo" type="submit" value="查询" />
-						<input class="btn" type="reset" value="重置" />
-						<input class="btn hide" type="button" value="导出报表" />
+						<input class="btn m_l10 btn-reset" type="button" value="重置" />
+						{if $filter.show_search && $order_list.order_list}
+						<input class="btn m_l10" type="button" value="导出报表" />
+						{/if}
 					</div>
 				</div>
 			</div>

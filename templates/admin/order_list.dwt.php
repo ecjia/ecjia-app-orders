@@ -23,76 +23,41 @@
 
 <ul class="nav nav-pills">
 	<li class="{if $filter.composite_status eq ''}active{/if}">
-		<a class="data-pjax" href="{$search_url}
-			{if $filter.user_id}&user_id={$filter.user_id}{/if}
-			{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
-			{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
-			{if $filter.keywords}&keywords={$filter.keywords}{/if}
-			">{lang key='orders::order.all'}
+		<a class="data-pjax" data-href="{RC_Uri::url('orders/admin/init')}" href="{$search_url}">{lang key='orders::order.all'}
 			<span class="badge badge-info">{if $count.all}{$count.all}{else}0{/if}</span>
 		</a>
 	</li>
 	<li class="{if $filter.composite_status eq 100}active{/if}">
-		<a class="data-pjax" href="{$search_url}
-			{if $filter.user_id}&user_id={$filter.user_id}{/if}
-			{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
-			&composite_status=100
-			{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
-			{if $filter.keywords}&keywords={$filter.keywords}{/if}
-			">待付款
+		<a class="data-pjax" data-href="{RC_Uri::url('orders/admin/init')}&composite_status=100" href="{$search_url}&composite_status=100">待付款
 			<span class="badge badge-info">{if $count.await_pay}{$count.await_pay}{else}0{/if}</span>
 		</a>
 	</li>
 
 	<li class="{if $filter.composite_status eq 105}active{/if}">
-		<a class="data-pjax" href="{$search_url}
-			{if $filter.user_id}&user_id={$filter.user_id}{/if}
-			{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
-			&composite_status=105
-			{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
-			{if $filter.keywords}&keywords={$filter.keywords}{/if}
-			">待接单
+		<a class="data-pjax" data-href="{RC_Uri::url('orders/admin/init')}&composite_status=105" href="{$search_url}&composite_status=105">待接单
 			<span class="badge badge-info">{if $count.unconfirmed}{$count.unconfirmed}{else}0{/if}</span>
 		</a>
 	</li>
 	<li class="{if $filter.composite_status eq 101}active{/if}">
-		<a class="data-pjax" href="{$search_url}
-			{if $filter.user_id}&user_id={$filter.user_id}{/if}
-			{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
-			&composite_status=101
-			{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
-			{if $filter.keywords}&keywords={$filter.keywords}{/if}
-			">待发货
+		<a class="data-pjax" data-href="{RC_Uri::url('orders/admin/init')}&composite_status=101" href="{$search_url}&composite_status=101">待发货
 			<span class="badge badge-info">{if $count.await_ship}{$count.await_ship}{else}0{/if}</span>
 		</a>
 	</li>
 	<li class="{if $filter.composite_status eq 104}active{/if}">
-		<a class="data-pjax" href="{$search_url}
-			{if $filter.user_id}&user_id={$filter.user_id}{/if}
-			{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
-			&composite_status=104
-			{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
-			{if $filter.keywords}&keywords={$filter.keywords}{/if}
-			">待收货
+		<a class="data-pjax" data-href="{RC_Uri::url('orders/admin/init')}&composite_status=104" href="{$search_url}&composite_status=104">待收货
 			<span class="badge badge-info">{if $count.shipped}{$count.shipped}{else}0{/if}</span>
 		</a>
 	</li>
 
 	<li class="{if $filter.composite_status eq 102}active{/if}">
-		<a class="data-pjax" href="{$search_url}
-			{if $filter.user_id}&user_id={$filter.user_id}{/if}
-			{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}
-			&composite_status=102
-			{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
-			{if $filter.keywords}&keywords={$filter.keywords}{/if}
-			">已完成
+		<a class="data-pjax" data-href="{RC_Uri::url('orders/admin/init')}&composite_status=102" href="{$search_url}&composite_status=102">已完成
 			<span class="badge badge-info">{if $count.finished}{$count.finished}{else}0{/if}</span>
 		</a>
 	</li>
 </ul>
 
 <div class="row-fluid batch">
-	<form action="{$search_url}{if $filter.extension_code}&extension_code={$filter.extension_code}{/if}" name="searchForm" method="post">
+	<form action="{RC_Uri::url('orders/admin/init')}{if $smarty.get.composite_status}&composite_status={$smarty.get.composite_status}{/if}" name="searchForm" method="post">
 		<select class="down-menu w180" name="status" id="select-rank">
 			<option value="-1">{lang key='orders::order.all_status'}</option>
 			<!-- {html_options options=$status_list selected=$filter.composite_status} -->

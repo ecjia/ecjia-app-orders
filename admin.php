@@ -118,6 +118,7 @@ class admin extends ecjia_admin
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $size = 15;
         $with = null;
+        
         $filter['extension_code'] = !empty($_GET['extension_code']) ? trim($_GET['extension_code']) : 'default';
         $order_list = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
             ->getOrderList($filter, $page, $size, $with, ['Ecjia\App\Orders\CustomizeOrderList', 'exportOrderListAdmin']);
@@ -137,11 +138,7 @@ class admin extends ecjia_admin
         $this->assign('count', $order_list['filter_count']);
         $this->assign('form_action', RC_Uri::url('orders/admin/operate', array('batch' => 1)));
 
-        $this->assign('os', RC_Lang::get('orders::order.os'));
-        $this->assign('ps', RC_Lang::get('orders::order.ps'));
-        $this->assign('ss', RC_Lang::get('orders::order.ss'));
-
-        $this->assign('search_url', RC_Uri::url('orders/admin/init'));
+        $this->assign('search_url', $this->get_search_url($filter));
 
         if ($filter['extension_code'] == 'default' || $filter['extension_code'] == 'group_buy') {
             if ($filter['extension_code'] == 'default') {
@@ -156,8 +153,11 @@ class admin extends ecjia_admin
                 //支付方式
                 $pay_list = with(new Ecjia\App\Payment\PaymentPlugin)->getEnableList();
                 $this->assign('pay_list', $pay_list);
+                
+                //下单渠道
+                $referer_list = array('iphone' => 'iPhone端', 'android' => 'Andriod端', 'mobile' => 'H5端', 'ecjia-cashdesk' => '收银台', 'weapp' => '小程序');
+                $this->assign('referer_list', $referer_list);
             }
-
             $this->display('order_list.dwt');
         } else {
             $this->display('other_order_list.dwt');
@@ -3360,6 +3360,81 @@ class admin extends ecjia_admin
         } else {
             return $this->showmessage(RC_Lang::get('orders::order.not_member_inf_found'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
         }
+    }
+    
+    private function get_search_url() {
+    	$url = RC_Uri::url('orders/admin/init');
+    	$param = [];
+    	$filter = $_GET;
+    	
+    	//订单类型 配送/自提/到店/团购
+    	if (!empty($filter['extension_code'])) {
+    		$param['extension_code'] = $filter['extension_code'];
+    	}
+    	//商家名称关键字
+    	if (!empty($filter['merchant_keywords'])) {
+    		$param['merchant_keywords'] = $filter['merchant_keywords'];
+    		$filter['show_search'] = 0;
+    	}
+    	//订单编号或购买者信息
+    	if (!empty($filter['keywords'])) {
+    		$param['keywords'] = $filter['keywords'];
+    		$filter['show_search'] = 0;
+    	}
+    	
+    	//显示高级搜索
+    	if (!empty($filter['show_search'])) {
+    		$param['show_search'] = $filter['show_search'];
+    		
+    		//订单编号关键字
+    		if (!empty($filter['order_sn'])) {
+    			$param['order_sn'] = trim($filter['order_sn']);
+    		}
+    		//开始时间
+    		if (!empty($filter['start_time'])) {
+    			$param['start_time'] = $filter['start_time'];
+    		}
+    		//结束时间
+    		if (!empty($filter['end_time'])) {
+    			$param['end_time'] = $filter['end_time'];
+    		}
+    		//商家id
+    		if (!empty($filter['store_id'])) {
+    			$param['store_id'] = intval($filter['store_id']);
+    		}
+    		//订单状态
+    		if (!empty($filter['advanced_order_status'])) {
+    			$param['advanced_order_status'] = $filter['advanced_order_status'];
+    		}
+    		//配送方式
+    		if (!empty($filter['shipping_id'])) {
+    			$param['shipping_id'] = intval($filter['shipping_id']);
+    		}
+    		//支付方式
+    		if (!empty($filter['pay_id'])) {
+    			$param['pay_id'] = intval($filter['pay_id']);
+    		}
+    		//下单渠道
+    		if (!empty($filter['referer'])) {
+    			$param['referer'] = trim($filter['referer']);
+    		}
+    		//商品名称
+    		if (!empty($filter['goods_keywords'])) {
+    			$param['goods_keywords'] = trim($filter['goods_keywords']);
+    		}
+    		//购买人
+    		if (!empty($filter['consignee_keywords'])) {
+    			$param['consignee_keywords'] = trim($filter['consignee_keywords']);
+    		}
+    		//手机号
+    		if (!empty($filter['mobile_keywords'])) {
+    			$param['mobile_keywords'] = trim($filter['mobile_keywords']);
+    		}
+    	}
+    	if (!empty($param)) {
+    		$url = RC_Uri::url('orders/admin/init', $param);
+    	}
+    	return $url;
     }
 }
 

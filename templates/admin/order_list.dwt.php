@@ -57,7 +57,7 @@
 </ul>
 
 <div class="row-fluid batch">
-	<form action="{RC_Uri::url('orders/admin/init')}{if $smarty.get.composite_status}&composite_status={$smarty.get.composite_status}{/if}" name="searchForm" method="post">
+	<form action="{RC_Uri::url('orders/admin/init')}{if $smarty.get.extension_code}&extension_code={$smarty.get.extension_code}{/if}" name="searchForm" method="post">
 		<select class="down-menu w180" name="status" id="select-rank">
 			<option value="-1">{lang key='orders::order.all_status'}</option>
 			<!-- {html_options options=$status_list selected=$filter.composite_status} -->

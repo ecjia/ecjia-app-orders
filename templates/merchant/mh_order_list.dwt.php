@@ -18,16 +18,18 @@
 	<div class="pull-right">
 		{if $order_model eq 'default'}
 		<a href="{RC_Uri::url('orders/merchant/today_order')}" class="btn btn-primary nopjax" target="__blank">当天订单</a>
-		{if $action_link}
-		<a href="{$action_link.href}" class="btn btn-primary data-pjax">
-			<i class="fa fa-search"></i> {$action_link.text}
+		<a href="javascript:;" class="btn btn-primary show_order_search">
+			<i class="fa fa-search"></i> 高级查询
 		</a>
-		{/if} {/if}
+		{/if}
 	</div>
 	<div class="clearfix"></div>
 </div>
 
 <!-- #BeginLibraryItem "/library/order_operate.lbi" -->
+<!-- #EndLibraryItem -->
+
+<!-- #BeginLibraryItem "/library/order_search.lbi" -->
 <!-- #EndLibraryItem -->
 
 <div class="row">
@@ -37,99 +39,63 @@
 				<ul class="nav nav-pills">
 					{if $order_model eq 'default'}
 					<li class="{if $filter.composite_status eq ''}active{/if}">
-						<a class="data-pjax" href="{$search_url}
-							{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
-							{if $filter.keywords}&keywords={$filter.keywords}{/if}
-							">{lang key='orders::order.all'}
+						<a class="data-pjax" data-href="{RC_Uri::url('orders/merchant/init')}" href="{$search_url}">{lang key='orders::order.all'}
 							<span class="badge badge-info">{if $count.all}{$count.all}{else}0{/if}</span>
 						</a>
 					</li>
 					<li class="{if $filter.composite_status eq 100}active{/if}">
-						<a class="data-pjax" href="{$search_url}&composite_status=100
-							{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
-							{if $filter.keywords}&keywords={$filter.keywords}{/if}
-							">待付款
+						<a class="data-pjax" data-href="{RC_Uri::url('orders/merchant/init')}&composite_status=100" href="{$search_url}&composite_status=100">待付款
 							<span class="badge badge-info">{if $count.await_pay}{$count.await_pay}{else}0{/if}</span>
 						</a>
 					</li>
 
 					<li class="{if $filter.composite_status eq 105}active{/if}">
-						<a class="data-pjax" href="{$search_url}&composite_status=105
-							{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
-							{if $filter.keywords}&keywords={$filter.keywords}{/if}
-							">待接单
+						<a class="data-pjax" data-href="{RC_Uri::url('orders/merchant/init')}&composite_status=105" href="{$search_url}&composite_status=105">待接单
 							<span class="badge badge-info">{if $count.unconfirmed}{$count.unconfirmed}{else}0{/if}</span>
 						</a>
 					</li>
 					<li class="{if $filter.composite_status eq 101}active{/if}">
-						<a class="data-pjax" href="{$search_url}&composite_status=101
-							{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
-							{if $filter.keywords}&keywords={$filter.keywords}{/if}
-							">待发货
+						<a class="data-pjax" data-href="{RC_Uri::url('orders/merchant/init')}&composite_status=101" href="{$search_url}&composite_status=101">待发货
 							<span class="badge badge-info">{if $count.await_ship}{$count.await_ship}{else}0{/if}</span>
 						</a>
 					</li>
 					<li class="{if $filter.composite_status eq 104}active{/if}">
-						<a class="data-pjax" href="{$search_url}&composite_status=104
-							{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
-							{if $filter.keywords}&keywords={$filter.keywords}{/if}
-							">待收货
+						<a class="data-pjax" data-href="{RC_Uri::url('orders/merchant/init')}&composite_status=104" href="{$search_url}&composite_status=104">待收货
 							<span class="badge badge-info">{if $count.shipped}{$count.shipped}{else}0{/if}</span>
 						</a>
 					</li>
 
 					<li class="{if $filter.composite_status eq 102}active{/if}">
-						<a class="data-pjax" href="{$search_url}&composite_status=102
-							{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}
-							{if $filter.keywords}&keywords={$filter.keywords}{/if}
-							">已完成
+						<a class="data-pjax" data-href="{RC_Uri::url('orders/merchant/init')}&composite_status=102" href="{$search_url}&composite_status=102">已完成
 							<span class="badge badge-info">{if $count.finished}{$count.finished}{else}0{/if}</span>
 						</a>
 					</li>
-					{/if} {if $order_model eq 'storebuy'}
+					{/if} 
+					{if $order_model eq 'storebuy'}
 					<li class="{if $filter.composite_status eq 102}active{/if}">
-						<a class="data-pjax" href="{$search_url}
-						{if $smarty.get.extension_code}&extension_code={$smarty.get.extension_code}{/if}
-						&composite_status=102
-						{if $filter.keywords}&keywords={$filter.keywords}{/if}
-						">已完成
+						<a class="data-pjax" data-href="{RC_Uri::url('orders/merchant/init')}&composite_status=102" href="{$search_url}&composite_status=102">已完成
 							<span class="badge badge-info">{if $count.finished}{$count.finished}{else}0{/if}</span>
 						</a>
 					</li>
 					<li class="{if $filter.composite_status eq 100}active{/if}">
-						<a class="data-pjax" href="{$search_url}
-							{if $smarty.get.extension_code}&extension_code={$smarty.get.extension_code}{/if}
-							&composite_status=100
-							{if $filter.keywords}&keywords={$filter.keywords}{/if}
-							">待付款
+						<a class="data-pjax" data-href="{RC_Uri::url('orders/merchant/init')}&composite_status=100" href="{$search_url}&composite_status=100">待付款
 							<span class="badge badge-info">{if $count.await_pay}{$count.await_pay}{else}0{/if}</span>
 						</a>
 					</li>
-					{/if} {if $order_model eq 'storepickup'}
+					{/if} 
+					{if $order_model eq 'storepickup'}
 					<li class="{if $filter.composite_status eq 101 || !$filter.composite_status}active{/if}">
-						<a class="data-pjax" href="{$search_url}
-							{if $smarty.get.extension_code}&extension_code={$smarty.get.extension_code}{/if}
-							&composite_status=101
-							{if $filter.keywords}&keywords={$filter.keywords}{/if}
-							">未提货
+						<a class="data-pjax" data-href="{RC_Uri::url('orders/merchant/init')}&composite_status=101" href="{$search_url}&composite_status=101">未提货
 							<span class="badge badge-info">{if $count.await_ship}{$count.await_ship}{else}0{/if}</span>
 						</a>
 					</li>
 					<li class="{if $filter.composite_status eq 102}active{/if}">
-						<a class="data-pjax" href="{$search_url}
-							{if $smarty.get.extension_code}&extension_code={$smarty.get.extension_code}{/if}
-							&composite_status=102
-							{if $filter.keywords}&keywords={$filter.keywords}{/if}
-							">已提货
+						<a class="data-pjax" data-href="{RC_Uri::url('orders/merchant/init')}&composite_status=102" href="{$search_url}&composite_status=102">已提货
 							<span class="badge badge-info">{if $count.finished}{$count.finished}{else}0{/if}</span>
 						</a>
 					</li>
 					<li class="{if $filter.composite_status eq 100}active{/if}">
-						<a class="data-pjax" href="{$search_url}
-							{if $smarty.get.extension_code}&extension_code={$smarty.get.extension_code}{/if}
-							&composite_status=100
-							{if $filter.keywords}&keywords={$filter.keywords}{/if}
-							">待付款
+						<a class="data-pjax" data-href="{RC_Uri::url('orders/merchant/init')}&composite_status=100" href="{$search_url}&composite_status=100">待付款
 							<span class="badge badge-info">{if $count.await_pay}{$count.await_pay}{else}0{/if}</span>
 						</a>
 					</li>
@@ -178,7 +144,7 @@
 				<button class="btn btn-primary screen-btn" type="button">
 					<i class="fa fa-search"></i> {lang key='orders::order.filter'} </button>
 				{/if}
-				<form class="form-inline pull-right" action="{$search_url}{if $smarty.get.extension_code}&extension_code={$smarty.get.extension_code}{/if}{if $smarty.get.date}&date={$smarty.get.date}{/if}"
+				<form class="form-inline pull-right" action="{RC_Uri::url('orders/merchant/init')}{if $smarty.get.composite_status}&composite_status={$smarty.get.composite_status}{/if}"
 				    method="post" name="searchForm">
 					<div class="form-group">
 						<input type="text" class="form-control w230" name="keywords" value="{$smarty.get.keywords}" placeholder="请输入订单编号或购买者信息">

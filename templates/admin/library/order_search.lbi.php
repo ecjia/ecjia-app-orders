@@ -103,7 +103,7 @@
 				<div class="control-group">
 					<label class="control-label">购买人：</label>
 					<div class="controls">
-						<input class="w165" name="consignee_keywords" type="text" value="{$filter.consignee_keywords}" size="40" placeholder="请输入购买人关键字"
+						<input class="w165" name="consignee" type="text" value="{$filter.consignee}" size="40" placeholder="请输入购买人关键字"
 						/>
 					</div>
 				</div>
@@ -112,7 +112,7 @@
 				<div class="control-group">
 					<label class="control-label">手机号：</label>
 					<div class="controls">
-						<input class="w165" name="mobile_keywords" type="text" value="{$filter.mobile_keywords}" size="40" placeholder="请输入手机号" />
+						<input class="w165" name="mobile" type="text" value="{$filter.mobile}" size="40" placeholder="请输入手机号" />
 					</div>
 				</div>
 			</div>

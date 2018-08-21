@@ -30,10 +30,10 @@
 
 			$('.show_order_search').off('click').on('click', function () {
 				if ($('.ecjia-order-search').hasClass('display-none')) {
-					$('.ecjia-order-search').slideDown('slow', 'easeOutQuint');
+					$('.ecjia-order-search').stop(true).slideDown('slow', 'easeOutQuint');
 					$('.ecjia-order-search').removeClass('display-none');
 				} else {
-					$('.ecjia-order-search').slideUp('slow', 'easeInQuart');
+					$('.ecjia-order-search').stop(true).slideUp('slow', 'easeInQuart');
 					$('.ecjia-order-search').addClass('display-none');
 					$('.nav.nav-pills').find('li a').each(function() {
 						var $this = $(this),
@@ -88,8 +88,8 @@
 					pay_id = $("select[name='pay_id']").val(),
 					referer = $("select[name='referer']").val(),
 					goods_keywords = $("input[name='goods_keywords']").val(),
-					consignee_keywords = $("input[name='consignee_keywords']").val(),
-					mobile_keywords = $("input[name='mobile_keywords']").val();
+					consignee = $("input[name='consignee']").val(),
+					mobile = $("input[name='mobile']").val();
 				if (order_sn != '') {
 					url += '&order_sn=' + order_sn;
 				}
@@ -120,11 +120,11 @@
 				if (goods_keywords != '') {
 					url += '&goods_keywords=' + goods_keywords;
 				}
-				if (consignee_keywords != '') {
-					url += '&consignee_keywords=' + consignee_keywords;
+				if (consignee != '') {
+					url += '&consignee=' + consignee;
 				}
-				if (mobile_keywords != '') {
-					url += '&mobile_keywords=' + mobile_keywords;
+				if (mobile != '') {
+					url += '&mobile=' + mobile;
 				}
 				if (start_time != '' && end_time != '') {
 					if (start_time >= end_time) {
@@ -145,9 +145,6 @@
 					$(this).find('option').eq('').prop("selected", true);
 				})
 				$('.search-form').find('select').trigger("liszt:updated");
-//				var url = $("form[name='advancedSearchForm']").attr('action');
-//				url += '&show_search=1';
-//				ecjia.pjax(url);
 			});
 			
 		},

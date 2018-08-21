@@ -12,6 +12,7 @@
 			app.order.batchForm();
 			app.order.tooltip();
 			app.order.current_order();
+			app.order.showSearch();
 		},
 		tooltip : function(){
 			$('span').tooltip({
@@ -38,6 +39,73 @@
 					url += '&keywords=' + keywords;
 				}
 				ecjia.pjax(url);
+			});
+			$("form[name='advancedSearchForm']").on('submit', function (e) {
+				e.preventDefault();
+				var $this = $(this);
+				url = $this.attr('action'),
+					order_sn = $("input[name='order_sn']").val(),
+					start_time = $("input[name='start_time']").val(),
+					end_time = $("input[name='end_time']").val(),
+					composite_status = $("select[name='composite_status']").val(),
+					shipping_id = $("select[name='shipping_id']").val(),
+					pay_id = $("select[name='pay_id']").val(),
+					referer = $("select[name='referer']").val(),
+					goods_keywords = $("input[name='goods_keywords']").val(),
+					consignee = $("input[name='consignee']").val(),
+					mobile = $("input[name='mobile']").val();
+				if (order_sn != '') {
+					url += '&order_sn=' + order_sn;
+				}
+				if (start_time != '') {
+					url += '&start_time=' + start_time;
+				}
+				if (end_time != '') {
+					url += '&end_time=' + end_time;
+				}
+				if (composite_status != '') {
+					url += '&composite_status=' + composite_status;
+				}
+				if (shipping_id != '') {
+					url += '&shipping_id=' + shipping_id;
+				}
+				if (pay_id != '') {
+					url += '&pay_id=' + pay_id;
+				}
+				if (referer != '') {
+					url += '&referer=' + referer;
+				}
+				if (pay_id != '') {
+					url += '&pay_id=' + pay_id;
+				}
+				if (goods_keywords != '') {
+					url += '&goods_keywords=' + goods_keywords;
+				}
+				if (consignee != '') {
+					url += '&consignee=' + consignee;
+				}
+				if (mobile != '') {
+					url += '&mobile=' + mobile;
+				}
+				if (start_time != '' && end_time != '') {
+					if (start_time >= end_time) {
+						ecjia.merchant.showmessage({
+							'state': 'error',
+							'message': '下单开始时间不能大于或等于结束时间'
+						});
+						return false;
+					}
+				}
+				url += '&show_search=1';
+				ecjia.pjax(url);
+			});
+			//重置
+			$('.btn-reset').off('click').on('click', function () {
+				$('.search-form').find("input[type='text']").val("");
+				$('.search-form').find('select').each(function() {
+					$(this).find('option').eq('').prop("selected", true);
+				})
+				$('.search-form').find('select').trigger("liszt:updated");
 			});
 		},
 		batch_print : function() {
@@ -1098,6 +1166,27 @@
                }, 'json');
            });
        },
+       
+		showSearch: function () {
+			$(".date").datepicker({
+				format: "yyyy-mm-dd",
+			});
+
+			$('.show_order_search').off('click').on('click', function () {
+				if ($('.ecjia-order-search').hasClass('display-none')) {
+					$('.ecjia-order-search').stop(true).slideDown('slow', 'easeOutQuint');
+					$('.ecjia-order-search').removeClass('display-none');
+				} else {
+					$('.ecjia-order-search').stop(true).slideUp('slow', 'easeInQuart');
+					$('.ecjia-order-search').addClass('display-none');
+					$('.nav.nav-pills').find('li a').each(function() {
+						var $this = $(this),
+							href = $this.attr('data-href');
+						$this.attr('href', href);
+					});
+				}
+			});
+		},
 	};
 
 })(ecjia.merchant, jQuery);

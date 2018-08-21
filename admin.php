@@ -120,7 +120,7 @@ class admin extends ecjia_admin
         $filter['extension_code'] = !empty($_GET['extension_code']) ? trim($_GET['extension_code']) : 'default';
         $order_list = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
             ->getOrderList($filter, $page, $size, null, ['Ecjia\App\Orders\CustomizeOrderList', 'exportOrderListAdmin']);
-        
+
         $ur_here = in_array($filter['extension_code'], array('default', 'storebuy', 'storepickup', 'group_buy')) ? RC_Lang::get('orders::order.order_extension_code.' . $filter['extension_code']) : '配送订单';
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here($ur_here));
 
@@ -3440,12 +3440,12 @@ class admin extends ecjia_admin
     			$param['goods_keywords'] = trim($filter['goods_keywords']);
     		}
     		//购买人
-    		if (!empty($filter['consignee_keywords'])) {
-    			$param['consignee_keywords'] = trim($filter['consignee_keywords']);
+    		if (!empty($filter['consignee'])) {
+    			$param['consignee'] = trim($filter['consignee']);
     		}
     		//手机号
-    		if (!empty($filter['mobile_keywords'])) {
-    			$param['mobile_keywords'] = trim($filter['mobile_keywords']);
+    		if (!empty($filter['mobile'])) {
+    			$param['mobile'] = trim($filter['mobile']);
     		}
     	}
     	if (!empty($param)) {

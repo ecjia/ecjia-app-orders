@@ -27,7 +27,7 @@
 			<div class="panel-body panel-body-small">
 				<ul class="nav nav-pills">
 					<li class="{if $filter.composite_status eq ''}active{/if}">
-						<a class="data-pjax" href="{$search_url}
+						<a class="data-pjax" href="{RC_Uri::url('orders/merchant/init')}
 							{if $smarty.get.extension_code}&extension_code={$smarty.get.extension_code}{/if}
 							{if $filter.keywords}&keywords={$filter.keywords}{/if}
 							">{lang key='orders::order.all'}
@@ -35,7 +35,7 @@
 						</a>
 					</li>
 					<li class="{if $filter.composite_status eq 100}active{/if}">
-						<a class="data-pjax" href="{$search_url}
+						<a class="data-pjax" href="{RC_Uri::url('orders/merchant/init')}
 							{if $smarty.get.extension_code}&extension_code={$smarty.get.extension_code}{/if}
 							&composite_status=100
 							{if $filter.keywords}&keywords={$filter.keywords}{/if}
@@ -44,7 +44,7 @@
 						</a>
 					</li>
 					<li class="{if $filter.composite_status eq 101}active{/if}">
-						<a class="data-pjax" href="{$search_url}
+						<a class="data-pjax" href="{RC_Uri::url('orders/merchant/init')}
 							{if $smarty.get.extension_code}&extension_code={$smarty.get.extension_code}{/if}
 							&composite_status=101
 							{if $filter.keywords}&keywords={$filter.keywords}{/if}
@@ -53,7 +53,7 @@
 						</a>
 					</li>
 					<li class="{if $filter.composite_status eq 104}active{/if}">
-						<a class="data-pjax" href="{$search_url}
+						<a class="data-pjax" href="{RC_Uri::url('orders/merchant/init')}
 							{if $smarty.get.extension_code}&extension_code={$smarty.get.extension_code}{/if}
 							&composite_status=104
 							{if $filter.keywords}&keywords={$filter.keywords}{/if}
@@ -62,7 +62,7 @@
 						</a>
 					</li>
 					<li class="{if $filter.composite_status eq 102}active{/if}">
-						<a class="data-pjax" href="{$search_url}
+						<a class="data-pjax" href="{RC_Uri::url('orders/merchant/init')}
 							{if $smarty.get.extension_code}&extension_code={$smarty.get.extension_code}{/if}
 							&composite_status=102
 							{if $filter.keywords}&keywords={$filter.keywords}{/if}
@@ -110,9 +110,8 @@
 				</div>
 				<button class="btn btn-primary screen-btn" type="button">
 					<i class="fa fa-search"></i> {lang key='orders::order.filter'} </button>
-				<form class="form-inline pull-right" action="{$search_url}
+				<form class="form-inline pull-right" action="{RC_Uri::url('orders/merchant/init')}
 					{if $smarty.get.extension_code}&extension_code={$smarty.get.extension_code}{/if}
-					{if $filter.composite_status}&composite_status={$filter.composite_status}{/if}
 					" method="post" name="searchForm">
 					<div class="form-group">
 						<input type="text" class="form-control w230" name="keywords" value="{$smarty.get.keywords}" placeholder="请输入订单编号或购买者信息">

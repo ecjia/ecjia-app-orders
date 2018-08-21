@@ -144,7 +144,7 @@
 				<button class="btn btn-primary screen-btn" type="button">
 					<i class="fa fa-search"></i> {lang key='orders::order.filter'} </button>
 				{/if}
-				<form class="form-inline pull-right" action="{RC_Uri::url('orders/merchant/init')}{if $smarty.get.composite_status}&composite_status={$smarty.get.composite_status}{/if}"
+				<form class="form-inline pull-right" action="{RC_Uri::url('orders/merchant/init')}{if $smarty.get.extension_code}&extension_code={$smarty.get.extension_code}{/if}{if $smarty.get.composite_status}&composite_status={$smarty.get.composite_status}{/if}"
 				    method="post" name="searchForm">
 					<div class="form-group">
 						<input type="text" class="form-control w230" name="keywords" value="{$smarty.get.keywords}" placeholder="请输入订单编号或购买者信息">

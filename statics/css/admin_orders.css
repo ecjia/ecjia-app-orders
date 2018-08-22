@@ -279,3 +279,39 @@
 .search-form.form-horizontal .search-item .item.w520 {
 	width: 520px;
 }
+
+.ecjia-order-amount .item {
+	width: 15%;
+    height: 130px;
+    float: left;
+    background-color: #F6F8F8;
+    border-radius: 5px;
+    display: flex;
+	display: -webkit-box;
+  	display: -ms-flexbox;
+  	display: -webkit-flex;
+	-webkit-align-items: center;
+    align-items: center;
+    justify-content: center;
+	-webkit-justify-content: center;
+    margin-right: 2%;
+	flex-direction: column;
+}
+
+.ecjia-order-amount .item:nth-child(6) {
+	margin-right: 0;
+}
+
+.ecjia-order-amount .item .price {
+	font-size: 25px;
+    max-width: 90%;
+    overflow: hidden;
+    color: #ff3434;
+    text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.ecjia-order-amount .item .type {
+	font-size: 18px;
+	margin-top: 20px;
+}

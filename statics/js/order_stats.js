@@ -26,39 +26,20 @@
             
             $('.screen-btn').off('click').on('click', function (e) {
                 e.preventDefault();
-                var start_date = $("input[name='start_date']").val(); //开始时间
-                var end_date = $("input[name='end_date']").val(); //结束时间
+                var year = $("select[name='year']").val(); //开始时间
+                var month = $("select[name='month']").val(); //结束时间
                 var url = $("form[name='searchForm']").attr('action'); //请求链接
-                if (start_date == 'undefind') start_date = '';
-                if (end_date == 'undefind') end_date = '';
-                if (url == 'undefind') url = '';
- 
-                if (start_date == '') {
-                    var data = {
-                        message: js_lang.start_time_required,
-                        state: "error",
-                    };
-                    ecjia.admin.showmessage(data);
-                    return false;
-                } else if (end_date == '') {
-                    var data = {
-                        message: js_lang.end_time_required,
-                        state: "error",
-                    };
-                    ecjia.admin.showmessage(data);
-                    return false;
-                };
- 
-                if (start_date >= end_date && (start_date != '' && end_date != '')) {
-                    var data = {
-                        message: js_lang.time_exceed,
-                        state: "error",
-                    };
-                    ecjia.admin.showmessage(data);
-                    return false;
-                } else {
-                    ecjia.pjax(url + '&start_date=' + start_date + '&end_date=' + end_date);
+                
+                if (year == 0 || year == undefined) {
+                	ecjia.admin.showmessage({'state': 'error', 'message': '请选择年份'});
+                	return false;
                 }
+                url += '&year=' + year;
+
+                if (month != undefined && month != 0) {
+                	url += '&month=' + month;
+                }
+                ecjia.pjax(url);
             });
         },
         

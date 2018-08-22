@@ -696,8 +696,8 @@ class mh_delivery extends ecjia_merchant {
 		$user_ob = $orm_user_db->find($order['user_id']);
 		
 		$order_data = array(
-		    'title'	=> '客户下单',
-		    'body'	=> '您有一笔新订单，订单号为：'.$order['order_sn'],
+		    'title'	=> '商家发货',
+		    'body'	=> '您的订单已发货，订单号为：'.$order['order_sn'],
 		    'data'	=> array(
 		        'order_id'		=> $order['order_id'],
 		        'order_sn'		=> $order['order_sn'],

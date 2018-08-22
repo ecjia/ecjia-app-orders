@@ -45,6 +45,7 @@
 //  ---------------------------------------------------------------------------------
 //
 use Ecjia\System\Notifications\OrderShipped;
+use Ecjia\System\Notifications\OrderPickupSuccess;
 defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
@@ -433,6 +434,23 @@ class mh_validate_order extends ecjia_merchant {
 					),
 				);
 				RC_Api::api('sms', 'send_event_sms', $options);
+				//消息通知
+				$orm_user_db = RC_Model::model('orders/orm_users_model');
+				$user_ob = $orm_user_db->find($order['user_id']);
+					
+				$order_pickupscuuess_data = array(
+						'title'	=> '订单提货成功',
+						'body'	=> '尊敬的'.$user_name.'，您的订单'.$order['order_sn'].'已提货成功，期待您下次光顾！',
+						'data'	=> array(
+								'user_id'				=> $order['user_id'],
+								'user_name'				=> $userinfo['user_name'],
+								'order_id'				=> $order['order_id'],
+								'order_sn'				=> $order['order_sn'],
+						),
+				);
+					
+				$push_orderpickup_success_data = new OrderPickupSuccess($order_pickupscuuess_data);
+				RC_Notification::send($user_ob, $push_orderpickup_success_data);
 			}
 		}
 	

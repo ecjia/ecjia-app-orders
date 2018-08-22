@@ -6,6 +6,7 @@ use RC_Api;
 use RC_DB;
 use RC_Time;
 use ecjia;
+use Ecjia\System\Notifications\OrderPickup;
 
 class SendPickupCode
 {
@@ -37,7 +38,8 @@ class SendPickupCode
     				);
     				$db_term_meta->insert($meta_data);
     				/*短信给用户发送收货验证码*/
-    				$mobile = RC_DB::table('users')->where('user_id', $order['user_id'])->pluck('mobile_phone');
+    				$userinfo = RC_DB::table('users')->where('user_id', $order['user_id'])->selectRaw('user_name, mobile_phone')->first();
+    				$mobile = $userinfo['mobile_phone'];
     				if (!empty($mobile)) {
     					$options = array(
     							'mobile' => $mobile,
@@ -50,6 +52,23 @@ class SendPickupCode
     							),
     					);
     					RC_Api::api('sms', 'send_event_sms', $options);
+    					//消息通知
+    					$orm_user_db = RC_Model::model('orders/orm_users_model');
+    					$user_ob = $orm_user_db->find($order['user_id']);
+    					$order_pickup_data = array(
+								'title'	=> '订单收货验证码',
+								'body'	=> '尊敬的'.$userinfo['user_name'].'，您在我们网站已成功下单。订单号：'.$order['order_sn'].'，收货验证码为：'.$code.'。请保管好您的验证码，以便收货验证',
+								'data'	=> array(
+										'user_id'				=> $order['user_id'],
+										'user_name'				=> $userinfo['user_name'],
+										'order_id'				=> $order['order_id'],
+										'order_sn'				=> $order['order_sn'],
+										'code'					=> $code,
+								),
+						);
+						 
+						$push_orderpickup_data = new OrderPickup($order_pickup_data);
+						RC_Notification::send($user_ob, $push_orderpickup_data);
     				}
     			}
     		}

@@ -113,8 +113,15 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	        $order_operate->operate($order, 'receive', array('action_note' => '系统操作'));
 	    } else {
 	        /* 修改订单状态为已付款 */
+	    	//配送和团购支付后order_status还是未接单；自提为已接单
+	    	if ($order['extension_code'] == 'storepickup') {
+	    		$order_status = OS_CONFIRMED;
+	    	} else {
+	    		$order_status = OS_UNCONFIRMED;
+	    	}
+	    	
 	        $data = array(
-	            'order_status' => OS_CONFIRMED,
+	            'order_status' => $order_status,
 	            'confirm_time' => RC_Time::gmtime(),
 	            'pay_status'   => $pay_status,
 	            'pay_time'     => RC_Time::gmtime(),
@@ -124,7 +131,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	         
 	        RC_DB::table('order_info')->where('order_id', $order_id)->update($data);
 	        /* 记录订单操作记录 */
-	        order_action($order_sn, OS_CONFIRMED, SS_UNSHIPPED, $pay_status, '', RC_Lang::get('orders::order.buyers'));
+	        order_action($order_sn, $order_status, SS_UNSHIPPED, $pay_status, '', RC_Lang::get('orders::order.buyers'));
 	    }
 	    
 	    //会员店铺消费过，记录为店铺会员 TODO暂时不启用

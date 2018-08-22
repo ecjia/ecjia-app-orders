@@ -126,8 +126,13 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		    $order_operate->operate($order_info, 'receive', array('action_note' => '系统操作'));
 		} else {
 		    /* 更新订单表支付后信息 */
+			if ($order_info['extension_code'] == 'storepickup') {
+				$order_status = OS_CONFIRMED;
+			} else {
+				$order_status = OS_UNCONFIRMED;
+			}
 		    $data = array(
-		        'order_status'    => OS_CONFIRMED,
+		        'order_status'    => $order_status,
 		        'confirm_time'    => RC_Time::gmtime(),
 		        'pay_status'      => PS_PAYED,
 		        'pay_time'        => RC_Time::gmtime(),
@@ -137,7 +142,7 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		    
 		    /*更新订单状态及信息*/
 		    update_order($order_info['order_id'], $data);
-		    order_action($order_info['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_PAYED, '', RC_Lang::get('orders::order.buyers'));
+		    order_action($order_info['order_sn'], $order_status, SS_UNSHIPPED, PS_PAYED, '', RC_Lang::get('orders::order.buyers'));
 		}
 		
 		//会员店铺消费过，记录为店铺会员TODO暂时不启用

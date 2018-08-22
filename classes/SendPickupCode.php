@@ -6,7 +6,7 @@ use RC_Api;
 use RC_DB;
 use RC_Time;
 use ecjia;
-use Ecjia\System\Notifications\OrderPickup;
+use Ecjia\App\Orders\Notifications\OrderPickup;
 
 class SendPickupCode
 {

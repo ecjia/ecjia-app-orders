@@ -45,7 +45,7 @@
 //  ---------------------------------------------------------------------------------
 //
 use Ecjia\System\Notifications\OrderShipped;
-use Ecjia\System\Notifications\OrderPickupSuccess;
+use Ecjia\App\Orders\Notifications\OrderPickupSuccess;
 defined('IN_ECJIA') or exit('No permission resources.');
 
 /**

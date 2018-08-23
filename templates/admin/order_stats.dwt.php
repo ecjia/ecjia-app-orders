@@ -113,7 +113,7 @@
 								<table class="table table-striped table-hide-edit">
 									<thead>
 										<tr>
-											<th class="w180 t_c">订单类型</th>
+											<th class="w180">订单类型</th>
 											<th>总订单数</th>
 											<th>总金额数</th>
 										</tr>

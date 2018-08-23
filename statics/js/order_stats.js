@@ -8,22 +8,6 @@
         },
         
         searchForm: function () {
-//            $(".start_date,.end_date").datepicker({
-//                format: "yyyy-mm-dd",
-//                container : '.main_content',
-//            });
-        	
-        	$('.search-btn').off('click').on('click', function (e) {
-        		e.preventDefault();
-        		var $this = $(this),
-        			url = $('form[name="searchForm"]').attr('action'),
-        			keywords = $("input[name='keywords']").val();
-        		if (keywords != '' && keywords != undefined) {
-        			url += '&keywords=' + keywords;
-        		}
-        		ecjia.pjax(url);
-        	});
-            
             $('.screen-btn').off('click').on('click', function (e) {
                 e.preventDefault();
                 var year = $("select[name='year']").val(); //开始时间

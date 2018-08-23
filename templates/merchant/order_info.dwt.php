@@ -132,9 +132,9 @@ ecjia.merchant.order.info();
 							<div class="controls col-lg-6">
 								<select class="form-control w250" name="unconfirm_reason">
 									<option value="">请选择…</option>
-									<option value="1">该订单商品已售完</option>
-									<option value="2">由于天气原因，本店铺暂不接单</option>
-									<option value="3">商家忙碌，暂时无法接单</option>
+									<option value="31">该订单商品已售完</option>
+									<option value="32">由于天气原因，本店铺暂不接单</option>
+									<option value="33">商家忙碌，暂时无法接单</option>
 					            </select>
 							</div>
 						</div>

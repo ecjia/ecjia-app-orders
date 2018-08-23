@@ -235,7 +235,7 @@ class merchant extends ecjia_merchant
         $size = 15;
         $with = null;
         $filter['start_time'] = $start_time;
-        $filter['add_time'] = $end_time;
+        $filter['end_time'] = $end_time;
 
         $filter['store_id'] = $_SESSION['store_id'];
         $filter['extension_code'] = !empty($_GET['extension_code']) ? trim($_GET['extension_code']) : 'default';
@@ -330,9 +330,9 @@ class merchant extends ecjia_merchant
         $this->assign('search_action', RC_Uri::url('orders/merchant/today_order'));
         $this->assign('status_list', RC_Lang::get('orders::order.cs'));
 
-        $this->assign('os', RC_Lang::get('orders::order.os'));
-        $this->assign('ps', RC_Lang::get('orders::order.ps'));
-        $this->assign('ss', RC_Lang::get('orders::order.ss'));
+//         $this->assign('os', RC_Lang::get('orders::order.os'));
+//         $this->assign('ps', RC_Lang::get('orders::order.ps'));
+//         $this->assign('ss', RC_Lang::get('orders::order.ss'));
 
         $this->assign('search_url', RC_Uri::url('orders/merchant/today_order'));
 
@@ -807,6 +807,10 @@ class merchant extends ecjia_merchant
                     $shipping_info = ecjia_shipping::getPluginDataById($order['shipping_id']);
                     $this->assign('shipping_code', $shipping_info['shipping_code']);
                 }
+               	RC_Loader::load_app_class('order_refund', 'refund', false);
+				$reason_list = order_refund::reason_list('await_ship');
+				_dump($reason_list,1);
+                
                 if ($order_model == 'storebuy') {
                     $this->display('order_storebuy_info.dwt');
                 } elseif ($order_model == 'storepickup') {
@@ -3994,9 +3998,9 @@ class merchant extends ecjia_merchant
         $order_id = intval($_POST['order_id']);
         $unconfirm_reason_key = intval($_POST['unconfirm_reason']); //拒单原因
         $reason_list = array(
-            1 => '该订单商品已售完',
-            2 => '由于天气原因，本店铺暂不接单',
-            3 => '商家忙碌，暂时无法接单',
+            31 => '该订单商品已售完',
+            32 => '由于天气原因，本店铺暂不接单',
+            33 => '商家忙碌，暂时无法接单',
         );
         $order = order_info($order_id); //查询订单信息
         $unconfirm_reason = array_get($reason_list, $unconfirm_reason_key);
@@ -4061,7 +4065,7 @@ class merchant extends ecjia_merchant
             'refund_status' => $refund_status,
             'return_status' => $return_status,
             'refund_content' => $unconfirm_reason,
-            'refund_reason' => $unconfirm_reason,
+            'refund_reason' => $unconfirm_reason_key,
             'add_time' => RC_Time::gmtime(),
             'referer' => 'merchant',
         );

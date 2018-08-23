@@ -227,7 +227,7 @@ return array(
 	'down_adsense'			=>	'下载广告转化率报表',
 	'no_stats_data' 		=>	'没有统计数据',
 	'order_stats'			=>	'订单统计',
-	'order_stats_date'		=>	'订单统计数据默认显示当前统计数据',
+	'order_stats_date'		=>	'订单统计数据默认显示当年全年统计数据',
 	'order_stats_info'		=>	'订单统计信息',
 	'overall_sum_lable' 	=>	'有效订单总金额：',
 	'overall_choose_lable' 	=>	'总点击数：',

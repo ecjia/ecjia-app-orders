@@ -120,22 +120,22 @@
 									</thead>
 									<tbody>
 										<tr>
-											<td>配送型订单</td>
+											<td><a href="{RC_Uri::url('orders/admin/init')}" target="__blank">配送型订单</a></td>
 											<td>{$order_stats.order_count_data.order_count}</td>
 											<td>{$order_stats.order_count_data.order_amount}</td>
 										</tr>
 										<tr>
-											<td>团购型订单</td>
+											<td><a href="{RC_Uri::url('orders/admin/init')}&extension_code=group_buy" target="__blank">团购型订单</a></td>
 											<td>{$order_stats.groupbuy_count_data.order_count}</td>
 											<td>{$order_stats.groupbuy_count_data.order_amount}</td>
 										</tr>
 										<tr>
-											<td>到店型订单</td>
+											<td><a href="{RC_Uri::url('orders/admin/init')}&extension_code=storebuy" target="__blank">到店型订单</a></td>
 											<td>{$order_stats.storebuy_count_data.order_count}</td>
 											<td>{$order_stats.storebuy_count_data.order_amount}</td>
 										</tr>
 										<tr>
-											<td>自提型订单</td>
+											<td><a href="{RC_Uri::url('orders/admin/init')}&extension_code=storepickup" target="__blank">自提型订单</a></td>
 											<td>{$order_stats.storepickup_count_data.order_count}</td>
 											<td>{$order_stats.storepickup_count_data.order_amount}</td>
 										</tr>

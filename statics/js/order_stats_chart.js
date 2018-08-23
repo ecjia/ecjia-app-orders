@@ -41,17 +41,25 @@
 								return params.name + ' ：  ' + params.value;
 							}
 						},
-
 					},
+					grid: {
+				        left: '2%',
+				        right: '2%',
+				        bottom: '5%',
+				        top: '5%',
+				        containLabel: true
+				    },
 					series: [{
 						data: ticks,
-						type: 'bar'
+						type: 'bar',
+						barWidth: '50%',
 					}]
 				};
 
-
 				// 使用刚指定的配置项和数据显示图表。
 				myChart.setOption(option);
+
+				window.onresize = myChart.resize;
 			}
 			app.chart.order_type();
 		},
@@ -170,20 +178,40 @@
 						formatter: "{a} <br/>{b} : {c} ({d}%)"
 					},
 					legend: {
-						bottom: 20,
-						textStyle: {},
+						bottom: 25,
 						data: ['配送', '团购', '到店', '自提']
 					},
 					series: [{
-						name: '占比',
+						tooltip: {
+			                trigger: 'item',
+			                formatter: "{b} : {c} ({d}%)"
+			            },
 						type: 'pie',
-						radius: '55%',
-						center: ['50%', '50%'],
-						label: {
-							normal: {
-								position: 'inner'
-							}
-						},
+						radius: '70%',
+						center: ['50%', '40%'],
+				        label: {
+				            normal: {
+				                position: 'inner',
+				                formatter: function(param) {
+				                    if (!param.percent) return ''
+				                    var f = Math.round(param.percent * 10) / 10;
+				                    var s = f.toString();
+				                    var rs = s.indexOf('.');
+				                    if (rs < 0) {
+				                        rs = s.length;
+				                        s += '.';
+				                    }
+				                    while (s.length <= rs + 1) {
+				                        s += '0';
+				                    }
+				                    return s + '%';
+				                },
+				                textStyle: {
+				                    color: '#fff',
+				                    fontSize: 12
+				                }
+				            }
+				        },
 						labelLine: {
 							normal: {
 								show: false
@@ -193,9 +221,9 @@
 					}]
 				};
 
-
 				myChart.setOption(option);
 
+				window.onresize = myChart.resize;
 			}
 		}
 	};

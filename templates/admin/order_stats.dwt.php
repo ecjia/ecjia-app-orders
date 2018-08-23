@@ -105,7 +105,7 @@
 				<div class="tab-content">
 					<div class="tab-pane active" id="tab">
 						<div class="span4">
-							<div id="order_type_chart" style="width: 100%;height:250px;">
+							<div id="order_type_chart" style="width: 100%;height:212px;">
 							</div>
 						</div>
 						<div class="span8">

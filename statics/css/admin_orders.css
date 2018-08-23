@@ -83,7 +83,7 @@
 
 #order_general {
 	height: 500px;
-	width: 1000px;
+	width: 100%;
 	margin: 0 auto;
 }
 
@@ -95,7 +95,7 @@
 
 #order_status {
 	height: 500px;
-	width: 1000px;
+	width: 100%;
 	margin: 0 auto;
 }
 
@@ -107,7 +107,7 @@
 
 #ship_status {
 	height: 500px;
-	width: 1000px;
+	width: 100%;
 	margin: 0 auto;
 }
 
@@ -119,7 +119,7 @@
 
 #ship_stats {
 	height: 500px;
-	width: 1000px;
+	width: 100%;
 	margin: 0 auto;
 }
 
@@ -131,7 +131,7 @@
 
 #pay_status {
 	height: 500px;
-	width: 1000px;
+	width: 100%;
 	margin: 0 auto;
 }
 
@@ -143,19 +143,19 @@
 
 #pay_stats {
 	height: 500px;
-	width: 1000px;
+	width: 100%;
 	margin: 0 auto;
 }
 
 #order_count {
 	height: 580px;
-	width: 1000px;
+	width: 100%;
 	margin: 0 auto;
 }
 
 #order_amount {
 	height: 580px;
-	width: 1000px;
+	width: 100%;
 	margin: 0 auto;
 }
 

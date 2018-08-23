@@ -303,7 +303,7 @@
 }
 
 .ecjia-order-amount .item .price {
-	font-size: 25px;
+	font-size: 20px;
     max-width: 90%;
     overflow: hidden;
     color: #ff3434;
@@ -312,6 +312,6 @@
 }
 
 .ecjia-order-amount .item .type {
-	font-size: 18px;
+	font-size: 15px;
 	margin-top: 20px;
 }

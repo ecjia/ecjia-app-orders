@@ -2,6 +2,7 @@
 ;
 (function (app, $) {
 	app.chart = {
+		//订单概况
 		order_general: function () {
 			var dataset = [];
 			var ticks = [];
@@ -59,6 +60,7 @@
 			app.chart.order_type();
 		},
 
+		//配送方式
 		ship_status: function () {
 			var dataset = [];
 			var ticks = [];
@@ -118,6 +120,7 @@
 			app.chart.order_type();
 		},
 
+		//支付方式
 		pay_status: function () {
 			var dataset = [];
 			var ticks = [];
@@ -177,6 +180,7 @@
 			app.chart.order_type();
 		},
 
+		//订单类型
 		order_type: function () {
 			var dataset = [];
 			var ticks = [];

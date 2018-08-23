@@ -4075,6 +4075,14 @@ class merchant extends ecjia_merchant
         $action_note = trim($_POST['action_note']);
         order_refund::order_action($order_id, OS_RETURNED, $order['shipping_status'], $order['pay_status'], $action_note, $_SESSION['staff_name']);
 
+        //订单状态log记录
+        $pra = array('order_status' => '无法接单', 'order_id' => $order_id, 'message' => '等待商家退款！');
+        order_refund::order_status_log($pra);
+        
+        //售后申请状态记录
+        $opt = array('status' => '无法接单', 'refund_id' => $refund_id, 'message' => '等待商家退款！');
+        order_refund::refund_status_log($opt);
+        
         //update commission_bill
         RC_Api::api('commission', 'add_bill_queue', array('order_type' => 'refund', 'order_id' => $refund_id));
 

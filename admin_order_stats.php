@@ -557,6 +557,7 @@ class admin_order_stats extends ecjia_admin
             ->where('add_time', '>=', $start_date)
             ->where('add_time', '<', $end_date)
             ->where('is_delete', 0)
+            ->where('store_id', $store_id)
             ->count();
 
         /* 待发货订单数 */
@@ -568,6 +569,7 @@ class admin_order_stats extends ecjia_admin
             ->where('add_time', '>=', $start_date)
             ->where('add_time', '<', $end_date)
             ->where('is_delete', 0)
+            ->where('store_id', $store_id)
             ->count();
 
         /* 已发货订单数 */
@@ -578,6 +580,7 @@ class admin_order_stats extends ecjia_admin
             ->where('add_time', '>=', $start_date)
             ->where('add_time', '<', $end_date)
             ->where('is_delete', 0)
+            ->where('store_id', $store_id)
             ->count();
 
         /* 退货订单数 */
@@ -588,6 +591,7 @@ class admin_order_stats extends ecjia_admin
             ->where('add_time', '>=', $start_date)
             ->where('add_time', '<', $end_date)
             ->where('is_delete', 0)
+            ->where('store_id', $store_id)
             ->count();
 
         /* 已取消订单数 */
@@ -597,6 +601,7 @@ class admin_order_stats extends ecjia_admin
             ->where('add_time', '>=', $start_date)
             ->where('add_time', '<', $end_date)
             ->where('is_delete', 0)
+            ->where('store_id', $store_id)
             ->count();
 
         /* 已完成订单数 */
@@ -607,6 +612,7 @@ class admin_order_stats extends ecjia_admin
             ->where('add_time', '>=', $start_date)
             ->where('add_time', '<', $end_date)
             ->where('is_delete', 0)
+            ->where('store_id', $store_id)
             ->count();
 
         return $order_info;
@@ -636,7 +642,7 @@ class admin_order_stats extends ecjia_admin
         $start_date = RC_Time::local_strtotime($start_time);
         $end_date = RC_Time::local_strtotime($end_time);
 
-        /*货到付款订单不在待付款里显示*/
+        //待付款订单总金额
         $pay_cod_id = RC_DB::table('payment')->where('pay_code', 'pay_cod')->pluck('pay_id');
         $await_pay_count = RC_DB::table('order_info')
             ->where('is_delete', 0)
@@ -649,6 +655,7 @@ class admin_order_stats extends ecjia_admin
             ->sum('order_amount');
         $data['await_pay_count'] = price_format($await_pay_count);
 
+        //待发货订单总金额
         $await_ship_count = RC_DB::table('order_info')
             ->where('is_delete', 0)
             ->where('store_id', $store_id)
@@ -663,6 +670,7 @@ class admin_order_stats extends ecjia_admin
             ->sum('order_amount');
         $data['await_ship_count'] = price_format($await_ship_count);
 
+        //已发货订单总金额
         $shipped_count = RC_DB::table('order_info')
             ->where('is_delete', 0)
             ->where('store_id', $store_id)
@@ -673,6 +681,7 @@ class admin_order_stats extends ecjia_admin
             ->sum('order_amount');
         $data['shipped_count'] = price_format($shipped_count);
 
+        //退货订单总金额
         $returned_count = RC_DB::table('order_info')
             ->where('is_delete', 0)
             ->where('store_id', $store_id)
@@ -683,6 +692,7 @@ class admin_order_stats extends ecjia_admin
             ->sum('order_amount');
         $data['returned_count'] = price_format($returned_count);
 
+        //已取消订单总金额
         $canceled_count = RC_DB::table('order_info')
             ->where('is_delete', 0)
             ->where('store_id', $store_id)
@@ -692,6 +702,7 @@ class admin_order_stats extends ecjia_admin
             ->sum('order_amount');
         $data['canceled_count'] = price_format($canceled_count);
 
+        //已完成订单总金额
         $finished_count = RC_DB::table('order_info')
             ->where('is_delete', 0)
             ->where('store_id', $store_id)
@@ -702,6 +713,7 @@ class admin_order_stats extends ecjia_admin
             ->sum('order_amount');
         $data['finished_count'] = price_format($finished_count);
 
+        //配送型订单数及总金额
         $data['order_count_data'] = RC_DB::table('order_info')
             ->where('is_delete', 0)
             ->where('store_id', $store_id)
@@ -714,39 +726,33 @@ class admin_order_stats extends ecjia_admin
             ->select(RC_DB::raw("count('order_id') as order_count"), RC_DB::raw("SUM('order_amount') as order_amount"))
             ->first();
 
+        //团购型订单数及总金额
         $data['groupbuy_count_data'] = RC_DB::table('order_info')
             ->where('is_delete', 0)
             ->where('store_id', $store_id)
             ->where('add_time', '>=', $start_date)
             ->where('add_time', '<', $end_date)
-            ->where(function ($query) {
-                $query->where('extension_code', '')
-                    ->orWhere('extension_code', null);
-            })
+            ->where('extension_code', 'group_buy')
             ->select(RC_DB::raw("count('order_id') as order_count"), RC_DB::raw("SUM('order_amount') as order_amount"))
             ->first();
 
+        //到店型订单数及总金额
         $data['storebuy_count_data'] = RC_DB::table('order_info')
             ->where('is_delete', 0)
             ->where('store_id', $store_id)
             ->where('add_time', '>=', $start_date)
             ->where('add_time', '<', $end_date)
-            ->where(function ($query) {
-                $query->where('extension_code', '')
-                    ->orWhere('extension_code', null);
-            })
+            ->where('extension_code', 'storebuy')
             ->select(RC_DB::raw("count('order_id') as order_count"), RC_DB::raw("SUM('order_amount') as order_amount"))
             ->first();
 
+        //自提型订单数及总金额
         $data['storepickup_count_data'] = RC_DB::table('order_info')
             ->where('is_delete', 0)
             ->where('store_id', $store_id)
             ->where('add_time', '>=', $start_date)
             ->where('add_time', '<', $end_date)
-            ->where(function ($query) {
-                $query->where('extension_code', '')
-                    ->orWhere('extension_code', null);
-            })
+            ->where('extension_code', 'storepickup')
             ->select(RC_DB::raw("count('order_id') as order_count"), RC_DB::raw("SUM('order_amount') as order_amount"))
             ->first();
         $data['count_all'] = $data['order_count_data']['order_count'] + $data['groupbuy_count_data']['order_count'] + $data['storebuy_count_data']['order_count'] + $data['storepickup_count_data']['order_count'];

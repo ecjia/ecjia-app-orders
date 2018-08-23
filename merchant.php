@@ -807,9 +807,6 @@ class merchant extends ecjia_merchant
                     $shipping_info = ecjia_shipping::getPluginDataById($order['shipping_id']);
                     $this->assign('shipping_code', $shipping_info['shipping_code']);
                 }
-               	RC_Loader::load_app_class('order_refund', 'refund', false);
-				$reason_list = order_refund::reason_list('await_ship');
-				_dump($reason_list,1);
                 
                 if ($order_model == 'storebuy') {
                     $this->display('order_storebuy_info.dwt');

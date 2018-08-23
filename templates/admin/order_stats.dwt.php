@@ -24,7 +24,7 @@
 <div>
 	<h3 class="heading">
 		<!-- {if $ur_here}{$ur_here}{/if} -->
-		<a class="btn plus_or_reply" id="sticky_a" href='{$action_link.href}&start_date={$start_date}&end_date={$end_date}'>
+		<a class="btn plus_or_reply" id="sticky_a" href='{$action_link.href}&store_id={$store_id}&year={$year}{if $month}&month={$month}{/if}'>
 			<i class="fontello-icon-download"></i>{$action_link.text}</a>
 		<a class="btn plus_or_reply data-pjax" id="sticky_a" href='{RC_Uri::url("orders/admin_order_stats/init")}'>
 			<i class="fontello-icon-reply"></i>订单统计</a>
@@ -161,39 +161,39 @@
 		<div class="tabbable">
 			<ul class="nav nav-tabs">
 				<li class="{if $page eq 'init'}active{/if}">
-					<a class="data-pjax" href='{url path="orders/admin_order_stats/stats"}'>{lang key='orders::statistic.order_circs'}</a>
+					<a class="data-pjax" href='{url path="orders/admin_order_stats/stats"}&store_id={$store_id}&year={$year}{if $month}&month={$month}{/if}'>{lang key='orders::statistic.order_circs'}</a>
 				</li>
 				<li class="{if $page eq 'shipping_status'}active{/if}">
-					<a class="data-pjax" href='{url path="orders/admin_order_stats/shipping_status"}'>{lang key='orders::statistic.shipping_method'}</a>
+					<a class="data-pjax" href='{url path="orders/admin_order_stats/shipping_status"}&store_id={$store_id}&year={$year}{if $month}&month={$month}{/if}'>{lang key='orders::statistic.shipping_method'}</a>
 				</li>
 				<li class="{if $page eq 'pay_status'}active{/if}">
-					<a class="data-pjax" href='{url path="orders/admin_order_stats/pay_status"}'>{lang key='orders::statistic.pay_method'}</a>
+					<a class="data-pjax" href='{url path="orders/admin_order_stats/pay_status"}&store_id={$store_id}&year={$year}{if $month}&month={$month}{/if}'>{lang key='orders::statistic.pay_method'}</a>
 				</li>
 			</ul>
 			<form class="form-horizontal">
 				<div class="tab-content">
 					<!-- {if $page eq 'init'} -->
-					<div class="tab-pane active" id="tab1">
+					<div class="tab-pane active">
 						<div class="order_general">
-							<div id="order_general" data-url='{RC_Uri::url("orders/admin_order_stats/get_order_general", "")}'>
+							<div id="order_general">
 							</div>
 						</div>
 					</div>
 					<!-- {/if} -->
 
 					<!-- {if $page eq 'shipping_status'} -->
-					<div class="tab-pane active" id="tab2">
+					<div class="tab-pane active">
 						<div class="ship_status">
-							<div id="ship_status" data-url='{RC_Uri::url("orders/admin_order_stats/get_ship_status", "")}'>
+							<div id="ship_status">
 							</div>
 						</div>
 					</div>
 					<!-- {/if} -->
 
 					<!-- {if $page eq 'pay_status'} -->
-					<div class="tab-pane active" id="tab3">
+					<div class="tab-pane active">
 						<div class="pay_status">
-							<div id="pay_status" data-url='{RC_Uri::url("orders/admin_order_stats/get_pay_status", "")}'>
+							<div id="pay_status">
 							</div>
 						</div>
 					</div>

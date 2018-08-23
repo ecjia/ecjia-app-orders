@@ -70,9 +70,7 @@ class admin_order_stats extends ecjia_admin
         RC_Script::enqueue_script('bootstrap-datepicker', RC_Uri::admin_url('statics/lib/datepicker/bootstrap-datepicker.min.js'));
         RC_Style::enqueue_style('datepicker', RC_Uri::admin_url('statics/lib/datepicker/datepicker.css'));
 
-//         RC_Script::enqueue_script('acharts-min', RC_App::apps_url('statics/js/acharts-min.js', __FILE__));
-        
-        RC_Script::enqueue_script('echarts-min-js', RC_App::apps_url('statics/js/echarts.min.js', __FILE__));
+        RC_Script::enqueue_script('echarts-min-js', RC_App::apps_url('statics/js/echarts.min.js', __FILE__)); //百度图表
 
         RC_Script::enqueue_script('order_stats', RC_App::apps_url('statics/js/order_stats.js', __FILE__));
         RC_Script::enqueue_script('order_stats_chart', RC_App::apps_url('statics/js/order_stats_chart.js', __FILE__));
@@ -155,6 +153,7 @@ class admin_order_stats extends ecjia_admin
         $year = !empty($_GET['year']) ? intval($_GET['year']) : $current_year;
         $month = !empty($_GET['month']) ? intval($_GET['month']) : 0;
 
+        $this->assign('store_id', $store_id);
         $this->assign('year_list', $year_list);
         $this->assign('month_list', $month_list);
         $this->assign('year', $year);
@@ -188,60 +187,42 @@ class admin_order_stats extends ecjia_admin
             '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E9.85.8D.E9.80.81.E6.96.B9.E5.BC.8F" target="_blank">' . RC_Lang::get('orders::statistic.about_order_stats') . '</a>') . '</p>'
         );
 
-        $this->assign('ur_here', RC_Lang::get('orders::statistic.order_stats'));
+        $store_id = intval($_GET['store_id']);
+        $store_info = RC_Api::api('store', 'store_info', array('store_id' => $store_id));
+        if (empty($store_info)) {
+            return $this->showmessage('该店铺不存在', ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR, array('links' => array(array('text' => '订单统计', 'href' => RC_Uri::url('orders/admin_order_stats/init')))));
+        }
+
+        $this->assign('ur_here', $store_info['merchants_name'] . ' - ' . RC_Lang::get('orders::statistic.order_stats'));
         $this->assign('action_link', array('text' => RC_Lang::get('orders::statistic.down_order_statistics'), 'href' => RC_Uri::url('orders/admin_order_stats/download')));
 
         //获取订单统计信息
-        $order_stats = $this->get_order_stats();
-
-        /* 时间参数 */
-        $is_multi = empty($_GET['is_multi']) ? false : true;
-
-        /* 时间参数 */
-        $start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date(ecjia::config('date_format'), strtotime('-1 month') - 8 * 3600);
-        $end_date = !empty($_GET['end_date']) ? $_GET['end_date'] : RC_Time::local_date(ecjia::config('date_format'));
-
-        $this->assign('start_date', $start_date);
-        $this->assign('end_date', $end_date);
-
-        $year_month = !empty($_GET['year_month']) ? $_GET['year_month'] : '';
-
-        if (!empty($year_month)) {
-            $filter = explode('.', $year_month);
-            $arr = array_filter($filter);
-            $tmp = $arr;
-
-            for ($i = 0; $i < count($tmp); $i++) {
-                if (!empty($tmp[$i])) {
-                    $tmp_time = RC_Time::local_strtotime($tmp[$i] . '-1');
-                    $start_date_arr[$i] = $tmp_time;
-                }
-            }
-        } else {
-            $start_date_arr[] = RC_Time::local_strtotime(RC_Time::local_date('Y-m') . '-1');
-        }
-
-        for ($i = 0; $i < 4; $i++) {
-            if (isset($start_date_arr[$i])) {
-                $start_date_arr[$i] = RC_Time::local_date('Y-m', $start_date_arr[$i]);
-            } else {
-                $start_date_arr[$i] = null;
-            }
-        }
-
-        $this->assign('start_date_arr', $start_date_arr);
+        $order_stats = $this->get_order_stats($store_id);
         $this->assign('order_stats', $order_stats);
+        $this->assign('order_stats_json', json_encode($order_stats['type']));
 
-        $this->assign('is_multi', $is_multi);
-        $this->assign('year_month', $year_month);
-        $this->assign('page', 'shipping_status');
-        $this->assign('form_action', RC_Uri::url('orders/admin_order_stats/shipping_status'));
-
-        if (!$is_multi) {
-            $data = $this->get_ship_status();
-        } else {
-            $data = $this->get_ship_stats();
+        $current_year = RC_Time::local_date('Y', RC_Time::gmtime());
+        $year_list = [];
+        for ($i = 0; $i < 6; $i++) {
+            $year_list[] = ($current_year - $i);
         }
+        $month_list = [];
+        for ($i = 12; $i > 0; $i--) {
+            $month_list[] = $i;
+        }
+        $year = !empty($_GET['year']) ? intval($_GET['year']) : $current_year;
+        $month = !empty($_GET['month']) ? intval($_GET['month']) : 0;
+
+        $this->assign('store_id', $store_id);
+        $this->assign('year_list', $year_list);
+        $this->assign('month_list', $month_list);
+        $this->assign('year', $year);
+        $this->assign('month', $month);
+        $this->assign('page', 'shipping_status');
+
+        $this->assign('form_action', RC_Uri::url('orders/admin_order_stats/shipping_status', array('store_id' => $store_id)));
+
+        $data = $this->get_ship_status($store_id);
         $this->assign('data', $data);
 
         $this->display('order_stats.dwt');
@@ -266,60 +247,42 @@ class admin_order_stats extends ecjia_admin
             '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E6.94.AF.E4.BB.98.E6.96.B9.E5.BC.8F" target="_blank">' . RC_Lang::get('orders::statistic.about_order_stats') . '</a>') . '</p>'
         );
 
-        $this->assign('ur_here', RC_Lang::get('orders::statistic.order_stats'));
+        $store_id = intval($_GET['store_id']);
+        $store_info = RC_Api::api('store', 'store_info', array('store_id' => $store_id));
+        if (empty($store_info)) {
+            return $this->showmessage('该店铺不存在', ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR, array('links' => array(array('text' => '订单统计', 'href' => RC_Uri::url('orders/admin_order_stats/init')))));
+        }
+
+        $this->assign('ur_here', $store_info['merchants_name'] . ' - ' . RC_Lang::get('orders::statistic.order_stats'));
         $this->assign('action_link', array('text' => RC_Lang::get('orders::statistic.down_order_statistics'), 'href' => RC_Uri::url('orders/admin_order_stats/download')));
 
         //获取订单统计信息
-        $order_stats = $this->get_order_stats();
-
-        /* 时间参数 */
-        $is_multi = empty($_GET['is_multi']) ? false : true;
-
-        /* 时间参数 */
-        $start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date('Y-m-d', RC_Time::local_strtotime('-1 month'));
-        $end_date = !empty($_GET['end_date']) ? $_GET['end_date'] : RC_Time::local_date('Y-m-d');
-
-        $this->assign('start_date', $start_date);
-        $this->assign('end_date', $end_date);
-
-        $year_month = !empty($_GET['year_month']) ? $_GET['year_month'] : '';
-
-        if (!empty($year_month)) {
-            $filter = explode('.', $year_month);
-            $arr = array_filter($filter);
-            $tmp = $arr;
-
-            for ($i = 0; $i < count($tmp); $i++) {
-                if (!empty($tmp[$i])) {
-                    $tmp_time = RC_Time::local_strtotime($tmp[$i] . '-1');
-                    $start_date_arr[$i] = $tmp_time;
-                }
-            }
-        } else {
-            $start_date_arr[] = RC_Time::local_strtotime(RC_Time::local_date('Y-m') . '-1');
-        }
-
-        for ($i = 0; $i < 4; $i++) {
-            if (isset($start_date_arr[$i])) {
-                $start_date_arr[$i] = RC_Time::local_date('Y-m', $start_date_arr[$i]);
-            } else {
-                $start_date_arr[$i] = null;
-            }
-        }
-
-        $this->assign('start_date_arr', $start_date_arr);
+        $order_stats = $this->get_order_stats($store_id);
         $this->assign('order_stats', $order_stats);
-        $this->assign('page', 'pay_status');
-        $this->assign('is_multi', $is_multi);
-        $this->assign('year_month', $year_month);
-        $this->assign('form_action', RC_Uri::url('orders/admin_order_stats/pay_status'));
-        $this->assign_lang();
+        $this->assign('order_stats_json', json_encode($order_stats['type']));
 
-        if (!$is_multi) {
-            $data = $this->get_pay_status();
-        } else {
-            $data = $this->get_pay_stats();
+        $current_year = RC_Time::local_date('Y', RC_Time::gmtime());
+        $year_list = [];
+        for ($i = 0; $i < 6; $i++) {
+            $year_list[] = ($current_year - $i);
         }
+        $month_list = [];
+        for ($i = 12; $i > 0; $i--) {
+            $month_list[] = $i;
+        }
+        $year = !empty($_GET['year']) ? intval($_GET['year']) : $current_year;
+        $month = !empty($_GET['month']) ? intval($_GET['month']) : 0;
+
+        $this->assign('store_id', $store_id);
+        $this->assign('year_list', $year_list);
+        $this->assign('month_list', $month_list);
+        $this->assign('year', $year);
+        $this->assign('month', $month);
+        $this->assign('page', 'pay_status');
+
+        $this->assign('form_action', RC_Uri::url('orders/admin_order_stats/pay_status', array('store_id' => $store_id)));
+
+        $data = $this->get_pay_status();
         $this->assign('data', $data);
 
         $this->display('order_stats.dwt');
@@ -372,20 +335,20 @@ class admin_order_stats extends ecjia_admin
                     $order_info[$key] = $order_info['returned_num'];
                     unset($order_info['returned_num']);
                 } elseif ($k == 'canceled_num') {
-                	$key = RC_Lang::get('orders::statistic.canceled_order');
-                	$order_info[$key] = $order_info['canceled_num'];
-                	unset($order_info['canceled_num']);
+                    $key = RC_Lang::get('orders::statistic.canceled_order');
+                    $order_info[$key] = $order_info['canceled_num'];
+                    unset($order_info['canceled_num']);
                 } elseif ($k == 'finished_num') {
-                	$key = RC_Lang::get('orders::statistic.succeed_order');
-                	$order_info[$key] = $order_info['finished_num'];
-                	unset($order_info['finished_num']);
+                    $key = RC_Lang::get('orders::statistic.succeed_order');
+                    $order_info[$key] = $order_info['finished_num'];
+                    unset($order_info['finished_num']);
                 }
             }
             arsort($order_info);
             foreach ($order_info as $k => $v) {
                 if ($order_info[RC_Lang::get('orders::statistic.await_pay_order')] == 0 && $order_info[RC_Lang::get('orders::statistic.await_ship_order')] == 0
                     && $order_info[RC_Lang::get('orders::statistic.shipped_order')] == 0 && $order_info[RC_Lang::get('orders::statistic.returned_order')] == 0
-                 	&& $order_info[RC_Lang::get('orders::statistic.canceled_order')] == 0 && $order_info[RC_Lang::get('orders::statistic.succeed_order')] == 0) {
+                    && $order_info[RC_Lang::get('orders::statistic.canceled_order')] == 0 && $order_info[RC_Lang::get('orders::statistic.succeed_order')] == 0) {
                     $order_info = null;
                 } else {
                     break;
@@ -589,13 +552,13 @@ class admin_order_stats extends ecjia_admin
         $order_info = array();
         /*待付款订单*/
         $order_info['await_pay_num'] = RC_DB::table('order_info')
-	        ->select(RC_DB::raw('COUNT(*) AS await_pay_num'))
-	        ->where('pay_status', PS_UNPAYED)
-	        ->where('add_time', '>=', $start_date)
-	        ->where('add_time', '<', $end_date)
-	        ->where('is_delete', 0)
-	        ->count();
-        
+            ->select(RC_DB::raw('COUNT(*) AS await_pay_num'))
+            ->where('pay_status', PS_UNPAYED)
+            ->where('add_time', '>=', $start_date)
+            ->where('add_time', '<', $end_date)
+            ->where('is_delete', 0)
+            ->count();
+
         /* 待发货订单数 */
         $order_info['await_ship_num'] = RC_DB::table('order_info')
             ->select(RC_DB::raw('COUNT(*) AS await_ship_num'))
@@ -603,48 +566,48 @@ class admin_order_stats extends ecjia_admin
             ->whereIn('shipping_status', array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING))
             ->whereIn('pay_status', array(PS_PAYED, PS_PAYING))
             ->where('add_time', '>=', $start_date)
-	        ->where('add_time', '<', $end_date)
-	        ->where('is_delete', 0)
+            ->where('add_time', '<', $end_date)
+            ->where('is_delete', 0)
             ->count();
 
         /* 已发货订单数 */
         $order_info['shipped_num'] = RC_DB::table('order_info')
-	        ->select(RC_DB::raw('COUNT(*) AS shipped_num'))
-	        ->where('shipping_status', SS_SHIPPED)
-	        ->where('order_status', '!=', OS_RETURNED)
-	        ->where('add_time', '>=', $start_date)
-	        ->where('add_time', '<', $end_date)
-	        ->where('is_delete', 0)
-	        ->count();
-        
+            ->select(RC_DB::raw('COUNT(*) AS shipped_num'))
+            ->where('shipping_status', SS_SHIPPED)
+            ->where('order_status', '!=', OS_RETURNED)
+            ->where('add_time', '>=', $start_date)
+            ->where('add_time', '<', $end_date)
+            ->where('is_delete', 0)
+            ->count();
+
         /* 退货订单数 */
         $order_info['returned_num'] = RC_DB::table('order_info')
             ->select(RC_DB::raw('COUNT(*) AS returned_num'))
             ->where('pay_status', PS_PAYED)
-	        ->where('order_status', OS_RETURNED)
-	        ->where('add_time', '>=', $start_date)
-	        ->where('add_time', '<', $end_date)
-	        ->where('is_delete', 0)
+            ->where('order_status', OS_RETURNED)
+            ->where('add_time', '>=', $start_date)
+            ->where('add_time', '<', $end_date)
+            ->where('is_delete', 0)
             ->count();
-        
+
         /* 已取消订单数 */
         $order_info['canceled_num'] = RC_DB::table('order_info')
-	        ->select(RC_DB::raw('COUNT(*) AS canceled_num'))
-	        ->whereIn('order_status', array(OS_CANCELED, OS_INVALID))
-	        ->where('add_time', '>=', $start_date)
-	        ->where('add_time', '<', $end_date)
-	        ->where('is_delete', 0)
-	        ->count();
-        
+            ->select(RC_DB::raw('COUNT(*) AS canceled_num'))
+            ->whereIn('order_status', array(OS_CANCELED, OS_INVALID))
+            ->where('add_time', '>=', $start_date)
+            ->where('add_time', '<', $end_date)
+            ->where('is_delete', 0)
+            ->count();
+
         /* 已完成订单数 */
         $order_info['finished_num'] = RC_DB::table('order_info')
-	        ->select(RC_DB::raw('COUNT(*) AS finished_num'))
-	        ->where('shipping_status', SS_RECEIVED)
-	        ->whereIn('pay_status', array(PS_PAYED, PS_PAYING))
-	        ->where('add_time', '>=', $start_date)
-	        ->where('add_time', '<', $end_date)
-	        ->where('is_delete', 0)
-	        ->count();
+            ->select(RC_DB::raw('COUNT(*) AS finished_num'))
+            ->where('shipping_status', SS_RECEIVED)
+            ->whereIn('pay_status', array(PS_PAYED, PS_PAYING))
+            ->where('add_time', '>=', $start_date)
+            ->where('add_time', '<', $end_date)
+            ->where('is_delete', 0)
+            ->count();
 
         return $order_info;
     }
@@ -685,7 +648,7 @@ class admin_order_stats extends ecjia_admin
             ->where('pay_id', '!=', $pay_cod_id)
             ->sum('order_amount');
         $data['await_pay_count'] = price_format($await_pay_count);
-        
+
         $await_ship_count = RC_DB::table('order_info')
             ->where('is_delete', 0)
             ->where('store_id', $store_id)
@@ -784,21 +747,21 @@ class admin_order_stats extends ecjia_admin
                 $query->where('extension_code', '')
                     ->orWhere('extension_code', null);
             })
-           	->select(RC_DB::raw("count('order_id') as order_count"), RC_DB::raw("SUM('order_amount') as order_amount"))
+            ->select(RC_DB::raw("count('order_id') as order_count"), RC_DB::raw("SUM('order_amount') as order_amount"))
             ->first();
-		$data['count_all'] = $data['order_count_data']['order_count'] + $data['groupbuy_count_data']['order_count'] + $data['storebuy_count_data']['order_count'] + $data['storepickup_count_data']['order_count'];
-            
-		$data['order_count_data']['order_amount'] = price_format($data['order_count_data']['order_amount']);
-		$data['groupbuy_count_data']['order_amount'] = price_format($data['groupbuy_count_data']['order_amount']);
-		$data['storebuy_count_data']['order_amount'] = price_format($data['storebuy_count_data']['order_amount']);
-		$data['storepickup_count_data']['order_amount'] = price_format($data['storepickup_count_data']['order_amount']);
-		
-		$data['type'] = array(
-			array('name' => '配送', 'value' => $data['order_count_data']['order_count']),
-			array('name' => '团购', 'value' => $data['groupbuy_count_data']['order_count']),
-			array('name' => '到店', 'value' => $data['storebuy_count_data']['order_count']),
-			array('name' => '自提', 'value' => $data['storepickup_count_data']['order_count']),
-		);
+        $data['count_all'] = $data['order_count_data']['order_count'] + $data['groupbuy_count_data']['order_count'] + $data['storebuy_count_data']['order_count'] + $data['storepickup_count_data']['order_count'];
+
+        $data['order_count_data']['order_amount'] = price_format($data['order_count_data']['order_amount']);
+        $data['groupbuy_count_data']['order_amount'] = price_format($data['groupbuy_count_data']['order_amount']);
+        $data['storebuy_count_data']['order_amount'] = price_format($data['storebuy_count_data']['order_amount']);
+        $data['storepickup_count_data']['order_amount'] = price_format($data['storepickup_count_data']['order_amount']);
+
+        $data['type'] = array(
+            array('name' => '配送', 'value' => $data['order_count_data']['order_count']),
+            array('name' => '团购', 'value' => $data['groupbuy_count_data']['order_count']),
+            array('name' => '到店', 'value' => $data['storebuy_count_data']['order_count']),
+            array('name' => '自提', 'value' => $data['storepickup_count_data']['order_count']),
+        );
         return $data;
     }
 

@@ -2751,7 +2751,10 @@ class merchant extends ecjia_merchant
             ecjia_merchant::admin_log('设为确认,订单号是' . $order['order_sn'], 'setup', 'order');
             /* 记录log */
             order_action($order['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_UNPAYED, $action_note);
-
+            /*订单状态表log记录*/
+            $pra = array('order_status' => '商家已接单', 'order_id' => $order_id, 'message' => '已被商家接单，订单正在备货中');
+            order_refund::order_status_log($pra);
+            
             /* 如果原来状态不是“未确认”，且使用库存，且下订单时减库存，则减少库存 */
             if ($order['order_status'] != OS_UNCONFIRMED && ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_PLACE) {
                 change_order_goods_storage($order_id, true, SDT_PLACE);

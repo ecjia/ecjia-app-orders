@@ -2752,6 +2752,7 @@ class merchant extends ecjia_merchant
             /* 记录log */
             order_action($order['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_UNPAYED, $action_note);
             /*订单状态表log记录*/
+            RC_Loader::load_app_class('order_refund', 'refund', false);
             $pra = array('order_status' => '商家已接单', 'order_id' => $order_id, 'message' => '已被商家接单，订单正在备货中');
             order_refund::order_status_log($pra);
             

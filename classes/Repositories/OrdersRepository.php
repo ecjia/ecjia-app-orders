@@ -49,8 +49,8 @@ namespace Ecjia\App\Orders\Repositories;
 
 use Ecjia\App\Orders\OrderStatus;
 use RC_DB;
-use Royalcms\Component\Repository\Repositories\AbstractRepository;
 use RC_Time;
+use Royalcms\Component\Repository\Repositories\AbstractRepository;
 
 class OrdersRepository extends AbstractRepository
 {
@@ -269,7 +269,7 @@ class OrdersRepository extends AbstractRepository
         $filter['store_id'] = trim(array_get($filter, 'store_id'));
         $filter['referer'] = trim(array_get($filter, 'referer'));
         $filter['goods_keywords'] = trim(array_get($filter, 'goods_keywords'));
-        
+
         $field = [
             'order_info.order_id',
             'order_info.order_sn',
@@ -428,11 +428,11 @@ class OrdersRepository extends AbstractRepository
                 $query->where('order_info.pay_status', array_get($filter, 'pay_status'));
             }
             if (array_get($filter, 'start_time')) {
-            	$start_time = RC_Time::local_strtotime(array_get($filter, 'start_time'));
+                $start_time = RC_Time::local_strtotime(array_get($filter, 'start_time'));
                 $query->where('order_info.add_time', '>=', $start_time);
             }
             if (array_get($filter, 'end_time')) {
-            	$end_time = RC_Time::local_strtotime(array_get($filter, 'end_time'));
+                $end_time = RC_Time::local_strtotime(array_get($filter, 'end_time'));
                 $query->where('order_info.add_time', '<', $end_time);
             }
             if (array_get($filter, 'group_buy_id')) {
@@ -441,8 +441,8 @@ class OrdersRepository extends AbstractRepository
             }
             if (array_get($filter, 'extension_code') == 'default') {
                 $query->where(function ($query) use ($filter) {
-                	$query->where('order_info.extension_code', '')
-                	->orWhere('order_info.extension_code', null);
+                    $query->where('order_info.extension_code', '')
+                        ->orWhere('order_info.extension_code', null);
                 });
             } else {
                 $query->where('order_info.extension_code', array_get($filter, 'extension_code'));
@@ -456,26 +456,26 @@ class OrdersRepository extends AbstractRepository
             }
 
             if (array_get($filter, 'store_id')) {
-            	$query->where('order_info.store_id', array_get($filter, 'store_id'));
+                $query->where('order_info.store_id', array_get($filter, 'store_id'));
             }
-            
+
             if (array_get($filter, 'user_id')) {
-            	$query->leftJoin('users', 'order_info.user_id', '=', 'users.user_id')->where('users.user_id', array_get($filter, 'user_id'));
+                $query->leftJoin('users', 'order_info.user_id', '=', 'users.user_id')->where('users.user_id', array_get($filter, 'user_id'));
             }
-            
+
             if (array_get($filter, 'referer')) {
-            	$query->where('order_info.referer', array_get($filter, 'referer'));
+                $query->where('order_info.referer', array_get($filter, 'referer'));
             }
-            
+
             if (array_get($filter, 'goods_keywords')) {
-            	$query->leftJoin('order_goods', function ($join) {
-            		$join->on('order_info.order_id', '=', 'order_goods.order_id');
-            	});
-            	$query->where(function ($query) use ($filter) {
-            		$query->where('order_goods.goods_name', 'like', '%' . ecjia_mysql_like_quote(array_get($filter, 'goods_keywords')) . '%');
-            	});
+                $query->leftJoin('order_goods', function ($join) {
+                    $join->on('order_info.order_id', '=', 'order_goods.order_id');
+                });
+                $query->where(function ($query) use ($filter) {
+                    $query->where('order_goods.goods_name', 'like', '%' . ecjia_mysql_like_quote(array_get($filter, 'goods_keywords')) . '%');
+                });
             }
-            
+
             if (array_get($filter, 'composite_status')) {
                 //综合状态
                 switch (array_get($filter, 'composite_status')) {
@@ -665,6 +665,26 @@ class OrdersRepository extends AbstractRepository
         $filter['composite_status'] = CS_FINISHED;
         $countQuery = $this->orderQuery($filter);
         $count['finished'] = $this->findWhereCount($where, RC_DB::raw("DISTINCT {$table}.order_id"), function ($query) use ($keywords, $countQuery) {
+            if (!empty($keywords)) {
+                $query->leftJoin('order_goods', function ($join) {
+                    $join->on('order_info.order_id', '=', 'order_goods.order_id');
+                });
+
+                $query->where(function ($query) use ($keywords) {
+                    return $query->where('order_goods.goods_name', 'like', '%' . $keywords . '%')
+                        ->orWhere('order_info.order_sn', 'like', '%' . $keywords . '%');
+                });
+            }
+
+            if (is_callable($countQuery)) {
+                $countQuery($query);
+            }
+        });
+
+        //退款/售后
+        $filter['composite_status'] = CS_REFUND;
+        $countQuery = $this->orderQuery($filter);
+        $count['returned'] = $this->findWhereCount($where, RC_DB::raw("DISTINCT {$table}.order_id"), function ($query) use ($keywords, $countQuery) {
             if (!empty($keywords)) {
                 $query->leftJoin('order_goods', function ($join) {
                     $join->on('order_info.order_id', '=', 'order_goods.order_id');

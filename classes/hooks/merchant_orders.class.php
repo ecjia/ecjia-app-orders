@@ -52,94 +52,14 @@ class orders_merchant_plugin
     //订单统计
     public static function merchant_dashboard_left_8_1()
     {
-        //当前时间戳
-        $now = RC_Time::gmtime();
+        $filter['store_id'] = $_SESSION['store_id'];
+        $filter['extension_code'] = 'default';
+        $order_list = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
+        	->getOrderList($filter, 1, 15, null, ['Ecjia\App\Orders\CustomizeOrderList', 'exportOrderListMerchant']);
+        $count = $order_list['filter_count'];
 
-        //本月开始时间
-        $start_month = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date('m'), 1, RC_Time::local_date('Y'));
-
-        RC_Loader::load_app_class('merchant_order_list', 'orders', false);
-        $order = new merchant_order_list();
-
-        $order_money = RC_DB::table('order_info as o')
-            ->leftJoin('order_goods as og', RC_DB::raw('o.order_id'), '=', RC_DB::raw('og.order_id'))
-            ->selectRaw("(" . $order->order_amount_field('o.') . ") AS order_amount")
-            ->where(RC_DB::raw('o.store_id'), $_SESSION['store_id'])
-            ->where(RC_DB::raw('o.add_time'), '>=', $start_month)
-            ->where(RC_DB::raw('o.add_time'), '<=', $now)
-            ->where(RC_DB::raw('o.is_delete'), 0)
-            ->whereIn(RC_DB::raw('o.order_status'), array(OS_CONFIRMED, OS_SPLITED))
-            ->whereIn(RC_DB::raw('o.shipping_status'), array(SS_SHIPPED, SS_RECEIVED))
-            ->whereIn(RC_DB::raw('o.pay_status'), array(PS_PAYING, PS_PAYED))
-            ->groupBy(RC_DB::raw('o.order_id'))
-            ->get();
-
-        //本月订单总额
-        $num = 0;
-        if (!empty($order_money)) {
-            foreach ($order_money as $val) {
-                $num += $val['order_amount'];
-            }
-            $num = price_format($num);
-        }
-
-        //本月订单数量
-        $order_number = RC_DB::table('order_info')
-            ->where('store_id', $_SESSION['store_id'])
-            ->where('add_time', '>=', $start_month)
-            ->where('is_delete', 0)
-            ->count(RC_DB::raw('distinct order_id'));
-
-        //今日开始时间
-        $start_time = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date('m'), RC_Time::local_date('d'), RC_Time::local_date('Y'));
-
-        //今日待确认订单
-        $order_unconfirmed = RC_DB::table('order_info as oi')
-            ->leftJoin('order_goods as g', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('g.order_id'))
-            ->select(RC_DB::raw('oi.order_id'))
-            ->where(RC_DB::raw('oi.store_id'), $_SESSION['store_id'])->where(RC_DB::raw('oi.order_status'), 0)
-            ->where(RC_DB::raw('oi.add_time'), '>=', $start_time)->where(RC_DB::raw('oi.add_time'), '<=', $now)
-            ->where(RC_DB::raw('oi.is_delete'), 0)
-            ->groupBy(RC_DB::raw('oi.order_id'))->get();
-        $order_unconfirmed = count($order_unconfirmed);
-
-        $db_order_info = RC_DB::table('order_info as o');
-
-        $payment_method = RC_Loader::load_app_class('payment_method', 'payment');
-        $payment_id_row = $payment_method->payment_id_list(true);
-        $payment_id = "";
-        foreach ($payment_id_row as $v) {
-            $payment_id .= empty($payment_id) ? $v : ',' . $v;
-        }
-        $payment_id = empty($payment_id) ? "''" : $payment_id;
-
-        $db_order_info->whereIn(RC_DB::raw($alias . 'order_status'), array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART));
-        $db_order_info->whereIn(RC_DB::raw($alias . 'shipping_status'), array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING));
-        $db_order_info->whereRaw("( {$alias}pay_status in (" . PS_PAYED . "," . PS_PAYING . ") OR {$alias}pay_id in (" . $payment_id . "))");
-
-        //今日待发货订单
-        $order_await_ship = $db_order_info
-            ->leftJoin('order_goods as g', RC_DB::raw('o.order_id'), '=', RC_DB::raw('g.order_id'))
-            ->select(RC_DB::raw('o.order_id'))
-            ->where(RC_DB::raw('o.store_id'), $_SESSION['store_id'])->where(RC_DB::raw('o.order_status'), 0)
-            ->where(RC_DB::raw('o.add_time'), '>=', $start_time)->where(RC_DB::raw('o.add_time'), '<=', $now)
-            ->where(RC_DB::raw('o.is_delete'), 0)
-            ->groupBy(RC_DB::raw('o.order_id'))->get();
-        $order_await_ship = count($order_await_ship);
-
-        ecjia_admin::$controller->assign('order_money', $num);
-        ecjia_admin::$controller->assign('order_number', $order_number);
-        ecjia_admin::$controller->assign('order_unconfirmed', $order_unconfirmed);
-        ecjia_admin::$controller->assign('order_await_ship', $order_await_ship);
-
-        ecjia_admin::$controller->assign('month_start_time', RC_Time::local_date('Y-m-d', $start_month)); //本月开始时间
-        ecjia_admin::$controller->assign('month_end_time', RC_Time::local_date('Y-m-d', $now)); //本月结束时间
-
-        ecjia_admin::$controller->assign('today_start_time', RC_Time::local_date('Y-m-d H:i:s', $start_time)); //今天开始时间
-        ecjia_admin::$controller->assign('today_end_time', RC_Time::local_date('Y-m-d H:i:s', $start_time + 24 * 3600 - 1)); //今天结束时间
-        ecjia_admin::$controller->assign('wait_ship', CS_AWAIT_SHIP); //待发货
-        ecjia_admin::$controller->assign('unconfirmed', OS_UNCONFIRMED); //待确认
-
+        ecjia_merchant::$controller->assign('count', $count);
+        
         ecjia_merchant::$controller->display(
             RC_Package::package('app::orders')->loadTemplate('merchant/library/widget_merchant_dashboard_overview.lbi', true)
         );

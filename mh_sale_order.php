@@ -184,7 +184,7 @@ class mh_sale_order extends ecjia_merchant {
 	        $sales_order_data[$key]['turnover']    = price_format($item['turnover']);
 	        $sales_order_data[$key]['taxis']       = $key + 1;
 	    }
-	    RC_Loader::load_sys_class('ecjia_page',false);
+
 	    $arr = array('item' => $sales_order_data, 'filter' => $filter, 'desc' => $page->page_desc(), 'page'=>$page->show(2));
 	    return $arr;
 	}

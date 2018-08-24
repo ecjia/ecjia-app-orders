@@ -95,7 +95,6 @@ class mh_sale_general extends ecjia_merchant {
 		
         $order_type = !empty($_GET['order_type']) ? intval($_GET['order_type']) : 1;
         $data = $this->get_order_status($order_type);
-//         _dump(json_decode($data['item'],true),1);
 
         $this->assign('data', $data['item']);
         $this->assign('filter', $data['filter']);

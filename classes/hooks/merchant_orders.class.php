@@ -123,30 +123,53 @@ class orders_merchant_plugin
             ->where('store_id', $store_id)
             ->selectRaw('count(*) as count, SUM(IF(status = 0, 1, 0)) as wait_grab, SUM(IF(status = 1, 1, 0)) as wait_pickup, SUM(IF(status = 2, 1, 0)) as sending, SUM(IF(status = 5, 1, 0)) as finished')
             ->first();
-        
+
         foreach ($data['express_platform_count'] as $k => $v) {
-        	if (empty($data['express_platform_count'][$k])) {
-        		$data['express_platform_count'][$k] = 0;
-        	}
+            if (empty($data['express_platform_count'][$k])) {
+                $data['express_platform_count'][$k] = 0;
+            }
         }
-        
+
         $data['express_merchant_count'] = RC_DB::table('express_order')
-	        ->where(RC_DB::raw('shipping_code'), '')
-	        ->where('store_id', $store_id)
-	        ->selectRaw('count(*) as count, SUM(IF(status = 0, 1, 0)) as wait_grab, SUM(IF(status = 1, 1, 0)) as wait_pickup, SUM(IF(status = 2, 1, 0)) as sending, SUM(IF(status = 5, 1, 0)) as finished')
-	        ->first();
-		
+            ->where(RC_DB::raw('shipping_code'), '')
+            ->where('store_id', $store_id)
+            ->selectRaw('count(*) as count, SUM(IF(status = 0, 1, 0)) as wait_grab, SUM(IF(status = 1, 1, 0)) as wait_pickup, SUM(IF(status = 2, 1, 0)) as sending, SUM(IF(status = 5, 1, 0)) as finished')
+            ->first();
+
         foreach ($data['express_merchant_count'] as $k => $v) {
-        	if (empty($data['express_merchant_count'][$k])) {
-        		$data['express_merchant_count'][$k] = 0;
-        	}
+            if (empty($data['express_merchant_count'][$k])) {
+                $data['express_merchant_count'][$k] = 0;
+            }
         }
-        
+
         $data['promotion_count'] = RC_DB::table('goods')->where('is_promote', 1)->where('is_delete', 1)->where('store_id', $store_id)->count();
         $data['favourable_count'] = RC_DB::table('favourable_activity')->where('store_id', $store_id)->count();
         $data['groupbuy_count'] = RC_DB::table('goods_activity')->where('act_type', GAT_GROUP_BUY)->where('store_id', $store_id)->count();
         $data['quickpay_count'] = RC_DB::table('quickpay_activity')->where('store_id', $store_id)->count();
-        
+
+        $sales_order_data = RC_DB::table('goods as g')
+            ->leftJoin('order_goods as og', RC_DB::raw('og.goods_id'), '=', RC_DB::raw('g.goods_id'))
+            ->leftJoin('order_info as oi', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('og.order_id'))
+            ->selectRaw('og.goods_id, og.goods_sn, og.goods_name, oi.order_status, SUM(og.goods_number) AS goods_num, SUM(og.goods_number * og.goods_price) AS turnover')
+            ->where(RC_DB::raw('oi.is_delete'), 0)
+            ->where(RC_DB::raw('g.is_delete'), 0)
+            ->where(RC_DB::raw('g.store_id'), $store_id)
+            ->groupBy(RC_DB::raw('og.goods_id'))
+            ->orderBy('goods_num', 'desc')
+            ->orderBy('turnover', 'desc')
+            ->take(3)
+            ->get();
+
+        if (!empty($sales_order_data)) {
+            foreach ($sales_order_data as $key => $item) {
+                $sales_order_data[$key]['wvera_price'] = price_format($item['goods_num'] ? $item['turnover'] / $item['goods_num'] : 0);
+                $sales_order_data[$key]['short_name'] = $item['goods_name'];
+                $sales_order_data[$key]['turnover'] = price_format($item['turnover']);
+                $sales_order_data[$key]['taxis'] = $key + 1;
+            }
+        }
+        $data['sale_item'] = $sales_order_data;
+
         ecjia_merchant::$controller->assign('data', $data);
 
         ecjia_merchant::$controller->display(

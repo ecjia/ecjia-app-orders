@@ -212,8 +212,7 @@
 										</div>
 									</td>
 									<td>
-										{$order.pay_name} {if $order.pay_note}({lang key='orders::order.label_action_note'}
-										<span>{$order.pay_note}</span>){/if}
+										{$order.pay_name}
 									</td>
 									<td>
 										<div align="right">

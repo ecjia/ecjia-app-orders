@@ -104,7 +104,6 @@ ecjia.merchant.order.info();
 							</div>
 						</div>
 						
-						
                         <div class="control-group t_c">
 							<button class="btn btn-info" id="note_btn" type="submit">{t}确定{/t}</button>
 							<input type="hidden" name="order_id" value="{$order_id}" />
@@ -329,7 +328,6 @@ ecjia.merchant.order.info();
 						<tbody class="first-td-no-leftbd">
 							<tr>
 								<td><div align="right"><strong>{lang key='orders::order.label_order_sn'}</strong></div></td>
-								<!-- TODO 团购链接赞不知，以后修改测试 -->
 								<td>
 									{$order.order_sn}
 								</td>
@@ -348,7 +346,6 @@ ecjia.merchant.order.info();
 								<td><div align="right"><strong>{lang key='orders::order.label_payment'}</strong></div></td>
 								<td>
 									{$order.pay_name}
-									({lang key='orders::order.label_action_note'}<span>{if $order.pay_note}{$order.pay_note}{else}暂无{/if}</span>)
 								</td>
 								<td><div align="right"><strong>{lang key='orders::order.label_pay_time'}</strong></div></td>
 								<td>{$order.pay_time}</td>
@@ -371,7 +368,7 @@ ecjia.merchant.order.info();
 									{/if}
 								</td>
 								<td><div align="right"><strong>期望送达时间：</strong></div></td>
-								<td>{$order.expect_shipping_time}</td>
+								<td>{if $order.expect_shipping_time}{$order.expect_shipping_time}{else}暂无{/if}</td>
 							</tr>
 							
 							<tr>
@@ -754,7 +751,7 @@ ecjia.merchant.order.info();
 								<td width="15%"><div align="right"> <strong>操作说明：</strong></div></td>
 								<td colspan="3">
 									{if $operable_list.cancel}【取消】设置该订单为无效/作废订单<br>{/if}
-									{if $operable_list.confirm}【确认接单】标记订单为已发货状态；<br>{/if}
+									{if $operable_list.confirm}【确认接单】标记订单为已接单状态；<br>{/if}
 									{if $operable_list.unconfirm}【拒单】标记订单为取消状态，取消后，系统自动将款项退回给用户；<br>{/if}
 									
 									{if $operable_list.to_delivery}【一键发货】标记订单为已发货状态；<br>{/if}

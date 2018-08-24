@@ -55,11 +55,11 @@ class orders_merchant_plugin
         $filter['store_id'] = $_SESSION['store_id'];
         $filter['extension_code'] = 'default';
         $order_list = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
-        	->getOrderList($filter, 1, 15, null, ['Ecjia\App\Orders\CustomizeOrderList', 'exportOrderListMerchant']);
+            ->getOrderList($filter, 1, 15, null, ['Ecjia\App\Orders\CustomizeOrderList', 'exportOrderListMerchant']);
         $count = $order_list['filter_count'];
 
         ecjia_merchant::$controller->assign('count', $count);
-        
+
         ecjia_merchant::$controller->display(
             RC_Package::package('app::orders')->loadTemplate('merchant/library/widget_merchant_dashboard_overview.lbi', true)
         );
@@ -68,30 +68,92 @@ class orders_merchant_plugin
     //店铺首页 店铺资金 订单统计类型 平台配送 商家配送 促销活动 商品热卖榜
     public static function merchant_dashboard_left_8_2()
     {
-    	//店铺资金
-    	$data = RC_DB::table('store_account')->where('store_id', $_SESSION['store_id'])->first();
-    	if (empty($data)) {
-    		$data['formated_amount_available'] = $data['formated_money'] = $data['formated_frozen_money'] = $data['formated_deposit'] = '￥0.00';
-    		$data['amount_available'] = $data['money'] = $data['frozen_money'] = $data['deposit'] = '0.00';
-    	} else {
-    		$amount_available = $data['money'] - $data['deposit']; //可用余额=money-保证金
-    		$data['formated_amount_available'] = price_format($amount_available);
-    		$data['amount_available'] = $amount_available;
-    
-    		$money = $data['money'] + $data['frozen_money']; //总金额=money+冻结
-    		$data['formated_money'] = price_format($money);
-    		$data['money'] = $money;
-    
-    		$data['formated_frozen_money'] = price_format($data['frozen_money']);
-    		$data['formated_deposit'] = price_format($data['deposit']);
-    	}
-    	ecjia_merchant::$controller->assign('data', $data);
-    
-    	ecjia_merchant::$controller->display(
-    	RC_Package::package('app::orders')->loadTemplate('merchant/library/widget_merchant_dashboard_commission.lbi', true)
-    	);
+        //店铺资金
+        $data = RC_DB::table('store_account')->where('store_id', $_SESSION['store_id'])->first();
+        if (empty($data)) {
+            $data['formated_amount_available'] = $data['formated_money'] = $data['formated_frozen_money'] = $data['formated_deposit'] = '￥0.00';
+            $data['amount_available'] = $data['money'] = $data['frozen_money'] = $data['deposit'] = '0.00';
+        } else {
+            $amount_available = $data['money'] - $data['deposit']; //可用余额=money-保证金
+            $data['formated_amount_available'] = price_format($amount_available);
+            $data['amount_available'] = $amount_available;
+
+            $money = $data['money'] + $data['frozen_money']; //总金额=money+冻结
+            $data['formated_money'] = price_format($money);
+            $data['money'] = $money;
+
+            $data['formated_frozen_money'] = price_format($data['frozen_money']);
+            $data['formated_deposit'] = price_format($data['deposit']);
+        }
+
+        $store_id = $_SESSION['store_id'];
+        //配送型订单数及总金额
+        $data['order_count'] = RC_DB::table('order_info')
+            ->where('is_delete', 0)
+            ->where('store_id', $store_id)
+            ->where(function ($query) {
+                $query->where('extension_code', '')
+                    ->orWhere('extension_code', null);
+            })
+            ->count('order_id');
+
+        //团购型订单数及总金额
+        $data['groupbuy_count'] = RC_DB::table('order_info')
+            ->where('is_delete', 0)
+            ->where('store_id', $store_id)
+            ->where('extension_code', 'group_buy')
+            ->count('order_id');
+
+        //到店型订单数及总金额
+        $data['storebuy_count'] = RC_DB::table('order_info')
+            ->where('is_delete', 0)
+            ->where('store_id', $store_id)
+            ->where('extension_code', 'storebuy')
+            ->count('order_id');
+
+        //自提型订单数及总金额
+        $data['storepickup_count'] = RC_DB::table('order_info')
+            ->where('is_delete', 0)
+            ->where('store_id', $store_id)
+            ->where('extension_code', 'storepickup')
+            ->count('order_id');
+
+        $data['express_platform_count'] = RC_DB::table('express_order')
+            ->where(RC_DB::raw('shipping_code'), 'ship_o2o_express')
+            ->where('store_id', $store_id)
+            ->selectRaw('count(*) as count, SUM(IF(status = 0, 1, 0)) as wait_grab, SUM(IF(status = 1, 1, 0)) as wait_pickup, SUM(IF(status = 2, 1, 0)) as sending, SUM(IF(status = 5, 1, 0)) as finished')
+            ->first();
+        
+        foreach ($data['express_platform_count'] as $k => $v) {
+        	if (empty($data['express_platform_count'][$k])) {
+        		$data['express_platform_count'][$k] = 0;
+        	}
+        }
+        
+        $data['express_merchant_count'] = RC_DB::table('express_order')
+	        ->where(RC_DB::raw('shipping_code'), '')
+	        ->where('store_id', $store_id)
+	        ->selectRaw('count(*) as count, SUM(IF(status = 0, 1, 0)) as wait_grab, SUM(IF(status = 1, 1, 0)) as wait_pickup, SUM(IF(status = 2, 1, 0)) as sending, SUM(IF(status = 5, 1, 0)) as finished')
+	        ->first();
+		
+        foreach ($data['express_merchant_count'] as $k => $v) {
+        	if (empty($data['express_merchant_count'][$k])) {
+        		$data['express_merchant_count'][$k] = 0;
+        	}
+        }
+        
+        $data['promotion_count'] = RC_DB::table('goods')->where('is_promote', 1)->where('is_delete', 1)->where('store_id', $store_id)->count();
+        $data['favourable_count'] = RC_DB::table('favourable_activity')->where('store_id', $store_id)->count();
+        $data['groupbuy_count'] = RC_DB::table('goods_activity')->where('act_type', GAT_GROUP_BUY)->where('store_id', $store_id)->count();
+        $data['quickpay_count'] = RC_DB::table('quickpay_activity')->where('store_id', $store_id)->count();
+        
+        ecjia_merchant::$controller->assign('data', $data);
+
+        ecjia_merchant::$controller->display(
+            RC_Package::package('app::orders')->loadTemplate('merchant/library/widget_merchant_dashboard_commission.lbi', true)
+        );
     }
-    
+
     //订单走势图
     public static function merchant_dashboard_left_8_3()
     {

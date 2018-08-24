@@ -46,278 +46,216 @@
 //
 defined('IN_ECJIA') or exit('No permission resources.');
 
-class orders_merchant_plugin {
-	
-	public static function widget_admin_dashboard_orderslist() {
+class orders_merchant_plugin
+{
 
-	}
-	
-	// 商城简报
-	public static function widget_admin_dashboard_shopchart() {
-	    $order_query = RC_Loader::load_app_class('merchant_order_query','orders');
-		$db	= RC_Loader::load_app_model('order_info_viewmodel','orders');
-		$db->view = array(
-			'order_goods' => array(
-				'type' 	=> Component_Model_View::TYPE_LEFT_JOIN,
-				'alias' => 'g',
-				'on' 	=> 'oi.order_id = g.order_id '
-			)
-		);
-		$db_order_viewmodel = RC_Loader::load_app_model('order_pay_viewmodel', 'orders');
-		//TODO: 入驻商订单筛选条件
-		$month_order = $db->where(array('oi.store_id' => $_SESSION['store_id'], 'oi.add_time' => array('gt' => RC_Time::gmtime() - 2592000)))->count('distinct oi.order_id');
+    //订单统计
+    public static function merchant_dashboard_left_8_1()
+    {
+        //当前时间戳
         $now = RC_Time::gmtime();
-        
-		$order_money = RC_DB::table('order_info as oi')
-			->selectRaw('oi.order_id, oi.goods_amount')
-			->where(RC_DB::raw('oi.store_id'), $_SESSION['store_id'])
-			->where(RC_DB::raw('oi.add_time'), '>', $now-3600*24*30)
-			->where(RC_DB::raw('oi.add_time'), '<', $now)
-			->where(RC_DB::raw('oi.pay_status'), PS_PAYED)
-			->groupBy(RC_DB::raw('oi.order_id'))
-			->groupBy(RC_DB::raw('oi.goods_amount'))
-			->get();
-		$num = 0;
-		if (!empty($order_money)) {
-			foreach($order_money as $val){
-				$num += $val['goods_amount'];
-			}
-			$num = floor($num * 100) / 100;
-		}
 
-        $order_unconfirmed = $db->field('oi.order_id')->where(array('oi.order_status' => 0, 'oi.store_id'  => $_SESSION['store_id'], 'oi.add_time' => array('gt'=> $now-3600*60*24, 'lt' => $now)))->group('oi.order_id')->select();
+        //本月开始时间
+        $start_month = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date('m'), 1, RC_Time::local_date('Y'));
+
+        RC_Loader::load_app_class('merchant_order_list', 'orders', false);
+        $order = new merchant_order_list();
+
+        $order_money = RC_DB::table('order_info as o')
+            ->leftJoin('order_goods as og', RC_DB::raw('o.order_id'), '=', RC_DB::raw('og.order_id'))
+            ->selectRaw("(" . $order->order_amount_field('o.') . ") AS order_amount")
+            ->where(RC_DB::raw('o.store_id'), $_SESSION['store_id'])
+            ->where(RC_DB::raw('o.add_time'), '>=', $start_month)
+            ->where(RC_DB::raw('o.add_time'), '<=', $now)
+            ->where(RC_DB::raw('o.is_delete'), 0)
+            ->whereIn(RC_DB::raw('o.order_status'), array(OS_CONFIRMED, OS_SPLITED))
+            ->whereIn(RC_DB::raw('o.shipping_status'), array(SS_SHIPPED, SS_RECEIVED))
+            ->whereIn(RC_DB::raw('o.pay_status'), array(PS_PAYING, PS_PAYED))
+            ->groupBy(RC_DB::raw('o.order_id'))
+            ->get();
+
+        //本月订单总额
+        $num = 0;
+        if (!empty($order_money)) {
+            foreach ($order_money as $val) {
+                $num += $val['order_amount'];
+            }
+            $num = price_format($num);
+        }
+
+        //本月订单数量
+        $order_number = RC_DB::table('order_info')
+            ->where('store_id', $_SESSION['store_id'])
+            ->where('add_time', '>=', $start_month)
+            ->where('is_delete', 0)
+            ->count(RC_DB::raw('distinct order_id'));
+
+        //今日开始时间
+        $start_time = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date('m'), RC_Time::local_date('d'), RC_Time::local_date('Y'));
+
+        //今日待确认订单
+        $order_unconfirmed = RC_DB::table('order_info as oi')
+            ->leftJoin('order_goods as g', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('g.order_id'))
+            ->select(RC_DB::raw('oi.order_id'))
+            ->where(RC_DB::raw('oi.store_id'), $_SESSION['store_id'])->where(RC_DB::raw('oi.order_status'), 0)
+            ->where(RC_DB::raw('oi.add_time'), '>=', $start_time)->where(RC_DB::raw('oi.add_time'), '<=', $now)
+            ->where(RC_DB::raw('oi.is_delete'), 0)
+            ->groupBy(RC_DB::raw('oi.order_id'))->get();
         $order_unconfirmed = count($order_unconfirmed);
-        
-        $order_await_ship = $db->field('oi.order_id')->where(array_merge($order_query->order_await_ship('oi.'), array('oi.store_id'  => $_SESSION['store_id'], 'oi.add_time' => array('gt'=> $now-3600*60*24, 'lt' => $now))))->group('oi.order_id')->select();
+
+        $db_order_info = RC_DB::table('order_info as o');
+
+        $payment_method = RC_Loader::load_app_class('payment_method', 'payment');
+        $payment_id_row = $payment_method->payment_id_list(true);
+        $payment_id = "";
+        foreach ($payment_id_row as $v) {
+            $payment_id .= empty($payment_id) ? $v : ',' . $v;
+        }
+        $payment_id = empty($payment_id) ? "''" : $payment_id;
+
+        $db_order_info->whereIn(RC_DB::raw($alias . 'order_status'), array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART));
+        $db_order_info->whereIn(RC_DB::raw($alias . 'shipping_status'), array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING));
+        $db_order_info->whereRaw("( {$alias}pay_status in (" . PS_PAYED . "," . PS_PAYING . ") OR {$alias}pay_id in (" . $payment_id . "))");
+
+        //今日待发货订单
+        $order_await_ship = $db_order_info
+            ->leftJoin('order_goods as g', RC_DB::raw('o.order_id'), '=', RC_DB::raw('g.order_id'))
+            ->select(RC_DB::raw('o.order_id'))
+            ->where(RC_DB::raw('o.store_id'), $_SESSION['store_id'])->where(RC_DB::raw('o.order_status'), 0)
+            ->where(RC_DB::raw('o.add_time'), '>=', $start_time)->where(RC_DB::raw('o.add_time'), '<=', $now)
+            ->where(RC_DB::raw('o.is_delete'), 0)
+            ->groupBy(RC_DB::raw('o.order_id'))->get();
         $order_await_ship = count($order_await_ship);
-        
-        ecjia_admin::$controller->assign('month_order', $month_order);
-		ecjia_admin::$controller->assign('order_money', intval($num));
-		ecjia_admin::$controller->assign('order_unconfirmed', $order_unconfirmed);
-		ecjia_admin::$controller->assign('order_await_ship', $order_await_ship);
-		
-	    $title = __('商城简报');
-	    
-	    ecjia_admin::$controller->assign_lang();
-		ecjia_admin::$controller->display(ecjia_app::get_app_template('library/widget_admin_dashboard_shopchart.lbi', 'orders'));
-	}
-	
-	// 销售走势图
-	public static function widget_admin_dashboard_salechart() {
-	    $title = __('销售走势图');
-        $db_order	= RC_Loader::load_app_model('order_info_viewmodel','orders');
 
-        $now_time = RC_Time::gmtime()+28800;
-        $start_time = $now_time - 2592000;
-        $sale_arr = array();
+        ecjia_admin::$controller->assign('order_money', $num);
+        ecjia_admin::$controller->assign('order_number', $order_number);
+        ecjia_admin::$controller->assign('order_unconfirmed', $order_unconfirmed);
+        ecjia_admin::$controller->assign('order_await_ship', $order_await_ship);
 
-        for($i = 30; $i>=0; $i--) {
-            $tmp_time = $now_time - $i * 86400;
-            $tmp_day = RC_Time::local_date('m-d', $tmp_time);
-            $sale_arr[$tmp_day] = '0.00';
-        }
+        ecjia_admin::$controller->assign('month_start_time', RC_Time::local_date('Y-m-d', $start_month)); //本月开始时间
+        ecjia_admin::$controller->assign('month_end_time', RC_Time::local_date('Y-m-d', $now)); //本月结束时间
 
-        $where = array(
-            'oi.store_id' => $_SESSION['store_id'],
-            'oi.pay_status' => PS_PAYED,
-            'oi.pay_time'   => array(
-                'elt'   => $now_time,
-                'gt'    => $start_time
-            ),
+        ecjia_admin::$controller->assign('today_start_time', RC_Time::local_date('Y-m-d H:i:s', $start_time)); //今天开始时间
+        ecjia_admin::$controller->assign('today_end_time', RC_Time::local_date('Y-m-d H:i:s', $start_time + 24 * 3600 - 1)); //今天结束时间
+        ecjia_admin::$controller->assign('wait_ship', CS_AWAIT_SHIP); //待发货
+        ecjia_admin::$controller->assign('unconfirmed', OS_UNCONFIRMED); //待确认
+
+        ecjia_merchant::$controller->display(
+            RC_Package::package('app::orders')->loadTemplate('merchant/library/widget_merchant_dashboard_overview.lbi', true)
         );
+    }
 
-        $rs = $db_order->field('oi.order_id')->where($where)->select();
-        $arr = array();
-        foreach($rs as $value){
-            if(empty($value['main_order_id'])){
-                $arr[$value['order_id']]['order_id']        = $value['order_id']; // 主订单 和普通订单
-            }else{
-                $order[$value['order_id']]['order_id']      = $value['order_id'];
-                $order[$value['order_id']]['main_order_id'] = $value['main_order_id']; // 子订单
+    //订单走势图
+    public static function merchant_dashboard_left_8_2()
+    {
+        if (!isset($_SESSION['store_id']) || $_SESSION['store_id'] === '') {
+            $count_list = array();
+        } else {
+            $cache_key = 'order_bar_chart_' . md5($_SESSION['store_id']);
+            $count_list = RC_Cache::app_cache_get($cache_key, 'order');
+
+            if (!$count_list) {
+                $format = '%Y-%m-%d';
+                $time = (RC_Time::local_mktime(0, 0, 0, RC_Time::local_date('m'), RC_Time::local_date('d'), RC_Time::local_date('Y')) - 1);
+                $start_time = $time - 30 * 86400;
+                $store_id = $_SESSION['store_id'];
+
+                $where = "add_time >= '$start_time' AND add_time <= '$time' AND store_id = $store_id AND is_delete = 0";
+
+                $list = RC_DB::table('order_info')
+                    ->selectRaw("FROM_UNIXTIME(add_time+8*3600, '" . $format . "') AS day, count('order_id') AS count")
+                    ->whereRaw($where)
+                    ->groupby('day')
+                    ->get();
+
+                $days = $data = $count_list = array();
+
+                for ($i = 30; $i > 0; $i--) {
+                    $days[] = RC_Time::local_date("Y-m-d", RC_Time::local_strtotime(' -' . $i . 'day'));
+                }
+
+                $max_count = 100;
+                if (!empty($list)) {
+                    foreach ($list as $k => $v) {
+                        $data[$v['day']] = $v['count'];
+                    }
+                }
+
+                foreach ($days as $k => $v) {
+                    if (!array_key_exists($v, $data)) {
+                        $count_list[$v] = 0;
+                    } else {
+                        $count_list[$v] = $data[$v];
+                    }
+                }
+
+                $tmp_day = '';
+                $tmp_count = '';
+                foreach ($count_list as $k => $v) {
+                    $k = intval(date('d', strtotime($k)));
+                    $tmp_day .= "'$k',";
+                    $tmp_count .= "$v,";
+                }
+
+                $tmp_day = rtrim($tmp_day, ',');
+                $tmp_count = rtrim($tmp_count, ',');
+                $count_list['day'] = $tmp_day;
+                $count_list['count'] = $tmp_count;
+
+                RC_Cache::app_cache_set($cache_key, $count_list, 'order', 60 * 24); //24小时缓存
             }
         }
-        foreach ($order as $key => $val){
-            unset($arr[$val['main_order_id']]); //删除主订单
-            unset($order[$key]['main_order_id']);
-        }
-        $order = array_merge($order, $arr);
-        $in['oi.order_id'] = array(0);
-        if (!empty($order)) {
-            foreach ($order as $val){
-                $in['oi.order_id'][] = $val['order_id'];
-            }
-        }
-        $orders = $db_order->field('count(oi.order_id) as numbers, sum(oi.money_paid) + sum(oi.surplus) as payed, FROM_UNIXTIME(oi.pay_time,"%m-%d")|date')->in($in)->group('date')->select();
-
-        foreach($orders as $order) {
-            $sale_arr[$order['date']] = $order['payed'];
-        }
-        $tmp_day = '';
-        $tmp_price = '';
-        foreach($sale_arr as $k => $v) {
-            $tmp_day .= "'$k',";
-            $tmp_price .= "$v,";
-        }
-        $tmp_day = rtrim($tmp_day, ',');
-        $tmp_price = rtrim($tmp_price, ',');
-        $sale_arr['day'] = $tmp_day;
-        $sale_arr['price'] = $tmp_price;
-
-        ecjia_admin::$controller->assign('sale_arr' , $sale_arr);
-
-
-        ecjia_admin::$controller->assign_lang();
-		ecjia_admin::$controller->display(ecjia_app::get_app_template('library/widget_admin_dashboard_salechart.lbi', 'orders'));
-	}
-	
-	// 订单走势图
-	public static function widget_admin_dashboard_orderschart() {
-	    $title = __('订单走势图');
-	    $db_order	= RC_Loader::load_app_model('order_info_viewmodel','orders');
-
-        $now_time = RC_Time::gmtime()+28800;
-        $start_time = $now_time - 2592000;
-        $order_arr = array();
-
-        for($i = 30; $i>=0; $i--) {
-            $tmp_time = $now_time - $i * 86400;
-            $tmp_day = date('m-d',$tmp_time);
-            $order_arr[$tmp_day] = '0';
-        }
-
-        $where = array(
-        	'oi.store_id' => $_SESSION['store_id'],
-            'oi.pay_status' => PS_PAYED,
-            'oi.pay_time'   => array(
-                'elt'   => $now_time,
-                'gt'    => $start_time
-            ),
+        ecjia_merchant::$controller->assign('order_arr', $count_list);
+        ecjia_merchant::$controller->display(
+            RC_Package::package('app::orders')->loadTemplate('merchant/library/widget_merchant_dashboard_bar_chart.lbi', true)
         );
+    }
 
-        $rs = $db_order->field('oi.order_id')->where($where)->select();
-        $arr = array();
-	    foreach($rs as $value){
-	        if(empty($value['main_order_id'])){
-	            $arr[$value['order_id']]['order_id']        = $value['order_id']; // 主订单 和普通订单
-	        }else{
-	            $order[$value['order_id']]['order_id']      = $value['order_id'];
-	            $order[$value['order_id']]['main_order_id'] = $value['main_order_id']; // 子订单
-	        }
-	    }
-	    foreach ($order as $key => $val){
-	        unset($arr[$val['main_order_id']]); //删除主订单
-	        unset($order[$key]['main_order_id']);
-	    }
-	    $order = array_merge($order, $arr);
-        $in['oi.order_id'] = array(0);
-	    if (!empty($order)) {
-            foreach ($order as $val){
-                $in['oi.order_id'][] = $val['order_id'];
-            }
+    //店铺首页 店铺资金 订单统计类型 平台配送 商家配送 促销活动 商品热卖榜
+    public static function merchant_dashboard_left_8_3()
+    {
+        //店铺资金
+        $data = RC_DB::table('store_account')->where('store_id', $_SESSION['store_id'])->first();
+        if (empty($data)) {
+            $data['formated_amount_available'] = $data['formated_money'] = $data['formated_frozen_money'] = $data['formated_deposit'] = '￥0.00';
+            $data['amount_available'] = $data['money'] = $data['frozen_money'] = $data['deposit'] = '0.00';
+        } else {
+            $amount_available = $data['money'] - $data['deposit']; //可用余额=money-保证金
+            $data['formated_amount_available'] = price_format($amount_available);
+            $data['amount_available'] = $amount_available;
+
+            $money = $data['money'] + $data['frozen_money']; //总金额=money+冻结
+            $data['formated_money'] = price_format($money);
+            $data['money'] = $money;
+
+            $data['formated_frozen_money'] = price_format($data['frozen_money']);
+            $data['formated_deposit'] = price_format($data['deposit']);
         }
-	    $orders = $db_order->field('count(oi.order_id) as numbers, sum(oi.money_paid) + sum(oi.surplus) as payed, FROM_UNIXTIME(oi.pay_time,"%m-%d")|date')->in($in)->group('date')->select();
+        ecjia_merchant::$controller->assign('data', $data);
 
-        foreach($orders as $order) {
-            $order_arr[$order['date']] = $order['numbers'];
-        }
-        $tmp_day = '';
-        $tmp_price = '';
-        foreach($order_arr as $k => $v) {
-            $tmp_day .= "'$k',";
-            $tmp_price .= "$v,";
-        }
-        $tmp_day = rtrim($tmp_day, ',');
-        $tmp_price = rtrim($tmp_price, ',');
-        $order_arr['day'] = $tmp_day;
-        $order_arr['price'] = $tmp_price;
+        ecjia_merchant::$controller->display(
+            RC_Package::package('app::orders')->loadTemplate('merchant/library/widget_merchant_dashboard_commission.lbi', true)
+        );
+    }
 
-		ecjia_admin::$controller->assign('order_arr' , $order_arr);
+    public static function orders_stats_admin_menu_api($menus)
+    {
+        $menu = array(
+            2 => ecjia_merchant::make_admin_menu('02_order_stats', __('订单统计'), RC_Uri::url('orders/mh_order_stats/init'), 2)->add_purview('order_stats')->add_icon('fa-bar-chart-o')->add_base('stats'),
+            3 => ecjia_merchant::make_admin_menu('03_sale_general', __('销售概况'), RC_Uri::url('orders/mh_sale_general/init'), 3)->add_purview('sale_general_stats')->add_icon('fa-bar-chart-o')->add_base('stats'),
+            4 => ecjia_merchant::make_admin_menu('04_sale_list', __('销售明细'), RC_Uri::url('orders/mh_sale_list/init'), 4)->add_purview('sale_list_stats')->add_icon('fa-list')->add_base('stats'),
+            5 => ecjia_merchant::make_admin_menu('05_sale_order', __('销售排行'), RC_Uri::url('orders/mh_sale_order/init'), 5)->add_purview('sale_order_stats')->add_icon('fa-trophy')->add_base('stats'),
+        );
+        $menus->add_submenu($menu);
+        return $menus;
+    }
 
-	    ecjia_admin::$controller->assign_lang();
-		ecjia_admin::$controller->display(ecjia_app::get_app_template('library/widget_admin_dashboard_orderschart.lbi', 'orders'));
-	}
-	
-	// 订单统计信息
-	public static function widget_admin_dashboard_ordersstat() {
-		$result = ecjia_app::validate_application('payment');
-		if (is_ecjia_error($result)) {
-			return false;
-		}
-		 
-		$title = __('订单统计信息');
-		$order_query = RC_Loader::load_app_class('merchant_order_query','orders');
-		
-		$db	= RC_Loader::load_app_model('order_info_viewmodel','orders');
-		$db_good_booking = RC_Loader::load_app_model('goods_booking_model','goods');
-		$db_user_account = RC_Loader::load_app_model('user_account_model','user');
-		
-		$db->view = array(
-			'order_goods' => array(
-				'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-				'alias'	=> 'g',
-				'on'	=> 'oi.order_id = g.order_id'
-			)
-		);
-		/* 全部订单 */
-		//TODO: 入驻商订单筛选条件
-		$order['count']	= $db->where(array('oi.store_id' => $_SESSION['store_id']))->count('distinct oi.order_id');
-		
-		
-		/* 已完成的订单 */
-		$order['finished']		= $db->field('oi.order_id')->where(array_merge($order_query->order_finished('oi.'), array('oi.store_id'  => $_SESSION['store_id'])))->group('oi.order_id')->select();
-		$order['finished'] 		= count($order['finished']);
-		$status['finished']		= CS_FINISHED;
-	   
-		/* 待发货的订单： */
-		$order['await_ship']	= $db->field('oi.order_id')->where(array_merge($order_query->order_await_ship('oi.'), array('oi.store_id'  => $_SESSION['store_id'])))->group('oi.order_id')->select();
-		$order['await_ship'] 	= count($order['await_ship']);
-		$status['await_ship']	= CS_AWAIT_SHIP;
-		
-		/* 待付款的订单： */
-		$order['await_pay']		= $db->field('oi.order_id')->where(array_merge($order_query->order_await_pay('oi.'), array('oi.store_id'  => $_SESSION['store_id'])))->group('oi.order_id')->select();
-		$order['await_pay'] 	= count($order['await_pay']);
-		$status['await_pay']	= CS_AWAIT_PAY;
-		
-		/* “未确认”的订单 */
-		$order['unconfirmed']	= $db->field('oi.order_id')->where(array_merge(array('oi.order_status' => 0),array('oi.store_id'  => $_SESSION['store_id'])))->group('oi.order_id')->select();
-		$order['unconfirmed'] 	= count($order['unconfirmed']);
-		$status['unconfirmed']	= OS_UNCONFIRMED;
-		
-		/* “部分发货”的订单 */
-		$order['shipped_part']	= $db->field('oi.order_id')->where(array('oi.shipping_status'=> SS_SHIPPED_PART, 'oi.store_id' => $_SESSION['store_id']))->count('oi.order_id');
-		$status['shipped_part'] = OS_SHIPPED_PART;
-		
-		ecjia_admin::$controller->assign('title', $title);
-		ecjia_admin::$controller->assign('order', $order);
-		ecjia_admin::$controller->assign('count', $order['count']);
-		ecjia_admin::$controller->assign('status', $status);
-		 
-		ecjia_admin::$controller->assign_lang();
-		ecjia_admin::$controller->display(ecjia_app::get_app_template('library/widget_admin_dashboard_ordersstat.lbi', 'orders'));
-	}
-	
-	public static function orders_stats_admin_menu_api($menus) {
-	    $menu = array(
-    		11 => ecjia_merchant::make_admin_menu('01_order_stats',__('订单统计'), RC_Uri::url('orders/mh_order_stats/init'), 2)->add_purview('order_stats')->add_icon('fa-bar-chart-o')->add_base('stats'), //'flow_stats'
-    		12 => ecjia_merchant::make_admin_menu('02_sale_general',__('销售概况'), RC_Uri::url('orders/mh_sale_general/init'), 3)->add_purview('sale_general_stats')->add_icon('fa-bar-chart-o')->add_base('stats'), //'flow_stats'
-    		13 => ecjia_merchant::make_admin_menu('03_sale_list',__('销售明细'), RC_Uri::url('orders/mh_sale_list/init'), 4)->add_purview('sale_list_stats')->add_icon('fa-list')->add_base('stats'), //'flow_stats'
-    		14 => ecjia_merchant::make_admin_menu('04_sale_order',__('销售排行'), RC_Uri::url('orders/mh_sale_order/init'), 5)->add_purview('sale_order_stats')->add_icon('fa-trophy')->add_base('stats'), //'flow_stats'
-    		
-//     		15 => ecjia_admin::make_admin_menu('guest_stats', __('客户统计'), RC_Uri::url('orders/admin_guest_stats/init'), 51)->add_purview('guest_stats'),
-//     		16 => ecjia_admin::make_admin_menu('users_order', __('会员排行'), RC_Uri::url('orders/admin_users_order/init'), 54)->add_purview('users_order_stats'),
-//     		17 => ecjia_admin::make_admin_menu('visit_sold', __('访问购买率'), RC_Uri::url('orders/admin_visit_sold/init'), 57)->add_purview('visit_sold_stats'),
-//     		18 => ecjia_admin::make_admin_menu('adsense', __('广告转化率'), RC_Uri::url('orders/admin_adsense/init'), 58)->add_purview('adsense_conversion_stats')
-	    );
-	    $menus->add_submenu($menu);
-	    return $menus;
-	}
-	
 }
 
-RC_Hook::add_action('admin_dashboard_top', array('orders_merchant_plugin', 'widget_admin_dashboard_shopchart'), 21);
-RC_Hook::add_action('admin_dashboard_left', array('orders_merchant_plugin', 'widget_admin_dashboard_orderschart'));
-RC_Hook::add_action('admin_dashboard_left', array('orders_merchant_plugin', 'widget_admin_dashboard_ordersstat'), 11);
-RC_Hook::add_action('admin_dashboard_right', array('orders_merchant_plugin', 'widget_admin_dashboard_salechart'));
+RC_Hook::add_action('merchant_dashboard_left8', array('orders_merchant_plugin', 'merchant_dashboard_left_8_1'), 1);
+RC_Hook::add_action('merchant_dashboard_left8', array('orders_merchant_plugin', 'merchant_dashboard_left_8_2'), 2);
+RC_Hook::add_action('merchant_dashboard_left8', array('orders_merchant_plugin', 'merchant_dashboard_left_8_3'), 3);
+
 RC_Hook::add_filter('stats_merchant_menu_api', array('orders_merchant_plugin', 'orders_stats_admin_menu_api'));
 
 // end

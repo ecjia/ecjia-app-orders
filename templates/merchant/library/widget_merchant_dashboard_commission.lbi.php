@@ -182,7 +182,7 @@
 			<div class="panel-body">
 				<header class="panel-title">商品热卖榜</h1>
 				</header>
-				<table class="table table-striped table-hover table-hide-edit">
+				<table class="table table-striped table-hover table-hide-edit m_b0">
 					<thead>
 						<tr>
 							<th class="w50">排行</th>

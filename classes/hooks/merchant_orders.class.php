@@ -145,8 +145,35 @@ class orders_merchant_plugin
         );
     }
 
-    //订单走势图
+    //店铺首页 店铺资金 订单统计类型 平台配送 商家配送 促销活动 商品热卖榜
     public static function merchant_dashboard_left_8_2()
+    {
+    	//店铺资金
+    	$data = RC_DB::table('store_account')->where('store_id', $_SESSION['store_id'])->first();
+    	if (empty($data)) {
+    		$data['formated_amount_available'] = $data['formated_money'] = $data['formated_frozen_money'] = $data['formated_deposit'] = '￥0.00';
+    		$data['amount_available'] = $data['money'] = $data['frozen_money'] = $data['deposit'] = '0.00';
+    	} else {
+    		$amount_available = $data['money'] - $data['deposit']; //可用余额=money-保证金
+    		$data['formated_amount_available'] = price_format($amount_available);
+    		$data['amount_available'] = $amount_available;
+    
+    		$money = $data['money'] + $data['frozen_money']; //总金额=money+冻结
+    		$data['formated_money'] = price_format($money);
+    		$data['money'] = $money;
+    
+    		$data['formated_frozen_money'] = price_format($data['frozen_money']);
+    		$data['formated_deposit'] = price_format($data['deposit']);
+    	}
+    	ecjia_merchant::$controller->assign('data', $data);
+    
+    	ecjia_merchant::$controller->display(
+    	RC_Package::package('app::orders')->loadTemplate('merchant/library/widget_merchant_dashboard_commission.lbi', true)
+    	);
+    }
+    
+    //订单走势图
+    public static function merchant_dashboard_left_8_3()
     {
         if (!isset($_SESSION['store_id']) || $_SESSION['store_id'] === '') {
             $count_list = array();
@@ -208,33 +235,6 @@ class orders_merchant_plugin
         ecjia_merchant::$controller->assign('order_arr', $count_list);
         ecjia_merchant::$controller->display(
             RC_Package::package('app::orders')->loadTemplate('merchant/library/widget_merchant_dashboard_bar_chart.lbi', true)
-        );
-    }
-
-    //店铺首页 店铺资金 订单统计类型 平台配送 商家配送 促销活动 商品热卖榜
-    public static function merchant_dashboard_left_8_3()
-    {
-        //店铺资金
-        $data = RC_DB::table('store_account')->where('store_id', $_SESSION['store_id'])->first();
-        if (empty($data)) {
-            $data['formated_amount_available'] = $data['formated_money'] = $data['formated_frozen_money'] = $data['formated_deposit'] = '￥0.00';
-            $data['amount_available'] = $data['money'] = $data['frozen_money'] = $data['deposit'] = '0.00';
-        } else {
-            $amount_available = $data['money'] - $data['deposit']; //可用余额=money-保证金
-            $data['formated_amount_available'] = price_format($amount_available);
-            $data['amount_available'] = $amount_available;
-
-            $money = $data['money'] + $data['frozen_money']; //总金额=money+冻结
-            $data['formated_money'] = price_format($money);
-            $data['money'] = $money;
-
-            $data['formated_frozen_money'] = price_format($data['frozen_money']);
-            $data['formated_deposit'] = price_format($data['deposit']);
-        }
-        ecjia_merchant::$controller->assign('data', $data);
-
-        ecjia_merchant::$controller->display(
-            RC_Package::package('app::orders')->loadTemplate('merchant/library/widget_merchant_dashboard_commission.lbi', true)
         );
     }
 

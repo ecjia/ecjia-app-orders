@@ -128,7 +128,12 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	            'money_paid'   => $order['order_amount'] + $order['money_paid'],
 	            'order_amount' => 0,
 	        );
-	         
+	        //自提，订单状态默认接单纪录log
+	        if ($order_status == OS_CONFIRMED) {
+	        	RC_Loader::load_app_class('order_refund', 'refund', false);
+	        	$pra = array('order_status' => '商家已接单', 'order_id' => $order_id, 'message' => '已被商家接单，订单正在备货中');
+	        	order_refund::order_status_log($pra);
+	        }
 	        RC_DB::table('order_info')->where('order_id', $order_id)->update($data);
 	        /* 记录订单操作记录 */
 	        order_action($order_sn, $order_status, SS_UNSHIPPED, $pay_status, '', RC_Lang::get('orders::order.buyers'));
@@ -143,7 +148,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    //}
 	    
 	    //团购活动，有保证金的；订单order_status_log区分
-	    RC_Loader::load_app_class('OrderStatusLog', 'orders');
+	    RC_Loader::load_app_class('OrderStatusLog', 'orders', false);
 	    
 	    if ($order['extension_code'] == 'group_buy' && $order['extension_id'] > 0) {
 	    	RC_Loader::load_app_func('admin_goods', 'goods');

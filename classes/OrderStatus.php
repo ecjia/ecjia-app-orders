@@ -82,7 +82,7 @@ class OrderStatus
     public static function getOrderStatusLabel($order_status, $shipping_status, $pay_status, $is_cod)
     {
         if (in_array($order_status, array(OS_UNCONFIRMED, OS_SPLITED)) &&
-            in_array($pay_status, array(PS_UNPAYED) || !$is_cod)) {
+            (in_array($pay_status, array(PS_UNPAYED)) || !$is_cod)) {
             $label_order_status = '未付款';
             $status_code = 'await_pay';
         } elseif (in_array($order_status, array(OS_UNCONFIRMED)) &&
@@ -183,7 +183,7 @@ class OrderStatus
             };
         } else {
             return function ($query) {
-                $query->whereIn('order_info.order_status', array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))
+                $query->whereIn('order_info.order_status', array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))
                     ->whereIn('order_info.shipping_status', array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING))
                     ->whereIn('order_info.pay_status', array(PS_PAYED, PS_PAYING));
             };

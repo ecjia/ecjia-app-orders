@@ -2750,7 +2750,7 @@ class merchant extends ecjia_merchant
 
             ecjia_merchant::admin_log('设为确认,订单号是' . $order['order_sn'], 'setup', 'order');
             /* 记录log */
-            order_action($order['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_UNPAYED, $action_note);
+            order_action($order['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_PAYED, $action_note);
             /*订单状态表log记录*/
             RC_Loader::load_app_class('order_refund', 'refund', false);
             $pra = array('order_status' => '商家已接单', 'order_id' => $order_id, 'message' => '已被商家接单，订单正在备货中');
@@ -2826,7 +2826,7 @@ class merchant extends ecjia_merchant
             /* 记录日志 */
             ecjia_merchant::admin_log('设为未付款,订单号是' . $order['order_sn'], 'setup', 'order');
             /* 记录log */
-            order_action($order['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_UNPAYED, $action_note);
+            order_action($order['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_PAYED, $action_note);
         } elseif ('prepare' == $operation) {
             /* 配货 */
             /* 标记订单为已确认，配货中 */

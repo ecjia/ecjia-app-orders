@@ -751,7 +751,7 @@ ecjia.merchant.order.info();
 								<td width="15%"><div align="right"> <strong>操作说明：</strong></div></td>
 								<td colspan="3">
 									{if $operable_list.cancel}【取消】设置该订单为无效/作废订单<br>{/if}
-									{if $operable_list.confirm}【确认接单】标记订单为已发货状态；<br>{/if}
+									{if $operable_list.confirm}【确认接单】标记订单为已接单状态；<br>{/if}
 									{if $operable_list.unconfirm}【拒单】标记订单为取消状态，取消后，系统自动将款项退回给用户；<br>{/if}
 									
 									{if $operable_list.to_delivery}【一键发货】标记订单为已发货状态；<br>{/if}

@@ -91,7 +91,7 @@ class OrderStatus
             $label_order_status = '未接单';
             $status_code = 'unconfirmed';
         } elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
-            in_array($shipping_status, array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING)) &&
+            in_array($shipping_status, array(SS_UNSHIPPED)) &&
             (in_array($pay_status, array(PS_PAYED, PS_PAYING)) || $is_cod)) {
             $label_order_status = '已接单';
             $status_code = 'confirmed';
@@ -409,25 +409,17 @@ class OrderStatus
                     $label_confirm = '商家已接单';
                 }
             } else {
-                $time_key = 4;
+                $time_key = 3;
                 $label_pay = '买家已付款';
                 $label_confirm = '商家已接单';
             }
-            if ($order['shipping_status'] == SS_PREPARING) {
-                $label_shipping = '备货中';
-            }
-            if ($order['shipping_status'] == SS_SHIPPED_ING) {
-                $label_shipping = '发货中';
-            }
             if ($order['shipping_status'] == SS_SHIPPED) {
-                $label_shipping = '已发货';
-            }
-            if ($order['shipping_status'] == SS_SHIPPED_PART) {
-                $label_shipping = '已发货（部分商品）';
+            	$time_key = 4;
+                $label_shipping = '商家已发货';
             }
             if ($order['shipping_status'] == SS_RECEIVED) {
                 $time_key = 5;
-                $label_shipping = '已发货';
+                $label_shipping = '商家已发货';
             }
         }
 

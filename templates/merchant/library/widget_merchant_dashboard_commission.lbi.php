@@ -96,7 +96,7 @@
 						<img src="{$ecjia_main_static_url}img/merchant_dashboard/finished.png" />
 						<div class="title">已完成</div>
 						<div class="num">
-							<a target="__blank" href="{RC_Uri::url('express/mh_history/init')}&platform=1">{$data.express_platform_count.finished}</a>
+							<a target="__blank" href="{RC_Uri::url('express/mh_history/init')}">{$data.express_platform_count.finished}</a>
 						</div>
 					</div>
 				</div>
@@ -133,7 +133,7 @@
 						<img src="{$ecjia_main_static_url}img/merchant_dashboard/finished.png" />
 						<div class="title">已完成</div>
 						<div class="num">
-							<a target="__blank" href="{RC_Uri::url('express/mh_history/init')}">{$data.express_merchant_count.finished}</a>
+							<a target="__blank" href="{RC_Uri::url('express/mh_history/init')}&type=merchant">{$data.express_merchant_count.finished}</a>
 						</div>
 					</div>
 				</div>

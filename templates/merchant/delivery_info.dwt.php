@@ -64,7 +64,18 @@
 							
 							<tr>
 								<td><div align="right"><strong>{lang key='orders::order.label_shipping'}</strong></div></td>
-								<td>{if $exist_real_goods}{if $delivery_order.shipping_id gt 0}{$delivery_order.shipping_name}{else}{lang key='system::system.require_field'}{/if} {if $delivery_order.insure_fee gt 0}{lang key='orders::order.label_insure_fee'}{$delivery_order.formated_insure_fee}{/if}{/if}</td>
+								<td>
+									{if $exist_real_goods}
+										{if $delivery_order.shipping_id gt 0}
+											{$delivery_order.shipping_name}
+										{else}
+											{lang key='system::system.require_field'}
+										{/if} 
+										{if $delivery_order.insure_fee gt 0}
+											{lang key='orders::order.label_insure_fee'}{$delivery_order.formated_insure_fee}
+										{/if}
+									{/if}
+								</td>
 								
 								<td><div align="right"><strong>配送人员：</strong></div></td>
 								<td class="delivery-info">

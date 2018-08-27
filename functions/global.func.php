@@ -452,7 +452,14 @@ function return_user_surplus_integral_bonus($order) {
  * @return  bool
  */
 function update_order_amount($order_id) {
-    return RC_DB::table('order_info')->where('order_id', $order_id)->decrement('order_amount', 'order_amount+' . order_due_field());
+    // return RC_DB::table('order_info')->where('order_id', $order_id)->decrement('order_amount', 'order_amount+' . order_due_field());
+    $order_info = RC_DB::table('order_info')->where('order_id', $order_id)->first();
+
+    $order_amount = $order_info['order_amount'] + $order_info['goods_amount'] + $order_info['tax'] + $order_info['shipping_fee'] + 
+                    $order_info['insure_fee'] + $order_info['pay_fee'] + $order_info['pack_fee'] + $order_info['card_fee'] - 
+                    $order_info['money_paid'] - $order_info['surplus'] - $order_info['integral_money'] - $order_info['bonus'] - $order_info['discount'];
+
+    return RC_DB::table('order_info')->where('order_id', $order_id)->decrement('order_amount', $order_amount);
 }
 
 /**
@@ -699,7 +706,8 @@ function update_order_goods($order_id, $_sended, $goods_list = array()) {
                 }
                 // 超值礼包商品全部发货后更新订单商品库存
                 if ($pg_is_end) {
-                    RC_DB::table('order_goods')->where('order_id', $order_id)->where('goods_id', $goods['goods_id'])->increment('send_number', '0, send_number=goods_number');
+					$goods_number = RC_DB::table('order_goods')->where('order_id', $order_id)->where('goods_id', $goods['goods_id'])->pluck('goods_number');
+					RC_DB::table('order_goods')->where('order_id', $order_id)->where('goods_id', $goods['goods_id'])->update(array('send_number' => $goods_number));
                 }
             }
         } elseif (!is_array($value)) {
@@ -1029,7 +1037,8 @@ function delivery_return_goods($delivery_id, $delivery_order) {
     /* 更新： */
     if (!empty($goods_list)) {
         foreach ($goods_list as $key => $val) {
-            RC_DB::table('order_goods')->where('order_id', $delivery_order['order_id'])->where('goods_id', $goods_list[$key]['goods_id'])->where('product_id', $goods_list[$key]['product_id'])->limit(1)->decrement('send_number', '"' . $goods_list[$key]['send_number'] . '"');
+            RC_DB::table('order_goods')->where('order_id', $delivery_order['order_id'])->where('goods_id', $goods_list[$key]['goods_id'])->where('product_id', $goods_list[$key]['product_id'])->limit(1)
+            ->decrement('send_number', $goods_list[$key]['send_number']);
         }
     }
     $data = array('shipping_status' => '0', 'order_status' => 1);

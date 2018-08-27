@@ -394,7 +394,7 @@ class OrderStatus
         if ($order['pay_time'] > 0 || $order['is_cod'] == 1) {
             if ($order['shipping_status'] == SS_UNSHIPPED) {
                 if ($order['pay_status'] == PS_UNPAYED) {
-                    $label_pay = '卖家未付款';
+                    $label_pay = '买家未付款';
                 }
                 if ($order['is_cod'] == 1) {
                     $time_key = 2;
@@ -402,7 +402,7 @@ class OrderStatus
                 }
                 if ($order['pay_status'] == PS_PAYED) {
                     $time_key = 2;
-                    $label_pay = '卖家已付款';
+                    $label_pay = '买家已付款';
                 }
                 if (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))) {
                     $time_key = 3;

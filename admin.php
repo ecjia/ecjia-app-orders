@@ -1202,12 +1202,12 @@ class admin extends ecjia_admin
                     if (!empty($product_info['product_id'])) {
                         RC_DB::table('products')
                             ->where('product_id', $product_info['product_id'])
-                            ->decrement('product_number', '"' . $goods_number . '"');
+                            ->decrement('product_number', $goods_number);
                     }
                     RC_DB::table('goods')
                         ->where('goods_id', $goods_id)
                         ->limit(1)
-                        ->decrement('goods_number', '"' . $goods_number . '"');
+                        ->decrement('goods_number', $goods_number);
                 }
 
                 /* 更新商品总金额和订单总金额 */
@@ -1687,7 +1687,7 @@ class admin extends ecjia_admin
 
                 RC_DB::table('goods')
                     ->where('goods_id', $goods['goods_id'])
-                    ->increment('goods_number', '"' . $goods['goods_number'] . '"');
+                    ->increment('goods_number', $goods['goods_number']);
             }
             /* 删除 */
             RC_DB::table('order_goods')->where('rec_id', $rec_id)->delete();

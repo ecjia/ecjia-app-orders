@@ -3383,7 +3383,7 @@ class merchant extends ecjia_merchant
             return_user_surplus_integral_bonus($order);
         } elseif ('after_service' == $operation) {
             /* 记录log */
-            order_action($order['order_sn'], $order['order_status'], $order['shipping_status'], $order['pay_status'], '[' . RC_Lang::get('orders::order.op_after_service') . '] ' . $action_note);
+            order_action($order['order_sn'], $order['order_status'], $order['shipping_status'], $order['pay_status'], $action_note);
             /* 记录日志 */
             ecjia_merchant::admin_log('添加售后,订单号是' . $order['order_sn'], 'setup', 'order');
         } elseif ('confirm_return' == $operation) {
@@ -4579,7 +4579,7 @@ class merchant extends ecjia_merchant
         /* 修改发货单信息 */
         $invoice_no = str_replace(',', '<br>', $delivery['invoice_no']);
         $invoice_no = trim($invoice_no, '<br>');
-        $_delivery['invoice_no'] = $invoice_no;
+        $_delivery['invoice_no'] = !empty($_POST['invoice_no']) ? trim($_POST['invoice_no']) : $invoice_no;
         $_delivery['status'] = 0; /* 0，为已发货 */
         $result = $this->db_delivery_order->where(array('delivery_id' => $delivery_id))->update($_delivery);
 

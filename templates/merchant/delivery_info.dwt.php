@@ -46,11 +46,6 @@
 								<td><div align="right"><strong>订单编号：</strong></div></td>
 								<td>
 									<a href='{url path="orders/merchant/info" args="order_sn={$delivery_order.order_sn}"}'>{$delivery_order.order_sn}</a>
-									{if $delivery_order.extension_code eq "group_buy"}
-<!-- 										<a href="group_buy.php?act=edit&id={$delivery_order.extension_id}">{$lang.group_buy}</a> -->
-									{elseif $delivery_order.extension_code eq "exchange_goods"}
-<!-- 										<a href="exchange_goods.php?act=edit&id={$delivery_order.extension_id}">{$lang.exchange_goods}</a> -->
-									{/if}
 								</td>
 								<td><div align="right"><strong>{lang key='orders::order.label_time'}</strong></div></td>
 								<td>{$delivery_order.formated_add_time}</td>
@@ -92,21 +87,9 @@
 								</td>
 							</tr>
 							
-							<!-- {if $shipping_code neq 'ship_o2o_express'} -->
 							<tr>
 								<td><div align="right"><strong>{lang key='orders::order.label_invoice_no'}</strong></div></td>
-								<td colspan="3">
-									{if $delivery_order.status neq 1}
-									<input name="invoice_no" type="text" class="w250 form-control" value="{$delivery_order.invoice_no}" {if $delivery_order.status eq 0} readonly="readonly" {/if} />
-									{else}
-									{$delivery_order.invoice_no}
-									{/if}
-								</td>
-							</tr>
-							<!-- {else} -->
-							<tr>
-							    <td><div align="right"><strong>{lang key='orders::order.label_invoice_no'}</strong></div></td>
-							    <td colspan="1">
+								<td>
 									{if $delivery_order.status neq 1}
 									<input name="invoice_no" type="text" class="w250 form-control" value="{$delivery_order.invoice_no}" {if $delivery_order.status eq 0} readonly="readonly" {/if} />
 									{else}
@@ -114,15 +97,14 @@
 									{/if}
 								</td>
 								<td><div align="right"><strong>{lang key='orders::order.label_shipping_fee'}</strong></div></td>
-								<td>{$delivery_order.shipping_fee}</td>
+								<td>{$delivery_order.formated_shipping_fee}</td>
 							</tr>
-							<!-- {/if} -->
 							
 							<tr>
 								<td><div align="right"><strong>{lang key='orders::order.label_insure_yn'}</strong></div></td>
 								<td>{if $insure_yn}{lang key='system::system.yes'}{else}{lang key='system::system.no'}{/if}</td>
 								<td><div align="right"><strong>{lang key='orders::order.label_insure_fee'}</strong></div></td>
-								<td>{$delivery_order.insure_fee|default:0.00}</td>
+								<td>{$delivery_order.formated_insure_fee|default:0.00}</td>
 							</tr>
 							
 							<input name="shipping_id" type="hidden" value="{$delivery_order.shipping_id}">
@@ -150,10 +132,14 @@
 								<td>[{$delivery_order.region}] {$delivery_order.address|escape}</td>
 								<td><div align="right"><strong>{lang key='orders::order.label_best_time'}</strong></div></td>
 								<td>
-									{if $expect_shipping_time}
-										{$expect_shipping_time|escape}
+									{if $expect_shipping_time || $delivery_order.best_time}
+										{if $expect_shipping_time}
+											{$expect_shipping_time|escape}
+										{else}
+											{$delivery_order.best_time|escape}
+										{/if}
 									{else}
-										{$delivery_order.best_time|escape}
+										暂无
 									{/if}
 								</td>
 							</tr>

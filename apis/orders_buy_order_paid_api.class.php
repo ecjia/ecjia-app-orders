@@ -215,11 +215,8 @@ class orders_buy_order_paid_api extends Component_Event_Api {
                 'order_time'	=> RC_Time::local_date(ecjia::config('time_format'), $order['add_time']),
             ),
         );
-//         RC_Logger::getLogger('pay')->info($staff_user_ob);
-//         RC_Logger::getLogger('pay')->info($order_data);
-//         $push_order_pay = new OrderPay($order_data);
-//         RC_Logger::getLogger('pay')->info($push_order_pay);
-//         RC_Notification::send($staff_user_ob, $push_order_pay);
+        $push_order_pay = new OrderPay($order_data);
+        RC_Notification::send($staff_user_ob, $push_order_pay);
 	    
         /* 客户付款短信提醒 */
         if (!empty($staff_user['mobile'])) {

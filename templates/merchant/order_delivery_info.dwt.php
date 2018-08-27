@@ -57,13 +57,13 @@
 								<!-- {/if} -->
 							</td>
 							<td><div align="right"><strong>{lang key='orders::order.label_shipping_fee'}</strong></div></td>
-							<td>{$order.shipping_fee}</td>
+							<td>{$order.formated_shipping_fee}</td>
 						</tr>
 						<tr>
 							<td><div align="right"><strong>{lang key='orders::order.label_insure_yn'}</strong></div></td>
 							<td>{if $insure_yn}{lang key='system::system.yes'}{else}{lang key='system::system.no'}{/if}</td>
 							<td><div align="right"><strong>{lang key='orders::order.label_insure_fee'}</strong></div></td>
-							<td>{$order.insure_fee|default:0.00}</td>
+							<td>{$order.formated_shipping_fee|default:0.00}</td>
 						</tr>
 					</table>
 				</div>
@@ -82,27 +82,15 @@
 						<tr>
 							<td><div align="right"><strong>{lang key='orders::order.label_consignee'}</strong></div></td>
 							<td>{$order.consignee|escape}</td>
-							<td><div align="right"><strong>{lang key='orders::order.label_email'}</strong></div></td>
-							<td>{$order.email}</td>
-						</tr>
-						<tr>
-							<td><div align="right"><strong>{lang key='orders::order.label_address'}</strong></div></td>
-							<td>[{$order.region}] {$order.address|escape}</td>
-							<td><div align="right"><strong>{lang key='orders::order.label_zipcode'}</strong></div></td>
-							<td>{$order.zipcode|escape}</td>
-						</tr>
-						<tr>
-							<td><div align="right"><strong>{lang key='orders::order.label_tel'}</strong></div></td>
-							<td>{$order.tel}</td>
 							<td><div align="right"><strong>{lang key='orders::order.label_mobile'}</strong></div></td>
 							<td>{$order.mobile|escape}</td>
 						</tr>
 						<tr>
-							<td><div align="right"><strong>{lang key='orders::order.label_sign_building'}</strong></div></td>
-							<td>{$order.sign_building|escape}</td>
+							<td><div align="right"><strong>{lang key='orders::order.label_address'}</strong></div></td>
+							<td>[{$order.region}] {$order.address|escape}</td>
 							<td><div align="right"><strong>{lang key='orders::order.label_best_time'}</strong></div></td>
 							<td>
-								{if $shipping_code eq 'ship_o2o_express'}
+							{if $shipping_code eq 'ship_o2o_express'}
 									{$order.expect_shipping_time|escape}
 								{elseif $shipping_code eq 'ship_ecjia_express'}
 									{$order.expect_shipping_time|escape}
@@ -112,7 +100,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td><div align="right"><strong>{lang key='orders::order.label_postscript'}</strong></div></td>
+							<td><div align="right"><strong>订单备注：</strong></div></td>
 							<td colspan="3">{$order.postscript}</td>
 						</tr>
 					</table>
@@ -270,6 +258,13 @@
 									<input name="delivery[agency_id]" type="hidden" value="{$order.agency_id}">
 									<input name="delivery[shipping_name]" type="hidden" value="{$order.shipping_name}">
 									<input name="operation" type="hidden" value="{$operation}">
+								</td>
+							</tr>
+							<tr>
+								<td width="15%"><div align="right"> <strong>操作说明：</strong></div></td>
+								<td colspan="3">
+									【确认生成发货单】确认生成该订单的发货单；<br>
+									【取消】取消生成发货单操作，返回到上一步；
 								</td>
 							</tr>
 						</tbody>

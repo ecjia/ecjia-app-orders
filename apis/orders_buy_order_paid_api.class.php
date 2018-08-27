@@ -92,7 +92,8 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    
 	    $order_id = $order['order_id'];
 	    $order_sn = $order['order_sn'];
-	    
+	    RC_Logger::getLogger('pay')->info('orders_buy_order_paid');
+	    RC_Logger::getLogger('pay')->info($order);
 	    //判断订单类型，到店付款订单修改订单状态和发货状态
 	    if (in_array($order['extension_code'], array('storebuy', 'cashdesk'))) {
 	        /* 修改订单状态为已完成 */
@@ -240,7 +241,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
         if (is_ecjia_error($res)) {
             RC_Logger::getLogger('error')->error($res->get_error_message());
         }
-        
+        RC_Logger::getLogger('pay')->info('order_buy_order_pay ok');
 
     }
 }

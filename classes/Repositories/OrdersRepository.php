@@ -265,7 +265,7 @@ class OrdersRepository extends AbstractRepository
         $filter['type'] = trim(array_get($filter, 'type'));
         $filter['is_delete'] = intval(array_get($filter, 'is_delete', 0));
 
-        $filter['extension_code'] = trim(array_get($filter, 'extension_code'));
+        $filter['extension_code'] = is_array($filter['extension_code']) ? $filter['extension_code'] : trim(array_get($filter, 'extension_code'));
         $filter['store_id'] = trim(array_get($filter, 'store_id'));
         $filter['referer'] = trim(array_get($filter, 'referer'));
         $filter['goods_keywords'] = trim(array_get($filter, 'goods_keywords'));
@@ -445,7 +445,11 @@ class OrdersRepository extends AbstractRepository
                         ->orWhere('order_info.extension_code', null);
                 });
             } else {
-                $query->where('order_info.extension_code', array_get($filter, 'extension_code'));
+            	if (is_array($filter['extension_code'])) {
+            		$query->whereIn('order_info.extension_code', $filter['extension_code']);
+            	} else {
+            		$query->where('order_info.extension_code', array_get($filter, 'extension_code'));
+            	}
             }
             if (array_get($filter, 'is_delete') != -1) {
                 $query->where('order_info.is_delete', array_get($filter, 'is_delete'));

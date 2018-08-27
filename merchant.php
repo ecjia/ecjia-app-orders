@@ -238,7 +238,7 @@ class merchant extends ecjia_merchant
         $filter['end_time'] = $end_time;
 
         $filter['store_id'] = $_SESSION['store_id'];
-        $filter['extension_code'] = !empty($_GET['extension_code']) ? trim($_GET['extension_code']) : 'default';
+        $filter['extension_code'] = array('default', 'storepickup');
         $order_list = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
             ->getOrderList($filter, $page, $size, $with, ['Ecjia\App\Orders\CustomizeOrderList', 'exportOrderListMerchant']);
 

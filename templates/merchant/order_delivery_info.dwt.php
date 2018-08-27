@@ -47,6 +47,7 @@
 								<!-- {if $exist_real_goods} -->
 									<!-- {if $order.shipping_id > 0} -->
 										{$order.shipping_name}
+										<a class="data-pjax" href='{url path="orders/merchant/edit_shipping" args="order_id={$order.order_id}{if $action_note}&action_note={$action_note}{/if}"}'>{lang key='system::system.edit'}</a>
 									<!-- {else} -->
 										{lang key='system::system.require_field'}
 									<!-- {/if} -->

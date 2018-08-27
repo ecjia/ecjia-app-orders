@@ -188,10 +188,10 @@ class merchant extends ecjia_merchant
 
         $url_info = $this->get_search_url($filter);
         $this->assign('search_url', $url_info['url']);
-        
+
         $import_url = RC_Uri::url('orders/merchant/import');
         if (!empty($url_info['param'])) {
-        	$import_url = RC_Uri::url('orders/merchant/import', $url_info['param']);
+            $import_url = RC_Uri::url('orders/merchant/import', $url_info['param']);
         }
         $this->assign('import_url', $import_url);
 
@@ -201,19 +201,19 @@ class merchant extends ecjia_merchant
         if ($order_model == 'groupbuy') {
             $this->display('mh_groupbuy_order_list.dwt');
         } else {
-        	if ($order_model == 'default') {
-        		//配送方式
-        		$shipping_list = ecjia_shipping::getEnableList();
-        		$this->assign('shipping_list', $shipping_list);
-        		
-        		//支付方式
-        		$pay_list = with(new Ecjia\App\Payment\PaymentPlugin)->getEnableList();
-        		$this->assign('pay_list', $pay_list);
-        		
-        		//下单渠道
-        		$referer_list = array('iphone' => 'iPhone端', 'android' => 'Andriod端', 'mobile' => 'H5端', 'ecjia-cashdesk' => '收银台', 'weapp' => '小程序');
-        		$this->assign('referer_list', $referer_list);
-        	}
+            if ($order_model == 'default') {
+                //配送方式
+                $shipping_list = ecjia_shipping::getEnableList();
+                $this->assign('shipping_list', $shipping_list);
+
+                //支付方式
+                $pay_list = with(new Ecjia\App\Payment\PaymentPlugin)->getEnableList();
+                $this->assign('pay_list', $pay_list);
+
+                //下单渠道
+                $referer_list = array('iphone' => 'iPhone端', 'android' => 'Andriod端', 'mobile' => 'H5端', 'ecjia-cashdesk' => '收银台', 'weapp' => '小程序');
+                $this->assign('referer_list', $referer_list);
+            }
             $this->display('mh_order_list.dwt');
         }
     }
@@ -331,8 +331,8 @@ class merchant extends ecjia_merchant
         $this->assign('status_list', RC_Lang::get('orders::order.cs'));
 
 //         $this->assign('os', RC_Lang::get('orders::order.os'));
-//         $this->assign('ps', RC_Lang::get('orders::order.ps'));
-//         $this->assign('ss', RC_Lang::get('orders::order.ss'));
+        //         $this->assign('ps', RC_Lang::get('orders::order.ps'));
+        //         $this->assign('ss', RC_Lang::get('orders::order.ss'));
 
         $this->assign('search_url', RC_Uri::url('orders/merchant/today_order'));
 
@@ -378,7 +378,7 @@ class merchant extends ecjia_merchant
         if ($order_model == 'default') {
             $url = RC_Uri::url('orders/merchant/init');
         }
-        $nav_here = in_array($order_model, array('default', 'storebuy', 'storepickup', 'group_buy')) ? RC_Lang::get('orders::order.order_extension_code.'.$order_model) : '配送订单';
+        $nav_here = in_array($order_model, array('default', 'storebuy', 'storepickup', 'group_buy')) ? RC_Lang::get('orders::order.order_extension_code.' . $order_model) : '配送订单';
 
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here($nav_here, $url));
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here('订单信息'));
@@ -605,7 +605,7 @@ class merchant extends ecjia_merchant
                 $meta_value_encryption = substr_replace($meta_value, str_repeat('*', $len), 0, $len);
                 $this->assign('meta_value', array('normal' => $meta_value, 'encryption' => $meta_value_encryption));
             }
-            
+
             if ((($order['pay_status'] == PS_PAYED || $is_cod) && $order['shipping_status'] == SS_RECEIVED)) {
                 $pickup_status = '已提货';
             }
@@ -807,7 +807,7 @@ class merchant extends ecjia_merchant
                     $shipping_info = ecjia_shipping::getPluginDataById($order['shipping_id']);
                     $this->assign('shipping_code', $shipping_info['shipping_code']);
                 }
-                
+
                 if ($order_model == 'storebuy') {
                     $this->display('order_storebuy_info.dwt');
                 } elseif ($order_model == 'storepickup') {
@@ -2755,7 +2755,7 @@ class merchant extends ecjia_merchant
             RC_Loader::load_app_class('order_refund', 'refund', false);
             $pra = array('order_status' => '商家已接单', 'order_id' => $order_id, 'message' => '已被商家接单，订单正在备货中');
             order_refund::order_status_log($pra);
-            
+
             /* 如果原来状态不是“未确认”，且使用库存，且下订单时减库存，则减少库存 */
             if ($order['order_status'] != OS_UNCONFIRMED && ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_PLACE) {
                 change_order_goods_storage($order_id, true, SDT_PLACE);
@@ -4082,11 +4082,11 @@ class merchant extends ecjia_merchant
         //订单状态log记录
         $pra = array('order_status' => '无法接单', 'order_id' => $order_id, 'message' => '等待商家退款！');
         order_refund::order_status_log($pra);
-        
+
         //售后申请状态记录
         $opt = array('status' => '无法接单', 'refund_id' => $refund_id, 'message' => '等待商家退款！');
         order_refund::refund_status_log($opt);
-        
+
         //update commission_bill
         RC_Api::api('commission', 'add_bill_queue', array('order_type' => 'refund', 'order_id' => $refund_id));
 
@@ -5072,88 +5072,336 @@ class merchant extends ecjia_merchant
         return $this->showmessage(RC_Lang::get('orders::order.act_ok'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('orders/mh_delivery/delivery_info', array('delivery_id' => $delivery_id)), 'links' => $links));
 
     }
-    
-    public function import() {
-    	$filter = $_GET;
-    	$filter['store_id'] = $_SESSION['store_id'];
-    	$filter['extension_code'] = !empty($_GET['extension_code']) ? trim($_GET['extension_code']) : 'default';
-    	$orders = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
-    		->getOrderList($filter, 0, 0, null, ['Ecjia\App\Orders\CustomizeOrderList', 'exportAllOrderListMerchant']);
-    	 
-    	RC_Excel::load(RC_APP_PATH . 'orders' . DIRECTORY_SEPARATOR .'statics/files/merchant_orders.xls', function($excel) use ($orders){
-    		$excel->sheet('First sheet', function($sheet) use ($orders) {
-    			foreach ($orders as $key => $item) {
-    				$sheet->appendRow($key+2, $item);
-    			}
-    		});
-    	})->download('xls');
+
+    public function import()
+    {
+        $filter = $_GET;
+        $filter['store_id'] = $_SESSION['store_id'];
+        $filter['extension_code'] = !empty($_GET['extension_code']) ? trim($_GET['extension_code']) : 'default';
+        $orders = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
+            ->getOrderList($filter, 0, 0, null, ['Ecjia\App\Orders\CustomizeOrderList', 'exportAllOrderListMerchant']);
+
+        RC_Excel::load(RC_APP_PATH . 'orders' . DIRECTORY_SEPARATOR . 'statics/files/merchant_orders.xls', function ($excel) use ($orders) {
+            $excel->sheet('First sheet', function ($sheet) use ($orders) {
+                foreach ($orders as $key => $item) {
+                    $sheet->appendRow($key + 2, $item);
+                }
+            });
+        })->download('xls');
     }
-    
-    private function get_search_url() {
-    	$url = RC_Uri::url('orders/merchant/init');
-    	$param = [];
-    	$filter = $_GET;
-    	 
-    	//订单类型 配送/自提/到店/团购
-    	if (!empty($filter['extension_code'])) {
-    		$param['extension_code'] = $filter['extension_code'];
-    	}
-    	//商家名称关键字
-    	if (!empty($filter['merchant_keywords'])) {
-    		$param['merchant_keywords'] = $filter['merchant_keywords'];
-    		$filter['show_search'] = 0;
-    	}
-    	//订单编号或购买者信息
-    	if (!empty($filter['keywords'])) {
-    		$param['keywords'] = $filter['keywords'];
-    		$filter['show_search'] = 0;
-    	}
-    	 
-    	//显示高级搜索
-    	if (!empty($filter['show_search'])) {
-    		$param['show_search'] = $filter['show_search'];
-    
-    		//订单编号关键字
-    		if (!empty($filter['order_sn'])) {
-    			$param['order_sn'] = trim($filter['order_sn']);
-    		}
-    		//开始时间
-    		if (!empty($filter['start_time'])) {
-    			$param['start_time'] = $filter['start_time'];
-    		}
-    		//结束时间
-    		if (!empty($filter['end_time'])) {
-    			$param['end_time'] = $filter['end_time'];
-    		}
-    		//配送方式
-    		if (!empty($filter['shipping_id'])) {
-    			$param['shipping_id'] = intval($filter['shipping_id']);
-    		}
-    		//支付方式
-    		if (!empty($filter['pay_id'])) {
-    			$param['pay_id'] = intval($filter['pay_id']);
-    		}
-    		//下单渠道
-    		if (!empty($filter['referer'])) {
-    			$param['referer'] = trim($filter['referer']);
-    		}
-    		//商品名称
-    		if (!empty($filter['goods_keywords'])) {
-    			$param['goods_keywords'] = trim($filter['goods_keywords']);
-    		}
-    		//购买人
-    		if (!empty($filter['consignee'])) {
-    			$param['consignee'] = trim($filter['consignee']);
-    		}
-    		//手机号
-    		if (!empty($filter['mobile'])) {
-    			$param['mobile'] = trim($filter['mobile']);
-    		}
-    	}
-    	if (!empty($param)) {
-    		$url = RC_Uri::url('orders/merchant/init', $param);
-    	}
-    	return array('url' => $url, 'param' => $param);
+
+    //生成发货单页面 编辑配送方式 （原订单已付款页面编辑订单功能）
+    public function edit_shipping()
+    {
+        /* 检查权限 */
+        $this->admin_priv('order_edit');
+
+        /* 取得参数 order_id */
+        $order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
+
+        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('订单信息'), RC_Uri::url("orders/merchant/info&order_id=$order_id")));
+        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('编辑订单')));
+
+        $order = RC_Api::api('orders', 'merchant_order_info', array('order_id' => $order_id));
+
+        if (empty($order) || is_ecjia_error($order) || $order['store_id'] != $_SESSION['store_id']) {
+            $links[] = array('text' => '返回订单列表', 'href' => RC_Uri::url('orders/merchant/init'));
+            return $this->showmessage(__('无法找到对应的订单！'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR, array('links' => $links));
+        }
+        if ($order['order_status'] == OS_INVALID) {
+            $links[] = array('text' => '返回订单列表', 'href' => RC_Uri::url('orders/merchant/init'));
+            return $this->showmessage(__('该订单已失效无法操作！'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR, array('links' => $links));
+        }
+        $this->assign('order_id', $order_id);
+
+        $action_note = trim($_GET['action_note']);
+        $this->assign('action_note', $action_note);
+
+        /* 取得订单信息 */
+        if ($order_id > 0) {
+            /* 发货单格式化 */
+            $order['invoice_no'] = str_replace('<br>', ',', $order['invoice_no']);
+            $this->assign('order', $order);
+        }
+
+        $ur_here = __('编辑订单配送方式');
+        $this->assign('ur_here', $ur_here);
+
+        /* 查询是否存在实体商品 */
+        $exist_real_goods = exist_real_goods($order_id);
+        if ($exist_real_goods) {
+            /* 取得可用的配送方式列表 */
+            $region_id_list = array(
+                $order['country'], $order['province'], $order['city'], $order['district'],
+            );
+            $shipping_list = ecjia_shipping::availableUserShippings($region_id_list, $_SESSION['store_id']);
+
+            if (empty($shipping_list)) {
+                $this->assign('shipping_list_error', 1);
+            }
+            /* 取得配送费用 */
+            $total = order_weight_price($order_id);
+            if (!empty($shipping_list)) {
+                foreach ($shipping_list as $key => $shipping) {
+                    $shipping_fee = ecjia_shipping::fee($shipping['shipping_area_id'], $total['weight'], $total['amount'], $total['number']);
+
+                    $shipping_list[$key]['shipping_fee'] = $shipping_fee;
+                    $shipping_list[$key]['format_shipping_fee'] = price_format($shipping_fee);
+                    $shipping_list[$key]['free_money'] = price_format($shipping['configure']['free_money']);
+                }
+            }
+            $this->assign('shipping_list', $shipping_list);
+        }
+
+        /* 取得可用的支付方式列表 */
+        $payment_method = RC_Loader::load_app_class('payment_method', 'payment');
+        if (exist_real_goods($order_id)) {
+            /* 存在实体商品 */
+            $region_id_list = array(
+                $order['country'], $order['province'], $order['city'], $order['district'],
+            );
+            $shipping_area = ecjia_shipping::shippingArea($order['shipping_id'], $region_id_list, $_SESSION['store_id']);
+
+            $pay_fee = ($shipping_area['support_cod'] == 1) ? $shipping_area['pay_fee'] : 0;
+            $payment_list = $payment_method->available_payment_list(true, $pay_fee);
+
+        } else {
+            /* 不存在实体商品 */
+            $payment_list = $payment_method->available_payment_list(false);
+        }
+
+        /* 过滤掉使用余额支付 */
+        foreach ($payment_list as $key => $payment) {
+            if ($payment['pay_code'] == 'balance') {
+                unset($payment_list[$key]);
+            }
+        }
+        $this->assign('exist_real_goods', $exist_real_goods);
+        $this->assign('payment_list', $payment_list);
+
+        $this->display('order_edit_shipping.dwt');
+    }
+
+    //编辑订单提交
+    public function edit_shipping_post()
+    {
+        /* 检查权限 */
+        $this->admin_priv('order_edit', ecjia::MSGTYPE_JSON);
+
+        $store_id = $_SESSION['store_id'];
+
+        /* 取得参数 order_id */
+        $order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
+        if ($order_id > 0) {
+            $old_order = order_info($order_id);
+        }
+        $action_note = trim($_POST['action_no']);
+
+        /* 保存配送信息 */
+        /* 取得订单信息 */
+        $order_info = order_info($order_id);
+
+        $region_id_list = array($order_info['country'], $order_info['province'], $order_info['city'], $order_info['district']);
+        /* 保存订单 */
+        $shipping_id = $_POST['shipping'];
+        $shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
+        $shipping = $shipping_method->shipping_area_info($shipping_id, $region_id_list, $store_id);
+//         $weight_amount = order_weight_price($order_id);
+        //         $shipping_fee = $shipping_method->shipping_fee($shipping['shipping_code'], $shipping['configure'], $weight_amount['weight'], $weight_amount['amount'], $weight_amount['number']);
+
+        $order = array(
+            'shipping_id' => $shipping_id,
+            'shipping_name' => addslashes($shipping['shipping_name']),
+//             'shipping_fee'    => $shipping_fee //修改配送方式 配送费不变，价格自行商家承担
+        );
+
+        if (isset($_POST['insure'])) {
+            /* 计算保价费 */
+            $order['insure_fee'] = shipping_insure_fee($shipping['shipping_code'], order_amount($order_id), $shipping['insure']);
+        } else {
+            $order['insure_fee'] = 0;
+        }
+
+        update_order($order_id, $order);
+        update_order_amount($order_id);
+
+        /* 更新 pay_log */
+        update_pay_log($order_id);
+
+        /* todo 记录日志 */
+        $sn = $old_order['order_sn'];
+        $new_order = order_info($order_id);
+        if ($old_order['total_fee'] != $new_order['total_fee']) {
+            $sn .= ',' . sprintf(RC_Lang::get('orders::order.order_amount_change'), $old_order['total_fee'], $new_order['total_fee']);
+        }
+        ecjia_merchant::admin_log('编辑配送方式，订单是' . $sn, 'edit', 'order');
+
+        /* 取得支付信息 */
+        $pay_id = $_POST['payment'];
+        $payment_method = RC_Loader::load_app_class('payment_method', 'payment');
+        $payment = $payment_method->payment_info($pay_id);
+        /* 计算支付费用 */
+        $order_amount = order_amount($order_id);
+        if ($payment['is_cod'] == 1) {
+            $order = order_info($order_id);
+            $region_id_list = array($order['country'], $order['province'], $order['city'], $order['district']);
+            $shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
+           	$shipping = $shipping_method->shipping_area_info($order['shipping_id'], $region_id_list);
+
+            $pay_fee = pay_fee($pay_id, $order_amount, $shipping['pay_fee']);
+        } else {
+            $pay_fee = pay_fee($pay_id, $order_amount);
+        }
+        /* 保存订单 */
+        $order = array(
+            'pay_id' => $pay_id,
+            'pay_name' => addslashes($payment['pay_name']),
+            'pay_fee' => $pay_fee,
+        );
+        update_order($order_id, $order);
+        update_order_amount($order_id);
+
+        /* 更新 pay_log */
+        update_pay_log($order_id);
+
+        //已付款订单修改配送方式为上门取货 重新生成取货码
+        if ($shipping['shipping_code'] == 'ship_cac' && $order_info['pay_status'] == PS_PAYED) {
+            $db_term_meta = RC_DB::table('term_meta');
+            $max_code = $db_term_meta
+                ->where('object_type', 'ecjia.order')
+                ->where('object_group', 'order')
+                ->where('meta_key', 'receipt_verification')
+                ->max('meta_value');
+
+            $max_code = $max_code ? ceil($max_code / 10000) : 1000000;
+            $code = $max_code . str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT);
+            $mobile = RC_DB::table('users')->where('user_id', $order_info['user_id'])->pluck('mobile_phone');
+            $options = array(
+                'mobile' => $mobile,
+                'event' => 'sms_order_pickup',
+                'value' => array(
+                    'order_sn' => $order['order_sn'],
+                    'user_name' => $order['consignee'],
+                    'code' => $code,
+                    'service_phone' => ecjia::config('service_phone'),
+                ),
+            );
+            RC_Api::api('sms', 'send_event_sms', $options);
+
+            $term_meta_db = RC_DB::table('term_meta')
+                ->where('object_type', 'ecjia.order')
+                ->where('object_group', 'order')
+                ->where('object_id', $order_id)
+                ->where('meta_key', 'receipt_verification');
+
+            //判断是否存在提货码信息
+            $count = $term_meta_db->count();
+
+            //存在更新
+            if ($count != 0) {
+                $term_meta_db->update(array('meta_value' => $code));
+            } else {
+                //不存在添加
+                $meta_data = array(
+                    'object_type' => 'ecjia.order',
+                    'object_group' => 'order',
+                    'object_id' => $order_id,
+                    'meta_key' => 'receipt_verification',
+                    'meta_value' => $code,
+                );
+                RC_DB::table('term_meta')->insert($meta_data);
+            }
+        }
+
+        /* todo 记录日志 */
+        $sn = $old_order['order_sn'];
+        $new_order = order_info($order_id);
+
+        if ($old_order['total_fee'] != $new_order['total_fee']) {
+            $sn .= ',' . sprintf(RC_Lang::get('orders::order.order_amount_change'), $old_order['total_fee'], $new_order['total_fee']);
+        }
+        ecjia_merchant::admin_log('编辑配送方式,订单号是' . $sn, 'edit', 'order');
+
+        /* 初始化提示信息和链接 */
+        $msgs = array();
+        $links = array();
+        /* 如果已付款，检查金额是否变动，并执行相应操作 */
+        $order = order_info($order_id);
+        handle_order_money_change($order, $msgs, $links);
+
+        $url = RC_Uri::url('orders/merchant/go_shipping', array('order_id' => $order_id));
+        if (!empty($action_note)) {
+            $url = RC_Uri::url('orders/merchant/go_shipping', array('order_id' => $order_id, 'action_note' => $action_note));
+        }
+        return $this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('url' => $url));
+    }
+
+    private function get_search_url()
+    {
+        $url = RC_Uri::url('orders/merchant/init');
+        $param = [];
+        $filter = $_GET;
+
+        //订单类型 配送/自提/到店/团购
+        if (!empty($filter['extension_code'])) {
+            $param['extension_code'] = $filter['extension_code'];
+        }
+        //商家名称关键字
+        if (!empty($filter['merchant_keywords'])) {
+            $param['merchant_keywords'] = $filter['merchant_keywords'];
+            $filter['show_search'] = 0;
+        }
+        //订单编号或购买者信息
+        if (!empty($filter['keywords'])) {
+            $param['keywords'] = $filter['keywords'];
+            $filter['show_search'] = 0;
+        }
+
+        //显示高级搜索
+        if (!empty($filter['show_search'])) {
+            $param['show_search'] = $filter['show_search'];
+
+            //订单编号关键字
+            if (!empty($filter['order_sn'])) {
+                $param['order_sn'] = trim($filter['order_sn']);
+            }
+            //开始时间
+            if (!empty($filter['start_time'])) {
+                $param['start_time'] = $filter['start_time'];
+            }
+            //结束时间
+            if (!empty($filter['end_time'])) {
+                $param['end_time'] = $filter['end_time'];
+            }
+            //配送方式
+            if (!empty($filter['shipping_id'])) {
+                $param['shipping_id'] = intval($filter['shipping_id']);
+            }
+            //支付方式
+            if (!empty($filter['pay_id'])) {
+                $param['pay_id'] = intval($filter['pay_id']);
+            }
+            //下单渠道
+            if (!empty($filter['referer'])) {
+                $param['referer'] = trim($filter['referer']);
+            }
+            //商品名称
+            if (!empty($filter['goods_keywords'])) {
+                $param['goods_keywords'] = trim($filter['goods_keywords']);
+            }
+            //购买人
+            if (!empty($filter['consignee'])) {
+                $param['consignee'] = trim($filter['consignee']);
+            }
+            //手机号
+            if (!empty($filter['mobile'])) {
+                $param['mobile'] = trim($filter['mobile']);
+            }
+        }
+        if (!empty($param)) {
+            $url = RC_Uri::url('orders/merchant/init', $param);
+        }
+        return array('url' => $url, 'param' => $param);
     }
 
 }

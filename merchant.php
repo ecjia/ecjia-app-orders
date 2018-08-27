@@ -759,6 +759,7 @@ class merchant extends ecjia_merchant
             if ($order['pay_status'] == PS_PAYED) {
                 $this->assign('has_payed', 1);
             }
+
             /* 参数赋值：订单 */
             $this->assign('order', $order);
             $this->assign('order_id', $order_id);

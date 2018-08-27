@@ -143,7 +143,7 @@ ecjia.merchant.order.info();
 									{/if}
 								</td>
 								<td><div align="right"><strong>提货状态：</strong></div></td>
-								<td>{$pickup_status}</td>
+								<td>{if $pickup_status}{$pickup_status}{else}暂无{/if}</td>
 							</tr>
 							<tr>
 								<td><div align="right"><strong>预约提货时间：</strong></div></td>
@@ -151,6 +151,60 @@ ecjia.merchant.order.info();
 									{if $order.expect_shipping_time} {RC_Time::local_date(ecjia::config('time_format'), $order.expect_shipping_time)} {else}
 									暂无 {/if}
 								</td>
+							</tr>
+						</tbody>
+					</table>
+                </div>
+			</div>
+			
+			<div class="accordion-group panel panel-default">
+				<div class="panel-heading accordion-group-heading-relative">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                        <h4 class="panel-title">
+                            <strong>{t}发票信息{/t}</strong>
+                        </h4>
+                    </a>
+                    {if $order_finished neq 1 && $order.shipping_status neq 1 && !$invalid_order}
+						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=other"}'>{lang key='system::system.edit'}</a>
+					{/if}
+                </div>
+                <div class="accordion-body in collapse" id="collapseTwo">
+                	<table class="table table-oddtd m_b0">
+						<tbody class="first-td-no-leftbd">
+							<tr>
+								<td><div align="right"><strong>{lang key='orders::order.label_inv_type'}</strong></div></td>
+								<td>{$order.inv_type}</td>
+								<td><div align="right"><strong>纳税人识别码：</strong></div></td>
+								<td>{$inv_tax_no}</td>
+							</tr>
+							<tr>
+								<td><div align="right"><strong>{lang key='orders::order.label_inv_payee'}</strong></div></td>
+								<td>{$inv_payee}</td>
+								<td><div align="right"><strong>{lang key='orders::order.label_inv_content'}</strong></div></td>
+								<td>{$order.inv_content}</td>
+							</tr>
+						</tbody>
+					</table>
+                </div>
+			</div>
+			
+			<div class="accordion-group panel panel-default">
+				<div class="panel-heading accordion-group-heading-relative">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                        <h4 class="panel-title">
+                            <strong>{lang key='orders::order.other_info'}</strong>
+                        </h4>
+                    </a>
+                    {if $order_finished neq 1 && $order.shipping_status neq 1 && !$invalid_order}
+						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=other"}'>{lang key='system::system.edit'}</a>
+					{/if}
+                </div>
+                <div class="accordion-body in collapse " id="collapseThree">
+                	<table class="table table-oddtd m_b0">
+						<tbody class="first-td-no-leftbd">
+							<tr>
+								<td><div align="right"><strong>订单备注：</strong></div></td>
+								<td colspan="3">{$order.postscript}</td>
 							</tr>
 						</tbody>
 					</table>
@@ -280,7 +334,7 @@ ecjia.merchant.order.info();
                 </div>
 			</div>
 			
-			{if !$invalid_order && $operable_list.cancel}
+			{if $has_payed && $order.shipping_status neq 5}
 			<div class="accordion-group panel panel-default">
 				<div class="panel-heading">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseEight">
@@ -300,16 +354,14 @@ ecjia.merchant.order.info();
 								<td><div align="right"><strong>{lang key='orders::order.label_operable_act'}</strong></div></td>
 								<td colspan="3">
 									<input type='hidden' class="operate_note" data-url='{url path="orders/merchant/operate_note"}'>
-									{if $operable_list.cancel}
-									<button class="btn operatesubmit btn-info" type="submit" name="cancel">{lang key='orders::order.op_cancel'}</button>
-									{/if}
+									<button class="btn operatesubmit btn-info" type="submit" name="confirm_validate">确认验证</button>
 									<input name="order_id" class="order_id" type="hidden" value="{$order.order_id}">
 								</td>
 							</tr>
 							<tr>
 								<td width="15%"><div align="right"> <strong>操作说明：</strong></div></td>
 								<td colspan="3">
-									{if $operable_list.cancel}【取消】设置该订单为无效/作废订单<br>{/if}
+									【确认验证】设置该笔订单的商品已被买家取走；<br>
 								</td>
 							</tr>
 						</tbody>
@@ -317,6 +369,7 @@ ecjia.merchant.order.info();
                 </div>
 			</div>
 			{/if}
+			
 		</form>
 	</div>
 </div>

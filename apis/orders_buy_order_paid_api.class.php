@@ -139,6 +139,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	        /* 记录订单操作记录 */
 	        order_action($order_sn, $order_status, SS_UNSHIPPED, $pay_status, '', RC_Lang::get('orders::order.buyers'));
 	    }
+	    RC_Logger::getLogger('pay')->info('orders_buy_paid.line:'.__LINE__);
 	    
 	    //会员店铺消费过，记录为店铺会员 TODO暂时不启用
 	    //if (!empty($order['user_id'])) {
@@ -164,10 +165,11 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    		OrderStatusLog::notify_merchant(array('order_id' => $order_id));
 	    	}
 	    } else {
-	    		//订单付款成功时
-	    		OrderStatusLog::order_paid(array('order_id' => $order_id));
-	    		//订单付款成功时同时通知商家
-	    		OrderStatusLog::notify_merchant(array('order_id' => $order_id));
+	        RC_Logger::getLogger('pay')->info('orders_buy_paid.line:'.__LINE__);
+    		//订单付款成功时
+    		OrderStatusLog::order_paid(array('order_id' => $order_id));
+    		//订单付款成功时同时通知商家
+    		OrderStatusLog::notify_merchant(array('order_id' => $order_id));
 	    }
 	    
 	    /*门店自提，时发送提货验证码；*/
@@ -197,6 +199,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    	RC_Api::api('push', 'push_event_send', $options);
 	    }
 	    
+	    RC_Logger::getLogger('pay')->info('orders_buy_paid.line:'.__LINE__);
         /* 通知记录*/
         $orm_staff_user_db = RC_Model::model('express/orm_staff_user_model');
         $staff_user_ob = $orm_staff_user_db->find($staff_user['user_id']);
@@ -218,7 +221,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
          
         $push_order_pay = new OrderPay($order_data);
         RC_Notification::send($staff_user_ob, $push_order_pay);
-	             
+        RC_Logger::getLogger('pay')->info('orders_buy_paid.line:'.__LINE__);
 	    
         /* 客户付款短信提醒 */
         if (!empty($staff_user['mobile'])) {
@@ -235,7 +238,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
             );
             RC_Api::api('sms', 'send_event_sms', $options);
         }
-        
+        RC_Logger::getLogger('pay')->info('orders_buy_paid.line:'.__LINE__);
         /* 打印订单 */
         $res = with(new Ecjia\App\Orders\OrderPrint($order_id, $order['store_id']))->doPrint(true);
         if (is_ecjia_error($res)) {

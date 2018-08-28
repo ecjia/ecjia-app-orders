@@ -108,7 +108,7 @@ class orders_admin_plugin
         //当前时间戳
         $now = RC_Time::gmtime();
         $order_money = RC_DB::table('order_info as oi')
-            ->selectRaw('oi.order_id, oi.goods_amount')
+            ->select(RC_DB::raw('oi.order_id'), RC_DB::raw('oi.goods_amount'))
             ->where(RC_DB::raw('oi.add_time'), '>=', $start_month)
             ->where(RC_DB::raw('oi.add_time'), '<=', $now)
             ->where(RC_DB::raw('oi.pay_status'), PS_PAYED)

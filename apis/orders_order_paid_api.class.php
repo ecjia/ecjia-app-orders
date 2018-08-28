@@ -132,7 +132,7 @@ class orders_order_paid_api extends Component_Event_Api {
 	            /* 根据记录类型做相应处理 */
 	            if ($pay_log['order_type'] == PAY_ORDER) {
 	                /* 取得订单信息 */
-	            	$order = RC_DB::table('order_info')->selectRaw('order_id, store_id, user_id, order_sn, consignee, address, tel, mobile, shipping_id, extension_code, extension_id, goods_amount, order_amount, add_time')
+	            	$order = RC_DB::table('order_info')->select('order_id', 'store_id', 'user_id', 'order_sn', 'consignee', 'address', 'tel', 'mobile', 'shipping_id', 'extension_code', 'extension_id', 'goods_amount', 'order_amount', 'add_time')
 						->where('order_id', $pay_log['order_id'])->first();
 	                
 	                $order_id = $order['order_id'];

@@ -268,7 +268,7 @@ class mh_order_stats extends ecjia_merchant
         $ship_res = RC_DB::table('shipping as sp')
             ->leftJoin('order_info as i', RC_DB::raw('sp.shipping_id'), '=', RC_DB::raw('i.shipping_id'))
             ->whereRaw($where)
-            ->selectRaw('sp.shipping_id, sp.shipping_name AS ship_name, COUNT(i.order_id) AS order_num')
+            ->select(RC_DB::raw('sp.shipping_id'), RC_DB::raw('sp.shipping_name AS ship_name'), RC_DB::raw('COUNT(i.order_id) AS order_num'))
             ->groupBy(RC_DB::raw('i.shipping_id'))
             ->orderBy('order_num', 'desc')
             ->get();

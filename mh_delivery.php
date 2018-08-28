@@ -167,7 +167,7 @@ class mh_delivery extends ecjia_merchant
             ->leftJoin('regions as d', RC_DB::raw('o.district'), '=', RC_DB::raw('d.region_id'));
         $order_id = $delivery_order['order_id'];
 
-        $region = $db_order_info->selectRaw("concat(IFNULL(c.region_name, ''), '  ', IFNULL(p.region_name, ''),'  ', IFNULL(t.region_name, ''), '  ', IFNULL(d.region_name, '')) AS region")
+        $region = $db_order_info->select(RC_DB::raw("concat(IFNULL(c.region_name, ''), '  ', IFNULL(p.region_name, ''),'  ', IFNULL(t.region_name, ''), '  ', IFNULL(d.region_name, '')) AS region"))
             ->where(RC_DB::raw('o.order_id'), $order_id)->first();
 
         $delivery_order['region'] = $region['region'];
@@ -310,7 +310,8 @@ class mh_delivery extends ecjia_merchant
         $delivery_stock_result = RC_DB::table('delivery_goods as dg')
             ->leftJoin('goods as g', RC_DB::raw('dg.goods_id'), '=', RC_DB::raw('g.goods_id'))
             ->leftJoin('products as p', RC_DB::raw('dg.product_id'), '=', RC_DB::raw('p.product_id'))
-            ->selectRaw('dg.goods_id, dg.is_real, dg.product_id, SUM(dg.send_number) AS sums, IF(dg.product_id > 0, p.product_number, g.goods_number) AS storage, g.goods_name, dg.send_number')
+            ->select(RC_DB::raw('dg.goods_id'), RC_DB::raw('dg.is_real'), RC_DB::raw('dg.product_id'), RC_DB::raw('SUM(dg.send_number) AS sums'), 
+                RC_DB::raw("IF(dg.product_id > 0, p.product_number, g.goods_number) AS storage"), RC_DB::raw('g.goods_name'), RC_DB::raw('dg.send_number'))
             ->where(RC_DB::raw('dg.delivery_id'), $delivery_id)
             ->groupBy(RC_DB::raw('dg.product_id'))
             ->get();
@@ -339,7 +340,7 @@ class mh_delivery extends ecjia_merchant
         } else {
             $delivery_stock_result = RC_DB::table('delivery_goods as dg')
                 ->leftJoin('goods as g', RC_DB::raw('dg.goods_id'), '=', RC_DB::raw('g.goods_id'))
-                ->selectRaw('dg.goods_id, dg.is_real, SUM(dg.send_number) AS sums, g.goods_number, g.goods_name, dg.send_number')
+                ->select(RC_DB::raw('dg.goods_id'), RC_DB::raw('dg.is_real'), RC_DB::raw('SUM(dg.send_number) AS sums'), RC_DB::raw('g.goods_number'), RC_DB::raw('g.goods_name'), RC_DB::raw('dg.send_number'))
                 ->where(RC_DB::raw('dg.delivery_id'), $delivery_id)
                 ->groupBy(RC_DB::raw('dg.goods_id'))
                 ->get();
@@ -635,7 +636,7 @@ class mh_delivery extends ecjia_merchant
             }
 
             /* 商家发货 如果需要，发短信 */
-            $userinfo = RC_DB::table('users')->where('user_id', $order['user_id'])->selectRaw('user_name, mobile_phone')->first();
+            $userinfo = RC_DB::table('users')->where('user_id', $order['user_id'])->select('user_name', 'mobile_phone')->first();
             if (!empty($userinfo['mobile_phone'])) {
                 //发送短信
                 $user_name = $userinfo['user_name'];
@@ -776,7 +777,7 @@ class mh_delivery extends ecjia_merchant
             // 检查此单发货商品数量
             $virtual_goods = array();
             $delivery_stock_result = RC_DB::table('delivery_goods')
-                ->selectRaw('goods_id, product_id, is_real, SUM(send_number) as sums')
+                ->select('goods_id', 'product_id', 'is_real', 'SUM(send_number) as sums')
                 ->where('delivery_id', $delivery_id)
                 ->groupBy('goods_id')
                 ->get();

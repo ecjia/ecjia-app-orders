@@ -313,7 +313,7 @@ function get_merchant_back_list()
     //实例化分页
     $page = new ecjia_merchant_page($count, 15, 6);
     /* 查询 */
-    $row = $db_back_order->selectRaw('bo.back_id, bo.order_id, bo.delivery_sn, bo.order_sn, bo.order_id, bo.add_time, bo.action_user, bo.consignee, bo.country,bo.province, bo.city, bo.district, bo.tel, bo.status, bo.update_time, bo.email, bo.return_time')->orderBy($filter['sort_by'], $filter['sort_order'])->take(15)->skip($page->start_id - 1)->groupBy('back_id')->get();
+    $row = $db_back_order->select(RC_DB::raw('bo.back_id'), RC_DB::raw('bo.order_id'), RC_DB::raw('bo.delivery_sn'), RC_DB::raw('bo.order_sn'), RC_DB::raw('bo.order_id'), RC_DB::raw('bo.add_time'), RC_DB::raw('bo.action_user'), RC_DB::raw('bo.consignee'), RC_DB::raw('bo.country'), RC_DB::raw('bo.province'), RC_DB::raw('bo.city'), RC_DB::raw('bo.district'), RC_DB::raw('bo.tel'), RC_DB::raw('bo.status'), RC_DB::raw('bo.update_time'), RC_DB::raw('bo.email'), RC_DB::raw('bo.return_time'))->orderBy($filter['sort_by'], $filter['sort_order'])->take(15)->skip($page->start_id - 1)->groupBy('back_id')->get();
     if (!empty($row) && is_array($row)) {
         /* 格式化数据 */
         foreach ($row as $key => $value) {

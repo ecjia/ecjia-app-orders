@@ -121,7 +121,9 @@ class orders_merchant_plugin
         $data['express_platform_count'] = RC_DB::table('express_order')
             ->where(RC_DB::raw('shipping_code'), 'ship_o2o_express')
             ->where('store_id', $store_id)
-            ->selectRaw('count(*) as count, SUM(IF(status = 0, 1, 0)) as wait_grab, SUM(IF(status = 1, 1, 0)) as wait_pickup, SUM(IF(status = 2, 1, 0)) as sending, SUM(IF(status = 5, 1, 0)) as finished')
+            ->select(RC_DB::raw("count(*) as count"), RC_DB::raw("SUM(IF(status = 0, 1, 0)) as wait_grab"), 
+                RC_DB::raw("SUM(IF(status = 1, 1, 0)) as wait_pickup"), RC_DB::raw("SUM(IF(status = 2, 1, 0)) as sending"), 
+                RC_DB::raw("SUM(IF(status = 5, 1, 0)) as finished"))
             ->first();
 
         foreach ($data['express_platform_count'] as $k => $v) {
@@ -133,7 +135,9 @@ class orders_merchant_plugin
         $data['express_merchant_count'] = RC_DB::table('express_order')
             ->where(RC_DB::raw('shipping_code'), '')
             ->where('store_id', $store_id)
-            ->selectRaw('count(*) as count, SUM(IF(status = 0, 1, 0)) as wait_grab, SUM(IF(status = 1, 1, 0)) as wait_pickup, SUM(IF(status = 2, 1, 0)) as sending, SUM(IF(status = 5, 1, 0)) as finished')
+            ->select(RC_DB::raw("count(*) as count"), RC_DB::raw("SUM(IF(status = 0, 1, 0)) as wait_grab"), 
+                RC_DB::raw("SUM(IF(status = 1, 1, 0)) as wait_pickup"), RC_DB::raw("SUM(IF(status = 2, 1, 0)) as sending"), 
+                RC_DB::raw("SUM(IF(status = 5, 1, 0)) as finished"))
             ->first();
 
         foreach ($data['express_merchant_count'] as $k => $v) {
@@ -150,7 +154,7 @@ class orders_merchant_plugin
         $sales_order_data = RC_DB::table('goods as g')
             ->leftJoin('order_goods as og', RC_DB::raw('og.goods_id'), '=', RC_DB::raw('g.goods_id'))
             ->leftJoin('order_info as oi', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('og.order_id'))
-            ->selectRaw('og.goods_id, og.goods_sn, og.goods_name, oi.order_status, SUM(og.goods_number) AS goods_num, SUM(og.goods_number * og.goods_price) AS turnover')
+            ->select(RC_DB::raw('og.goods_id'), RC_DB::raw('og.goods_sn'), RC_DB::raw('og.goods_name'), RC_DB::raw('oi.order_status'), RC_DB::raw('SUM(og.goods_number) AS goods_num'), RC_DB::raw('SUM(og.goods_number * og.goods_price) AS turnover'))
             ->where(RC_DB::raw('oi.is_delete'), 0)
             ->where(RC_DB::raw('g.is_delete'), 0)
             ->where(RC_DB::raw('g.store_id'), $store_id)
@@ -195,7 +199,7 @@ class orders_merchant_plugin
                 $where = "add_time >= '$start_time' AND add_time <= '$time' AND store_id = $store_id AND is_delete = 0";
 
                 $list = RC_DB::table('order_info')
-                    ->selectRaw("FROM_UNIXTIME(add_time+8*3600, '" . $format . "') AS day, count('order_id') AS count")
+                    ->select(RC_DB::raw("FROM_UNIXTIME(add_time+8*3600, '" . $format . "') AS day"), RC_DB::raw("count('order_id') AS count"))
                     ->whereRaw($where)
                     ->groupby('day')
                     ->get();

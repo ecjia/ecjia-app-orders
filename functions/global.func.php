@@ -197,14 +197,14 @@ function cat_list($cat_id = 0, $selected = 0, $re_type = true, $level = 0, $is_s
         if ($data === false) {
              $res = RC_DB::table('category as c')
                 ->leftJoin('category as s', RC_DB::raw('c.cat_id'), '=', RC_DB::raw('s.parent_id'))
-                ->selectRaw('c.cat_id, c.cat_name, c.measure_unit, c.parent_id, c.is_show, c.show_in_nav, c.grade, c.sort_order, COUNT(s.cat_id) AS has_children')
+                ->select(RC_DB::raw('c.cat_id'), RC_DB::raw('c.cat_name'), RC_DB::raw('c.measure_unit'), RC_DB::raw('c.parent_id'), RC_DB::raw('c.is_show'), RC_DB::raw('c.show_in_nav'), RC_DB::raw('c.grade'), RC_DB::raw('c.sort_order'), RC_DB::raw('COUNT(s.cat_id) AS has_children'))
                 ->groupBy(RC_DB::raw('c.cat_id'))
                 ->orderBy(RC_DB::raw('c.parent_id'), 'asc')
                 ->orderBy(RC_DB::raw('c.sort_order'), 'asc')
                 ->get();
                 
             $res2 = RC_DB::table('goods')
-                ->selectRaw('cat_id, COUNT(*) as goods_num')
+                ->select('cat_id', 'COUNT(*) as goods_num'))
                 ->where('is_delete', 0)
                 ->where('is_on_sale', 1)
                 ->groupBy('cat_id')
@@ -519,7 +519,7 @@ function get_order_goods($order) {
     $data = RC_DB::table('order_goods as o')->leftJoin('products as p', RC_DB::raw('p.product_id'), '=', RC_DB::raw('o.product_id'))
     ->leftJoin('goods as g', RC_DB::raw('o.goods_id'), '=', RC_DB::raw('g.goods_id'))
     ->leftJoin('brand as b', RC_DB::raw('g.brand_id'), '=', RC_DB::raw('b.brand_id'))
-    ->selectRaw("o.*, g.suppliers_id AS suppliers_id, IF(o.product_id > 0, p.product_number, g.goods_number) AS storage, o.goods_attr, IFNULL(b.brand_name, '') AS brand_name, p.product_sn")
+    ->select(RC_DB::raw('o.*'), RC_DB::raw('g.suppliers_id AS suppliers_id'), RC_DB::raw("IF(o.product_id > 0, p.product_number, g.goods_number) AS storage"), RC_DB::raw('o.goods_attr'), RC_DB::raw("IFNULL(b.brand_name, '') AS brand_name"), RC_DB::raw('p.product_sn'))
     ->where(RC_DB::raw('o.order_id'), $order['order_id'])->get();
     $goods_list = array();
     if (!empty($data)) {
@@ -564,7 +564,7 @@ function get_order_goods_base($order_id) {
     $db_view = RC_DB::table('order_goods as og')
         ->leftJoin('goods as g', RC_DB::raw('og.goods_id'), '=', RC_DB::raw('g.goods_id'))
         ->leftJoin('comment as c', RC_DB::raw('og.rec_id'), '=', RC_DB::raw('c.rec_id'));
-    $res = $db_view->selectRaw($field)->where(RC_DB::raw('og.order_id'), $order_id)
+    $res = $db_view->select(RC_DB::raw('og.*'), RC_DB::raw('og.goods_price * og.goods_number AS subtotal'), RC_DB::raw('g.goods_thumb'), RC_DB::raw('g.original_img'), RC_DB::raw('g.goods_img'), RC_DB::raw('g.store_id'), RC_DB::raw('c.comment_id'), RC_DB::raw('c.comment_rank'), RC_DB::raw('c.content as comment_content'), RC_DB::raw('c.has_image'))->where(RC_DB::raw('og.order_id'), $order_id)
         ->groupBy(RC_DB::raw('og.rec_id'))
 		->get();
 
@@ -586,7 +586,9 @@ function get_order_goods_base($order_id) {
  * @return array
  */
 function get_package_goods_list($package_id) {
-    $resource = RC_DB::table('package_goods as pg')->leftJoin('goods as g', RC_DB::raw('pg.goods_id'), '=', RC_DB::raw('g.goods_id'))->leftJoin('products as p', RC_DB::raw('pg.product_id'), '=', RC_DB::raw('p.product_id'))->selectRaw('pg.goods_id, g.goods_name, (CASE WHEN pg.product_id > 0 THEN p.product_number ELSE g.goods_number END) AS goods_number, p.goods_attr, p.product_id, pg.goods_number AS order_goods_number, g.goods_sn, g.is_real, p.product_sn')->where(RC_DB::raw('pg.package_id'), $package_id)->get();
+    $resource = RC_DB::table('package_goods as pg')->leftJoin('goods as g', RC_DB::raw('pg.goods_id'), '=', RC_DB::raw('g.goods_id'))->leftJoin('products as p', RC_DB::raw('pg.product_id'), '=', RC_DB::raw('p.product_id'))
+        ->select(RC_DB::raw('pg.goods_id'), RC_DB::raw('g.goods_name'), RC_DB::raw("(CASE WHEN pg.product_id > 0 THEN p.product_number ELSE g.goods_number END) AS goods_number"), RC_DB::raw('p.goods_attr'), RC_DB::raw('p.product_id'), RC_DB::raw('pg.goods_number AS order_goods_number'), RC_DB::raw('g.goods_sn'), RC_DB::raw('g.is_real'), RC_DB::raw('p.product_sn'))
+        ->where(RC_DB::raw('pg.package_id'), $package_id)->get();
     if (!$resource) {
         return array();
     }
@@ -613,7 +615,7 @@ function get_package_goods_list($package_id) {
     unset($resource, $_row, $sql);
     /* 取商品属性 */
     if ($good_product_str != '') {
-        $result_goods_attr = RC_DB::table('goods_attr as ga')->leftJoin('attribute as a', RC_DB::raw('ga.attr_id'), '=', RC_DB::raw('a.attr_id'))->selectRaw('ga.goods_attr_id, ga.attr_value, ga.attr_price, a.attr_name')->where(RC_DB::raw('a.attr_type'), 1)->whereIn('goods_id', $good_product_str)->get();
+        $result_goods_attr = RC_DB::table('goods_attr as ga')->leftJoin('attribute as a', RC_DB::raw('ga.attr_id'), '=', RC_DB::raw('a.attr_id'))->select(RC_DB::raw('ga.goods_attr_id'), RC_DB::raw('ga.attr_value'), RC_DB::raw('ga.attr_price'), RC_DB::raw('a.attr_name'))->where(RC_DB::raw('a.attr_type'), 1)->whereIn('goods_id', $good_product_str)->get();
         $_goods_attr = array();
         if (!empty($result_goods_attr)) {
             foreach ($result_goods_attr as $value) {
@@ -1214,7 +1216,8 @@ function merge_order($from_order_sn, $to_order_sn) {
     $data = array('order_id' => $order_id);
     RC_DB::table('order_goods')->whereIn('order_id', array($from_order['order_id'], $to_order['order_id']))->update($data);
     //合并订单商品
-    $order_goods_list = RC_DB::table('order_goods')->where('order_id', $order_id)->selectRaw('*, sum(goods_number) as goods_number, count(*) as count, sum(goods_price) as goods_price, sum(send_number) as send_number, sum(shopping_fee) as shopping_fee')->groupBy('goods_sn')->get();
+    $order_goods_list = RC_DB::table('order_goods')->where('order_id', $order_id)
+        ->select('*', 'sum(goods_number) as goods_number', 'count(*) as count', 'sum(goods_price) as goods_price', 'sum(send_number) as send_number', 'sum(shopping_fee) as shopping_fee')->groupBy('goods_sn')->get();
     if (!empty($order_goods_list)) {
         foreach ($order_goods_list as $k => $v) {
             $order_goods_list[$k]['goods_price'] = $v['goods_price'] / $v['count'];

@@ -259,8 +259,7 @@ class OrderPrint
         $data = RC_DB::table('order_goods as o')
                     ->leftJoin('products as p', RC_DB::raw('p.product_id'), '=', RC_DB::raw('o.product_id'))
                     ->leftJoin('goods as g', RC_DB::raw('o.goods_id'), '=', RC_DB::raw('g.goods_id'))
-                    ->selectRaw("o.*, IF(o.product_id > 0, p.product_number, g.goods_number) AS storage,
-                    o.goods_attr, g.suppliers_id, p.product_sn, g.goods_img, g.goods_sn as goods_sn")
+                    ->select(RC_DB::raw('o.*'), RC_DB::raw("IF(o.product_id > 0, p.product_number, g.goods_number) AS storage"), RC_DB::raw('o.goods_attr'), RC_DB::raw('g.suppliers_id'), RC_DB::raw('p.product_sn'), RC_DB::raw('g.goods_img'), RC_DB::raw('g.goods_sn as goods_sn'))
                             ->where(RC_DB::raw('o.order_id'), $this->order_id)
                             ->get();
         

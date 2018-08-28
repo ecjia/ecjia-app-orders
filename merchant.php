@@ -907,7 +907,7 @@ class merchant extends ecjia_merchant
             }
         }
 
-        $query = $db_order_info->selectRaw('oi.order_sn, u.user_name')->get();
+        $query = $db_order_info->select(RC_DB::raw('oi.order_sn'), RC_DB::raw('u.user_name'))->get();
 
         $this->assign('order_list', $query);
         $this->assign('ur_here', RC_Lang::get('orders::order.merge_order'));
@@ -3419,7 +3419,7 @@ class merchant extends ecjia_merchant
             ->where(RC_DB::raw('g.goods_id'), $goods_id)
             ->where(RC_DB::raw('g.store_id'), $store_id)
             ->where(RC_DB::raw('mc.store_id'), $store_id)
-            ->selectRaw($fields)
+            ->select(RC_DB::raw('g.goods_id'), RC_DB::raw('mc.cat_name'), RC_DB::raw('g.goods_sn'), RC_DB::raw('g.goods_name'), RC_DB::raw('g.goods_img'), RC_DB::raw('g.goods_number'), RC_DB::raw('g.market_price'), RC_DB::raw('g.shop_price'), RC_DB::raw('g.promote_price'), RC_DB::raw('g.promote_start_date'), RC_DB::raw('g.promote_end_date'), RC_DB::raw('g.goods_brief'), RC_DB::raw('g.goods_type'), RC_DB::raw('g.is_promote'))
             ->first();
 
         $today = RC_Time::gmtime();
@@ -3428,7 +3428,7 @@ class merchant extends ecjia_merchant
         /* 取得会员价格 */
         $goods['user_price'] = RC_DB::table('member_price as mp')
             ->leftJoin('user_rank as r', RC_DB::raw('mp.user_rank'), '=', RC_DB::raw('r.rank_id'))
-            ->selectRaw('mp.user_price, r.rank_name')
+            ->select(RC_DB::raw('mp.user_price'), RC_DB::raw('r.rank_name'))
             ->where(RC_DB::raw('mp.goods_id'), $goods_id)
             ->get();
 
@@ -3436,7 +3436,7 @@ class merchant extends ecjia_merchant
         $data = RC_DB::table('goods_attr as ga')
             ->leftJoin('attribute as a', RC_DB::raw('ga.attr_id'), '=', RC_DB::raw('a.attr_id'))
             ->where(RC_DB::raw('ga.goods_id'), $goods_id)
-            ->selectRaw('a.attr_id, a.attr_name, ga.goods_attr_id, ga.attr_value, ga.attr_price, a.attr_input_type, a.attr_type')
+            ->select(RC_DB::raw('a.attr_id'), RC_DB::raw('a.attr_name'), RC_DB::raw('ga.goods_attr_id'), RC_DB::raw('ga.attr_value'), RC_DB::raw('ga.attr_price'), RC_DB::raw('a.attr_input_type'), RC_DB::raw('a.attr_type'))
             ->get();
 
         $goods['attr_list'] = array();
@@ -3726,7 +3726,7 @@ class merchant extends ecjia_merchant
         $delivery_list = $this->db_delivery_order->where(array('order_id' => $order['order_id']))->in(array('status' => array(0, 2)))->select();
         if ($delivery_list) {
             foreach ($delivery_list as $list) {
-                $query = RC_DB::table('delivery_goods')->where('delivery_id', $list['delivery_id'])->selectRaw('goods_id, product_id, product_sn, goods_name,goods_sn, is_real, send_number, goods_attr')->get();
+                $query = RC_DB::table('delivery_goods')->where('delivery_id', $list['delivery_id'])->select('goods_id', 'product_id', 'product_sn', 'goods_name', 'goods_sn', 'is_real', 'send_number', 'goods_attr')->get();
                 if (!empty($query)) {
                     foreach ($query as $res) {
                         $source = array(
@@ -4410,7 +4410,8 @@ class merchant extends ecjia_merchant
             ->leftJoin('regions as d', RC_DB::raw('o.district'), '=', RC_DB::raw('d.region_id'));
         $order_id = $delivery_order['order_id'];
 
-        $region = $db_order_info->selectRaw("concat(IFNULL(c.region_name, ''), '  ', IFNULL(p.region_name, ''),'  ', IFNULL(t.region_name, ''), '  ', IFNULL(d.region_name, '')) AS region")
+        $region = $db_order_info
+            ->select(RC_DB::raw("concat(IFNULL(c.region_name, ''), '  ', IFNULL(p.region_name, ''),'  ', IFNULL(t.region_name, ''), '  ', IFNULL(d.region_name, '')) AS region"))
             ->where(RC_DB::raw('o.order_id'), $order_id)->first();
 
         $delivery_order['region'] = $region['region'];
@@ -4491,7 +4492,7 @@ class merchant extends ecjia_merchant
         $delivery_stock_result = RC_DB::table('delivery_goods as dg')
             ->leftJoin('goods as g', RC_DB::raw('dg.goods_id'), '=', RC_DB::raw('g.goods_id'))
             ->leftJoin('products as p', RC_DB::raw('dg.product_id'), '=', RC_DB::raw('p.product_id'))
-            ->selectRaw('dg.goods_id, dg.is_real, dg.product_id, SUM(dg.send_number) AS sums, IF(dg.product_id > 0, p.product_number, g.goods_number) AS storage, g.goods_name, dg.send_number')
+            ->select(RC_DB::raw('dg.goods_id'), RC_DB::raw('dg.is_real'), RC_DB::raw('dg.product_id'), RC_DB::raw('SUM(dg.send_number) AS sums'), RC_DB::raw("IF(dg.product_id > 0, p.product_number, g.goods_number) AS storage"), RC_DB::raw('g.goods_name'), RC_DB::raw('dg.send_number'))
             ->where(RC_DB::raw('dg.delivery_id'), $delivery_id)
             ->groupBy(RC_DB::raw('dg.product_id'))
             ->get();
@@ -4520,7 +4521,7 @@ class merchant extends ecjia_merchant
         } else {
             $delivery_stock_result = RC_DB::table('delivery_goods as dg')
                 ->leftJoin('goods as g', RC_DB::raw('dg.goods_id'), '=', RC_DB::raw('g.goods_id'))
-                ->selectRaw('dg.goods_id, dg.is_real, SUM(dg.send_number) AS sums, g.goods_number, g.goods_name, dg.send_number')
+                ->select(RC_DB::raw('dg.goods_id'), RC_DB::raw('dg.is_real'), RC_DB::raw('SUM(dg.send_number) AS sums'), RC_DB::raw('g.goods_number'), RC_DB::raw('g.goods_name'), RC_DB::raw('dg.send_number'))
                 ->where(RC_DB::raw('dg.delivery_id'), $delivery_id)
                 ->groupBy(RC_DB::raw('dg.goods_id'))
                 ->get();
@@ -4816,7 +4817,7 @@ class merchant extends ecjia_merchant
                 $content = $this->fetch_string($tpl['template_content']);
             }
             /* 商家发货 如果需要，发短信 */
-            $userinfo = RC_DB::table('users')->where('user_id', $order['user_id'])->selectRaw('user_name, mobile_phone')->first();
+            $userinfo = RC_DB::table('users')->where('user_id', $order['user_id'])->select('user_name', 'mobile_phone')->first();
             if (!empty($userinfo['mobile_phone'])) {
                 //发送短信
                 $user_name = $userinfo['user_name'];

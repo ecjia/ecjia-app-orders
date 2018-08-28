@@ -38,7 +38,7 @@ class SendPickupCode
     				);
     				$db_term_meta->insert($meta_data);
     				/*短信给用户发送收货验证码*/
-    				$userinfo = RC_DB::table('users')->where('user_id', $order['user_id'])->selectRaw('user_name, mobile_phone')->first();
+    				$userinfo = RC_DB::table('users')->where('user_id', $order['user_id'])->select('user_name', 'mobile_phone')->first();
     				$mobile = $userinfo['mobile_phone'];
     				if (!empty($mobile)) {
     					$options = array(

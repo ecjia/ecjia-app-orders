@@ -68,7 +68,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    $order_sn = $options['order_sn'];
 
 	    /* 取得订单信息 */
-	    $order = RC_DB::table('order_info')->selectRaw('order_id, store_id, user_id, order_sn, consignee, address, tel, mobile, shipping_id, extension_code, extension_id, goods_amount, order_amount, money_paid, pay_status, add_time')
+	    $order = RC_DB::table('order_info')->select('order_id', 'store_id', 'user_id', 'order_sn', 'consignee', 'address', 'tel', 'mobile', 'shipping_id', 'extension_code', 'extension_id', 'goods_amount', 'order_amount', 'money_paid', 'pay_status', 'add_time')
 	    ->where('order_sn', $order_sn)->first();
 	    
 	    if (intval($order['pay_status']) === PS_PAYED) {

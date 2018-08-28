@@ -377,9 +377,9 @@ class admin extends ecjia_admin
             ->leftJoin('products as p', RC_DB::raw('p.product_id'), '=', RC_DB::raw('o.product_id'))
             ->leftJoin('goods as g', RC_DB::raw('o.goods_id'), '=', RC_DB::raw('g.goods_id'))
             ->leftJoin('brand as b', RC_DB::raw('g.brand_id'), '=', RC_DB::raw('b.brand_id'))
-            ->selectRaw("o.*, IF(o.product_id > 0, p.product_number, g.goods_number) AS storage,
-					o.goods_attr, g.suppliers_id, IFNULL(b.brand_name, '') AS brand_name,
-					p.product_sn, g.goods_img, g.goods_sn as goods_sn")
+            ->select(RC_DB::raw("o.*"), RC_DB::raw("IF(o.product_id > 0, p.product_number, g.goods_number) AS storage"), 
+                RC_DB::raw("o.goods_attr"), RC_DB::raw("g.suppliers_id"), RC_DB::raw("IFNULL(b.brand_name, '') AS brand_name"), 
+                RC_DB::raw("p.product_sn"), RC_DB::raw("g.goods_img"), RC_DB::raw("g.goods_sn as goods_sn"))
             ->where(RC_DB::raw('o.order_id'), $order_id)
             ->get();
 
@@ -1158,7 +1158,7 @@ class admin extends ecjia_admin
                     return $this->showmessage('该商品或货品已存在该订单中，请编辑商品数量', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
                 }
 
-                $row = RC_DB::table('goods')->selectRaw('goods_id, goods_name, goods_sn, market_price, is_real, extension_code')
+                $row = RC_DB::table('goods')->select(RC_DB::raw('goods_id'), RC_DB::raw('goods_name'), RC_DB::raw('goods_sn'), RC_DB::raw('market_price'), RC_DB::raw('is_real'), RC_DB::raw('extension_code'))
                     ->where('goods_id', $goods_id)->first();
 
                 if (is_spec($goods_attr) && !empty($prod)) {
@@ -1265,7 +1265,7 @@ class admin extends ecjia_admin
             //如果是会员订单则读取会员地址信息
             if ($order['user_address'] > 0 && $old_order['user_id'] > 0) {
                 $orders = RC_DB::table('user_address')
-                    ->selectRaw('consignee, email, country, province, city, district, street, address, zipcode, tel, mobile, sign_building, best_time')
+                    ->select('consignee', 'email', 'country', 'province', 'city', 'district', 'street', 'address', 'zipcode', 'tel', 'mobile', 'sign_building', 'best_time')
                     ->where('user_id', $old_order['user_id'])
                     ->where('address_id', $order['user_address'])
                     ->first();
@@ -1683,7 +1683,7 @@ class admin extends ecjia_admin
 
             /* 如果使用库存，且下订单时减库存，则修改库存 */
             if (ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_PLACE) {
-                $goods = RC_DB::table('order_goods')->where('rec_id', $rec_id)->selectRaw('goods_id, goods_number')->first();
+                $goods = RC_DB::table('order_goods')->where('rec_id', $rec_id)->select('goods_id', 'goods_number')->first();
 
                 RC_DB::table('goods')
                     ->where('goods_id', $goods['goods_id'])
@@ -2144,7 +2144,7 @@ class admin extends ecjia_admin
                 $data = RC_DB::table('order_goods as o')
                     ->leftJoin('goods as g', RC_DB::raw('o.goods_id'), '=', RC_DB::raw('g.goods_id'))
                     ->leftJoin('brand as b', RC_DB::raw('g.brand_id'), '=', RC_DB::raw('b.brand_id'))
-                    ->selectRaw("o.*, g.goods_number AS storage, o.goods_attr, IFNULL(b.brand_name, '') AS brand_name")
+                    ->select(RC_DB::raw("o.*"), RC_DB::raw("g.goods_number AS storage"), RC_DB::raw("o.goods_attr"), RC_DB::raw("IFNULL(b.brand_name, '') AS brand_name"))
                     ->where(RC_DB::raw('o.order_id'), $order['order_id'])
                     ->get();
 
@@ -3145,7 +3145,7 @@ class admin extends ecjia_admin
         $goods = RC_DB::table('goods as g')
             ->leftJoin('brand as b', RC_DB::raw('g.brand_id'), '=', RC_DB::raw('b.brand_id'))
             ->leftJoin('category as c', RC_DB::raw('g.cat_id'), '=', RC_DB::raw('c.cat_id'))
-            ->selectRaw('goods_id, c.cat_name, goods_sn, goods_name, goods_img, b.brand_name,goods_number, market_price, shop_price, promote_price, promote_start_date, promote_end_date, goods_brief, goods_type, is_promote')
+            ->select(RC_DB::raw('goods_id'), RC_DB::raw('c.cat_name'), RC_DB::raw('goods_sn'), RC_DB::raw('goods_name'), RC_DB::raw('goods_img'), RC_DB::raw('b.brand_name'), RC_DB::raw('goods_number'), RC_DB::raw('market_price'), RC_DB::raw('shop_price'), RC_DB::raw('promote_price'), RC_DB::raw('promote_start_date'), RC_DB::raw('promote_end_date'), RC_DB::raw('goods_brief'), RC_DB::raw('goods_type'), RC_DB::raw('is_promote'))
             ->where('goods_id', $goods_id)
             ->first();
 
@@ -3155,7 +3155,7 @@ class admin extends ecjia_admin
         /* 取得会员价格 */
         $goods['user_price'] = RC_DB::table('member_price as mp')
             ->leftJoin('user_rank as r', RC_DB::raw('mp.user_rank'), '=', RC_DB::raw('r.rank_id'))
-            ->selectRaw('mp.user_price, r.rank_name')
+            ->select(RC_DB::raw('mp.user_price'), RC_DB::raw('r.rank_name'))
             ->where(RC_DB::raw('mp.goods_id'), $goods_id)
             ->get();
 
@@ -3163,7 +3163,7 @@ class admin extends ecjia_admin
         $data = RC_DB::table('goods_attr as ga')
             ->leftJoin('attribute as a', RC_DB::raw('ga.attr_id'), '=', RC_DB::raw('a.attr_id'))
             ->where(RC_DB::raw('ga.goods_id'), $goods_id)
-            ->selectRaw('a.attr_id, a.attr_name, ga.goods_attr_id, ga.attr_value, ga.attr_price, a.attr_input_type, a.attr_type')
+            ->select(RC_DB::raw('a.attr_id'), RC_DB::raw('a.attr_name'), RC_DB::raw('ga.goods_attr_id'), RC_DB::raw('ga.attr_value'), RC_DB::raw('ga.attr_price'), RC_DB::raw('a.attr_input_type'), RC_DB::raw('a.attr_type'))
             ->get();
 
         $goods['attr_list'] = array();

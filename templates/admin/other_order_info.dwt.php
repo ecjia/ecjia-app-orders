@@ -423,11 +423,11 @@
 									<strong>{lang key='orders::order.action_time'}</strong>
 								</th>
 								<th class="w130">
-									<strong>{lang key='orders::order.order_status'}</strong>
+									<strong>{lang key='orders::order.订单状态'}</strong>
 								</th>
-								<th class="w130">
-									<strong>{lang key='orders::order.pay_status'}</strong>
-								</th>
+								<td class="ecjiafc-pre t_c w150">
+									<strong>操作备注</strong>
+								</td>
 							</tr>
 						</thead>
 						<tbody>
@@ -435,8 +435,8 @@
 							<tr>
 								<td>{$action.action_user}</td>
 								<td>{$action.action_time}</td>
-								<td>{$action.order_status}</td>
-								<td>{$action.pay_status}</td>
+								<td>{$action.action_status}</td>
+								<td>{$action.action_note|nl2br}</td>
 							</tr>
 							<!-- {foreachelse} -->
 							<tr>

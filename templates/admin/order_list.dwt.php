@@ -89,8 +89,7 @@
 						{/if}
 						<th class="w110">{lang key='orders::order.order_amount'}</th>
 						{if $filter.extension_code eq "group_buy"}
-						<th class="w150">团购数量</th>
-						<th class="w130">订单状态</th>
+						<th class="w130">团购状态</th>
 						{/if}
 						<th class="w100">{lang key='orders::order.all_status'}</th>
 					</tr>
@@ -124,7 +123,6 @@
 						{/if}
 						<td align="right" valign="top" nowrap="nowrap">{$order.formated_order_amount}</td>
 						{if $filter.extension_code eq "group_buy"}
-						<td>{$order.groupbuy_valid_goods}</td>
 						<td>
 							<span class="
 								{if $order.groupbuy_status eq 0}
@@ -146,7 +144,7 @@
 					</tr>
 					<!-- {foreachelse}-->
 					<tr>
-						<td class="no-records" colspan="{if $filter.extension_code eq 'group_buy'}10{else}7{/if}">{lang key='system::system.no_records'}</td>
+						<td class="no-records" colspan="{if $filter.extension_code eq 'group_buy'}9{else}7{/if}">{lang key='system::system.no_records'}</td>
 					</tr>
 					<!-- {/foreach} -->
 				</tbody>

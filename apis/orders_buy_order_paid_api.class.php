@@ -130,7 +130,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	            'order_amount' => 0,
 	        );
 	        //自提，订单状态默认接单纪录log
-	        if ($order_status == OS_CONFIRMED) {
+	        if ($order['extension_code'] == 'storepickup') {
 	        	RC_Loader::load_app_class('order_refund', 'refund', false);
 	        	$pra = array('order_status' => '商家已接单', 'order_id' => $order_id, 'message' => '已被商家接单，订单正在备货中');
 	        	order_refund::order_status_log($pra);

@@ -227,21 +227,16 @@ class merchant extends ecjia_merchant
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here('当天订单'));
         RC_Script::enqueue_script('order_query', RC_App::apps_url('statics/js/merchant_order_query.js', __FILE__));
 
-        $start_time = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date('m'), RC_Time::local_date('d'), RC_Time::local_date('Y')); //当天开始时间
-        $end_time = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date('m'), RC_Time::local_date('d') + 1, RC_Time::local_date('Y')) - 1; //当天结束时间
-
         $filter = $_GET;
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $size = 15;
         $with = null;
-        $filter['start_time'] = $start_time;
-        $filter['end_time'] = $end_time;
-
+        $filter['today_order'] = 1;
         $filter['store_id'] = $_SESSION['store_id'];
         $filter['extension_code'] = array('default', 'storepickup');
         $order_list = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
             ->getOrderList($filter, $page, $size, $with, ['Ecjia\App\Orders\CustomizeOrderList', 'exportOrderListMerchant']);
-
+        
         /* 模板赋值 */
         $this->assign('ur_here', '当天订单');
 
@@ -292,10 +287,12 @@ class merchant extends ecjia_merchant
             $db_order_info->where('pay_id', $payment_id);
         }
 
+        $start_time = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date('m'), RC_Time::local_date('d'), RC_Time::local_date('Y')); //当天开始时间
+        $end_time = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date('m'), RC_Time::local_date('d') + 1, RC_Time::local_date('Y')) - 1; //当天结束时间
         $cash_delivery = $db_order_info
             ->select('order_id')
             ->where('store_id', $_SESSION['store_id'])
-            ->where('add_time', '>', $start_time)
+            ->where('add_time', '>=', $start_time)
             ->where('add_time', '<', $end_time)
             ->where('is_delete', 0)
             ->whereIn('order_status', array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED))

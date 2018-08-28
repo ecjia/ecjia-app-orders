@@ -15,10 +15,18 @@
 			<!-- {if $ur_here}{$ur_here}{/if} -->
 		</h2>
 	</div>
+	<div class="pull-right">
+		<a href="javascript:;" class="btn btn-primary show_order_search">
+			<i class="fa fa-search"></i> 高级查询
+		</a>
+	</div>
 	<div class="clearfix"></div>
 </div>
 
 <!-- #BeginLibraryItem "/library/order_operate.lbi" -->
+<!-- #EndLibraryItem -->
+
+<!-- #BeginLibraryItem "/library/order_search.lbi" -->
 <!-- #EndLibraryItem -->
 
 <div class="row">

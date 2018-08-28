@@ -435,6 +435,11 @@ class OrdersRepository extends AbstractRepository
                 $end_time = RC_Time::local_strtotime(array_get($filter, 'end_time'));
                 $query->where('order_info.add_time', '<', $end_time);
             }
+            if (array_get($filter, 'today_order')) {
+                $start_time = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date('m'), RC_Time::local_date('d'), RC_Time::local_date('Y')); //当天开始时间
+                $end_time = RC_Time::local_mktime(0, 0, 0, RC_Time::local_date('m'), RC_Time::local_date('d') + 1, RC_Time::local_date('Y')) - 1; //当天结束时间
+                $query->where('order_info.add_time', '>=', $start_time)->where('order_info.add_time', '<', $end_time);
+            }
             if (array_get($filter, 'group_buy_id')) {
                 $query->where('order_info.extension_code', 'group_buy');
                 $query->where('order_info.extension_id', array_get($filter, 'group_buy_id'));
@@ -446,6 +451,9 @@ class OrdersRepository extends AbstractRepository
                 });
             } else {
             	if (is_array($filter['extension_code'])) {
+                    if (in_array('default', $filter['extension_code'])) {
+                        $filter['extension_code'] = array_merge(array('', null), $filter['extension_code']);
+                    }
             		$query->whereIn('order_info.extension_code', $filter['extension_code']);
             	} else {
             		$query->where('order_info.extension_code', array_get($filter, 'extension_code'));

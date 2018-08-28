@@ -1,5 +1,5 @@
 <div class="row-fluid ecjia-order-search {if !$smarty.get.show_search}display-none{/if}">
-	<form class="form-horizontal search-form" action="{RC_Uri::url('orders/merchant/init')}" name="advancedSearchForm" method="post">
+	<form class="form-horizontal search-form" action="{RC_Uri::url('orders/merchant/init')}{if $smarty.get.extension_code}&extension_code={$smarty.get.extension_code}{/if}" name="advancedSearchForm" method="post">
 		<div class="search-item">
 			<div class="item">
 				<div class="form-group">

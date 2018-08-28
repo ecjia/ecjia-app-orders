@@ -335,7 +335,7 @@
 											<strong>纳税人识别码：</strong>
 										</div>
 									</td>
-									<td>{$inv_payee}</td>
+									<td>{$inv_tax_no}</td>
 								</tr>
 								<tr>
 									<td>
@@ -343,7 +343,7 @@
 											<strong>发票抬头：</strong>
 										</div>
 									</td>
-									<td>{$inv_tax_no}</td>
+									<td>{$inv_payee}</td>
 									<td>
 										<div align="right">
 											<strong>{lang key='orders::order.label_inv_content'}</strong>

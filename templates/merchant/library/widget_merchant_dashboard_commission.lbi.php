@@ -181,6 +181,9 @@
 		<div class="panel">
 			<div class="panel-body">
 				<header class="panel-title">商品热卖榜</h1>
+					<span class="pull-right">
+						<a target="__blank" href="{RC_Uri::url('orders/mh_sale_order/init')}">查看更多 >></a>
+					</span>
 				</header>
 				<table class="table table-striped table-hover table-hide-edit m_b0">
 					<thead>

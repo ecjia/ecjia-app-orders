@@ -599,6 +599,18 @@ class admin extends ecjia_admin
             if ($order['extension_code'] == 'storebuy') {
                 $order['formated_order_amount'] = price_format($order['goods_amount'] - ($order['discount'] + $order['integral_money'] + $order['bonus']));
             }
+            $order_referer_list = array(
+            	'ecjia-storebuy' => '到店',
+            	'ecjia-storepickup' => '自提',
+            	'ecjia-cashdesk' => '收银台',
+            	'invitecode' => '邀请码',
+            	'mobile' => '手机端',
+            	'h5' => 'H5',
+            	'weapp' => '小程序',
+            	'android' => '安卓端',
+            	'iphone' => 'iPhone端'
+            );
+            $order['label_referer'] = $order_referer_list[$order['referer']];
             $this->assign('order', $order);
             $this->assign('order_id', $order_id);
 

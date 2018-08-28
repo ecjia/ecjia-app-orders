@@ -125,7 +125,7 @@
 										<strong>{lang key='orders::order.from_order'}</strong>
 									</div>
 								</td>
-								<td>{if $order.referer eq 'ecjia-cashdesk'}收银台{elseif $order.referer eq 'ecjia-storebuy'}小程序自助购物{else}{$order.referer}{/if}</td>
+								<td colspan="3">{$order.label_referer}</td>
 							</tr>
 						</tbody>
 					</table>

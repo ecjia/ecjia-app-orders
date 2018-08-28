@@ -21,6 +21,7 @@ ecjia.merchant.order.info();
   	</div>
   	<div class="clearfix"></div>
 </div>
+<!-- #BeginLibraryItem "/library/order_operate.lbi" --><!-- #EndLibraryItem -->
 
 <div class="panel panel-body">
 	<div class="order-status-base order-third-base m_b20">
@@ -114,7 +115,7 @@ ecjia.merchant.order.info();
 							</tr>
 							<tr>
 								<td><div align="right"><strong>{lang key='orders::order.from_order'}</strong></div></td>
-								<td colspan="3">{if $order.referer eq 'ecjia-cashdesk'}收银台{else if $order.referer eq 'ecjia-storebuy'}小程序自助购物{else}{$order.referer}{/if}</td>
+								<td colspan="3">{$order.label_referer}</td>
 							</tr>
 						</tbody>
 					</table>
@@ -334,7 +335,7 @@ ecjia.merchant.order.info();
                 </div>
 			</div>
 			
-			{if $has_payed && $order.shipping_status neq 5}
+			{if $operable_list.confirm}
 			<div class="accordion-group panel panel-default">
 				<div class="panel-heading">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseEight">
@@ -370,6 +371,41 @@ ecjia.merchant.order.info();
 			</div>
 			{/if}
 			
+			{if $operable_list.cancel}
+			<div class="accordion-group panel panel-default">
+				<div class="panel-heading">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseEight">
+                        <h4 class="panel-title">
+                            <strong>{t}订单操作{/t}</strong>
+                        </h4>
+                    </a>
+                </div>
+                <div class="accordion-body in collapse " id="collapseEight">
+                	<table class="table table-oddtd m_b0">
+						<tbody class="first-td-no-leftbd">
+							<tr>
+								<td width="15%"><div align="right"><span class="input-must">*</span> <strong>{lang key='orders::order.label_action_note'}</strong></div></td>
+								<td colspan="3"><textarea name="action_note" class="span12 action_note form-control" cols="60" rows="3"></textarea></td>
+							</tr>
+							<tr>
+								<td><div align="right"><strong>{lang key='orders::order.label_operable_act'}</strong></div></td>
+								<td colspan="3">
+									<input type='hidden' class="operate_note" data-url='{url path="orders/merchant/operate_note"}'>
+									<button class="btn operatesubmit btn-info" type="submit" name="cancel">{lang key='orders::order.op_cancel'}</button>
+									<input name="order_id" class="order_id" type="hidden" value="{$order.order_id}">
+								</td>
+							</tr>
+							<tr>
+								<td width="15%"><div align="right"> <strong>操作说明：</strong></div></td>
+								<td colspan="3">
+									【取消】设置该订单为无效/作废订单；<br>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+                </div>
+			</div>
+			{/if}
 		</form>
 	</div>
 </div>

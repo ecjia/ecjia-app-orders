@@ -676,10 +676,10 @@ function change_order_goods_storage($order_id, $is_dec = true, $storage = 0) {
     /* 查询订单商品信息  */
     switch ($storage) {
         case 0:
-            $data = RC_DB::table('order_goods')->select('goods_id', 'SUM(send_number) as num', 'MAX(extension_code) as extension_code', 'product_id')->where('order_id', $order_id)->where('is_real', 1)->groupby('goods_id')->groupby('product_id')->get();
+            $data = RC_DB::table('order_goods')->select('goods_id', RC_DB::raw('SUM(send_number) as num'), RC_DB::raw('MAX(extension_code) as extension_code'), 'product_id')->where('order_id', $order_id)->where('is_real', 1)->groupby('goods_id')->groupby('product_id')->get();
             break;
         case 1:
-            $data = RC_DB::table('order_goods')->select('goods_id', 'SUM(send_number) as num', 'MAX(extension_code) as extension_code', 'product_id')->where('order_id', $order_id)->where('is_real', 1)->groupby('goods_id')->groupby('product_id')->get();
+            $data = RC_DB::table('order_goods')->select('goods_id', RC_DB::raw('SUM(send_number) as num'), RC_DB::raw('MAX(extension_code) as extension_code'), 'product_id')->where('order_id', $order_id)->where('is_real', 1)->groupby('goods_id')->groupby('product_id')->get();
             break;
     }
     if (!empty($data)) {

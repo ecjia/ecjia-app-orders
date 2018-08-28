@@ -123,15 +123,15 @@
 								<i class="fa fa-check"></i> 接单</a>
 						</li>
 						<li>
-							<a class="batch-operate batch-operate-cancel" data-operatetype="cancel" data-url="{$form_action}&operation=cancel" data-cancel-msg="{lang key='orders::order.confirm_order_cancel'}"
-							    href="javascript:;">
-								<i class="fa fa-times"></i> {lang key='orders::order.op_cancel'}</a>
-						</li>
-						{/if}
-						<li>
 							<a class="batch-del-btn" data-toggle="ecjiabatch" data-name="order_id" data-idClass=".checkbox:checked" data-url="{$form_action}&operation=remove"
 							    data-msg="{lang key='orders::order.remove_confirm'}" href="javascript:;">
 								<i class="fa fa-trash-o"></i> {lang key='system::system.remove'}</a>
+						</li>
+						{/if}
+						<li>
+							<a class="batch-operate batch-operate-cancel" data-operatetype="cancel" data-url="{$form_action}&operation=cancel" data-cancel-msg="{lang key='orders::order.confirm_order_cancel'}"
+							    href="javascript:;">
+								<i class="fa fa-times"></i> {lang key='orders::order.op_cancel'}</a>
 						</li>
 						<li>
 							<a class="batch-print" data-url="{$form_action}&print=1" href="javascript:;">

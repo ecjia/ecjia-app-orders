@@ -184,7 +184,6 @@ class merchant extends ecjia_merchant
 
         $this->assign('form_action', RC_Uri::url('orders/merchant/operate', array('batch' => 1)));
         $this->assign('search_action', RC_Uri::url('orders/merchant/init'));
-        $this->assign('status_list', RC_Lang::get('orders::order.cs'));
 
         $url_info = $this->get_search_url($filter);
         $this->assign('search_url', $url_info['url']);
@@ -198,7 +197,11 @@ class merchant extends ecjia_merchant
         $group_buy_id = isset($_GET['group_buy_id']) ? intval($_GET['group_buy_id']) : 0;
         $this->assign('group_buy_id', $group_buy_id);
 
+        $status_list = RC_Lang::get('orders::order.cs');
+        
         if ($order_model == 'groupbuy') {
+        	unset($status_list[CS_UNCONFIRMED]);
+        	$this->assign('status_list', $status_list);
             $this->display('mh_groupbuy_order_list.dwt');
         } else {
             if ($order_model == 'default') {
@@ -214,6 +217,8 @@ class merchant extends ecjia_merchant
                 $referer_list = array('iphone' => 'iPhone端', 'android' => 'Andriod端', 'mobile' => 'H5端', 'ecjia-cashdesk' => '收银台', 'weapp' => '小程序');
                 $this->assign('referer_list', $referer_list);
             }
+            
+            $this->assign('status_list', $status_list);
             $this->display('mh_order_list.dwt');
         }
     }
@@ -757,6 +762,18 @@ class merchant extends ecjia_merchant
                 $this->assign('has_payed', 1);
             }
 
+            $order_referer_list = array(
+            	'ecjia-storebuy' => '到店',
+            	'ecjia-storepickup' => '自提',
+            	'ecjia-cashdesk' => '收银台',
+            	'invitecode' => '邀请码',
+            	'mobile' => '手机端',
+            	'h5' => 'H5',
+            	'weapp' => '小程序',
+            	'android' => '安卓端',
+            	'iphone' => 'iPhone端'
+            );
+            $order['label_referer'] = $order_referer_list[$order['referer']];
             /* 参数赋值：订单 */
             $this->assign('order', $order);
             $this->assign('order_id', $order_id);

@@ -147,7 +147,6 @@
 									<th class="w120">{lang key='orders::order.total_fee'}</th>
 									<th class="w110">{lang key='orders::order.bond'}</th>
 									<th class="w110">{lang key='orders::order.order_amount'}</th>
-									<th class="w110">团购数量</th>
 									<th class="w110">团购状态</th>
 									<th class="w80">{lang key='orders::order.all_status'}</th>
 								</tr>
@@ -180,7 +179,6 @@
 									<td>{$order.formated_total_fee}</td>
 									<td>{$order.formated_bond}</td>
 									<td>{$order.formated_order_amount}</td>
-									<td>{$order.groupbuy_valid_goods}</td>
 									<td>
 										<span class="
 											{if $order.groupbuy_status eq 0}

@@ -398,7 +398,7 @@ ecjia.merchant.order.info();
 							
 							<tr>
 								<td><div align="right"><strong>{lang key='orders::order.from_order'}</strong></div></td>
-								<td colspan="3">{if $order.referer eq 'ecjia-cashdesk'}收银台{else}{$order.referer}{/if}</td>
+								<td colspan="3">{$order.label_referer}</td>
 							</tr>
 						</tbody>
 					</table>

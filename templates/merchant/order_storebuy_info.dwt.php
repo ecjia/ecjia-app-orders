@@ -109,7 +109,7 @@ ecjia.merchant.order.info();
 								<td><div align="right"><strong>{lang key='orders::order.label_order_time'}</strong></div></td>
 								<td>{$order.formated_add_time}</td>
 								<td><div align="right"><strong>{lang key='orders::order.from_order'}</strong></div></td>
-								<td>{if $order.referer eq 'ecjia-cashdesk'}收银台{else if $order.referer eq 'ecjia-storebuy'}小程序自助购物{else}{$order.referer}{/if}</td>
+								<td colspan="3">{$order.label_referer}</td>
 							</tr>
 
 							<!-- {if $order.express_user} -->

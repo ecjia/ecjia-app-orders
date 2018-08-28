@@ -108,7 +108,7 @@
 			<div class="{if $flow_status.key eq '3'}step-cur{elseif $flow_status.key gt '3'}step-done{/if}">
 				<div class="step-no">{if $flow_status.key lt '4'}3{/if}</div>
 				<div class="m_t5">{$flow_status.confirm}</div>
-				<div class="m_t5 ecjiafc-blue">{$order.confirm_time}</div>
+				<div class="m_t5 ecjiafc-blue">{if $order.confirm_time && $flow_status.key gt '2'}{$order.confirm_time}{/if}</div>
 			</div>
 		</li>
 		<li>

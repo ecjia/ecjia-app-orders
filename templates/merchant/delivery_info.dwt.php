@@ -84,6 +84,7 @@
 									<!-- {else} -->
 									{$delivery_order.invoice_no}
 									<!-- {/if} -->
+									<div style="margin-top:10px;color:#777;float:left;">注:非必填,未选择默认自动派单</div>
 								</td>
 							</tr>
 							

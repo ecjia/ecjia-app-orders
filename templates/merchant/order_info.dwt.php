@@ -362,6 +362,10 @@ ecjia.merchant.order.info();
 											{/if}
 										{/if}
 										
+										{if $order.shipping_status gt 0 && $shipping_code neq 'ship_ecjia_express' && $shipping_code neq 'ship_o2o_express'}
+										<input type="button" class="btn btn-primary" onclick="window.open('{url path="orders/merchant/info" args="order_id={$order.order_id}&shipping_print=1"}')" value="{lang key='orders::order.print_shipping'}">
+										{/if}
+
 										{if $order.insure_fee gt 0}
 											{lang key='orders::order.label_insure_fee'}{$order.formated_insure_fee}
 										{/if}

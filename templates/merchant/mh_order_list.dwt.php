@@ -19,6 +19,11 @@
 		{if $order_model eq 'default'}
 		<a href="{RC_Uri::url('orders/merchant/today_order')}" class="btn btn-primary nopjax" target="__blank">当天订单</a>
 		{/if}
+		{if $order_model eq 'storepickup'}
+		<a href="{RC_Uri::url('orders/mh_validate_order/init')}" class="btn btn-primary nopjax">
+			<i class="fa fa-search"></i> 验单查询
+		</a>
+		{/if}
 		<a href="javascript:;" class="btn btn-primary show_order_search">
 			<i class="fa fa-search"></i> 高级查询
 		</a>

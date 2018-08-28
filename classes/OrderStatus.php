@@ -404,7 +404,11 @@ class OrderStatus
                     $time_key = 2;
                     $label_pay = '买家已付款';
                 }
-                if (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))) {
+                
+                if ($order['order_status'] == OS_CANCELED) {
+                	$time_key = 3;
+                	$label_confirm = '订单已取消';
+                } elseif (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))) {
                     $time_key = 3;
                     $label_confirm = '商家已接单';
                 }

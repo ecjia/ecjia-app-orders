@@ -204,7 +204,7 @@ function cat_list($cat_id = 0, $selected = 0, $re_type = true, $level = 0, $is_s
                 ->get();
                 
             $res2 = RC_DB::table('goods')
-                ->select('cat_id', 'COUNT(*) as goods_num'))
+                ->select('cat_id', 'COUNT(*) as goods_num')
                 ->where('is_delete', 0)
                 ->where('is_on_sale', 1)
                 ->groupBy('cat_id')

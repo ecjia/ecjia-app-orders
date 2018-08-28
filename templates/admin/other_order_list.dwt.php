@@ -14,8 +14,13 @@
 		<!-- {if $action_link} -->
 		<a class="btn plus_or_reply data-pjax" href="{$action_link.href}"><i class=" fontello-icon-search"></i>{$action_link.text}</a>
 		<!-- {/if} -->
+		<a class="btn plus_or_reply show_order_search" href="javascript:;">
+			<i class="fontello-icon-search"></i>高级查询</a>
 	</h3>
 </div>
+
+<!-- #BeginLibraryItem "/library/order_search.lbi" -->
+<!-- #EndLibraryItem -->
 
 <div class="row-fluid batch" >
 	<form action="{$search_url}

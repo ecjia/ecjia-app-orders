@@ -143,7 +143,7 @@ ecjia.merchant.order.init();
     							{$order.order_time}
     						</td>
     						<td align="left">
-    							{$order.consignee} [TEL：{$order.mobile}]<br/>{$order.address}
+    							{$order.consignee}
     						</td>
     						<td>{$order.formated_total_fee}</td>
     						<td>{$order.formated_order_amount}</td>

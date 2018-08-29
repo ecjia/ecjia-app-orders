@@ -149,8 +149,7 @@ ecjia.merchant.order.info();
 							<tr>
 								<td><div align="right"><strong>预约提货时间：</strong></div></td>
 								<td colspan="3">
-									{if $order.expect_shipping_time} {RC_Time::local_date(ecjia::config('time_format'), $order.expect_shipping_time)} {else}
-									暂无 {/if}
+									{if $order.expect_shipping_time} {$order.expect_shipping_time} {else} 暂无 {/if}
 								</td>
 							</tr>
 						</tbody>
@@ -335,7 +334,7 @@ ecjia.merchant.order.info();
                 </div>
 			</div>
 			
-			{if $operable_list.confirm}
+			{if $has_payed && $order.shipping_status neq 2}
 			<div class="accordion-group panel panel-default">
 				<div class="panel-heading">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseEight">
@@ -354,8 +353,7 @@ ecjia.merchant.order.info();
 							<tr>
 								<td><div align="right"><strong>{lang key='orders::order.label_operable_act'}</strong></div></td>
 								<td colspan="3">
-									<input type='hidden' class="operate_note" data-url='{url path="orders/merchant/operate_note"}'>
-									<button class="btn operatesubmit btn-info" type="submit" name="confirm_validate">确认验证</button>
+									<a class="btn btn-info confirm_validate" data-url='{url path="orders/mh_validate_order/validate_to_ship"}' data-refresh='{url path="orders/merchant/info"}&order_id={$order.order_id}'>确认验证</a>
 									<input name="order_id" class="order_id" type="hidden" value="{$order.order_id}">
 								</td>
 							</tr>

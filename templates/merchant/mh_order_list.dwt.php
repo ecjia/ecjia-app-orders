@@ -224,5 +224,5 @@
 		</div>
 	</div>
 </div>
-<form action="{$form_action}" name="orderpostForm" id="listForm" data-pjax-url="{$search_action}" method="post"></form>
+<form action="{$form_action}{if $smarty.get.extension_code}&extension_code={$smarty.get.extension_code}{/if}" name="orderpostForm" id="listForm" data-pjax-url="{$search_action}" method="post"></form>
 <!-- {/block} -->

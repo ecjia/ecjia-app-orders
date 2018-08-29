@@ -2497,6 +2497,7 @@ class merchant extends ecjia_merchant
         $this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
 
         /* 取得参数 */
+        $extension_code = isset($_GET['extension_code']) ? $_GET['extension_code'] : '';
         $order_id_list = $_POST['order_id']; // 订单id（逗号格开的多个订单id）
         $operation = isset($_POST['operation']) ? $_POST['operation'] : $_GET['operation']; // 订单操作
         $action_note = $_POST['action_note']; // 操作备注
@@ -2512,7 +2513,10 @@ class merchant extends ecjia_merchant
         $sn_list = array();
         $sn_not_list = array();
         $url = RC_Uri::url('orders/merchant/init');
-
+		if (!empty($extension_code)) {
+			$url = RC_Uri::url('orders/merchant/init', array('extension_code' => $extension_code));
+		}
+        
         /* 确认 */
         if ('confirm' == $operation) {
             foreach ($order_id_list as $id_order) {

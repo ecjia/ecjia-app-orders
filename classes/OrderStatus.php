@@ -85,6 +85,11 @@ class OrderStatus
             (in_array($pay_status, array(PS_UNPAYED)))) {
             $label_order_status = '未付款';
             $status_code = 'await_pay';
+        } elseif (in_array($order_status, array(OS_CONFIRMED)) &&
+            in_array($shipping_status, array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING)) &&
+            in_array($pay_status, array(PS_PAYED))) {
+            $label_order_status = '已付款';
+            $status_code = 'payed';
         } elseif (in_array($order_status, array(OS_UNCONFIRMED)) &&
             in_array($shipping_status, array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING)) &&
             (in_array($pay_status, array(PS_PAYED, PS_PAYING)) || $is_cod)) {

@@ -180,7 +180,7 @@
 		{if $data.sale_item}
 		<div class="panel">
 			<div class="panel-body">
-				<header class="panel-title">商品热卖榜</h1>
+				<header class="panel-title m_b10">商品热卖榜</h1>
 					<span class="pull-right">
 						<a target="__blank" href="{RC_Uri::url('orders/mh_sale_order/init')}">查看更多 >></a>
 					</span>

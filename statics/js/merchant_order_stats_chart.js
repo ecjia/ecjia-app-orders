@@ -53,8 +53,8 @@
 
 				orderGeneralChart.setOption(option);
 				
-				window.addEventListener("resize", () => { 
-					orderGeneralChart.resize();  
+				window.addEventListener("resize", function() {
+					orderGeneralChart.resize();
 				});
 			}
 			app.chart.order_type();
@@ -113,8 +113,8 @@
 
 				shipStatusChart.setOption(option);
 				
-				window.addEventListener("resize", () => { 
-					shipStatusChart.resize();  
+				window.addEventListener("resize", function() {
+					shipStatusChart.resize();
 				});
 			}
 			app.chart.order_type();
@@ -173,8 +173,8 @@
 
 				payStatusChart.setOption(option);
 				
-				window.addEventListener("resize", () => { 
-					payStatusChart.resize();  
+				window.addEventListener("resize", function() {
+					payStatusChart.resize();
 				});
 			}
 			app.chart.order_type();
@@ -246,8 +246,8 @@
 
 				orderTypeChart.setOption(option);
 				
-				window.addEventListener("resize", () => { 
-					orderTypeChart.resize();  
+				window.addEventListener("resize", function() {
+					orderTypeChart.resize();
 				});
 			}
 		}

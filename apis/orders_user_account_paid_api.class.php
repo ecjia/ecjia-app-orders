@@ -143,10 +143,6 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		    if ($order_info['extension_code'] == 'storepickup') {
 		    	RC_Loader::load_app_class('order_refund', 'refund', false);
 		    	$pra = array('order_status' => '商家已接单', 'order_id' => $order_info['order_id'], 'message' => '已被商家接单，订单正在备货中');
-		    	
-		    	RC_Logger::getLogger('error')->info('testaaa');
-		    	RC_Logger::getLogger('error')->info($pra);
-		    	RC_Logger::getLogger('error')->info('testbbb');
 		    	order_refund::order_status_log($pra);
 		    }
 		    /*更新订单状态及信息*/

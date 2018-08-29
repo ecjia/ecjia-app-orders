@@ -197,11 +197,15 @@ class merchant extends ecjia_merchant
         $group_buy_id = isset($_GET['group_buy_id']) ? intval($_GET['group_buy_id']) : 0;
         $this->assign('group_buy_id', $group_buy_id);
 
+        //订单状态筛选
         $status_list = RC_Lang::get('orders::order.cs');
+		if ($order_model != 'default') {
+			unset($status_list[CS_UNCONFIRMED]);
+		}
+        $this->assign('status_list', $status_list);
         
         if ($order_model == 'groupbuy') {
-        	unset($status_list[CS_UNCONFIRMED]);
-        	$this->assign('status_list', $status_list);
+        	
             $this->display('mh_groupbuy_order_list.dwt');
         } else {
             if ($order_model == 'default') {
@@ -217,11 +221,6 @@ class merchant extends ecjia_merchant
                 $referer_list = array('iphone' => 'iPhone端', 'android' => 'Andriod端', 'mobile' => 'H5端', 'ecjia-cashdesk' => '收银台', 'weapp' => '小程序');
                 $this->assign('referer_list', $referer_list);
             }
-            
-            if ($order_model == 'storepickup') {
-            	unset($status_list[CS_UNCONFIRMED]);
-            }
-            $this->assign('status_list', $status_list);
             $this->display('mh_order_list.dwt');
         }
     }

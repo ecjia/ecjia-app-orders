@@ -209,6 +209,8 @@ class mh_delivery extends ecjia_merchant
 
         /* 判断配送方式是否是立即送*/
         $shipping_info = ecjia_shipping::pluginData(intval($delivery_order['shipping_id']));
+        $this->assign('shipping_info', $shipping_info);
+        
         if ($shipping_info['shipping_code'] == 'ship_o2o_express') {
 
             /* 获取正在派单的配送员*/
@@ -238,7 +240,6 @@ class mh_delivery extends ecjia_merchant
                 $delivery_order['invoice_no'] = $invoice_no;
             }
         }
-
         /* 模板赋值 */
         $this->assign('action_list', $act_list);
         $this->assign('delivery_order', $delivery_order);
@@ -302,7 +303,13 @@ class mh_delivery extends ecjia_merchant
         }
         /* 查询订单信息 */
         $order = order_info($order_id);
-
+		
+        //普通配送方式时，运单编号必填
+        $shipping_info = ecjia_shipping::pluginData(intval($order['shipping_id']));
+        if ($shipping_info['shipping_code'] != 'ship_o2o_express' && $shipping_info['shipping_code'] != 'ship_ecjia_express' && empty($delivery['invoice_no'])) {
+        	return $this->showmessage('请填写运单编号', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+        }
+        
         /* 检查此单发货商品库存缺货情况 */
         $virtual_goods = array();
         // $delivery_stock_result = $db_delivery->join(array('goods','products'))->where(array('dg.delivery_id' => $delivery_id))->group('dg.product_id')->select();

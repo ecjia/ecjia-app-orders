@@ -92,7 +92,8 @@
 								<td><div align="right"><strong>{lang key='orders::order.label_invoice_no'}</strong></div></td>
 								<td>
 									{if $delivery_order.status neq 1}
-									<input name="invoice_no" type="text" class="w250 form-control" value="{$delivery_order.invoice_no}" {if $delivery_order.status eq 0} readonly="readonly" {/if} />
+									<input name="invoice_no" type="text" class="w250 form-control" value="{$delivery_order.invoice_no}" 
+										{if $delivery_order.status eq 0 || ($shipping_info.shipping_code eq 'ship_o2o_express' || $shipping_info.shipping_code eq 'ship_ecjia_express')} readonly="readonly" {/if} />
 									{else}
 									{$delivery_order.invoice_no}
 									{/if}

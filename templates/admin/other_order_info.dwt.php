@@ -423,7 +423,7 @@
 									<strong>{lang key='orders::order.action_time'}</strong>
 								</th>
 								<th class="w130">
-									<strong>{lang key='orders::order.订单状态'}</strong>
+									<strong>订单状态</strong>
 								</th>
 								<td class="ecjiafc-pre t_c w150">
 									<strong>操作备注</strong>

@@ -204,23 +204,21 @@ class merchant extends ecjia_merchant
 		}
         $this->assign('status_list', $status_list);
         
+        //配送方式
+        $shipping_list = ecjia_shipping::getEnableList();
+        $this->assign('shipping_list', $shipping_list);
+        
+        //支付方式
+        $pay_list = with(new Ecjia\App\Payment\PaymentPlugin)->getEnableList();
+        $this->assign('pay_list', $pay_list);
+        
+        //下单渠道
+        $referer_list = array('iphone' => 'iPhone端', 'android' => 'Andriod端', 'mobile' => 'H5端', 'ecjia-cashdesk' => '收银台', 'weapp' => '小程序');
+        $this->assign('referer_list', $referer_list);
+        
         if ($order_model == 'groupbuy') {
-        	
             $this->display('mh_groupbuy_order_list.dwt');
         } else {
-            if ($order_model == 'default') {
-                //配送方式
-                $shipping_list = ecjia_shipping::getEnableList();
-                $this->assign('shipping_list', $shipping_list);
-
-                //支付方式
-                $pay_list = with(new Ecjia\App\Payment\PaymentPlugin)->getEnableList();
-                $this->assign('pay_list', $pay_list);
-
-                //下单渠道
-                $referer_list = array('iphone' => 'iPhone端', 'android' => 'Andriod端', 'mobile' => 'H5端', 'ecjia-cashdesk' => '收银台', 'weapp' => '小程序');
-                $this->assign('referer_list', $referer_list);
-            }
             $this->display('mh_order_list.dwt');
         }
     }

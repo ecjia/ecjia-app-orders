@@ -596,7 +596,7 @@ class merchant extends ecjia_merchant
 
             $pickup_status = '暂无';
             if (!empty($meta_value)) {
-                $pickup_status = '未提货';
+                $pickup_status = '<span class="ecjiafc-red">未提货</span>';
                 $meta_value_encryption = '';
                 $len = strlen($meta_value);
                 $meta_value_encryption = substr_replace($meta_value, str_repeat('*', $len), 0, $len);

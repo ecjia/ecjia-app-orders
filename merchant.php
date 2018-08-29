@@ -3940,7 +3940,7 @@ class merchant extends ecjia_merchant
         $refund_id = RC_DB::table('refund_order')->insertGetId($refund_data);
 
         /* 订单状态为“退货” */
-        RC_DB::table('order_info')->where('order_id', $order_id)->update(array('order_status' => OS_CANCELED));
+        RC_DB::table('order_info')->where('order_id', $order_id)->update(array('order_status' => OS_RETURNED));
 
         /* 记录log */
         $action_note = trim($_POST['action_note']);

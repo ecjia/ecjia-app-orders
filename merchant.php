@@ -218,6 +218,9 @@ class merchant extends ecjia_merchant
                 $this->assign('referer_list', $referer_list);
             }
             
+            if ($order_model == 'storepickup') {
+            	unset($status_list[CS_UNCONFIRMED]);
+            }
             $this->assign('status_list', $status_list);
             $this->display('mh_order_list.dwt');
         }

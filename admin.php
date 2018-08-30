@@ -129,7 +129,6 @@ class admin extends ecjia_admin
             $this->assign('action_link', array('href' => RC_Uri::url('orders/admin/order_query'), 'text' => RC_Lang::get('system::system.03_order_query')));
         }
 
-        $this->assign('status_list', RC_Lang::get('orders::order.cs'));
         $this->assign('order_list', $order_list);
 
         $this->assign('filter', $filter);
@@ -145,25 +144,30 @@ class admin extends ecjia_admin
         }
         $this->assign('import_url', $import_url);
         
-
+        //订单状态筛选
+        $status_list = RC_Lang::get('orders::order.cs');
+        if ($filter['extension_code'] != 'default') {
+        	unset($status_list[CS_UNCONFIRMED]);
+        }
+        $this->assign('status_list', $status_list);
+        
+        //商家列表
+        $merchant_list = RC_DB::table('store_franchisee')->where('status', 1)->where('identity_status', 2)->select('store_id', 'merchants_name')->get();
+        $this->assign('merchant_list', $merchant_list);
+        
+        //配送方式
+        $shipping_list = ecjia_shipping::getEnableList();
+        $this->assign('shipping_list', $shipping_list);
+        
+        //支付方式
+        $pay_list = with(new Ecjia\App\Payment\PaymentPlugin)->getEnableList();
+        $this->assign('pay_list', $pay_list);
+        
+        //下单渠道
+        $referer_list = array('iphone' => 'iPhone端', 'android' => 'Andriod端', 'mobile' => 'H5端', 'ecjia-cashdesk' => '收银台', 'weapp' => '小程序');
+        $this->assign('referer_list', $referer_list);
+        
         if ($filter['extension_code'] == 'default' || $filter['extension_code'] == 'group_buy') {
-            if ($filter['extension_code'] == 'default') {
-                //商家列表
-                $merchant_list = RC_DB::table('store_franchisee')->where('status', 1)->where('identity_status', 2)->select('store_id', 'merchants_name')->get();
-                $this->assign('merchant_list', $merchant_list);
-
-                //配送方式
-                $shipping_list = ecjia_shipping::getEnableList();
-                $this->assign('shipping_list', $shipping_list);
-
-                //支付方式
-                $pay_list = with(new Ecjia\App\Payment\PaymentPlugin)->getEnableList();
-                $this->assign('pay_list', $pay_list);
-                
-                //下单渠道
-                $referer_list = array('iphone' => 'iPhone端', 'android' => 'Andriod端', 'mobile' => 'H5端', 'ecjia-cashdesk' => '收银台', 'weapp' => '小程序');
-                $this->assign('referer_list', $referer_list);
-            }
             $this->display('order_list.dwt');
         } else {
             $this->display('other_order_list.dwt');

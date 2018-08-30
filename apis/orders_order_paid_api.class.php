@@ -233,12 +233,6 @@ class orders_order_paid_api extends Component_Event_Api {
 	                	RC_Api::api('sms', 'send_event_sms', $options);
 	                }
 
-	                /* 打印订单 */
-			        $res = with(new Ecjia\App\Orders\OrderPrint($order_id, $order['store_id']))->doPrint(true);
-			        if (is_ecjia_error($res)) {
-			            RC_Logger::getLogger('error')->error($res->get_error_message());
-			        }
-
                 } elseif ($pay_log['order_type'] == PAY_SURPLUS) {
                 	
                     $res_id = RC_DB::table('user_account')->select('id')->where('id', $pay_log['order_id'])->where('is_paid', 1)->first();

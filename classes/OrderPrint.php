@@ -60,7 +60,7 @@ class OrderPrint
         	$type = 'print_store_orders';
         } else {
         	$shipping_data = ecjia_shipping::getPluginDataById($order['shipping_id']);
-        	if ($shipping_data['shipping_code'] == 'ship_o2o_express') {
+        	if (in_array($shipping_data['shipping_code'], ['ship_o2o_express', 'ship_ecjia_express'])) {
         		$type = 'print_takeaway_orders';
         	} elseif ($shipping_data['shipping_code'] == 'ship_cac') {
         		$type = 'print_store_orders';

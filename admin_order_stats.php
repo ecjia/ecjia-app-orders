@@ -408,6 +408,7 @@ class admin_order_stats extends ecjia_admin
         $start_date = RC_Time::local_strtotime($start_time);
         $end_date = RC_Time::local_strtotime($end_time);
 
+        $field = 'SUM(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee + tax + integral_money - bonus - discount) as total_fee';
         //待付款订单总金额
         $pay_cod_id = RC_DB::table('payment')->where('pay_code', 'pay_cod')->pluck('pay_id');
         $await_pay_count = RC_DB::table('order_info')
@@ -415,11 +416,12 @@ class admin_order_stats extends ecjia_admin
             ->where('store_id', $store_id)
             ->where('add_time', '>=', $start_date)
             ->where('add_time', '<', $end_date)
-            ->whereIn('order_status', array(OS_CONFIRMED, OS_SPLITED))
+            ->whereIn('order_status', array(OS_UNCONFIRMED, OS_SPLITED))
             ->where('pay_status', PS_UNPAYED)
             ->where('pay_id', '!=', $pay_cod_id)
-            ->sum('order_amount');
-        $data['await_pay_count'] = price_format($await_pay_count);
+            ->select(RC_DB::raw($field))
+            ->first();
+        $data['await_pay_count'] = price_format($await_pay_count['total_fee']);
 
         //待发货订单总金额
         $await_ship_count = RC_DB::table('order_info')
@@ -433,8 +435,9 @@ class admin_order_stats extends ecjia_admin
                     ->orWhere('pay_id', $pay_cod_id);
             })
             ->whereIn('shipping_status', array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING))
-            ->sum('order_amount');
-        $data['await_ship_count'] = price_format($await_ship_count);
+            ->select(RC_DB::raw($field))
+            ->first();
+        $data['await_ship_count'] = price_format($await_ship_count['total_fee']);
 
         //已发货订单总金额
         $shipped_count = RC_DB::table('order_info')
@@ -444,8 +447,9 @@ class admin_order_stats extends ecjia_admin
             ->where('add_time', '<', $end_date)
             ->where('order_status', '!=', OS_RETURNED)
             ->where('shipping_status', SS_SHIPPED)
-            ->sum('order_amount');
-        $data['shipped_count'] = price_format($shipped_count);
+            ->select(RC_DB::raw($field))
+            ->first();
+        $data['shipped_count'] = price_format($shipped_count['total_fee']);
 
         //退货订单总金额
         $returned_count = RC_DB::table('order_info')
@@ -455,8 +459,9 @@ class admin_order_stats extends ecjia_admin
             ->where('add_time', '<', $end_date)
             ->where('order_status', OS_RETURNED)
             ->where('pay_status', PS_PAYED)
-            ->sum('order_amount');
-        $data['returned_count'] = price_format($returned_count);
+            ->select(RC_DB::raw($field))
+            ->first();
+        $data['returned_count'] = price_format($returned_count['total_fee']);
 
         //已取消订单总金额
         $canceled_count = RC_DB::table('order_info')
@@ -464,9 +469,10 @@ class admin_order_stats extends ecjia_admin
             ->where('store_id', $store_id)
             ->where('add_time', '>=', $start_date)
             ->where('add_time', '<', $end_date)
-            ->whereIn('pay_status', array(OS_CANCELED, OS_INVALID))
-            ->sum('order_amount');
-        $data['canceled_count'] = price_format($canceled_count);
+            ->whereIn('order_status', array(OS_CANCELED, OS_INVALID))
+            ->select(RC_DB::raw($field))
+            ->first();
+        $data['canceled_count'] = price_format($canceled_count['total_fee']);
 
         //已完成订单总金额
         $finished_count = RC_DB::table('order_info')
@@ -476,8 +482,9 @@ class admin_order_stats extends ecjia_admin
             ->where('add_time', '<', $end_date)
             ->whereIn('order_status', array(OS_CONFIRMED, OS_SPLITED))
             ->where('shipping_status', SS_RECEIVED)
-            ->sum('order_amount');
-        $data['finished_count'] = price_format($finished_count);
+            ->select(RC_DB::raw($field))
+            ->first();
+        $data['finished_count'] = price_format($finished_count['total_fee']);
 
         //配送型订单数及总金额
         $data['order_count_data'] = RC_DB::table('order_info')

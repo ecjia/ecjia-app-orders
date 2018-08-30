@@ -228,7 +228,7 @@
 									</div>
 								</td>
 								<td colspan="3">
-									{if $order.expect_shipping_time} {RC_Time::local_date(ecjia::config('time_format'), $order.expect_shipping_time)} {else}
+									{if $order.expect_shipping_time} {$order.expect_shipping_time} {else}
 									暂无 {/if}
 								</td>
 							</tr>
@@ -425,9 +425,9 @@
 								<th class="w130">
 									<strong>订单状态</strong>
 								</th>
-								<td class="ecjiafc-pre t_c w150">
+								<th class="ecjiafc-pre t_c w150">
 									<strong>操作备注</strong>
-								</td>
+								</th>
 							</tr>
 						</thead>
 						<tbody>

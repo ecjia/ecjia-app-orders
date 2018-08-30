@@ -585,18 +585,18 @@
 						<table class="table table-striped m_b0">
 							<thead>
 								<tr>
-									<td class="w150">
+									<th class="w150">
 										<strong>{lang key='orders::order.action_user_two'}</strong>
-									</td>
-									<td class="w180">
+									</th>
+									<th class="w180">
 										<strong>{lang key='orders::order.action_time'}</strong>
-									</td>
-									<td class="w150">
+									</th>
+									<th class="w150">
 										<strong>订单状态</strong>
-									</td>
-									<td class="ecjiafc-pre t_c w150">
+									</th>
+									<th class="ecjiafc-pre t_c w150">
 										<strong>操作备注</strong>
-									</td>
+									</th>
 								</tr>
 							</thead>
 							<tbody>

@@ -125,16 +125,14 @@
 						{if $filter.extension_code eq "group_buy"}
 						<td>
 							<span class="
-								{if $order.groupbuy_status eq 0}
-								badge badge-success
-								{elseif $order.groupbuy_status eq 1}
-								badge badge-info
+								{if $order.groupbuy_status eq 1}
+								badge badge-groupbuy-underway
 								{else if $order.groupbuy_status eq 2}
-								badge badge-important
+								badge badge-groupbuy-finished
 								{else if $order.groupbuy_status eq 3}
-								badge badge-primary
+								badge badge-groupbuy-success
 								{else if $order.groupbuy_status eq 4}
-								badge badge-warning
+								badge badge-groupbuy-fail
 								{/if}">
 								{$order.groupbuy_status_desc}
 							</span>

@@ -308,3 +308,16 @@
 	font-size: 15px;
 	margin-top: 20px;
 }
+
+.badge.badge-groupbuy-underway {
+	background-color: #3a99d8;
+}
+.badge.badge-groupbuy-finished {
+	background-color: #dadada;
+}
+.badge.badge-groupbuy-success {
+	background-color: #28b294;
+}
+.badge.badge-groupbuy-fail {
+	background-color: #eb5768;
+}

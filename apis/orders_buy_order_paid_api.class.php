@@ -94,14 +94,15 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    $order_sn = $order['order_sn'];
 	    RC_Logger::getLogger('pay')->info('orders_buy_order_paid');
 	    RC_Logger::getLogger('pay')->info($order);
+	    $time = RC_Time::gmtime();
 	    //判断订单类型，到店付款订单修改订单状态和发货状态
 	    if (in_array($order['extension_code'], array('storebuy', 'cashdesk'))) {
 	        /* 修改订单状态为已完成 */
 	        $data = array(
 	            'order_status' => OS_CONFIRMED,
-	            'confirm_time' => RC_Time::gmtime(),
+	            'confirm_time' => $time,
 	            'pay_status'   => $pay_status,
-	            'pay_time'     => RC_Time::gmtime(),
+	            'pay_time'     => $time,
 	            'money_paid'   => $order['order_amount'],
 	            'order_amount' => 0,
 	        );
@@ -117,24 +118,28 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    	//配送和团购支付后order_status还是未接单；自提为已接单
 	    	if ($order['extension_code'] == 'storepickup') {
 	    		$order_status = OS_CONFIRMED;
+	    		//自提，订单状态默认接单记录log
+	    		RC_DB::table('order_status_log')->insert(array('order_status' => '商家已接单','order_id'=> $order_id,'message'=> '已被商家接单，订单正在备货中','add_time'=> $time));
 	    	} else {
-	    		$order_status = OS_UNCONFIRMED;
+	    		//订单对应店铺有没开启自动接单
+	    		$orders_auto_confirm = Ecjia\App\Cart\StoreStatus::StoreOrdersAutoConfirm($order['store_id']);
+	    		if ($orders_auto_confirm == '1') {
+	    			$order_status = OS_CONFIRMED;
+	    			//已接单状态log记录
+	    			RC_DB::table('order_status_log')->insert(array('order_status' => '商家已接单','order_id'=> $order_id,'message'=> '已被商家接单，订单正在备货中','add_time'=> $time));
+	    		} else {
+	    			$order_status = OS_UNCONFIRMED;
+	    		}
 	    	}
 	    	
 	        $data = array(
 	            'order_status' => $order_status,
-	            'confirm_time' => RC_Time::gmtime(),
+	            'confirm_time' => $time,
 	            'pay_status'   => $pay_status,
-	            'pay_time'     => RC_Time::gmtime(),
+	            'pay_time'     => $time,
 	            'money_paid'   => $order['order_amount'] + $order['money_paid'],
 	            'order_amount' => 0,
 	        );
-	        //自提，订单状态默认接单纪录log
-	        if ($order['extension_code'] == 'storepickup') {
-	        	RC_Loader::load_app_class('order_refund', 'refund', false);
-	        	$pra = array('order_status' => '商家已接单', 'order_id' => $order_id, 'message' => '已被商家接单，订单正在备货中');
-	        	order_refund::order_status_log($pra);
-	        }
 	        RC_DB::table('order_info')->where('order_id', $order_id)->update($data);
 	        /* 记录订单操作记录 */
 	        order_action($order_sn, $order_status, SS_UNSHIPPED, $pay_status, '', RC_Lang::get('orders::order.buyers'));

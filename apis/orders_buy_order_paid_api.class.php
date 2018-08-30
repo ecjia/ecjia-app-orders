@@ -238,6 +238,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
             );
             RC_Api::api('sms', 'send_event_sms', $options);
         }
+        
         /* 打印订单 */
         $res = with(new Ecjia\App\Orders\OrderPrint($order_id, $order['store_id']))->doPrint(true);
         if (is_ecjia_error($res)) {
@@ -245,6 +246,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
         }
         RC_Logger::getLogger('pay')->info('order_buy_order_pay ok');
 
+        return true;
     }
 }
 

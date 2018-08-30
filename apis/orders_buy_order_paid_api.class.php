@@ -252,7 +252,6 @@ class orders_buy_order_paid_api extends Component_Event_Api {
         }
         RC_Logger::getLogger('pay')->info('order_buy_order_pay ok');
 
-        return true;
     }
 }
 

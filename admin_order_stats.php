@@ -794,13 +794,13 @@ from " . $table_store_franchisee . " as s
 INNER JOIN (select store_id, count(order_id) as total_order from " . $table_order_info . " where is_delete = 0 GROUP BY store_id)
 as a on a.store_id = s.store_id
 
-INNER JOIN (select store_id, sum(order_amount) as total_amount from " . $table_order_info . " where is_delete = 0 and pay_status in (2, 1) GROUP BY store_id)
+INNER JOIN (select store_id, sum(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee + tax + integral_money - bonus - discount) as total_amount from " . $table_order_info . " where is_delete = 0 and pay_status in (2, 1) GROUP BY store_id)
 as b on b.store_id = s.store_id
 
 INNER JOIN (select store_id, count(order_id) as valid_order from " . $table_order_info . " where is_delete = 0 and order_status in (1, 5) and shipping_status = 2 and pay_status in (2, 1) GROUP BY store_id)
 as c on c.store_id = s.store_id
 
-INNER JOIN (select store_id, sum(order_amount) as valid_amount from " . $table_order_info . " where is_delete = 0 and order_status in (1, 5) and shipping_status = 2 and pay_status in (2, 1) GROUP BY store_id)
+INNER JOIN (select store_id, sum(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee + tax + integral_money - bonus - discount) as valid_amount from " . $table_order_info . " where is_delete = 0 and order_status in (1, 5) and shipping_status = 2 and pay_status in (2, 1) GROUP BY store_id)
 as d on d.store_id = s.store_id
 
 where s.shop_close = 0 and s.identity_status = 2";

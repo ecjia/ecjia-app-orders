@@ -218,7 +218,7 @@ class OrderPrint
     	}
     	$address .= $store['address'];
     
-        $money = $order['surplus'] + $order['money_paid'] + $order['integral_money'] + $order['bonus'];
+        $money = $order['surplus'] + $order['money_paid'] + $order['integral_money'];
     	$data = array(
     		'order_sn'        	=> $order['order_sn'], //订单编号
     		'order_trade_no'   	=> $order_trade_no, //流水编号

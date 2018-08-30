@@ -176,7 +176,7 @@ class OrderStatus
 
         if (!empty($payment_ids)) {
             return function ($query) use ($payment_ids) {
-                $query->whereIn('order_info.order_status', array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))
+                $query->whereIn('order_info.order_status', array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))
                     ->whereIn('order_info.shipping_status', array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING))
                     ->where(function ($query) use ($payment_ids) {
                         $query->whereIn('order_info.pay_status', array(PS_PAYED, PS_PAYING))

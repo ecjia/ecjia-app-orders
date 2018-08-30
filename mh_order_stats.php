@@ -316,7 +316,7 @@ class mh_order_stats extends ecjia_merchant
             ->where('store_id', $store_id)
             ->where('add_time', '>=', $start_date)
             ->where('add_time', '<', $end_date)
-            ->whereIn('order_status', array(OS_CONFIRMED, OS_SPLITED))
+            ->whereIn('order_status', array(OS_UNCONFIRMED, OS_SPLITED))
             ->where('pay_status', PS_UNPAYED)
             ->where('pay_id', '!=', $pay_cod_id)
             ->sum('order_amount');

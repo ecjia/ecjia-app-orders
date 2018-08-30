@@ -119,7 +119,7 @@ class orders_merchant_plugin
             ->count('order_id');
 
         $data['express_platform_count'] = RC_DB::table('express_order')
-            ->where(RC_DB::raw('shipping_code'), 'ship_o2o_express')
+            ->where(RC_DB::raw('shipping_code'), 'ship_ecjia_express')
             ->where('store_id', $store_id)
             ->select(RC_DB::raw("count(*) as count"), RC_DB::raw("SUM(IF(status = 0, 1, 0)) as wait_grab"), 
                 RC_DB::raw("SUM(IF(status = 1, 1, 0)) as wait_pickup"), RC_DB::raw("SUM(IF(status = 2, 1, 0)) as sending"), 
@@ -133,7 +133,7 @@ class orders_merchant_plugin
         }
 
         $data['express_merchant_count'] = RC_DB::table('express_order')
-            ->where(RC_DB::raw('shipping_code'), '')
+            ->where(RC_DB::raw('shipping_code'), 'ship_o2o_express')
             ->where('store_id', $store_id)
             ->select(RC_DB::raw("count(*) as count"), RC_DB::raw("SUM(IF(status = 0, 1, 0)) as wait_grab"), 
                 RC_DB::raw("SUM(IF(status = 1, 1, 0)) as wait_pickup"), RC_DB::raw("SUM(IF(status = 2, 1, 0)) as sending"), 
@@ -146,7 +146,7 @@ class orders_merchant_plugin
             }
         }
 
-        $data['promotion_count'] = RC_DB::table('goods')->where('is_promote', 1)->where('is_delete', 1)->where('store_id', $store_id)->count();
+        $data['promotion_count'] = RC_DB::table('goods')->where('is_promote', 1)->where('is_delete', 0)->where('store_id', $store_id)->count();
         $data['favourable_count'] = RC_DB::table('favourable_activity')->where('store_id', $store_id)->count();
         $data['groupbuy_count'] = RC_DB::table('goods_activity')->where('act_type', GAT_GROUP_BUY)->where('store_id', $store_id)->count();
         $data['quickpay_count'] = RC_DB::table('quickpay_activity')->where('store_id', $store_id)->count();

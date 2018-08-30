@@ -185,6 +185,12 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    if ($order['shipping_id'] > 0) {
 	    	Ecjia\App\Orders\SendPickupCode::send_pickup_code($order);
 	    }
+
+        /* 打印订单 */
+        $res = with(new Ecjia\App\Orders\OrderPrint($order_id, $order['store_id']))->doPrint(true);
+        if (is_ecjia_error($res)) {
+            RC_Logger::getLogger('error')->error($res->get_error_message());
+        }
 	    
 	    /* 客户付款通知（默认通知店长）*/
 	    /* 获取店长的记录*/
@@ -245,11 +251,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
             RC_Api::api('sms', 'send_event_sms', $options);
         }
         
-        /* 打印订单 */
-        $res = with(new Ecjia\App\Orders\OrderPrint($order_id, $order['store_id']))->doPrint(true);
-        if (is_ecjia_error($res)) {
-            RC_Logger::getLogger('error')->error($res->get_error_message());
-        }
+
         RC_Logger::getLogger('pay')->info('order_buy_order_pay ok');
 
     }

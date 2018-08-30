@@ -127,17 +127,23 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		    $order_operate->operate($order_info, 'receive', array('action_note' => '系统操作'));
 		} else {
 		    /* 更新订单表支付后信息 */
+			$log = array(
+					'order_status' 	=> '商家已接单',
+					'order_id'		=> $order_info['order_id'],
+					'message'		=> '已被商家接单，订单正在备货中',
+					'add_time'		=> $time
+			);
 			if ($order_info['extension_code'] == 'storepickup') {
 				$order_status = OS_CONFIRMED;
 				//自提，订单状态默认接单记录log
-				RC_DB::table('order_status_log')->insert(array('order_status' => '商家已接单','order_id'=> $order_info['order_id'],'message'=> '已被商家接单，订单正在备货中','add_time'=> $time));
+				RC_DB::table('order_status_log')->insertGetId($log);
 			} else {
 				//订单对应店铺有没开启自动接单
 				$orders_auto_confirm = Ecjia\App\Cart\StoreStatus::StoreOrdersAutoConfirm($order_info['store_id']);
-				if ($orders_auto_confirm == '1') {
+				if ($orders_auto_confirm == '0') {
 					$order_status = OS_CONFIRMED;
 					//已接单状态log记录
-					RC_DB::table('order_status_log')->insert(array('order_status' => '商家已接单','order_id'=> $order_info['order_id'],'message'=> '已被商家接单，订单正在备货中','add_time'=> $time));
+					RC_DB::table('order_status_log')->insertGetId($log);
 				} else {
 					$order_status = OS_UNCONFIRMED;
 				}

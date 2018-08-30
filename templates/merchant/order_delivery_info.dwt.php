@@ -48,6 +48,7 @@
 									<!-- {if $order.shipping_id > 0} -->
 										{$order.shipping_name}
 										<a class="data-pjax" href='{url path="orders/merchant/edit_shipping" args="order_id={$order.order_id}{if $action_note}&action_note={$action_note}{/if}"}'>{lang key='system::system.edit'}</a>
+										<div style="margin-top:10px;color:#777;float:left;">注：修改配送方式，额外产生的配送费用不做修改</div>
 									<!-- {else} -->
 										{lang key='system::system.require_field'}
 									<!-- {/if} -->

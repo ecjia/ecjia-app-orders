@@ -282,20 +282,13 @@
 
 .ecjia-order-amount .item {
 	width: 15%;
-    height: 130px;
+    height: 100px;
     float: left;
     background-color: #F6F8F8;
     border-radius: 5px;
-    display: flex;
-	display: -webkit-box;
-  	display: -ms-flexbox;
-  	display: -webkit-flex;
-	-webkit-align-items: center;
-    align-items: center;
-    justify-content: center;
-	-webkit-justify-content: center;
+    text-align: center;
+    padding-top: 30px;
     margin-right: 2%;
-	flex-direction: column;
 }
 
 .ecjia-order-amount .item:nth-child(6) {

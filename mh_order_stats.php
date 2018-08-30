@@ -54,9 +54,9 @@ class mh_order_stats extends ecjia_merchant
     {
         parent::__construct();
         /* 加载所有全局 js/css */
-        
+
         RC_Loader::load_app_func('global', 'orders');
-        
+
         RC_Script::enqueue_script('bootstrap-placeholder');
         RC_Script::enqueue_script('jquery-validate');
         RC_Script::enqueue_script('jquery-form');
@@ -309,6 +309,7 @@ class mh_order_stats extends ecjia_merchant
         $start_date = RC_Time::local_strtotime($start_time);
         $end_date = RC_Time::local_strtotime($end_time);
 
+        $field = 'SUM(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee + tax + integral_money - bonus - discount) as total_fee';
         //待付款订单总金额
         $pay_cod_id = RC_DB::table('payment')->where('pay_code', 'pay_cod')->pluck('pay_id');
         $await_pay_count = RC_DB::table('order_info')
@@ -319,8 +320,9 @@ class mh_order_stats extends ecjia_merchant
             ->whereIn('order_status', array(OS_UNCONFIRMED, OS_SPLITED))
             ->where('pay_status', PS_UNPAYED)
             ->where('pay_id', '!=', $pay_cod_id)
-            ->sum('order_amount');
-        $data['await_pay_count'] = price_format($await_pay_count);
+            ->select(RC_DB::raw($field))
+            ->first();
+        $data['await_pay_count'] = price_format($await_pay_count['total_fee']);
 
         //待发货订单总金额
         $await_ship_count = RC_DB::table('order_info')
@@ -334,8 +336,9 @@ class mh_order_stats extends ecjia_merchant
                     ->orWhere('pay_id', $pay_cod_id);
             })
             ->whereIn('shipping_status', array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING))
-            ->sum('order_amount');
-        $data['await_ship_count'] = price_format($await_ship_count);
+            ->select(RC_DB::raw($field))
+            ->first();
+        $data['await_ship_count'] = price_format($await_ship_count['total_fee']);
 
         //已发货订单总金额
         $shipped_count = RC_DB::table('order_info')
@@ -345,8 +348,9 @@ class mh_order_stats extends ecjia_merchant
             ->where('add_time', '<', $end_date)
             ->where('order_status', '!=', OS_RETURNED)
             ->where('shipping_status', SS_SHIPPED)
-            ->sum('order_amount');
-        $data['shipped_count'] = price_format($shipped_count);
+            ->select(RC_DB::raw($field))
+            ->first();
+        $data['shipped_count'] = price_format($shipped_count['total_fee']);
 
         //退货订单总金额
         $returned_count = RC_DB::table('order_info')
@@ -356,8 +360,9 @@ class mh_order_stats extends ecjia_merchant
             ->where('add_time', '<', $end_date)
             ->where('order_status', OS_RETURNED)
             ->where('pay_status', PS_PAYED)
-            ->sum('order_amount');
-        $data['returned_count'] = price_format($returned_count);
+            ->select(RC_DB::raw($field))
+            ->first();
+        $data['returned_count'] = price_format($returned_count['total_fee']);
 
         //已取消订单总金额
         $canceled_count = RC_DB::table('order_info')
@@ -365,9 +370,10 @@ class mh_order_stats extends ecjia_merchant
             ->where('store_id', $store_id)
             ->where('add_time', '>=', $start_date)
             ->where('add_time', '<', $end_date)
-            ->whereIn('pay_status', array(OS_CANCELED, OS_INVALID))
-            ->sum('order_amount');
-        $data['canceled_count'] = price_format($canceled_count);
+            ->whereIn('order_status', array(OS_CANCELED, OS_INVALID))
+            ->select(RC_DB::raw($field))
+            ->first();
+        $data['canceled_count'] = price_format($canceled_count['total_fee']);
 
         //已完成订单总金额
         $finished_count = RC_DB::table('order_info')
@@ -377,8 +383,9 @@ class mh_order_stats extends ecjia_merchant
             ->where('add_time', '<', $end_date)
             ->whereIn('order_status', array(OS_CONFIRMED, OS_SPLITED))
             ->where('shipping_status', SS_RECEIVED)
-            ->sum('order_amount');
-        $data['finished_count'] = price_format($finished_count);
+            ->select(RC_DB::raw($field))
+            ->first();
+        $data['finished_count'] = price_format($finished_count['total_fee']);
 
         //配送型订单数及总金额
         $data['order_count_data'] = RC_DB::table('order_info')
@@ -514,88 +521,88 @@ class mh_order_stats extends ecjia_merchant
      */
     private function get_ship_status()
     {
-    	$current_year = RC_Time::local_date('Y', RC_Time::gmtime());
-    	$year = !empty($_GET['year']) ? intval($_GET['year']) : $current_year;
-    	$month = !empty($_GET['month']) ? intval($_GET['month']) : 0;
-    
-    	if (empty($month)) {
-    		$smonth = 1;
-    		$emonth = 12;
-    	} else {
-    		$smonth = $month;
-    		$emonth = $month;
-    	}
-    	$start_time = $year . '-' . $smonth . '-1 00:00:00';
-    	$em = $year . '-' . $emonth . '-1 23:59:59';
-    	$end_time = RC_Time::local_date('Y-m-t H:i:s', RC_Time::local_strtotime($em));
-    
-    	$start_date = RC_Time::local_strtotime($start_time);
-    	$end_date = RC_Time::local_strtotime($end_time);
-    
-    	$where = "i.add_time >= '$start_date' AND i.add_time <= '$end_date'" . order_query_sql('finished');
-    
-    	$ship_info = RC_DB::table('shipping as sp')
-    	->leftJoin('order_info as i', RC_DB::raw('sp.shipping_id'), '=', RC_DB::raw('i.shipping_id'))
-    	->select(RC_DB::raw('sp.shipping_name AS ship_name, COUNT(i.order_id) AS order_num'))
-    	->whereRaw($where)
-    	->groupby(RC_DB::raw('i.shipping_id'))
-    	->orderby('order_num', 'desc')
-    	->get();
-    
-    	if (!empty($ship_info)) {
-    		arsort($ship_info);
-    	} else {
-    		$ship_info = null;
-    	}
-    	$ship_infos = json_encode($ship_info);
-    	return $ship_infos;
+        $current_year = RC_Time::local_date('Y', RC_Time::gmtime());
+        $year = !empty($_GET['year']) ? intval($_GET['year']) : $current_year;
+        $month = !empty($_GET['month']) ? intval($_GET['month']) : 0;
+
+        if (empty($month)) {
+            $smonth = 1;
+            $emonth = 12;
+        } else {
+            $smonth = $month;
+            $emonth = $month;
+        }
+        $start_time = $year . '-' . $smonth . '-1 00:00:00';
+        $em = $year . '-' . $emonth . '-1 23:59:59';
+        $end_time = RC_Time::local_date('Y-m-t H:i:s', RC_Time::local_strtotime($em));
+
+        $start_date = RC_Time::local_strtotime($start_time);
+        $end_date = RC_Time::local_strtotime($end_time);
+
+        $where = "i.add_time >= '$start_date' AND i.add_time <= '$end_date'" . order_query_sql('finished');
+
+        $ship_info = RC_DB::table('shipping as sp')
+            ->leftJoin('order_info as i', RC_DB::raw('sp.shipping_id'), '=', RC_DB::raw('i.shipping_id'))
+            ->select(RC_DB::raw('sp.shipping_name AS ship_name, COUNT(i.order_id) AS order_num'))
+            ->whereRaw($where)
+            ->groupby(RC_DB::raw('i.shipping_id'))
+            ->orderby('order_num', 'desc')
+            ->get();
+
+        if (!empty($ship_info)) {
+            arsort($ship_info);
+        } else {
+            $ship_info = null;
+        }
+        $ship_infos = json_encode($ship_info);
+        return $ship_infos;
     }
-    
+
     /**
      * 获取支付方式数据
      */
     private function get_pay_status()
     {
-    	$current_year = RC_Time::local_date('Y', RC_Time::gmtime());
-    	$year = !empty($_GET['year']) ? intval($_GET['year']) : $current_year;
-    	$month = !empty($_GET['month']) ? intval($_GET['month']) : 0;
-    
-    	if (empty($month)) {
-    		$smonth = 1;
-    		$emonth = 12;
-    	} else {
-    		$smonth = $month;
-    		$emonth = $month;
-    	}
-    	$start_time = $year . '-' . $smonth . '-1 00:00:00';
-    	$em = $year . '-' . $emonth . '-1 23:59:59';
-    	$end_time = RC_Time::local_date('Y-m-t H:i:s', RC_Time::local_strtotime($em));
-    
-    	$start_date = RC_Time::local_strtotime($start_time);
-    	$end_date = RC_Time::local_strtotime($end_time);
-    
-    	$where = "i.add_time >= '$start_date' AND i.add_time <= '$end_date'" . order_query_sql('finished');
-    
-    	$pay_info = RC_DB::table('payment as p')
-    	->leftJoin('order_info as i', RC_DB::raw('p.pay_id'), '=', RC_DB::raw('i.pay_id'))
-    	->select(RC_DB::raw('i.pay_id, p.pay_name, COUNT(i.order_id) AS order_num'))
-    	->whereRaw($where)
-    	->groupby(RC_DB::raw('i.pay_id'))
-    	->orderby('order_num', 'desc')
-    	->get();
-    
-    	if (!empty($pay_info)) {
-    		foreach ($pay_info as $key => $val) {
-    			unset($pay_info[$key]['pay_id']);
-    		}
-    		arsort($pay_info);
-    	} else {
-    		$pay_info = null;
-    	}
-    	$pay_infos = json_encode($pay_info);
-    	return $pay_infos;
+        $current_year = RC_Time::local_date('Y', RC_Time::gmtime());
+        $year = !empty($_GET['year']) ? intval($_GET['year']) : $current_year;
+        $month = !empty($_GET['month']) ? intval($_GET['month']) : 0;
+
+        if (empty($month)) {
+            $smonth = 1;
+            $emonth = 12;
+        } else {
+            $smonth = $month;
+            $emonth = $month;
+        }
+        $start_time = $year . '-' . $smonth . '-1 00:00:00';
+        $em = $year . '-' . $emonth . '-1 23:59:59';
+        $end_time = RC_Time::local_date('Y-m-t H:i:s', RC_Time::local_strtotime($em));
+
+        $start_date = RC_Time::local_strtotime($start_time);
+        $end_date = RC_Time::local_strtotime($end_time);
+
+        $where = "i.add_time >= '$start_date' AND i.add_time <= '$end_date'" . order_query_sql('finished');
+
+        $pay_info = RC_DB::table('payment as p')
+            ->leftJoin('order_info as i', RC_DB::raw('p.pay_id'), '=', RC_DB::raw('i.pay_id'))
+            ->select(RC_DB::raw('i.pay_id, p.pay_name, COUNT(i.order_id) AS order_num'))
+            ->whereRaw($where)
+            ->groupby(RC_DB::raw('i.pay_id'))
+            ->orderby('order_num', 'desc')
+            ->get();
+
+        if (!empty($pay_info)) {
+            foreach ($pay_info as $key => $val) {
+                unset($pay_info[$key]['pay_id']);
+            }
+            arsort($pay_info);
+        } else {
+            $pay_info = null;
+        }
+        $pay_infos = json_encode($pay_info);
+        return $pay_infos;
     }
-    
+
     /**
      * 取得订单概况数据(包括订单的几种状态)
      * @param       $start_date    开始查询的日期

@@ -129,7 +129,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    	} else {
 	    		//订单对应店铺有没开启自动接单
 	    		$orders_auto_confirm = Ecjia\App\Cart\StoreStatus::StoreOrdersAutoConfirm($order['store_id']);
-	    		if ($orders_auto_confirm == '0') {
+	    		if ($orders_auto_confirm == Ecjia\App\Cart\StoreStatus::AUTOCONFIRM) {
 	    			$order_status = OS_CONFIRMED;
 	    			//已接单状态log记录
 	    			RC_DB::table('order_status_log')->insertGetId($log);

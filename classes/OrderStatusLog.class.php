@@ -293,8 +293,14 @@ class OrderStatusLog
     			'message'		=> '已被商家接单，订单正在备货中',
     			'add_time'		=> RC_Time::gmtime(),
     	);
-    	 
-    	RC_DB::table('order_status_log')->insert($data);
+    	$db = RC_DB::table('order_status_log');
+    	$db->insert($data);
+    	
+    	RC_Logger::getLogger('error')->info('testaaa');
+    	RC_Logger::getLogger('error')->info($data);
+    	RC_Logger::getLogger('error')->info($db->toSql());
+    	RC_Logger::getLogger('erroe')->info('testbbb');
+    	
     	return true;
     }
 }

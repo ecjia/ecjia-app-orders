@@ -449,7 +449,7 @@ ecjia.merchant.order.info();
 							</tr>
 							<tr>
 								<td><div align="right"><strong>{lang key='orders::order.label_inv_payee'}</strong></div></td>
-								<td>{if $inv_payee}{$inv_payee}{else}个人{/if}</td>
+								<td>{if $inv_payee}{$inv_payee}{else if $order.inv_type neq ''}个人{/if}</td>
 								<td><div align="right"><strong>{lang key='orders::order.label_inv_content'}</strong></div></td>
 								<td>{$order.inv_content}</td>
 							</tr>

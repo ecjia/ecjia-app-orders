@@ -5,19 +5,19 @@
 	<div class="move-mod-content">
 		<div class="mod-content-item">
 			<div class="title">待派单（单）</div>
-			<div class="num">17</div>
+			<div class="num">{if $data.express_count.wait_grab}{$data.express_count.wait_grab}{else}0{/if}</div>
 		</div>
 		<div class="mod-content-item">
 			<div class="title">待取货（单）</div>
-			<div class="num">18</div>
+			<div class="num">{if $data.express_count.wait_pickup}{$data.express_count.wait_pickup}{else}0{/if}</div>
 		</div>
 		<div class="mod-content-item">
 			<div class="title">配送中（单）</div>
-			<div class="num">19</div>
+			<div class="num">{if $data.express_count.sending}{$data.express_count.sending}{else}0{/if}</div>
 		</div>
 		<div class="mod-content-item">
 			<div class="title">总配送单（单）</div>
-			<div class="num">20</div>
+			<div class="num">{if $data.express_count.count}{$data.express_count.count}{else}0{/if}</div>
 		</div>
 	</div>
 </div>
@@ -28,19 +28,19 @@
 	<div class="move-mod-content">
 		<div class="mod-content-item">
 			<div class="title">促销（个）</div>
-			<div class="num">21</div>
+			<div class="num">{$data.promotion_count}</div>
 		</div>
 		<div class="mod-content-item">
 			<div class="title">优惠（个）</div>
-			<div class="num">22</div>
+			<div class="num">{$data.favourable_count}</div>
 		</div>
 		<div class="mod-content-item">
 			<div class="title">团购（个）</div>
-			<div class="num">23</div>
+			<div class="num">{$data.groupbuy_count}</div>
 		</div>
 		<div class="mod-content-item">
 			<div class="title">买单（个）</div>
-			<div class="num">24</div>
+			<div class="num">{$data.quickpay_count}</div>
 		</div>
 	</div>
 </div>
@@ -51,19 +51,19 @@
 	<div class="move-mod-content">
 		<div class="mod-content-item">
 			<div class="title">今日新增（篇）</div>
-			<div class="num">25</div>
+			<div class="num">{$data.today_article_count}</div>
 		</div>
 		<div class="mod-content-item">
 			<div class="title">待审核文章（篇）</div>
-			<div class="num">26</div>
+			<div class="num">{$data.waitcheck_article_count}</div>
 		</div>
 		<div class="mod-content-item">
-			<div class="title">带审核评论（条）</div>
-			<div class="num">27</div>
+			<div class="title">待审核评论（条）</div>
+			<div class="num">{$data.waitcheck_comment_count}</div>
 		</div>
 		<div class="mod-content-item">
 			<div class="title">总文章数（篇）</div>
-			<div class="num">28</div>
+			<div class="num">{$data.article_count}</div>
 		</div>
 	</div>
 </div>

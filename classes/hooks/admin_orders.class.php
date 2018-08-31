@@ -150,14 +150,134 @@ class orders_admin_plugin
         $static_url = RC_App::apps_url('orders/statics/images/');
         ecjia_admin::$controller->assign('static_url', $static_url);
 
+        $m = RC_Time::local_date('m');
+        $d = RC_Time::local_date('d');
+        $y = RC_Time::local_date('y');
+        
+        $start_date = RC_Time::local_mktime(0, 0, 0, $m, $d - 30, $y); //30天前 开始时间
+     	$end_date = RC_Time::gmtime(); //当前时间
+		
+        $data['goods_num'] = RC_DB::table('goods')->where('is_delete', 0)->where('add_time', '>=', $start_date)->count();
+        $data['users_num'] = RC_DB::table('users')->where('reg_time', '>=', $start_date)->count();
+        $data['orders_num'] = RC_DB::table('order_info')->where('is_delete', 0)->where('add_time', '>=', $start_date)->count();
+        $data['store_num'] = RC_DB::table('store_franchisee')->where('identity_status', 2)->where('apply_time', '>=', $start_date)->count();
+        
+        ecjia_admin::$controller->assign('data', $data);
         ecjia_admin::$controller->display(ecjia_app::get_app_template('library/widget_admin_dashboard_shopstats_top.lbi', 'orders'));
     }
     
     public static function widget_admin_dashboard_shopstats_left() {
+    	$m = RC_Time::local_date('m');
+    	$d = RC_Time::local_date('d');
+    	$y = RC_Time::local_date('y');
+    	
+    	$start_date = RC_Time::local_mktime(0, 0, 0, $m, $d - 30, $y); //30天前 开始时间
+    	$end_date = RC_Time::gmtime(); //当前时间
+    	
+    	//配送型订单数及总金额
+        $data['order_count'] = RC_DB::table('order_info')
+            ->where('is_delete', 0)
+            ->where(function ($query) {
+                $query->where('extension_code', '')
+                    ->orWhere('extension_code', null);
+            })
+            ->count('order_id');
+
+        //团购型订单数及总金额
+        $data['groupbuy_count'] = RC_DB::table('order_info')
+            ->where('is_delete', 0)
+            ->where('extension_code', 'group_buy')
+            ->count('order_id');
+
+        //到店型订单数及总金额
+        $data['storebuy_count'] = RC_DB::table('order_info')
+            ->where('is_delete', 0)
+            ->where('extension_code', 'storebuy')
+            ->count('order_id');
+
+        //自提型订单数及总金额
+        $data['storepickup_count'] = RC_DB::table('order_info')
+            ->where('is_delete', 0)
+            ->where('extension_code', 'storepickup')
+            ->count('order_id');
+    	
+        //会员统计
+        $today_start_date = RC_Time::local_mktime(0, 0, 0, $m, $d, $y);
+        $data['today_num'] = RC_DB::table('users')->where('reg_time', '>=', $today_start_date)->count();
+        
+        $sevendays_start_date = RC_Time::local_mktime(0, 0, 0, $m, $d - 7, $y);
+        $data['sevendays_num'] = RC_DB::table('users')->where('reg_time', '>=', $sevendays_start_date)->count();
+        
+        $thirtydays_start_date = RC_Time::local_mktime(0, 0, 0, $m, $d - 30, $y);
+        $data['thritydays_num'] = RC_DB::table('users')->where('reg_time', '>=', $thirtydays_start_date)->count();
+        
+        $data['total_num'] = RC_DB::table('users')->count();
+        
+        //待处理财务统计
+        $data['recharge_num'] = RC_DB::table('user_account')->where('process_type', 0)->where('is_paid', 0)->count();
+        $data['withdraw_num'] = RC_DB::table('user_account')->where('process_type', 1)->where('is_paid', 0)->count();
+        $data['refund_num'] = RC_DB::table('refund_payrecord')->where('action_back_time', 0)->count();
+        $data['merchant_withdraw_num'] = RC_DB::table('store_account_order')->where('process_type', 'withdraw')->where('status', 1)->count();
+        
+    	ecjia_admin::$controller->assign('data', $data);
     	ecjia_admin::$controller->display(ecjia_app::get_app_template('library/widget_admin_dashboard_shopstats_left.lbi', 'orders'));
     }
     
     public static function widget_admin_dashboard_shopstats_right() {
+    	$m = RC_Time::local_date('m');
+    	$d = RC_Time::local_date('d');
+    	$y = RC_Time::local_date('y');
+    	 
+    	$start_date = RC_Time::local_mktime(0, 0, 0, $m, $d - 30, $y); //30天前 开始时间
+    	$end_date = RC_Time::gmtime(); //当前时间
+    	 
+    	//配送调度统计
+    	$data['express_count'] = RC_DB::table('express_order')
+    		->where(RC_DB::raw('shipping_code'), 'ship_ecjia_express')
+    		->select(RC_DB::raw("count(*) as count"), 
+    			RC_DB::raw("SUM(IF(status = 0, 1, 0)) as wait_grab"),
+    			RC_DB::raw("SUM(IF(status = 1, 1, 0)) as wait_pickup"), 
+    			RC_DB::raw("SUM(IF(status = 2, 1, 0)) as sending"))
+    		->first();
+    	
+    	//促销活动
+    	$data['promotion_count'] = RC_DB::table('goods')->where('is_promote', 1)->where('is_delete', 0)->count();
+    	$data['favourable_count'] = RC_DB::table('favourable_activity')->count();
+    	$data['groupbuy_count'] = RC_DB::table('goods_activity')->where('act_type', GAT_GROUP_BUY)->count();
+    	$data['quickpay_count'] = RC_DB::table('quickpay_activity')->count();
+    	
+    	//文章统计情况
+    	$today_start_date = RC_Time::local_mktime(0, 0, 0, $m, $d, $y);
+    	$data['today_article_count'] = RC_DB::table('article as a')
+	    	->leftJoin('article_cat as ac', RC_DB::raw('ac.cat_id'), '=', RC_DB::raw('a.cat_id'))
+	    	->where(RC_DB::raw('a.cat_id'), '!=', '0')->where(RC_DB::raw('ac.cat_type'), 'article')
+	    	->where(RC_DB::raw('a.store_id'), '=', '0')
+	    	->where(RC_DB::raw('a.add_time'), '>=', $today_start_date)
+	    	->count();
+    	
+    	$data['waitcheck_article_count'] = RC_DB::table('article as a')
+	    	->leftJoin('article_cat as ac', RC_DB::raw('ac.cat_id'), '=', RC_DB::raw('a.cat_id'))
+	    	->where(RC_DB::raw('a.cat_id'), '!=', '0')->where(RC_DB::raw('ac.cat_type'), 'article')
+	    	->where(RC_DB::raw('a.store_id'), '=', '0')
+	    	->where(RC_DB::raw('a.article_approved'), '=', 0)
+	    	->where(RC_DB::raw('a.article_approved'), '!=', 'spam')
+	    	->where(RC_DB::raw('a.article_approved'), '!=', 'trash')
+	    	->count();
+    	
+    	$data['waitcheck_comment_count'] = RC_DB::table('discuss_comments')
+    		->where('comment_type', 'article')
+    		->where('comment_approved', 0)
+    		->where('comment_approved', '!=', 'spam')
+    		->where('comment_approved', '!=', 'trash')
+    		->count();
+    	
+    	$data['article_count'] = RC_DB::table('article as a')
+	    	->leftJoin('article_cat as ac', RC_DB::raw('ac.cat_id'), '=', RC_DB::raw('a.cat_id'))
+	    	->where(RC_DB::raw('a.cat_id'), '!=', '0')->where(RC_DB::raw('ac.cat_type'), 'article')
+	    	->where(RC_DB::raw('a.store_id'), '=', '0')
+	    	->count();
+    	
+    	ecjia_admin::$controller->assign('data', $data);
     	ecjia_admin::$controller->display(ecjia_app::get_app_template('library/widget_admin_dashboard_shopstats_right.lbi', 'orders'));
     }
 

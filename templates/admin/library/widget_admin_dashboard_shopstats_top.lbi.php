@@ -1,7 +1,7 @@
 <div class="move-mod-group" id="widget_admin_dashboard_stats">
 	<ul class="list-mod list-mod-stats move-mod-head">
 		<li class="span3">
-			<div class="bd ecjiaf-pre">1<span class="f_s14">&nbsp;件</span></div>
+			<div class="bd ecjiaf-pre">{$data.goods_num}<span class="f_s14">&nbsp;件</span></div>
 			<a target="__blank" href='{url path="orders/admin_order_stats/init" args="start_date={$month_start_time}&end_date={$month_end_time}"}'>
 				<div class="ft">
 					<img src="{$static_url}goods.png" />
@@ -10,7 +10,7 @@
 			</a>
 		</li>
 		<li class="span3">
-			<div class="bd ecjiaf-pre">2<span class="f_s14">&nbsp;个</span></div>
+			<div class="bd ecjiaf-pre">{$data.users_num}<span class="f_s14">&nbsp;个</span></div>
 			<a target="__blank" href='{url path="orders/admin_order_stats/init" args="start_date={$month_start_time}&end_date={$month_end_time}"}'>
 				<div class="ft">
 					<img src="{$static_url}user.png" />
@@ -19,7 +19,7 @@
 			</a>
 		</li>
 		<li class="span3">
-			<div class="bd ecjiaf-pre">3<span class="f_s14">&nbsp;单</span></div>
+			<div class="bd ecjiaf-pre">{$data.orders_num}<span class="f_s14">&nbsp;单</span></div>
 			<a target="__blank" href='{url path="orders/admin/init" args="start_time={$today_start_time}&end_time={$today_end_time}&composite_status={$unconfirmed}"}'>
 				<div class="ft">
 					<img src="{$static_url}order.png" />
@@ -28,7 +28,7 @@
 			</a>
 		</li>
 		<li class="span3">
-			<div class="bd ecjiaf-pre">4<span class="f_s14">&nbsp;个</span></div>
+			<div class="bd ecjiaf-pre">{$data.store_num}<span class="f_s14">&nbsp;个</span></div>
 			<a target="__blank" href='{url path="orders/admin/init" args="start_time={$today_start_time}&end_time={$today_end_time}&composite_status={$wait_ship}"}'>
 				<div class="ft">
 					<img src="{$static_url}seller.png" />

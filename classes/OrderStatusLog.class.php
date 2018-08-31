@@ -287,19 +287,19 @@ class OrderStatusLog
      * @return bool
      */
     public static function orderpaid_autoconfirm($options) {
-    	$data = array(
+    	$data1 = array(
     			'order_status'	=> '商家已接单',
     			'order_id'		=> $options['order_id'],
     			'message'		=> '已被商家接单，订单正在备货中',
-    			'add_time'		=> RC_Time::gmtime(),
+    			'add_time'		=> RC_Time::gmtime()
     	);
     	$db = RC_DB::table('order_status_log');
-    	$db->insert($data);
+    	$id = $db->insertGetId($data1);
     	
     	RC_Logger::getLogger('error')->info('testaaa');
-    	RC_Logger::getLogger('error')->info($data);
+    	RC_Logger::getLogger('error')->info($data1);
     	RC_Logger::getLogger('error')->info($db->toSql());
-    	RC_Logger::getLogger('erroe')->info('testbbb');
+    	RC_Logger::getLogger('error')->info('testbbb');
     	
     	return true;
     }

@@ -103,8 +103,9 @@ class OrderStatus
         } elseif (in_array($shipping_status, array(SS_PREPARING)) && $order_status != OS_RETURNED) {
             $label_order_status = '备货中';
             $status_code = 'shipping';
-        } elseif (in_array($order_status, array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
-            in_array($shipping_status, array(SS_SHIPPED_ING))) {
+        } elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
+            in_array($shipping_status, array(SS_SHIPPED_ING)) && 
+        	(in_array($pay_status, array(PS_PAYED)) || $is_cod)) {
             $label_order_status = '发货中';
             $status_code = 'shipped_ing';
         } elseif (in_array($shipping_status, array(SS_SHIPPED)) && ($order_status != OS_RETURNED)) {

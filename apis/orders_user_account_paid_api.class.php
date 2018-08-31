@@ -199,7 +199,7 @@ class orders_user_account_paid_api extends Component_Event_Api {
 			//订单付款成功时同时通知商家
 			OrderStatusLog::notify_merchant(array('order_id' => $order_id));
 			//配送订单且非团购订单；有开启自动接单，状态记录
-			if (($orders_auto_confirm == Ecjia\App\Cart\StoreStatus::AUTOCONFIRM) && ($order_info['extension_code'] != 'group_buy')) {
+			if ($orders_auto_confirm == Ecjia\App\Cart\StoreStatus::AUTOCONFIRM) {
 				OrderStatusLog::orderpaid_autoconfirm(array('order_id' => $order_info['order_id']));
 			}
 		}

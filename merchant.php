@@ -199,23 +199,31 @@ class merchant extends ecjia_merchant
 
         //订单状态筛选
         $status_list = RC_Lang::get('orders::order.cs');
-		if ($order_model != 'default') {
-			unset($status_list[CS_UNCONFIRMED]);
-		}
+        if ($order_model != 'default') {
+            unset($status_list[CS_UNCONFIRMED]);
+        }
         $this->assign('status_list', $status_list);
-        
+
         //配送方式
         $shipping_list = ecjia_shipping::getEnableList();
+        $merchant_shipping_list = RC_DB::table('shipping_area')->where('store_id', $_SESSION['store_id'])->lists('shipping_id');
+        if (!empty($shipping_list)) {
+            foreach ($shipping_list as $k => $v) {
+                if (!in_array($v['shipping_id'], $merchant_shipping_list)) {
+                    unset($shipping_list[$k]);
+                }
+            }
+        }
         $this->assign('shipping_list', $shipping_list);
-        
+
         //支付方式
         $pay_list = with(new Ecjia\App\Payment\PaymentPlugin)->getEnableList();
         $this->assign('pay_list', $pay_list);
-        
+
         //下单渠道
         $referer_list = array('iphone' => 'iPhone端', 'android' => 'Andriod端', 'mobile' => 'H5端', 'ecjia-cashdesk' => '收银台', 'weapp' => '小程序');
         $this->assign('referer_list', $referer_list);
-        
+
         if ($order_model == 'groupbuy') {
             $this->display('mh_groupbuy_order_list.dwt');
         } else {
@@ -241,7 +249,7 @@ class merchant extends ecjia_merchant
         $filter['extension_code'] = array('default', 'storepickup');
         $order_list = with(new Ecjia\App\Orders\Repositories\OrdersRepository())
             ->getOrderList($filter, $page, $size, $with, ['Ecjia\App\Orders\CustomizeOrderList', 'exportOrderListMerchant']);
-        
+
         /* 模板赋值 */
         $this->assign('ur_here', '当天订单');
 
@@ -732,10 +740,9 @@ class merchant extends ecjia_merchant
                 echo $this->fetch_string($shipping['shipping_print']);
             } else {
                 $shipping_code = $this->db_shipping->where(array('shipping_id' => $order['shipping_id']))->get_field('shipping_code');
-
                 if ($shipping_code) {
                     //todo 暂时注释
-                    //                     include_once(ROOT_PATH . 'includes/modules/shipping/' . $shipping_code . '.php');
+                    //include_once(ROOT_PATH . 'includes/modules/shipping/' . $shipping_code . '.php');
                 }
                 //todo 语言包升级待确认
                 if (RC_Lang::lang('shipping_print')) {
@@ -763,15 +770,15 @@ class merchant extends ecjia_merchant
             }
 
             $order_referer_list = array(
-            	'ecjia-storebuy' => '到店',
-            	'ecjia-storepickup' => '自提',
-            	'ecjia-cashdesk' => '收银台',
-            	'invitecode' => '邀请码',
-            	'mobile' => '手机端',
-            	'h5' => 'H5',
-            	'weapp' => '小程序',
-            	'android' => '安卓端',
-            	'iphone' => 'iPhone端'
+                'ecjia-storebuy' => '到店',
+                'ecjia-storepickup' => '自提',
+                'ecjia-cashdesk' => '收银台',
+                'invitecode' => '邀请码',
+                'mobile' => '手机端',
+                'h5' => 'H5',
+                'weapp' => '小程序',
+                'android' => '安卓端',
+                'iphone' => 'iPhone端',
             );
             $order['label_referer'] = $order_referer_list[$order['referer']];
             /* 参数赋值：订单 */
@@ -2513,10 +2520,10 @@ class merchant extends ecjia_merchant
         $sn_list = array();
         $sn_not_list = array();
         $url = RC_Uri::url('orders/merchant/init');
-		if (!empty($extension_code)) {
-			$url = RC_Uri::url('orders/merchant/init', array('extension_code' => $extension_code));
-		}
-        
+        if (!empty($extension_code)) {
+            $url = RC_Uri::url('orders/merchant/init', array('extension_code' => $extension_code));
+        }
+
         /* 确认 */
         if ('confirm' == $operation) {
             foreach ($order_id_list as $id_order) {

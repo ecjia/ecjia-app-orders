@@ -121,8 +121,8 @@ class orders_merchant_plugin
         $data['express_platform_count'] = RC_DB::table('express_order')
             ->where(RC_DB::raw('shipping_code'), 'ship_ecjia_express')
             ->where('store_id', $store_id)
-            ->select(RC_DB::raw("count(*) as count"), RC_DB::raw("SUM(IF(status = 0, 1, 0)) as wait_grab"), 
-                RC_DB::raw("SUM(IF(status = 1, 1, 0)) as wait_pickup"), RC_DB::raw("SUM(IF(status = 2, 1, 0)) as sending"), 
+            ->select(RC_DB::raw("count(*) as count"), RC_DB::raw("SUM(IF(status = 0, 1, 0)) as wait_grab"),
+                RC_DB::raw("SUM(IF(status = 1, 1, 0)) as wait_pickup"), RC_DB::raw("SUM(IF(status = 2, 1, 0)) as sending"),
                 RC_DB::raw("SUM(IF(status = 5, 1, 0)) as finished"))
             ->first();
 
@@ -135,8 +135,8 @@ class orders_merchant_plugin
         $data['express_merchant_count'] = RC_DB::table('express_order')
             ->where(RC_DB::raw('shipping_code'), 'ship_o2o_express')
             ->where('store_id', $store_id)
-            ->select(RC_DB::raw("count(*) as count"), RC_DB::raw("SUM(IF(status = 0, 1, 0)) as wait_grab"), 
-                RC_DB::raw("SUM(IF(status = 1, 1, 0)) as wait_pickup"), RC_DB::raw("SUM(IF(status = 2, 1, 0)) as sending"), 
+            ->select(RC_DB::raw("count(*) as count"), RC_DB::raw("SUM(IF(status = 0, 1, 0)) as wait_grab"),
+                RC_DB::raw("SUM(IF(status = 1, 1, 0)) as wait_pickup"), RC_DB::raw("SUM(IF(status = 2, 1, 0)) as sending"),
                 RC_DB::raw("SUM(IF(status = 5, 1, 0)) as finished"))
             ->first();
 

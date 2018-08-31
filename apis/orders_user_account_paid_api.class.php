@@ -124,7 +124,7 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		    /* 记录订单操作记录 */
 		    order_action($order_info['order_sn'], OS_CONFIRMED, SS_SHIPPED_ING, PS_PAYED, '', RC_Lang::get('orders::order.buyers'));
 		    $order_operate = RC_Loader::load_app_class('order_operate', 'orders');
-		     
+		    $order_info['pay_status'] = PS_PAYED;
 		    $order_operate->operate($order_info, 'receive', array('action_note' => '系统操作'));
 		} else {
 		    /* 更新订单表支付后信息 */

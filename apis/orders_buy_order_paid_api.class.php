@@ -95,7 +95,9 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    $order_sn = $order['order_sn'];
 	    RC_Logger::getLogger('pay')->info('orders_buy_order_paid');
 	    RC_Logger::getLogger('pay')->info($order);
+	    
 	    $time = RC_Time::gmtime();
+	    $orders_auto_confirm = Ecjia\App\Cart\StoreStatus::StoreOrdersAutoConfirm($order['store_id']);
 	    //判断订单类型，到店付款订单修改订单状态和发货状态
 	    if (in_array($order['extension_code'], array('storebuy', 'cashdesk'))) {
 	        /* 修改订单状态为已完成 */
@@ -119,15 +121,10 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    	//配送和团购支付后order_status还是未接单；自提为已接单
 	    	if ($order['extension_code'] == 'storepickup') {
 	    		$order_status = OS_CONFIRMED;
-	    		//自提，订单状态默认接单记录log
-	    		OrderStatusLog::orderpaid_autoconfirm(array('order_id' => $order_id));
 	    	} else {
 	    		//订单对应店铺有没开启自动接单
-	    		$orders_auto_confirm = Ecjia\App\Cart\StoreStatus::StoreOrdersAutoConfirm($order['store_id']);
-	    		if ($orders_auto_confirm == Ecjia\App\Cart\StoreStatus::AUTOCONFIRM) {
+	    		if (($orders_auto_confirm == Ecjia\App\Cart\StoreStatus::AUTOCONFIRM)) {
 	    			$order_status = OS_CONFIRMED;
-	    			//已接单状态log记录
-	    			OrderStatusLog::orderpaid_autoconfirm(array('order_id' => $order_id));
 	    		} else {
 	    			$order_status = OS_UNCONFIRMED;
 	    		}
@@ -154,24 +151,34 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    //	}
 	    //}
 	    
-	    //团购活动，有保证金的；订单order_status_log区分
-	    if ($order['extension_code'] == 'group_buy' && $order['extension_id'] > 0) {
-	    	RC_Loader::load_app_func('admin_goods', 'goods');
-	    	$group_buy = group_buy_info($order['extension_id']);
-	    	if ($group_buy['deposit'] > 0 && empty($order['money_paid'])) {
-	    		//团购订单保证金支付成功
-	    		OrderStatusLog::groupbuy_order_paid(array('order_id' => $order_id));
-	    	} else {
-	    		//订单付款成功时
-	    		OrderStatusLog::order_paid(array('order_id' => $order_id));
-	    		//订单付款成功时同时通知商家
-	    		OrderStatusLog::notify_merchant(array('order_id' => $order_id));
+	    //订单状态log记录区分
+	    if (in_array($order['extension_code'], array('storebuy', 'cashdesk', 'storepickup'))) {
+	    	//订单付款成功时
+	    	OrderStatusLog::order_paid(array('order_id' => $order_id));
+	    	//订单付款成功时同时通知商家
+	    	OrderStatusLog::notify_merchant(array('order_id' => $order_id));
+	    	//自提订单，默认自动接单状态记录
+	    	if ($order['extension_code'] == 'storepickup') {
+	    		OrderStatusLog::orderpaid_autoconfirm(array('order_id' => $order_id));
 	    	}
 	    } else {
-    		//订单付款成功时
-    		OrderStatusLog::order_paid(array('order_id' => $order_id));
-    		//订单付款成功时同时通知商家
-    		OrderStatusLog::notify_merchant(array('order_id' => $order_id));
+	    	if ($order['extension_code'] == 'group_buy' && $order['extension_id'] > 0) {
+	    		RC_Loader::load_app_func('admin_goods', 'goods');
+	    		$group_buy = group_buy_info($order['extension_id']);
+	    		if ($group_buy['deposit'] > 0 && empty($order['money_paid'])) {
+	    			//团购订单保证金支付成功
+	    			OrderStatusLog::groupbuy_order_paid(array('order_id' => $order_id));
+	    		} else {
+	    			//订单付款成功时
+	    			OrderStatusLog::order_paid(array('order_id' => $order_id));
+	    		}
+	    		//订单付款成功时同时通知商家
+	    		OrderStatusLog::notify_merchant(array('order_id' => $order_id));
+	    		//配送订单且非团购订单；有开启自动接单，状态记录
+	    		if (($orders_auto_confirm == Ecjia\App\Cart\StoreStatus::AUTOCONFIRM) && ($order['extension_code'] != 'group_buy')) {
+	    			OrderStatusLog::orderpaid_autoconfirm(array('order_id' => $order['order_id']));
+	    		}
+	    	}
 	    }
 	    
 	    /*门店自提，时发送提货验证码；*/

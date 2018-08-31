@@ -89,6 +89,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	 */
 	private function order_paid($order_sn, $order, $pay_status = PS_PAYED) {
 	    RC_Loader::load_app_func('admin_order', 'orders');
+	    RC_Loader::load_app_class('OrderStatusLog', 'orders', false);
 	    
 	    $order_id = $order['order_id'];
 	    $order_sn = $order['order_sn'];
@@ -116,23 +117,17 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    } else {
 	        /* 修改订单状态为已付款 */
 	    	//配送和团购支付后order_status还是未接单；自提为已接单
-	    	$log = array(
-	    			'order_status' 	=> '商家已接单',
-	    			'order_id'		=> $order_id,
-	    			'message'		=> '已被商家接单，订单正在备货中',
-	    			'add_time'		=> $time
-	    	);
 	    	if ($order['extension_code'] == 'storepickup') {
 	    		$order_status = OS_CONFIRMED;
 	    		//自提，订单状态默认接单记录log
-	    		RC_DB::table('order_status_log')->insertGetId($log);
+	    		OrderStatusLog::orderpaid_autoconfirm(array('order_id' => $order_id));
 	    	} else {
 	    		//订单对应店铺有没开启自动接单
 	    		$orders_auto_confirm = Ecjia\App\Cart\StoreStatus::StoreOrdersAutoConfirm($order['store_id']);
 	    		if ($orders_auto_confirm == Ecjia\App\Cart\StoreStatus::AUTOCONFIRM) {
 	    			$order_status = OS_CONFIRMED;
 	    			//已接单状态log记录
-	    			RC_DB::table('order_status_log')->insertGetId($log);
+	    			OrderStatusLog::orderpaid_autoconfirm(array('order_id' => $order_id));
 	    		} else {
 	    			$order_status = OS_UNCONFIRMED;
 	    		}
@@ -160,8 +155,6 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    //}
 	    
 	    //团购活动，有保证金的；订单order_status_log区分
-	    RC_Loader::load_app_class('OrderStatusLog', 'orders', false);
-	    
 	    if ($order['extension_code'] == 'group_buy' && $order['extension_id'] > 0) {
 	    	RC_Loader::load_app_func('admin_goods', 'goods');
 	    	$group_buy = group_buy_info($order['extension_id']);

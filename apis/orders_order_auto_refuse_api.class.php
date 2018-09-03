@@ -51,14 +51,14 @@ defined('IN_ECJIA') or exit('No permission resources.');
  */
 class orders_order_auto_refuse_api extends Component_Event_Api {
     /**
-     * @param  $options['order_id'] 订单ID
+     * @param  $options['order_sn'] 订单编号
      * @return bool
      */
 	public function call(&$options) {
-	    if (!is_array($options) || !isset($options['order_id'])) {
+	    if (!is_array($options) || !isset($options['order_sn'])) {
 	        return new ecjia_error('invalid_parameter', '调用api文件,order_auto_refuse,参数错误');
 	    }
-		return $this->refuse_order($options['order_id']);
+		return $this->refuse_order($options['order_sn']);
 	}
 
 	/**
@@ -66,21 +66,23 @@ class orders_order_auto_refuse_api extends Component_Event_Api {
 	 * @param   int	 $order_id   订单id
 	 * @return  bool
 	 */
-	private function update_order($order_id = 0) {
-		if (!empty($order_id)) {
+	private function update_order($order_sn = '') {
+		if (!empty($order_sn)) {
 			$time = RC_Time::gmtime();
-			$order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));
+			$order_info = RC_Api::api('orders', 'order_info', array('order_sn' => $order_sn));
 			if (is_ecjia_error($order_info)) {
 				return $order_info;
 			}
 			if (!empty($order_info)) {
-				if (!empty($order_info['store_id'])) {
-					$orders_auto_confirm =  Ecjia\App\Cart\StoreStatus::StoreOrdersAutoConfirm($order_info['store_id']);
-					$orders_auto_rejection_time = Ecjia\App\Orders\OrderAutoRefuse::StoreOrdersAutoRejectTime($order_info['store_id']);
-				
-					if (($orders_auto_rejection_time > 0) && $orders_auto_confirm == Ecjia\App\Cart\StoreStatus::UNAUTOCONFIRM) {
-						if ($time - $order_info['pay_time'] >= $orders_auto_rejection_time*60) {
-							Ecjia\App\Orders\OrderAutoRefuse::AutoRejectOrder($order_info);
+				if ($order_info['order_status'] == OS_UNCONFIRMED) {
+					if (!empty($order_info['store_id'])) {
+						$orders_auto_confirm =  Ecjia\App\Cart\StoreStatus::StoreOrdersAutoConfirm($order_info['store_id']);
+						$orders_auto_rejection_time = Ecjia\App\Orders\OrderAutoRefuse::StoreOrdersAutoRejectTime($order_info['store_id']);
+					
+						if (($orders_auto_rejection_time > 0) && $orders_auto_confirm == Ecjia\App\Cart\StoreStatus::UNAUTOCONFIRM) {
+							if ($time - $order_info['pay_time'] >= $orders_auto_rejection_time*60) {
+								Ecjia\App\Orders\OrderAutoRefuse::AutoRejectOrder($order_info);
+							}
 						}
 					}
 				}

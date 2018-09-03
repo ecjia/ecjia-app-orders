@@ -44,6 +44,7 @@
 //
 //  ---------------------------------------------------------------------------------
 //
+
 defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
@@ -51,24 +52,46 @@ defined('IN_ECJIA') or exit('No permission resources.');
  */
 class orders_order_auto_confirm_api extends Component_Event_Api {
     /**
-     * @param  $options['order_id'] 订单ID
+     * @param  $options['order_sn'] 订单编号
      * @return bool
      */
 	public function call(&$options) {
-	    if (!is_array($options) || !isset($options['order_id'])) {
+	    if (!is_array($options) || !isset($options['order_sn'])) {
 	        return new ecjia_error('invalid_parameter', '调用api文件,order_auto_confirm,参数错误');
 	    }
-		return $this->update_order($options['order_id']);
+		return $this->update_order($options['order_sn']);
 	}
 
 	/**
 	 * 订单状态更新
-	 * @param   int	 $order_id   订单id
+	 * @param   int	 $order_sn   订单编号
 	 * @return  bool
 	 */
-	private function update_order($order_id = 0) {
-		if (!empty($order_id)) {
-			RC_DB::table('order_info')->where('order_id', $order_id)->update(array('order_status' => OS_CONFIRMED, 'confirm_time' => RC_Time::gmtime()));
+	private function update_order($order_sn = '') {
+		if (!empty($order_sn)) {
+			$order_info =RC_DB::table('order_info')->where('order_sn', $order_sn)->first(); 
+			if ($order_info['order_status'] == OS_UNCONFIRMED) {
+				RC_DB::table('order_info')->where('order_sn', $order_sn)->update(array('order_status' => OS_CONFIRMED, 'confirm_time' => RC_Time::gmtime()));
+				RC_Loader::load_app_class('OrderStatusLog', 'orders', false);
+				OrderStatusLog::orderpaid_autoconfirm(array('order_id' => $order_info['order_id']));
+				//短信通知
+// 				if (!empty($order_info['user_id'])) {
+// 					$user_mobile_phone = RC_DB::table('users')->where('user_id', $order_info['user_id'])->pluck('mobile_phone');
+// 					//发送短信
+// 					$options = array(
+// 							'mobile' => $user_mobile_phone,
+// 							'event'	 => 'sms_order_auto_confirm',
+// 							'value'  =>array(
+// 									'order_sn'		=> $order_info['order_sn'],
+// 									'consignee' 	=> $order_info['consignee'],
+// 									'telephone'  	=> $order_info['mobile'],
+// 									'order_amount'	=> $order_info['order_amount'],
+// 									'service_phone' => ecjia::config('service_phone'),
+// 							),
+// 					);
+// 					RC_Api::api('sms', 'send_event_sms', $options);
+// 				}
+			}
 		}
 		return true;
 	}

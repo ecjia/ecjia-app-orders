@@ -115,6 +115,7 @@
 
 	.mod-content-item .title {
 		color: #999999;
+		font-size: 13px;
 	}
 
 	.mod-content-item .num {

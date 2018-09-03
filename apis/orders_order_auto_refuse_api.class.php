@@ -66,7 +66,7 @@ class orders_order_auto_refuse_api extends Component_Event_Api {
 	 * @param   int	 $order_id   订单id
 	 * @return  bool
 	 */
-	private function update_order($order_sn = '') {
+	private function refuse_order($order_sn = '') {
 		if (!empty($order_sn)) {
 			$time = RC_Time::gmtime();
 			$order_info = RC_Api::api('orders', 'order_info', array('order_sn' => $order_sn));

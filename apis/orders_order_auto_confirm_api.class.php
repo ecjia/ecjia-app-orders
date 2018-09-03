@@ -48,7 +48,7 @@
 defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
- * 自动接单
+ * 接单
  */
 class orders_order_auto_confirm_api extends Component_Event_Api {
     /**
@@ -70,7 +70,7 @@ class orders_order_auto_confirm_api extends Component_Event_Api {
 	private function update_order($order_sn = '') {
 		if (!empty($order_sn)) {
 			$order_info =RC_DB::table('order_info')->where('order_sn', $order_sn)->first(); 
-			if ($order_info['order_status'] == OS_UNCONFIRMED) {
+			if (($order_info['order_status'] == OS_UNCONFIRMED) && ($order_info['pay_status'] == PS_PAYED)) {
 				RC_DB::table('order_info')->where('order_sn', $order_sn)->update(array('order_status' => OS_CONFIRMED, 'confirm_time' => RC_Time::gmtime()));
 				RC_Loader::load_app_class('OrderStatusLog', 'orders', false);
 				OrderStatusLog::orderpaid_autoconfirm(array('order_id' => $order_info['order_id']));

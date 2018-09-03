@@ -47,7 +47,7 @@
 defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
- * 自动拒单
+ * 拒单
  */
 class orders_order_auto_refuse_api extends Component_Event_Api {
     /**
@@ -74,17 +74,8 @@ class orders_order_auto_refuse_api extends Component_Event_Api {
 				return $order_info;
 			}
 			if (!empty($order_info)) {
-				if ($order_info['order_status'] == OS_UNCONFIRMED) {
-					if (!empty($order_info['store_id'])) {
-						$orders_auto_confirm =  Ecjia\App\Cart\StoreStatus::StoreOrdersAutoConfirm($order_info['store_id']);
-						$orders_auto_rejection_time = Ecjia\App\Orders\OrderAutoRefuse::StoreOrdersAutoRejectTime($order_info['store_id']);
-					
-						if (($orders_auto_rejection_time > 0) && $orders_auto_confirm == Ecjia\App\Cart\StoreStatus::UNAUTOCONFIRM) {
-							if ($time - $order_info['pay_time'] >= $orders_auto_rejection_time*60) {
-								Ecjia\App\Orders\OrderAutoRefuse::AutoRejectOrder($order_info);
-							}
-						}
-					}
+				if (($order_info['order_status'] == OS_UNCONFIRMED) && ($order_info['pay_status'] == PS_PAYED)) {
+					Ecjia\App\Orders\OrderAutoRefuse::AutoRejectOrder($order_info);
 				}
 			}
 		}

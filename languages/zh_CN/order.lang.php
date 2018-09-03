@@ -850,6 +850,8 @@ return array(
     'merchant_process'			=> '等待商家接单',
     'express_user_pickup'		=> '配送员已取货',
     'order_pickup_success'		=> '已提货',
+    'merchant_confirmed'		=> '商家已接单',
+    'merchant_unconfirmed'		=> '无法接单',
     
     'submit_order'				=> '提交订单',
     'pay_for_order'				=> '支付订单',

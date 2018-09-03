@@ -319,6 +319,8 @@ class detail_module extends api_front implements api_interface {
 				'confirm_receipt'	=> RC_Lang::get('orders::order.confirm_receipted'),
 				'finished'		=> RC_Lang::get('orders::order.order_finished'),
 				'pickup_success'=> RC_Lang::get('orders::order.order_pickup_success'),
+				'merchant_confirmed'=> RC_Lang::get('orders::order.merchant_confirmed'),
+				'merchant_unconfirmed'=> RC_Lang::get('orders::order.merchant_unconfirmed'),
 			);
 			
 			foreach ($order_status_log as $val) {

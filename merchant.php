@@ -3339,16 +3339,25 @@ class merchant extends ecjia_merchant
                 'money_paid' => 0,
                 'order_amount' => $order['money_paid'],
             );
-            $confirm_receive = update_order($order_id, $arr);
-            if ($confirm_receive) {
-                $data = array(
-                    'order_status' => RC_Lang::get('orders::order.cs.' . CS_FINISHED),
-                    'order_id' => $order_id,
-                    'add_time' => RC_Time::gmtime(),
-                );
-                RC_DB::table('order_status_log')->insert($data);
-            }
+            update_order($order_id, $arr);
+            
+//             $confirm_receive = update_order($order_id, $arr);
+//             if ($confirm_receive) {
+//                 $data = array(
+//                     'order_status' => RC_Lang::get('orders::order.cs.' . CS_FINISHED),
+//                     'order_id' => $order_id,
+//                     'add_time' => RC_Time::gmtime(),
+//                 );
+//                 RC_DB::table('order_status_log')->insert($data);
+//             }
 
+            RC_DB::table('order_status_log')->insert(array(
+	            'order_status'	=> RC_Lang::get('orders::order.order_cancel'),
+	            'order_id'		=> $order_id,
+	            'message'		=> '您的订单已取消成功！',
+	            'add_time'		=> RC_Time::gmtime(),
+            ));
+            
             /* 记录日志 */
             ecjia_merchant::admin_log('设为取消,订单号是' . $order['order_sn'], 'setup', 'order');
             /* 记录log */

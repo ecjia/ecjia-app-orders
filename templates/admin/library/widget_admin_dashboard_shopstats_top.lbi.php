@@ -99,8 +99,17 @@
 	.move-mod-content {
 		background-color: #f9f9f9;
 		border-radius: 4px;
+		display: -webkit-box;
+		display: -moz-box;
+		display: -webkit-flex;
+		display: -moz-flex;
+		display: -ms-flexbox;
 		display: flex;
 		align-items: center;
+		-webkit-align-items: center;
+		box-align: center;
+		-moz-box-align: center;
+		-webkit-box-align: center;
 		height: 100px;
 		justify-content: space-around;
 		margin-bottom: 10px;

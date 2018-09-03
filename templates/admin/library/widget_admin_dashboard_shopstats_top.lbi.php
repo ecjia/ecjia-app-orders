@@ -1,40 +1,32 @@
 <div class="move-mod-group" id="widget_admin_dashboard_stats">
 	<ul class="list-mod list-mod-stats move-mod-head">
 		<li class="span3">
-			<div class="bd ecjiaf-pre">{$data.goods_num}<span class="f_s14">&nbsp;件</span></div>
-			<a target="__blank" href='{url path="orders/admin_order_stats/init" args="start_date={$month_start_time}&end_date={$month_end_time}"}'>
-				<div class="ft">
-					<img src="{$static_url}goods.png" />
-					<span>30天新增商品</span>
-				</div>
-			</a>
+			<div class="bd ecjiaf-pre"><a target="__blank" href='{url path="goods/admin/init"}'>{$data.goods_num}</a><span class="f_s14">&nbsp;件</span></div>
+			<div class="ft">
+				<img src="{$static_url}goods.png" />
+				<span>30天新增商品</span>
+			</div>
 		</li>
 		<li class="span3">
-			<div class="bd ecjiaf-pre">{$data.users_num}<span class="f_s14">&nbsp;个</span></div>
-			<a target="__blank" href='{url path="orders/admin_order_stats/init" args="start_date={$month_start_time}&end_date={$month_end_time}"}'>
-				<div class="ft">
-					<img src="{$static_url}user.png" />
-					<span>30天新增会员</span>
-				</div>
-			</a>
+			<div class="bd ecjiaf-pre"><a target="__blank" href='{url path="user/admin/init"}'>{$data.users_num}</a><span class="f_s14">&nbsp;个</span></div>
+			<div class="ft">
+				<img src="{$static_url}user.png" />
+				<span>30天新增会员</span>
+			</div>
 		</li>
 		<li class="span3">
-			<div class="bd ecjiaf-pre">{$data.orders_num}<span class="f_s14">&nbsp;单</span></div>
-			<a target="__blank" href='{url path="orders/admin/init" args="start_time={$today_start_time}&end_time={$today_end_time}&composite_status={$unconfirmed}"}'>
-				<div class="ft">
-					<img src="{$static_url}order.png" />
-					<span>30天新增订单</span>
-				</div>
-			</a>
+			<div class="bd ecjiaf-pre"><a target="__blank" href='{url path="orders/admin/init"}'>{$data.orders_num}</a><span class="f_s14">&nbsp;单</span></div>
+			<div class="ft">
+				<img src="{$static_url}order.png" />
+				<span>30天新增订单</span>
+			</div>
 		</li>
 		<li class="span3">
-			<div class="bd ecjiaf-pre">{$data.store_num}<span class="f_s14">&nbsp;个</span></div>
-			<a target="__blank" href='{url path="orders/admin/init" args="start_time={$today_start_time}&end_time={$today_end_time}&composite_status={$wait_ship}"}'>
-				<div class="ft">
-					<img src="{$static_url}seller.png" />
-					<span>30天新增入驻商</span>
-				</div>
-			</a>
+			<div class="bd ecjiaf-pre"><a target="__blank" href='{url path="store/admin/join"}'>{$data.store_num}</a><span class="f_s14">&nbsp;个</span></div>
+			<div class="ft">
+				<img src="{$static_url}seller.png" />
+				<span>30天新增入驻商</span>
+			</div>
 		</li>
 	</ul>
 </div>
@@ -129,5 +121,9 @@
 
 	.mod-content-item .num {
 		margin-top: 20px;
+	}
+	
+	.move-mod-group a:hover {
+		text-decoration: none;
 	}
 </style>

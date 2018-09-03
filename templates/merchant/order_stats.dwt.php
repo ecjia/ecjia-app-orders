@@ -28,6 +28,9 @@
 	<div class="pull-left">
 		<h2>{if $ur_here}{$ur_here}{/if}</h2>
 	</div>
+	<div class="pull-right">
+		<a href="{$action_link.href}&year={$year}{if $month}&month={$month}{/if}" class="btn btn-primary nopjax"><i class="fa fa-download"></i> {$action_link.text}</a>
+	</div>
 	<div class="clearfix"></div>
 </div>
 

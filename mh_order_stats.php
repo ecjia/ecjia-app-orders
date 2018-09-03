@@ -121,7 +121,7 @@ class mh_order_stats extends ecjia_merchant
         $this->assign('month', $month);
         $this->assign('page', 'init');
 
-        $this->assign('form_action', RC_Uri::url('orders/mh_order_stats/init', array('store_id' => $store_id)));
+        $this->assign('form_action', RC_Uri::url('orders/mh_order_stats/init'));
 
         $data = $this->get_order_general($store_id);
         $this->assign('data', $data);
@@ -176,7 +176,7 @@ class mh_order_stats extends ecjia_merchant
         $this->assign('month', $month);
         $this->assign('page', 'shipping_status');
 
-        $this->assign('form_action', RC_Uri::url('orders/mh_order_stats/shipping_status', array('store_id' => $store_id)));
+        $this->assign('form_action', RC_Uri::url('orders/mh_order_stats/shipping_status'));
 
         $data = $this->get_ship_status($store_id);
         $this->assign('data', $data);
@@ -231,7 +231,7 @@ class mh_order_stats extends ecjia_merchant
         $this->assign('month', $month);
         $this->assign('page', 'pay_status');
 
-        $this->assign('form_action', RC_Uri::url('orders/mh_order_stats/pay_status', array('store_id' => $store_id)));
+        $this->assign('form_action', RC_Uri::url('orders/mh_order_stats/pay_status'));
 
         $data = $this->get_pay_status();
         $this->assign('data', $data);
@@ -246,43 +246,63 @@ class mh_order_stats extends ecjia_merchant
     {
         /* 判断权限 */
         $this->admin_priv('order_stats', ecjia::MSGTYPE_JSON);
-        /* 时间参数 */
-        $start_date = RC_Time::local_strtotime($_GET['start_date']);
-        $end_date = RC_Time::local_strtotime($_GET['end_date']);
-        /*文件名*/
-        $filename = RC_Lang::get('orders::statistic.order_statement') . '_' . $_GET['start_date'] . '至' . $_GET['end_date'];
 
-        header("Content-type: application/vnd.ms-excel; charset=utf-8");
-        header("Content-Disposition: attachment; filename=$filename.xls");
+        $store_id = $_SESSION['store_id'];
 
-        /* 订单概况 */
-        $order_info = $this->get_orderinfo($start_date, $end_date);
+        $current_year = RC_Time::local_date('Y', RC_Time::gmtime());
+        $year = !empty($_GET['year']) ? intval($_GET['year']) : $current_year;
+        $month = !empty($_GET['month']) ? intval($_GET['month']) : 0;
 
-        $data = RC_Lang::get('orders::statistic.order_circs') . "\n";
-        $data .= RC_Lang::get('orders::statistic.confirmed') . "\t" . RC_Lang::get('orders::statistic.succeed') . "\t" . RC_Lang::get('orders::statistic.unconfirmed') . "\t" . RC_Lang::get('orders::statistic.invalid') . "\n";
-        $data .= $order_info[confirmed_num] . "\t" . $order_info[succeed_num] . "\t" . $order_info[unconfirmed_num] . "\t" . $order_info[invalid_num] . "\n";
-        /* 配送方式 */
-        $where = 'i.add_time >= ' . $start_date . ' AND i.add_time <= ' . $end_date . '' . order_query_sql('finished') . ' AND i.store_id = ' . $_SESSION['store_id'];
-        // $ship_res = $this->db_shipping_view->field('sp.shipping_id, sp.shipping_name AS ship_name, COUNT(i.order_id) AS order_num')->where($where)->group('i.shipping_id')->order(array('order_num' => 'DESC'))->select();
-
-        $ship_res = RC_DB::table('shipping as sp')
-            ->leftJoin('order_info as i', RC_DB::raw('sp.shipping_id'), '=', RC_DB::raw('i.shipping_id'))
-            ->whereRaw($where)
-            ->select(RC_DB::raw('sp.shipping_id'), RC_DB::raw('sp.shipping_name AS ship_name'), RC_DB::raw('COUNT(i.order_id) AS order_num'))
-            ->groupBy(RC_DB::raw('i.shipping_id'))
-            ->orderBy('order_num', 'desc')
-            ->get();
-
-        $data .= "\n" . RC_Lang::get('orders::statistic.shipping_method') . "\n";
-        foreach ($ship_res as $val) {
-            $data .= $val['ship_name'] . "\t";
+        if (empty($month)) {
+            $smonth = 1;
+            $emonth = 12;
+        } else {
+            $smonth = $month;
+            $emonth = $month;
         }
-        $data .= "\n";
-        foreach ($ship_res as $val) {
-            $data .= $val['order_num'] . "\t";
+        $start_time = $year . '-' . $smonth . '-1 00:00:00';
+        $em = $year . '-' . $emonth . '-1 23:59:59';
+        $end_time = RC_Time::local_date('Y-m-t H:i:s', RC_Time::local_strtotime($em));
+
+        $start_date = RC_Time::local_strtotime($start_time);
+        $end_date = RC_Time::local_strtotime($end_time);
+
+        $filename = RC_Lang::get('orders::statistic.order_statement');
+        if (!empty($start_time) && !empty($end_time)) {
+            $filename .= '_' . $start_time . '至' . $end_time;
         }
-        echo mb_convert_encoding($data . "\t", 'UTF-8', 'auto') . "\t";
-        exit;
+		
+        $order_stats = $this->get_order_stats($store_id);
+        
+        $count_key = array('await_pay_count', 'await_ship_count', 'shipped_count', 'returned_count', 'canceled_count', 'finished_count');
+        $data_key = array('order_count_data', 'groupbuy_count_data', 'storebuy_count_data', 'storepickup_count_data');
+        $order_stats['order_count_data']['title'] = '配送型订单';
+        $order_stats['groupbuy_count_data']['title'] = '团购型订单';
+        $order_stats['storebuy_count_data']['title'] = '到店型订单';
+        $order_stats['storepickup_count_data']['title'] = '自提型订单';
+        
+        $count_arr = $count_data_arr = [];
+        foreach ($order_stats as $k => $v) {
+        	if (in_array($k, $count_key)) {
+        		$count_arr[] = $v;
+        	}
+        	if (in_array($k, $data_key)) {
+        		$count_data_arr[$k]['title'] = $order_stats[$k]['title'];
+        		$count_data_arr[$k]['order_count'] = $order_stats[$k]['order_count'];
+        		$count_data_arr[$k]['total_fee'] = $order_stats[$k]['total_fee'];
+        	}
+        }
+
+        RC_Excel::load(RC_APP_PATH . 'orders' . DIRECTORY_SEPARATOR .'statics/files/merchant_orders_stats.xls', function($excel) use ($count_arr, $count_data_arr) {
+        	$excel->sheet('First sheet', function($sheet) use ($count_arr, $count_data_arr) {
+        		$sheet->appendRow(2, $count_arr);
+        		$i = 4;
+        		foreach ($count_data_arr as $k => $v) {
+        			$sheet->appendRow($i, $v);
+        			$i++;
+        		}
+        	});
+        })->download('xls');
     }
 
     /**

@@ -26,7 +26,7 @@
 		<!-- {if $ur_here}{$ur_here}{/if} -->
 		<a class="btn plus_or_reply" id="sticky_a" href='{$action_link.href}&store_id={$store_id}&year={$year}{if $month}&month={$month}{/if}'>
 			<i class="fontello-icon-download"></i>{$action_link.text}</a>
-		<a class="btn plus_or_reply data-pjax" id="sticky_a" href='{RC_Uri::url("orders/admin_order_stats/init")}'>
+		<a class="btn plus_or_reply nopjax" id="sticky_a" href='{RC_Uri::url("orders/admin_order_stats/init")}'>
 			<i class="fontello-icon-reply"></i>订单统计</a>
 	</h3>
 </div>

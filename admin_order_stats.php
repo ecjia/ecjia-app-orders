@@ -318,70 +318,41 @@ class admin_order_stats extends ecjia_admin
         $end_date = RC_Time::local_strtotime($end_time);
 
         $filename = RC_Lang::get('orders::statistic.order_statement');
-        if (!empty($start_date) && !empty($end_date)) {
-            $filename .= '_' . $_GET['start_date'] . '至' . $_GET['end_date'];
+        if (!empty($start_time) && !empty($end_time)) {
+            $filename .= '_' . $start_time . '至' . $end_time;
         }
-
-        /*文件名*/
-        $filename = mb_convert_encoding($filename, "GBK", "UTF-8");
-        header("Content-type: application/vnd.ms-excel; charset=utf-8");
-        header("Content-Disposition: attachment; filename=$filename.xls");
-
-        /* 订单概况 */
-        $order_info = $this->get_orderinfo($start_date, $end_date, $store_id);
-
-        $data = RC_Lang::get('orders::statistic.order_circs') . "\n";
-        $data .= RC_Lang::get('orders::statistic.confirmed') . "\t" . RC_Lang::get('orders::statistic.succeed') . "\t" . RC_Lang::get('orders::statistic.unconfirmed') . "\t" . RC_Lang::get('orders::statistic.invalid') . "\n";
-        $data .= $order_info['confirmed_num'] . "\t" . $order_info['succeed_num'] . "\t" . $order_info['unconfirmed_num'] . "\t" . $order_info['invalid_num'] . "\n";
-        $data .= "\n" . RC_Lang::get('orders::statistic.pay_method') . "\n";
-
-        /* 支付方式 */
-        $where = "i.add_time >= '$start_date' AND i.add_time <= '$end_date'" . order_query_sql('finished');
-
-        $pay_res = RC_DB::table('payment as p')
-            ->leftJoin('order_info as i', RC_DB::raw('p.pay_id'), '=', RC_DB::raw('i.pay_id'))
-            ->select(RC_DB::raw('i.pay_id, p.pay_name, COUNT(i.order_id) AS order_num'))
-            ->whereRaw($where)
-            ->groupby(RC_DB::raw('i.pay_id'))
-            ->orderby('order_num', 'desc')
-            ->get();
-
-        if (!empty($pay_res)) {
-            foreach ($pay_res as $val) {
-                $data .= $val['pay_name'] . "\t";
-            }
+		
+        $order_stats = $this->get_order_stats($store_id);
+        
+        $count_key = array('await_pay_count', 'await_ship_count', 'shipped_count', 'returned_count', 'canceled_count', 'finished_count');
+        $data_key = array('order_count_data', 'groupbuy_count_data', 'storebuy_count_data', 'storepickup_count_data');
+        $order_stats['order_count_data']['title'] = '配送型订单';
+        $order_stats['groupbuy_count_data']['title'] = '团购型订单';
+        $order_stats['storebuy_count_data']['title'] = '到店型订单';
+        $order_stats['storepickup_count_data']['title'] = '自提型订单';
+        
+        $count_arr = $count_data_arr = [];
+        foreach ($order_stats as $k => $v) {
+        	if (in_array($k, $count_key)) {
+        		$count_arr[] = $v;
+        	}
+        	if (in_array($k, $data_key)) {
+        		$count_data_arr[$k]['title'] = $order_stats[$k]['title'];
+        		$count_data_arr[$k]['order_count'] = $order_stats[$k]['order_count'];
+        		$count_data_arr[$k]['total_fee'] = $order_stats[$k]['total_fee'];
+        	}
         }
-        $data .= "\n";
-        if (!empty($pay_res)) {
-            foreach ($pay_res as $val) {
-                $data .= $val['order_num'] . "\t";
-            }
-        }
-        /* 配送方式 */
-        $where = 'i.add_time >= ' . $start_date . ' AND i.add_time <= ' . $end_date . '' . order_query_sql('finished');
-
-        $ship_res = RC_DB::table('shipping as sp')
-            ->leftJoin('order_info as i', RC_DB::raw('sp.shipping_id'), '=', RC_DB::raw('i.shipping_id'))
-            ->select(RC_DB::raw('sp.shipping_id, sp.shipping_name AS ship_name, COUNT(i.order_id) AS order_num'))
-            ->whereRaw($where)
-            ->groupby(RC_DB::raw('i.shipping_id'))
-            ->orderby('order_num', 'desc')
-            ->get();
-
-        $data .= "\n" . RC_Lang::get('orders::statistic.shipping_method') . "\n";
-        if (!empty($ship_res)) {
-            foreach ($ship_res as $val) {
-                $data .= $val['ship_name'] . "\t";
-            }
-        }
-        $data .= "\n";
-        if (!empty($ship_res)) {
-            foreach ($ship_res as $val) {
-                $data .= $val['order_num'] . "\t";
-            }
-        }
-        echo mb_convert_encoding($data . "\t", "GBK", "UTF-8") . "\t";
-        exit;
+        
+        RC_Excel::load(RC_APP_PATH . 'orders' . DIRECTORY_SEPARATOR .'statics/files/orders_stats.xls', function($excel) use ($count_arr, $count_data_arr) {
+        	$excel->sheet('First sheet', function($sheet) use ($count_arr, $count_data_arr) {
+        		$sheet->appendRow(2, $count_arr);
+        		$i = 4;
+        		foreach ($count_data_arr as $k => $v) {
+        			$sheet->appendRow($i, $v);
+        			$i++;
+        		}
+        	});
+        })->download('xls');
     }
 
     /**

@@ -144,10 +144,6 @@ class OrderAutoRefuse
     	);
     	$refund_id = RC_DB::table('refund_order')->insertGetId($refund_data);
     	
-    	RC_Logger::getLogger('error')->info('testaaa');
-    	RC_Logger::getLogger('error')->info($refund_id);
-    	RC_Logger::getLogger('error')->info('testbbb');
-    	
     	/* 订单状态为“退货” */
     	RC_DB::table('order_info')->where('order_id', $order['order_id'])->update(array('order_status' => OS_RETURNED));
     	

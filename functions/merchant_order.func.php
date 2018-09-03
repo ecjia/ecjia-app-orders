@@ -226,12 +226,12 @@ function merchant_operable_list($order)
 // 			$list['confirm'] = true;
         }
         if ($priv_list['edit']) {
-            $list['remove'] = true;
+//             $list['remove'] = true; 暂不支持移除
         }
     } elseif (OS_INVALID == $os) {
         /* 状态：无效 无效订单只能删除*/
         if ($priv_list['edit']) {
-            $list['remove'] = true;
+//             $list['remove'] = true; 暂不支持移除
         }
     } elseif (OS_RETURNED == $os) {
         /* 状态：退货 */

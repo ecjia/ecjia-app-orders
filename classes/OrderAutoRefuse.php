@@ -53,6 +53,7 @@ use OrderStatusLog;
 use RefundStatusLog;
 use RC_Time;
 use RC_Logger;
+use RC_Api;
 
 /**
  * 自动拒单

@@ -463,6 +463,8 @@ class admin_order_stats extends ecjia_admin
             ->where('store_id', $store_id)
             ->where('add_time', '>=', $start_date)
             ->where('add_time', '<', $end_date)
+            ->whereIn('order_status', array(OS_CONFIRMED, OS_SPLITED))
+            ->where('shipping_status', SS_RECEIVED)
             ->where(function ($query) {
                 $query->where('extension_code', '')
                     ->orWhere('extension_code', null);
@@ -476,6 +478,8 @@ class admin_order_stats extends ecjia_admin
             ->where('store_id', $store_id)
             ->where('add_time', '>=', $start_date)
             ->where('add_time', '<', $end_date)
+            ->whereIn('order_status', array(OS_CONFIRMED, OS_SPLITED))
+            ->where('shipping_status', SS_RECEIVED)
             ->where('extension_code', 'group_buy')
             ->select(RC_DB::raw("count('order_id') as order_count"), RC_DB::raw("SUM(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee + tax + integral_money - bonus - discount) as total_fee"))
             ->first();
@@ -486,6 +490,8 @@ class admin_order_stats extends ecjia_admin
             ->where('store_id', $store_id)
             ->where('add_time', '>=', $start_date)
             ->where('add_time', '<', $end_date)
+            ->whereIn('order_status', array(OS_CONFIRMED, OS_SPLITED))
+            ->where('shipping_status', SS_RECEIVED)
             ->where('extension_code', 'storebuy')
             ->select(RC_DB::raw("count('order_id') as order_count"), RC_DB::raw("SUM(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee + tax + integral_money - bonus - discount) as total_fee"))
             ->first();
@@ -496,6 +502,8 @@ class admin_order_stats extends ecjia_admin
             ->where('store_id', $store_id)
             ->where('add_time', '>=', $start_date)
             ->where('add_time', '<', $end_date)
+            ->whereIn('order_status', array(OS_CONFIRMED, OS_SPLITED))
+            ->where('shipping_status', SS_RECEIVED)
             ->where('extension_code', 'storepickup')
             ->select(RC_DB::raw("count('order_id') as order_count"), RC_DB::raw("SUM(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee + tax + integral_money - bonus - discount) as total_fee"))
             ->first();

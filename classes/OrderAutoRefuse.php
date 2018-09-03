@@ -79,6 +79,11 @@ class OrderAutoRefuse
      * @return bool
      */
     public static function AutoRejectOrder($order = array()) {
+    	
+    	RC_Loader::load_app_class('order_refund', 'refund', false);
+    	RC_Loader::load_app_class('OrderStatusLog', 'orders', false);
+    	RC_Loader::load_app_class('RefundStatusLog', 'refund', false);
+    	
     	$reasons = RC_Loader::load_app_config('refund_reasons', 'refund');
     	$auto_refuse = $reasons['auto_refuse'];
     	$refund_reason = $auto_refuse['reason_id'];

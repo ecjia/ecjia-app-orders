@@ -81,7 +81,7 @@ class OrderStatus
 
     public static function getOrderStatusLabel($order_status, $shipping_status, $pay_status, $is_cod)
     {
-        if (in_array($order_status, array(OS_UNCONFIRMED,OS_SPLITED)) &&
+        if (in_array($order_status, array(OS_UNCONFIRMED, OS_SPLITED)) &&
             (in_array($pay_status, array(PS_UNPAYED)))) {
             $label_order_status = '未付款';
             $status_code = 'await_pay';

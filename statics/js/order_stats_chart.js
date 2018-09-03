@@ -201,6 +201,7 @@
 						formatter: "{a} <br/>{b} : {c} ({d}%)"
 					},
 					legend: {
+						selectedMode: false,
 						bottom: 25,
 						data: ['配送', '团购', '到店', '自提']
 					},

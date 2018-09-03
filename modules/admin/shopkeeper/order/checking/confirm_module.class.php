@@ -630,7 +630,7 @@ function delivery_ship($order_id, $delivery_id) {
 	update_order($order_id, $arr);
 
 	//记录管理员操作log
-	RC_Api::api('merchant', 'admin_log', array('text'=> '发货,订单号是'.$order['order_sn'].'【来源掌柜】', 'action'=>'setup', 'object'=>'order'));
+	RC_Api::api('merchant', 'admin_log', array('text'=> '发货，订单号是'.$order['order_sn'].'【来源掌柜】', 'action'=>'setup', 'object'=>'order'));
 	
 	/* 发货单发货记录log */
 	order_action($order['order_sn'], OS_CONFIRMED, $shipping_status, $order['pay_status'], $action_note, null, 1);

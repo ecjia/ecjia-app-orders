@@ -54,7 +54,7 @@
 		font-size: 30px;
 		text-align: center;
 		padding: 80px 0px 0 0;
-		border: 1px solid #ccc;
+		border: 1px solid #ddd;
 		border-top: none;
 		border-radius: 5px;
 	}
@@ -104,6 +104,7 @@
 		height: 100px;
 		justify-content: space-around;
 		margin-bottom: 10px;
+		border: 1px solid #ddd;
 	}
 
 	.mod-content-item {

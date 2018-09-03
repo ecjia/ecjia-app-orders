@@ -52,6 +52,7 @@ use order_refund;
 use OrderStatusLog;
 use RefundStatusLog;
 use RC_Time;
+use RC_Logger;
 
 /**
  * 自动拒单
@@ -142,6 +143,10 @@ class OrderAutoRefuse
     			'referer' 			=> 'merchant',
     	);
     	$refund_id = RC_DB::table('refund_order')->insertGetId($refund_data);
+    	
+    	RC_Logger::getLogger('error')->info('testaaa');
+    	RC_Logger::getLogger('error')->info($refund_id);
+    	RC_Logger::getLogger('error')->info('testbbb');
     	
     	/* 订单状态为“退货” */
     	RC_DB::table('order_info')->where('order_id', $order['order_id'])->update(array('order_status' => OS_RETURNED));

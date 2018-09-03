@@ -87,8 +87,8 @@ class OrderAutoRefuse
     	
     	$reasons = RC_Loader::load_app_config('refund_reasons', 'refund');
     	$auto_refuse = $reasons['auto_refuse'];
-    	$refund_reason = $auto_refuse['reason_id'];
-    	$refund_content = $auto_refuse['reason_name'];
+    	$refund_reason = $auto_refuse['0']['reason_id'];
+    	$refund_content = $auto_refuse['0']['reason_name'];
     	
     	//配送方式信息
     	$shipping_code = '';

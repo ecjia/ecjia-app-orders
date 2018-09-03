@@ -1659,7 +1659,7 @@ class merchant extends ecjia_merchant
             if ($old_order['total_fee'] != $new_order['total_fee']) {
                 $sn .= ',' . sprintf(RC_Lang::get('orders::order.order_amount_change'), $old_order['total_fee'], $new_order['total_fee']);
             }
-            ecjia_merchant::admin_log('编辑支付方式与配送方式,订单号是' . $sn, 'edit', 'order');
+            ecjia_merchant::admin_log('编辑支付方式与配送方式，订单号是' . $sn, 'edit', 'order');
 
             if (isset($_POST['next'])) {
                 /* 下一步 */
@@ -1715,7 +1715,7 @@ class merchant extends ecjia_merchant
 
             /* todo 记录日志 */
             $sn = $old_order['order_sn'];
-            ecjia_merchant::admin_log('其他信息,订单号是' . $sn, 'edit', 'order');
+            ecjia_merchant::admin_log('其他信息，订单号是' . $sn, 'edit', 'order');
 
             /* 完成 */
             $url = RC_Uri::url('orders/merchant/info', array('order_id' => $order_id));
@@ -2771,7 +2771,7 @@ class merchant extends ecjia_merchant
             update_order_amount($order_id);
             /* 记录日志 */
 
-            ecjia_merchant::admin_log('设为确认,订单号是' . $order['order_sn'], 'setup', 'order');
+            ecjia_merchant::admin_log('设为确认，订单号是' . $order['order_sn'], 'setup', 'order');
             /* 记录log */
             order_action($order['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_PAYED, $action_note);
             /*订单状态表log记录*/
@@ -2826,7 +2826,7 @@ class merchant extends ecjia_merchant
             update_order($order_id, $arr);
 
             /* 记录日志 */
-            ecjia_merchant::admin_log('设为付款,订单号是' . $order['order_sn'], 'setup', 'order');
+            ecjia_merchant::admin_log('设为付款，订单号是' . $order['order_sn'], 'setup', 'order');
             /* 记录log */
             order_action($order['order_sn'], OS_CONFIRMED, $order['shipping_status'], PS_PAYED, $action_note);
         } elseif ('unpay' == $operation) {
@@ -2848,7 +2848,7 @@ class merchant extends ecjia_merchant
             $refund_note = @$_POST['refund_note'];
             order_refund($order, $refund_type, $refund_note);
             /* 记录日志 */
-            ecjia_merchant::admin_log('设为未付款,订单号是' . $order['order_sn'], 'setup', 'order');
+            ecjia_merchant::admin_log('设为未付款，订单号是' . $order['order_sn'], 'setup', 'order');
             /* 记录log */
             order_action($order['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_PAYED, $action_note);
         } elseif ('prepare' == $operation) {
@@ -3240,7 +3240,7 @@ class merchant extends ecjia_merchant
             update_order($order_id, array('shipping_status' => SS_UNSHIPPED, 'shipping_time' => 0, 'invoice_no' => '', 'order_status' => OS_CONFIRMED));
 
             /* 记录日志 */
-            ecjia_merchant::admin_log('取消发货,订单号是' . $order['order_sn'], 'setup', 'order');
+            ecjia_merchant::admin_log('取消发货，订单号是' . $order['order_sn'], 'setup', 'order');
             /* 记录log */
             order_action($order['order_sn'], $order['order_status'], SS_UNSHIPPED, $order['pay_status'], $action_note);
 
@@ -3359,7 +3359,7 @@ class merchant extends ecjia_merchant
             ));
             
             /* 记录日志 */
-            ecjia_merchant::admin_log('设为取消,订单号是' . $order['order_sn'], 'setup', 'order');
+            ecjia_merchant::admin_log('设为取消，订单号是' . $order['order_sn'], 'setup', 'order');
             /* 记录log */
             order_action($order['order_sn'], OS_CANCELED, $order['shipping_status'], PS_UNPAYED, $action_note);
 
@@ -3394,7 +3394,7 @@ class merchant extends ecjia_merchant
             /* 标记订单为“无效”、“未付款” */
             update_order($order_id, array('order_status' => OS_INVALID));
             /* 记录日志 */
-            ecjia_merchant::admin_log('设为无效,订单号是' . $order['order_sn'], 'setup', 'order');
+            ecjia_merchant::admin_log('设为无效，订单号是' . $order['order_sn'], 'setup', 'order');
             /* 记录log */
             order_action($order['order_sn'], OS_INVALID, $order['shipping_status'], PS_UNPAYED, $action_note);
 
@@ -3420,7 +3420,7 @@ class merchant extends ecjia_merchant
             /* 记录log */
             order_action($order['order_sn'], $order['order_status'], $order['shipping_status'], $order['pay_status'], $action_note);
             /* 记录日志 */
-            ecjia_merchant::admin_log('添加售后,订单号是' . $order['order_sn'], 'setup', 'order');
+            ecjia_merchant::admin_log('添加售后，订单号是' . $order['order_sn'], 'setup', 'order');
         } elseif ('confirm_return' == $operation) {
             order_action($order['order_sn'], $order['order_status'], $order['shipping_status'], $order['pay_status'], '[' . RC_Lang::get('orders::order.op_return_confirm') . '] ' . $action_note);
         } else {
@@ -4643,7 +4643,7 @@ class merchant extends ecjia_merchant
 
         update_order($order_id, $arr);
         /* 记录日志 */
-        ecjia_merchant::admin_log('发货,订单号是' . $order['order_sn'], 'setup', 'order');
+        ecjia_merchant::admin_log('发货，订单号是' . $order['order_sn'], 'setup', 'order');
         /* 发货单发货记录log */
         order_action($order['order_sn'], OS_CONFIRMED, $shipping_status, $order['pay_status'], $action_note, null, 1);
 
@@ -5168,7 +5168,7 @@ class merchant extends ecjia_merchant
         if ($old_order['total_fee'] != $new_order['total_fee']) {
             $sn .= ',' . sprintf(RC_Lang::get('orders::order.order_amount_change'), $old_order['total_fee'], $new_order['total_fee']);
         }
-        ecjia_merchant::admin_log('编辑配送方式,订单号是' . $sn, 'edit', 'order');
+        ecjia_merchant::admin_log('编辑配送方式，订单号是' . $sn, 'edit', 'order');
 
         /* 初始化提示信息和链接 */
         $msgs = array();

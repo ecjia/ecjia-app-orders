@@ -377,7 +377,7 @@ class mh_validate_order extends ecjia_merchant {
 		update_order($order_id, $arr);
 
 		/* 记录日志 */
-		ecjia_merchant::admin_log('发货,订单号是'.$order['order_sn'], 'setup', 'order');
+		ecjia_merchant::admin_log('发货，订单号是'.$order['order_sn'], 'setup', 'order');
 		/* 发货单发货记录log */
 		order_action($order['order_sn'], OS_CONFIRMED, $shipping_status, $order['pay_status'], $action_note, null, 1);
 	
@@ -511,7 +511,7 @@ class mh_validate_order extends ecjia_merchant {
 // 		update_order_amount($order['order_id']);
 // 		/* 记录日志 */
 		
-// 		ecjia_merchant::admin_log('设为确认,订单号是'.$order['order_sn'], 'setup', 'order');
+// 		ecjia_merchant::admin_log('设为确认，订单号是'.$order['order_sn'], 'setup', 'order');
 // 		/* 记录log */
 // 		order_action($order['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_UNPAYED, $action_note);
 		

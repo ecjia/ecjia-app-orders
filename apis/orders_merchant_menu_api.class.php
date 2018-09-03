@@ -65,7 +65,7 @@ class orders_merchant_menu_api extends Component_Event_Api {
 			ecjia_merchant::make_admin_menu('07_order_list', __('自提订单'), RC_Uri::url('orders/merchant/init', array('extension_code' => 'storepickup')), 7)->add_purview('order_view')->add_icon('fa-list-alt'),
 			ecjia_merchant::make_admin_menu('08_order_list', __('团购订单'), RC_Uri::url('orders/merchant/init', array('extension_code' => 'group_buy')), 8)->add_purview('order_view')->add_icon('fa-list-alt'),
 				
-			ecjia_merchant::make_admin_menu('09_order_query', __('订单查询'), RC_Uri::url('orders/merchant/order_query'), 9)->add_purview('order_view')->add_icon('fa-list-ul'),
+// 			ecjia_merchant::make_admin_menu('09_order_query', __('订单查询'), RC_Uri::url('orders/merchant/order_query'), 9)->add_purview('order_view')->add_icon('fa-list-ul'),
 			ecjia_merchant::make_admin_menu('divider', '', '', 10)->add_purview(array('category_manage', 'brand_manage', 'attr_manage')),
 			ecjia_merchant::make_admin_menu('11_delivery_order', __('发货单列表'), RC_Uri::url('orders/mh_delivery/init'), 11)->add_purview('delivery_view')->add_icon('fa-check-square'),
 			ecjia_merchant::make_admin_menu('12_back_order', __('退货单列表'), RC_Uri::url('orders/mh_back/init'), 12)->add_purview('back_view')->add_icon('fa-undo'),

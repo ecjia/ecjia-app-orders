@@ -318,7 +318,7 @@ class admin_order_stats extends ecjia_admin
         }
         $start_time = $year . '-' . $smonth . '-1 00:00:00';
         $em = $year . '-' . $emonth . '-1 23:59:59';
-        $end_time = RC_Time::local_date('Y-m-t H:i:s', RC_Time::local_strtotime($em));
+        $end_time = RC_Time::local_date('Y-m-d H:i:s', RC_Time::local_strtotime($em));
 
         $start_date = RC_Time::local_strtotime($start_time);
         $end_date = RC_Time::local_strtotime($end_time);
@@ -380,7 +380,7 @@ class admin_order_stats extends ecjia_admin
         }
         $start_time = $year . '-' . $smonth . '-1 00:00:00';
         $em = $year . '-' . $emonth . '-1 23:59:59';
-        $end_time = RC_Time::local_date('Y-m-t H:i:s', RC_Time::local_strtotime($em));
+        $end_time = RC_Time::local_date('Y-m-d H:i:s', RC_Time::local_strtotime($em));
 
         $start_date = RC_Time::local_strtotime($start_time);
         $end_date = RC_Time::local_strtotime($end_time);
@@ -547,7 +547,7 @@ class admin_order_stats extends ecjia_admin
         }
         $start_time = $year . '-' . $smonth . '-1 00:00:00';
         $em = $year . '-' . $emonth . '-1 23:59:59';
-        $end_time = RC_Time::local_date('Y-m-t H:i:s', RC_Time::local_strtotime($em));
+        $end_time = RC_Time::local_date('Y-m-d H:i:s', RC_Time::local_strtotime($em));
 
         $start_date = RC_Time::local_strtotime($start_time);
         $end_date = RC_Time::local_strtotime($end_time);
@@ -618,7 +618,7 @@ class admin_order_stats extends ecjia_admin
         }
         $start_time = $year . '-' . $smonth . '-1 00:00:00';
         $em = $year . '-' . $emonth . '-1 23:59:59';
-        $end_time = RC_Time::local_date('Y-m-t H:i:s', RC_Time::local_strtotime($em));
+        $end_time = RC_Time::local_date('Y-m-d H:i:s', RC_Time::local_strtotime($em));
 
         $start_date = RC_Time::local_strtotime($start_time);
         $end_date = RC_Time::local_strtotime($end_time);
@@ -660,7 +660,7 @@ class admin_order_stats extends ecjia_admin
         }
         $start_time = $year . '-' . $smonth . '-1 00:00:00';
         $em = $year . '-' . $emonth . '-1 23:59:59';
-        $end_time = RC_Time::local_date('Y-m-t H:i:s', RC_Time::local_strtotime($em));
+        $end_time = RC_Time::local_date('Y-m-d H:i:s', RC_Time::local_strtotime($em));
 
         $start_date = RC_Time::local_strtotime($start_time);
         $end_date = RC_Time::local_strtotime($end_time);

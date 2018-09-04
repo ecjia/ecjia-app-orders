@@ -68,8 +68,8 @@ class orders_remind_order_api extends Component_Event_Api
             ->count();
 
         $arr['new_paid'] = RC_DB::table('order_info')
-            ->where('add_time', '>=', $today_start_date)
-            ->where('pay_time', PS_PAYED)
+            ->where('pay_time', '>=', $today_start_date)
+            ->where('pay_status', PS_PAYED)
             ->where('is_delete', 0)
             ->count();
 

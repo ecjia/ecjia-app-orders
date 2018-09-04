@@ -74,23 +74,26 @@ class orders_order_auto_confirm_api extends Component_Event_Api {
 				RC_DB::table('order_info')->where('order_sn', $order_sn)->update(array('order_status' => OS_CONFIRMED, 'confirm_time' => RC_Time::gmtime()));
 				RC_Loader::load_app_class('OrderStatusLog', 'orders', false);
 				OrderStatusLog::orderpaid_autoconfirm(array('order_id' => $order_info['order_id']));
-				//短信通知
-// 				if (!empty($order_info['user_id'])) {
-// 					$user_mobile_phone = RC_DB::table('users')->where('user_id', $order_info['user_id'])->pluck('mobile_phone');
-// 					//发送短信
-// 					$options = array(
-// 							'mobile' => $user_mobile_phone,
-// 							'event'	 => 'sms_order_auto_confirm',
-// 							'value'  =>array(
-// 									'order_sn'		=> $order_info['order_sn'],
-// 									'consignee' 	=> $order_info['consignee'],
-// 									'telephone'  	=> $order_info['mobile'],
-// 									'order_amount'	=> $order_info['order_amount'],
-// 									'service_phone' => ecjia::config('service_phone'),
-// 							),
-// 					);
-// 					RC_Api::api('sms', 'send_event_sms', $options);
-// 				}
+				//订单已接单短信通知
+				if (!empty($order_info['user_id'])) {
+					$user_info = RC_DB::table('users')->where('user_id', $order_info['user_id'])->select('mobile_phone', 'user_name');
+					if (!empty($user_info['mobile_phone'])) {
+						try {
+							//发送短信
+							$options = array(
+									'mobile' => $user_info['mobile_phone'],
+									'event'	 => 'sms_order_confirmed',
+									'value'  =>array(
+											'order_sn'		=> $order_info['order_sn'],
+											'user_name' 	=> $user_info['user_name']
+									),
+							);
+							RC_Api::api('sms', 'send_event_sms', $options);
+						} catch (PDOException $e) {
+							RC_Logger::getLogger('info')->error($e);
+						}
+					}
+				}
 			}
 		}
 		return true;

@@ -153,6 +153,23 @@ class OrderAutoRefuse
     	/* 订单状态为“退货” */
     	RC_DB::table('order_info')->where('order_id', $order['order_id'])->update(array('order_status' => OS_RETURNED));
     	
+    	//订单被拒单短信通知
+    	if (!empty($order['user_id'])) {
+    		$user_info = RC_DB::table('users')->where('user_id', $order['user_id'])->select('mobile_phone', 'user_name');
+    		if (!empty($user_info['mobile_phone'])) {
+    			//发送短信
+    			$options = array(
+    					'mobile' => $user_info['mobile_phone'],
+    					'event'	 => 'sms_order_refused',
+    					'value'  =>array(
+    							'order_sn'	=> $order['order_sn'],
+    							'user_name' => $user_info['user_name']
+    					),
+    			);
+    			RC_Api::api('sms', 'send_event_sms', $options);
+    		}
+    	}
+    	
     	/* 记录log */
     	$action_note = '系统自动退款';
     	order_refund::order_action($order['order_id'], OS_RETURNED, $order['shipping_status'], $order['pay_status'], $action_note, '系统');

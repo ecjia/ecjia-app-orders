@@ -155,7 +155,7 @@ class OrderAutoRefuse
     	
     	//订单被拒单短信通知
     	if (!empty($order['user_id'])) {
-    		$user_info = RC_DB::table('users')->where('user_id', $order['user_id'])->select('mobile_phone', 'user_name');
+    		$user_info = RC_DB::table('users')->where('user_id', $order['user_id'])->select('mobile_phone', 'user_name')->first();
     		if (!empty($user_info['mobile_phone'])) {
     			//发送短信
     			$options = array(

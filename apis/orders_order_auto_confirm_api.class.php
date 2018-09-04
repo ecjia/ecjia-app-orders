@@ -76,7 +76,7 @@ class orders_order_auto_confirm_api extends Component_Event_Api {
 				OrderStatusLog::orderpaid_autoconfirm(array('order_id' => $order_info['order_id']));
 				//订单已接单短信通知
 				if (!empty($order_info['user_id'])) {
-					$user_info = RC_DB::table('users')->where('user_id', $order_info['user_id'])->select('mobile_phone', 'user_name');
+					$user_info = RC_DB::table('users')->where('user_id', $order_info['user_id'])->select('mobile_phone', 'user_name')->first();
 					if (!empty($user_info['mobile_phone'])) {
 						try {
 							//发送短信

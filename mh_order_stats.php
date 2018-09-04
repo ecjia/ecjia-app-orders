@@ -296,7 +296,7 @@ class mh_order_stats extends ecjia_merchant
         RC_Excel::load(RC_APP_PATH . 'orders' . DIRECTORY_SEPARATOR .'statics/files/merchant_orders_stats.xls', function($excel) use ($count_arr, $count_data_arr) {
         	$excel->sheet('First sheet', function($sheet) use ($count_arr, $count_data_arr) {
         		$sheet->appendRow(2, $count_arr);
-        		$i = 4;
+        		$i = 5;
         		foreach ($count_data_arr as $k => $v) {
         			$sheet->appendRow($i, $v);
         			$i++;

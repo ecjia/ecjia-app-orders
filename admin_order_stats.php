@@ -784,29 +784,31 @@ as d on d.store_id = s.store_id
 
 where s.shop_close = 0 and s.identity_status = 2";
 
+        $pagenum = isset($_GET['page']) ? intval($_GET['page']) : 1;
+        $sort_by = isset($_GET['sort_by']) && $_GET['sort_by'] != 'level' ? trim($_GET['sort_by']) : 'valid_amount';
+        $sort_order = isset($_GET['sort_order']) ? trim($_GET['sort_order']) : 'desc';
+        
         $level_sql = $sql . " ORDER BY valid_amount desc";
         $level_data = RC_DB::select($level_sql);
         $level = [];
         if (!empty($level_data)) {
             foreach ($level_data as $k => $v) {
-                $level[$v['store_id']]['level'] = $pagenum > 1 ? ($k + 1) + (($pagenum - 1) * 15) : $k + 1;
+                $level[$v['store_id']]['level'] = $k + 1;
             }
         }
-
-        $sql = $sql . " ORDER BY valid_amount desc";
         $data = [];
         if (!empty($keywords)) {
             $sql .= ' and s.merchants_name like "' . '%' . $keywords . '%"';
-            $data = RC_DB::select($sql);
         }
+        $sql .= " ORDER BY ". $sort_by .' '. $sort_order;
+
+        $data = RC_DB::select($sql);
         $count = count($data);
-
-        $pagenum = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $page = new ecjia_page($count, 15, 6);
-
-        $sql .= " limit " . ($pagenum - 1) * 15 . "," . $pagenum * 15;
+        
+        $sql .= " limit " . ($pagenum - 1) * 15 . "," . 15;
         $result = RC_DB::select($sql);
-
+        
         if (!empty($result)) {
             foreach ($result as $k => $v) {
                 $result[$k]['formated_total_amount'] = price_format($v['total_amount']);
@@ -814,7 +816,11 @@ where s.shop_close = 0 and s.identity_status = 2";
                 //店铺排行
                 $result[$k]['level'] = $level[$v['store_id']]['level'];
             }
-            $result = $this->array_sort($result, 'level');
+            if (empty($sort_by)) {
+            	$result = $this->array_sort($result, 'level');
+            } else if ($sort_by == 'level') {
+            	$result = $this->array_sort($result, 'level', $sort_order);
+            }
         }
         return array('item' => $result, 'page' => $page->show(2));
     }

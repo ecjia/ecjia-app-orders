@@ -4,7 +4,6 @@
     app.order_stats = {
         init: function () {
             app.order_stats.searchForm();
-            app.order_stats.selectForm();
         },
         
         searchForm: function () {
@@ -25,38 +24,18 @@
                 }
                 ecjia.pjax(url);
             });
-        },
-        
-        selectForm: function () {
-            $(".year_month").datepicker({
-				format: "yyyy-mm",
-			    minViewMode: 1,
-                container : '.main_content',
-            });
-            $('.screen-btn1').on('click', function (e) {
+            
+            $('.search-btn').off('click').on('click', function (e) {
                 e.preventDefault();
-                var url = $("form[name='selectForm']").attr('action'); //请求链接
-                var is_multi = $("input[name='is_multi']").val();
-                var year_month = "";
-                $("input[name=year_month]").each(function () {
-                    if ($(this).val()) {
-                        year_month += $(this).val() + '.';
-                    }
-                });
-                if (year_month == '') {
-                    var data = {
-                        message: js_lang.time_required,
-                        state: "error",
-                    };
-                    ecjia.admin.showmessage(data);
-                    return false;
+                var keywords = $("input[name='keywords']").val();
+                var url = $("form[name='searchForm']").attr('action'); //请求链接
+                
+                if (keywords != '' && keywords != undefined) {
+                	url += '&keywords=' + keywords;
                 }
-                if (year_month == 'undefind') year_month = '';
-                if (url == 'undefind') url = '';
-                if (is_multi == 'undefind') is_multi = '';
-                ecjia.pjax(url + '&year_month=' + year_month + '&is_multi=' + is_multi);
+                ecjia.pjax(url);
             });
-        }
+        },
     };
     
 })(ecjia.admin, jQuery);

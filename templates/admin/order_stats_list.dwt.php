@@ -28,13 +28,13 @@
 		<div class="row-fluid">
 			<table class="table table-striped table-hide-edit">
 				<thead>
-					<tr>
+					<tr data-sorthref='{RC_Uri::url("orders/admin_order_stats/init", "{if $smarty.get.keywords}&keywords={$smarty.get.keywords}{/if}")}'>
 						<th class="w180">商家名称</th>
-						<th>下单总数</th>
-						<th>下单总金额</th>
-						<th>成交订单数</th>
-						<th>成交总金额</th>
-						<th class="w80">店铺排行</th>
+						<th data-toggle="sortby" data-sortby="total_order">下单总数</th>
+						<th data-toggle="sortby" data-sortby="total_amount">下单总金额</th>
+						<th data-toggle="sortby" data-sortby="valid_order">成交订单数</th>
+						<th data-toggle="sortby" data-sortby="valid_amount">成交总金额</th>
+						<th data-toggle="sortby" data-sortby="level" class="w100">店铺排行</th>
 					</tr>
 				</thead>
 				<tbody>

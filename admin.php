@@ -164,7 +164,17 @@ class admin extends ecjia_admin
         $this->assign('pay_list', $pay_list);
         
         //下单渠道
-        $referer_list = array('iphone' => 'iPhone端', 'android' => 'Andriod端', 'mobile' => 'H5端', 'ecjia-cashdesk' => '收银台', 'weapp' => '小程序');
+     	$referer_list = array(
+        	'ecjia-storebuy' 	=> '到店', 
+        	'ecjia-storepickup' => '自提', 
+        	'ecjia-cashdesk' 	=> '收银台', 
+        	'invitecode' 		=> '邀请码',
+        	'mobile' 			=> '手机端',
+        	'h5' 				=> 'H5',
+        	'weapp' 			=> '小程序',
+        	'android' 			=> 'Andriod端',
+        	'iphone' 			=> 'iPhone端'
+        );
         $this->assign('referer_list', $referer_list);
         
         if ($filter['extension_code'] == 'default' || $filter['extension_code'] == 'group_buy') {

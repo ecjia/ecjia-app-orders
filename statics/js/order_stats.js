@@ -4,6 +4,7 @@
     app.order_stats = {
         init: function () {
             app.order_stats.searchForm();
+            app.order_stats.order_stats();
         },
         
         searchForm: function () {
@@ -36,6 +37,70 @@
                 ecjia.pjax(url);
             });
         },
+        
+		order_stats: function () {
+			var dataset = [];
+			var ticks = [];
+			if (data.length == 0) {
+				$('.row-fluid-stats').css('display', 'none');
+			} else {
+				$.each(JSON.parse(data), function (key, value) {
+					if (key < 30) {
+						if (stats == 'valid_order') {
+							dataset.push(value.valid_order);
+						} else {
+							dataset.push(value.valid_amount);
+						}
+						ticks.push(value.merchants_name);
+					}
+				});
+				var orderStatsChart = echarts.init(document.getElementById('order_stats'));
+				var option = {
+					color: ['#6DCEEE'],
+					xAxis: {
+						type: 'category',
+						data: ticks
+					},
+					yAxis: {
+						type: 'value'
+					},
+					tooltip: {
+						show: "true",
+						trigger: 'item',
+						backgroundColor: 'rgba(0,0,0,0.7)',
+						padding: [8, 10],
+						extraCssText: 'box-shadow: 0 0 3px rgba(255, 255, 255, 0.4);',
+						formatter: function (params) {
+							if (params.seriesName != "") {
+								if (stats == 'valid_order') {
+									return params.name + ' ：  ' + params.value + '单';
+								} else {
+									return params.name + ' ：  ' + '￥'+params.value;
+								}
+							}
+						},
+					},
+					grid: {
+				        left: '2%',
+				        right: '2%',
+				        bottom: '5%',
+				        top: '5%',
+				        containLabel: true
+				    },
+					series: [{
+						data: dataset,
+						type: 'bar',
+						barWidth: '32px',
+					}]
+				};
+
+				orderStatsChart.setOption(option);
+				
+				window.addEventListener("resize", function() { 
+					orderStatsChart.resize();  
+				});
+			}
+		},
     };
     
 })(ecjia.admin, jQuery);

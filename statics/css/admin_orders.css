@@ -321,3 +321,13 @@
 .badge.badge-groupbuy-fail {
 	background-color: #eb5768;
 }
+
+.order_stats {
+	width: 100%;
+	height: 400px;
+}
+
+#order_stats {
+	height: 400px;
+	width: 100%;
+}

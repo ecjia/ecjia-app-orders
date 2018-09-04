@@ -106,6 +106,12 @@ class admin_order_stats extends ecjia_admin
         $list = $this->get_merchant_list();
         $this->assign('list', $list);
 
+        if (!empty($list['stats_data'])) {
+            $this->assign('data', json_encode($list['stats_data']));
+        }
+        $stats = !empty($_GET['stats']) ? trim($_GET['stats']) : 'valid_order';
+        $this->assign('stats', $stats);
+
         $this->display('order_stats_list.dwt');
     }
 
@@ -321,37 +327,37 @@ class admin_order_stats extends ecjia_admin
         if (!empty($start_time) && !empty($end_time)) {
             $filename .= '_' . $start_time . '至' . $end_time;
         }
-		
+
         $order_stats = $this->get_order_stats($store_id);
-        
+
         $count_key = array('await_pay_count', 'await_ship_count', 'shipped_count', 'returned_count', 'canceled_count', 'finished_count');
         $data_key = array('order_count_data', 'groupbuy_count_data', 'storebuy_count_data', 'storepickup_count_data');
         $order_stats['order_count_data']['title'] = '配送型订单';
         $order_stats['groupbuy_count_data']['title'] = '团购型订单';
         $order_stats['storebuy_count_data']['title'] = '到店型订单';
         $order_stats['storepickup_count_data']['title'] = '自提型订单';
-        
+
         $count_arr = $count_data_arr = [];
         foreach ($order_stats as $k => $v) {
-        	if (in_array($k, $count_key)) {
-        		$count_arr[] = $v;
-        	}
-        	if (in_array($k, $data_key)) {
-        		$count_data_arr[$k]['title'] = $order_stats[$k]['title'];
-        		$count_data_arr[$k]['order_count'] = $order_stats[$k]['order_count'];
-        		$count_data_arr[$k]['total_fee'] = $order_stats[$k]['total_fee'];
-        	}
+            if (in_array($k, $count_key)) {
+                $count_arr[] = $v;
+            }
+            if (in_array($k, $data_key)) {
+                $count_data_arr[$k]['title'] = $order_stats[$k]['title'];
+                $count_data_arr[$k]['order_count'] = $order_stats[$k]['order_count'];
+                $count_data_arr[$k]['total_fee'] = $order_stats[$k]['total_fee'];
+            }
         }
-        
-        RC_Excel::load(RC_APP_PATH . 'orders' . DIRECTORY_SEPARATOR .'statics/files/orders_stats.xls', function($excel) use ($count_arr, $count_data_arr) {
-        	$excel->sheet('First sheet', function($sheet) use ($count_arr, $count_data_arr) {
-        		$sheet->appendRow(2, $count_arr);
-        		$i = 5;
-        		foreach ($count_data_arr as $k => $v) {
-        			$sheet->appendRow($i, $v);
-        			$i++;
-        		}
-        	});
+
+        RC_Excel::load(RC_APP_PATH . 'orders' . DIRECTORY_SEPARATOR . 'statics/files/orders_stats.xls', function ($excel) use ($count_arr, $count_data_arr) {
+            $excel->sheet('First sheet', function ($sheet) use ($count_arr, $count_data_arr) {
+                $sheet->appendRow(2, $count_arr);
+                $i = 5;
+                foreach ($count_data_arr as $k => $v) {
+                    $sheet->appendRow($i, $v);
+                    $i++;
+                }
+            });
         })->download('xls');
     }
 
@@ -787,7 +793,7 @@ where s.shop_close = 0 and s.identity_status = 2";
         $pagenum = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $sort_by = isset($_GET['sort_by']) && $_GET['sort_by'] != 'level' ? trim($_GET['sort_by']) : 'valid_amount';
         $sort_order = isset($_GET['sort_order']) ? trim($_GET['sort_order']) : 'desc';
-        
+
         $level_sql = $sql . " ORDER BY valid_amount desc";
         $level_data = RC_DB::select($level_sql);
         $level = [];
@@ -800,15 +806,16 @@ where s.shop_close = 0 and s.identity_status = 2";
         if (!empty($keywords)) {
             $sql .= ' and s.merchants_name like "' . '%' . $keywords . '%"';
         }
-        $sql .= " ORDER BY ". $sort_by .' '. $sort_order;
+        $sql .= " ORDER BY " . $sort_by . ' ' . $sort_order;
 
         $data = RC_DB::select($sql);
         $count = count($data);
         $page = new ecjia_page($count, 15, 6);
-        
+        $stats_data = RC_DB::select($sql);
+
         $sql .= " limit " . ($pagenum - 1) * 15 . "," . 15;
         $result = RC_DB::select($sql);
-        
+
         if (!empty($result)) {
             foreach ($result as $k => $v) {
                 $result[$k]['formated_total_amount'] = price_format($v['total_amount']);
@@ -817,12 +824,12 @@ where s.shop_close = 0 and s.identity_status = 2";
                 $result[$k]['level'] = $level[$v['store_id']]['level'];
             }
             if (empty($sort_by)) {
-            	$result = $this->array_sort($result, 'level');
+                $result = $this->array_sort($result, 'level');
             } else if ($sort_by == 'level') {
-            	$result = $this->array_sort($result, 'level', $sort_order);
+                $result = $this->array_sort($result, 'level', $sort_order);
             }
         }
-        return array('item' => $result, 'page' => $page->show(2));
+        return array('item' => $result, 'page' => $page->show(2), 'stats_data' => $stats_data);
     }
 
     private function array_sort($arr, $keys, $type = 'asc')

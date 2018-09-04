@@ -21,6 +21,7 @@
 	<a class="close" data-dismiss="alert">×</a>
 	<strong>{lang key='orders::statistic.tips'}</strong>{lang key='orders::statistic.order_stats_date'}
 </div>
+
 <div>
 	<h3 class="heading">
 		<!-- {if $ur_here}{$ur_here}{/if} -->

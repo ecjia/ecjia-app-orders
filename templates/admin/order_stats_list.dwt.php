@@ -3,19 +3,47 @@
 
 <!-- {block name="footer"} -->
 <script type="text/javascript">
+	var data = '{$data}';
+	var stats = '{$stats}';
 	ecjia.admin.order_stats.init();
 </script>
 <!-- {/block} -->
 
 <!-- {block name="main_content"} -->
+<div class="alert alert-info">
+	<a class="close" data-dismiss="alert">×</a>
+	<strong>{lang key='orders::statistic.tips'}</strong>统计店铺排名前30的销量以及成交金额对比
+</div>
+
 <div>
 	<h3 class="heading">
 		<!-- {if $ur_here}{$ur_here}{/if} -->
 	</h3>
 </div>
 
+<div class="row-fluid row-fluid-stats">
+	<div class="span12">
+		<div class="tabbable">
+			<form class="form-horizontal">
+				<div class="tab-content">
+					<div class="tab-pane active">
+						<div class="tab-pane-change t_c m_b10">
+							<a class="btn btn-gebo data-pjax" href="{RC_Uri::url('orders/admin_order_stats/init')}&stats=valid_order{if $smarty.get.keywords}&keywords={$smarty.get.keywords}{/if}">成交订单数</a>
+							<a class="btn m_l10 data-pjax" href="{RC_Uri::url('orders/admin_order_stats/init')}&stats=valid_amount{if $smarty.get.keywords}&keywords={$smarty.get.keywords}{/if}">成交总金额</a>
+						</div>
+						<div class="order_stats">
+							<div id="order_stats">
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
 <div class="row-fluid batch">
-	<form action="{RC_Uri::url('orders/admin_order_stats/init')}" name="searchForm" method="post">
+	<form action="{RC_Uri::url('orders/admin_order_stats/init')}{if $smarty.get.sort_by}&sort_by={$smarty.get.sort_by}{/if}{if $smarty.get.sort_order}&sort_order={$smarty.get.sort_order}{/if}" name="searchForm" method="post">
 		<div class="choose_list f_r">
 			<input type="text" name="keywords" value="{$smarty.get.keywords}" placeholder="请输入商家名称关键字" />
 			<button class="btn search-btn" type="button">搜索</button>

@@ -122,6 +122,10 @@ function merchant_operable_list($order)
                         }
                         $list['split'] = true;
                         // 分单
+
+                        $list['to_delivery'] = true;
+                        $list['return'] = true;
+                        $list['after_service'] = true;
                     }
                 } else {
                     /* 不是货到付款 */
@@ -159,6 +163,7 @@ function merchant_operable_list($order)
                     if ($priv_list['os']) {
                         $list['return'] = true;
                         // 退货
+                        $list['after_service'] = true;
                     }
                 }
             }

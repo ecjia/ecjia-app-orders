@@ -408,6 +408,13 @@ class delivery_module extends api_admin implements api_interface {
 			update_order($order_id, $arr);
 		}
 		/* 记录log */
+		
+		RC_Logger::getLogger('error')->info('test111');
+		RC_Logger::getLogger('error')->info($arr['order_status']);
+		RC_Logger::getLogger('error')->info($shipping_status);
+		RC_Logger::getLogger('error')->info($order_info['pay_status']);
+		RC_Logger::getLogger('error')->info('test222');
+		
 		order_action($order_info['order_sn'], $arr['order_status'], $shipping_status, $order_info['pay_status'], $action_note);
 		
 		$order_info['invoice_no'] = $invoice_no;

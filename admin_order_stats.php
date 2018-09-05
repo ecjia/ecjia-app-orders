@@ -826,7 +826,7 @@ where s.shop_close = 0 and s.identity_status = 2";
         $data = RC_DB::select($sql);
         //列表数据 end
 
-        $pageSize = 15;
+        $pageSize = 30;
         $count = count($data);
         $page = new ecjia_page($count, $pageSize, 6);
 

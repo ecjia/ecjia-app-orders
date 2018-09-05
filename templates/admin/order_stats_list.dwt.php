@@ -28,8 +28,8 @@
 				<div class="tab-content">
 					<div class="tab-pane active">
 						<div class="tab-pane-change t_c m_b10">
-							<a class="btn btn-gebo data-pjax" href="{RC_Uri::url('orders/admin_order_stats/init')}&stats=valid_order{if $smarty.get.keywords}&keywords={$smarty.get.keywords}{/if}">成交订单数</a>
-							<a class="btn m_l10 data-pjax" href="{RC_Uri::url('orders/admin_order_stats/init')}&stats=valid_amount{if $smarty.get.keywords}&keywords={$smarty.get.keywords}{/if}">成交总金额</a>
+							<a class="btn {if $stats eq 'valid_amount' || !$stats}btn-gebo{/if} data-pjax" href="{RC_Uri::url('orders/admin_order_stats/init')}&stats=valid_amount{if $smarty.get.keywords}&keywords={$smarty.get.keywords}{/if}">成交总金额</a>
+							<a class="btn {if $stats eq 'valid_order'}btn-gebo{/if} m_l10 data-pjax" href="{RC_Uri::url('orders/admin_order_stats/init')}&stats=valid_order{if $smarty.get.keywords}&keywords={$smarty.get.keywords}{/if}">成交订单数</a>
 						</div>
 						<div class="order_stats">
 							<div id="order_stats">

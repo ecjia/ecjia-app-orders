@@ -82,7 +82,7 @@ class OrderStatus
     public static function getOrderStatusLabel($order_status, $shipping_status, $pay_status, $is_cod)
     {
         if (in_array($order_status, array(OS_UNCONFIRMED, OS_SPLITED)) &&
-            (in_array($pay_status, array(PS_UNPAYED)))) {
+            (in_array($pay_status, array(PS_UNPAYED)) && !$is_cod)) {
             $label_order_status = '未付款';
             $status_code = 'await_pay';
         } elseif (in_array($order_status, array(OS_UNCONFIRMED)) &&
@@ -419,8 +419,12 @@ class OrderStatus
                     $label_confirm = '商家已接单';
                 }
             } else {
+                if ($order['is_cod'] == 1) {
+                    $label_pay = '货到付款';
+                } else {
+                    $label_pay = '买家已付款';
+                }
                 $time_key = 3;
-                $label_pay = '买家已付款';
                 $label_confirm = '商家已接单';
             }
             if ($order['shipping_status'] == SS_SHIPPED) {
@@ -432,7 +436,6 @@ class OrderStatus
                 $label_shipping = '商家已发货';
             }
         }
-
         return array(
             'pay' => $label_pay,
             'confirm' => $label_confirm,

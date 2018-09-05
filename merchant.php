@@ -3465,7 +3465,7 @@ class merchant extends ecjia_merchant
             /* 记录日志 */
             ecjia_merchant::admin_log('添加售后，订单号是' . $order['order_sn'], 'setup', 'order');
         } elseif ('confirm_return' == $operation) {
-            order_action($order['order_sn'], $order['order_status'], $order['shipping_status'], $order['pay_status'], '[' . RC_Lang::get('orders::order.op_return_confirm') . '] ' . $action_note);
+            order_action($order['order_sn'], $order['order_status'], $order['shipping_status'], $order['pay_status'], $action_note);
         } else {
             return $this->showmessage('invalid params', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
         }

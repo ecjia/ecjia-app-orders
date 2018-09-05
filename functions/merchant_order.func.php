@@ -241,7 +241,7 @@ function merchant_operable_list($order)
     } elseif (OS_RETURNED == $os) {
         /* 状态：退货 */
         if ($priv_list['os']) {
-            $list['confirm_return'] = true;
+//             $list['confirm_return'] = true;
             $list['after_service'] = true;
         }
     }

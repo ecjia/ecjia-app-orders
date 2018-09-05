@@ -796,7 +796,12 @@ where s.shop_close = 0 and s.identity_status = 2";
         $sort_by = isset($_GET['sort_by']) && $_GET['sort_by'] != 'level' ? trim($_GET['sort_by']) : 'valid_amount';
         $sort_order = isset($_GET['sort_order']) ? trim($_GET['sort_order']) : 'desc';
 
-        $level_sql = $sql . " ORDER BY valid_amount desc";
+        $stats = !empty($_GET['stats']) ? trim($_GET['stats']) : 'valid_order';
+        if ($stats == 'valid_order') {
+            $level_sql = $sql . " ORDER BY valid_order desc";
+        } else {
+            $level_sql = $sql . " ORDER BY valid_amount desc";
+        }
         $level_data = RC_DB::select($level_sql);
         $level = [];
         if (!empty($level_data)) {

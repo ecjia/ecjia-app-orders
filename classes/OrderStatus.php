@@ -111,7 +111,7 @@ class OrderStatus
         } elseif (in_array($shipping_status, array(SS_SHIPPED)) && ($order_status != OS_RETURNED)) {
             $label_order_status = '已发货';
             $status_code = 'shipped';
-        } elseif (in_array($order_status, array(OS_SPLITING_PART)) &&
+        } elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
             in_array($shipping_status, array(SS_SHIPPED_PART))) {
             $label_order_status = '已发货（部分商品）';
             $status_code = 'shipped_part';
@@ -341,7 +341,7 @@ class OrderStatus
     {
         return function ($query) {
             $query->whereIn('order_info.order_status', array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))
-                ->where('order_info.shipping_status', OS_SHIPPED_PART);
+                ->where('order_info.shipping_status', SS_SHIPPED_PART);
         };
     }
 
@@ -430,6 +430,14 @@ class OrderStatus
             if ($order['shipping_status'] == SS_SHIPPED) {
             	$time_key = 4;
                 $label_shipping = '商家已发货';
+            }
+            if ($order['shipping_status'] == SS_SHIPPED_PART) {
+            	$time_key = 4;
+            	$label_shipping = '商家已发货（部分商品）';
+            }
+            if ($order['shipping_status'] == SS_SHIPPED_ING) {
+            	$time_key = 4;
+            	$label_shipping = '发货中(处理分单)';
             }
             if ($order['shipping_status'] == SS_RECEIVED) {
                 $time_key = 5;

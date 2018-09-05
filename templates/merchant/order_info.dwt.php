@@ -655,7 +655,7 @@ ecjia.merchant.order.info();
 							<tr>
 								<th class="w150"><strong>操作者</strong></th>
 								<th class="w180"><strong>{lang key='orders::order.action_time'}</strong></th>
-								<th class="w130"><strong>{lang key='orders::order.order_status'}</strong></th>
+								<th class="w150"><strong>{lang key='orders::order.order_status'}</strong></th>
 								<th class="ecjiafc-pre t_c"><strong>{lang key='orders::order.action_note'}</strong></th>
 							</tr>
 						</thead>

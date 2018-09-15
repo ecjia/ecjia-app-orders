@@ -67,7 +67,10 @@ class check_module extends api_admin implements api_interface
 			}
 		}
 		
- 		$verification_code = $this->requestData('verify_code');
+ 		$verification_code 	= $this->requestData('verify_code');
+ 		$invoice_no 		= $this->requestData('invoice_no', '');
+ 		$action_note		= $this->requestData('action_note', '');
+ 		
  		$id = $this->requestData('order_id', 0);
  		if (empty($verification_code)) {
  			return new ecjia_error('invalid_parameter', '参数错误');
@@ -118,7 +121,7 @@ class check_module extends api_admin implements api_interface
 			$db_delivery_order	= RC_Loader::load_app_model('delivery_order_model', 'orders');
 			$delivery_id = $db_delivery_order->where(array('order_sn' => array('like' => '%'.$order_info['order_sn'].'%')))->order(array('delivery_id' => 'desc'))->get_field('delivery_id');
 				
-			$result = delivery_ship($order_id, $delivery_id);
+			$result = delivery_ship($order_id, $delivery_id, $invoice_no, $action_note);
 			/* 货到付款再次进行付款*/
 			RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'pay', 'note' => array('action_note' => $action_note)));
 			/* 确认收货*/
@@ -156,21 +159,22 @@ class check_module extends api_admin implements api_interface
 }
 
 
-function delivery_ship($order_id, $delivery_id) {
+function delivery_ship($order_id, $delivery_id, $invoice_no = '', $action_note = '') {
 	RC_Loader::load_app_func('function', 'orders');
 	RC_Loader::load_app_func('order', 'orders');
 	$db_delivery = RC_Loader::load_app_model('delivery_viewmodel','orders');
 	$db_delivery_order		= RC_Loader::load_app_model('delivery_order_model','orders');
 	$db_goods				= RC_Loader::load_app_model('goods_model','goods');
 	$db_products			= RC_Loader::load_app_model('products_model','goods');
+	
 	/* 定义当前时间 */
 	define('GMTIME_UTC', RC_Time::gmtime()); // 获取 UTC 时间戳
 	/* 取得参数 */
 	$delivery				= array();
 	$order_id				= intval(trim($order_id));			// 订单id
 	$delivery_id			= intval(trim($delivery_id));		// 发货单id
-	$delivery['invoice_no']	= isset($_POST['invoice_no']) ? trim($_POST['invoice_no']) : '';
-	$action_note			= isset($_POST['action_note']) ? trim($_POST['action_note']) : '';
+	$delivery['invoice_no']	= !empty($invoice_no) ? trim($invoice_no) : '';
+	$action_note			= !empty($action_note) ? trim($action_note) : '';
 
 	/* 根据发货单id查询发货单信息 */
 	if (!empty($delivery_id)) {

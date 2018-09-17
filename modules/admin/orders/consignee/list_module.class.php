@@ -61,7 +61,6 @@ class admin_orders_consignee_list_module extends api_admin implements api_interf
 		$result_view = $this->admin_priv('order_view');
 		$result_edit = $this->admin_priv('order_edit');
 		if (is_ecjia_error($result_view)) {
-			EM_Api::outPut($result_view);
 			return $result_view;
 		} elseif (is_ecjia_error($result_edit)) {
 			return $result_edit;

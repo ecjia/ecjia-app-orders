@@ -50,7 +50,7 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * 取消订单
  * @author royalwang
  */
-class cancel_module extends api_front implements api_interface {
+class order_cancel_module extends api_front implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {	
     	
 		$user_id = $_SESSION['user_id'];

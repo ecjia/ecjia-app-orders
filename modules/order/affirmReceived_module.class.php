@@ -52,7 +52,7 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * 订单确认收货
  * @author royalwang
  */
-class affirmReceived_module extends api_front implements api_interface {
+class order_affirmReceived_module extends api_front implements api_interface {
     public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
     	
 		$user_id = $_SESSION['user_id'];

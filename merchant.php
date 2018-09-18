@@ -102,7 +102,6 @@ class merchant extends ecjia_merchant
         $this->db_back_goods = RC_Model::model('orders/back_goods_model');
         $this->db_pay_log = RC_Model::model('orders/pay_log_model');
         $this->db_goods_attr = RC_Model::model('goods/goods_attr_model');
-        $this->db_user_bonus = RC_Model::model('bonus/user_bonus_model');
         $this->db_back_order = RC_Model::model('orders/back_order_model');
         $this->db_delivery_order = RC_Model::model('orders/delivery_order_model');
 
@@ -1863,7 +1862,7 @@ class merchant extends ecjia_merchant
                             'used_time' => 0,
                             'order_id' => 0,
                         );
-                        $this->db_user_bonus->where(array('bonus_id' => $old_order['bonus_id']))->update($data);
+                        RC_DB::table('user_bonus')->where('bonus_id', $old_order['bonus_id'])->update($data);
                     }
 
                     if ($order['bonus_id'] > 0) {
@@ -1871,7 +1870,7 @@ class merchant extends ecjia_merchant
                             'used_time' => RC_Time::gmtime(),
                             'order_id' => $order_id,
                         );
-                        $this->db_user_bonus->where('bonus_id = "' . $order['bonus_id'] . '"')->update($data);
+                        RC_DB::table('user_bonus')->where('bonus_id', $order['bonus_id'])->update($data);
                     }
                 }
             }

@@ -148,10 +148,17 @@ class order_affirmReceived_module extends api_front implements api_interface {
                             $orm_staff_user_db = RC_Model::model('express/orm_staff_user_model');
                             $user = $orm_staff_user_db->find($val['staff_id']);
 
-                            $express_order_viewdb = RC_Model::model('express/express_order_viewmodel');
-                            $where = array('staff_id' => $val['staff_id'], 'express_id' => $val['express_id']);
+                            //$express_order_viewdb = RC_Model::model('express/express_order_viewmodel');
+                            //$where = array('staff_id' => $val['staff_id'], 'express_id' => $val['express_id']);
+                            //$field = 'eo.*, oi.add_time as order_time, oi.pay_time, oi.order_amount, oi.pay_name, oi.shipping_id, oi.invoice_no, sf.merchants_name, sf.address as merchant_address, sf.longitude as merchant_longitude, sf.latitude as merchant_latitude';
+                            //$express_order_info = $express_order_viewdb->field($field)->join(array('delivery_order', 'order_info', 'store_franchisee'))->where($where)->find();
+
+                            $express_order_viewdb = RC_DB::table('express_order as eo')
+                                                            ->leftJoin('store_franchisee as sf', RC_DB::raw('sf.store_id'), '=', RC_DB::raw('eo.store_id'))
+                                                            ->leftJoin('order_info as oi', RC_DB::raw('eo.order_id'), '=', RC_DB::raw('oi.order_id'));
+                            $express_order_viewdb ->where(RC_DB::raw('eo.staff_id'), $val['staff_id'])->where(RC_DB::raw('eo.express_id'), $val['express_id']);
                             $field = 'eo.*, oi.add_time as order_time, oi.pay_time, oi.order_amount, oi.pay_name, oi.shipping_id, oi.invoice_no, sf.merchants_name, sf.address as merchant_address, sf.longitude as merchant_longitude, sf.latitude as merchant_latitude';
-                            $express_order_info = $express_order_viewdb->field($field)->join(array('delivery_order', 'order_info', 'store_franchisee'))->where($where)->find();
+                            $express_order_info = $express_order_viewdb->select(RC_DB::raw($filed))->first();
 
                             //短信发送
                             if (!empty($express_order_info['express_mobile'])) {

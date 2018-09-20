@@ -127,7 +127,7 @@ class admin_stats_payment_module extends api_admin implements api_interface
 //
                 $order_stats = RC_DB::table('cashier_record as cr')
                     ->leftJoin('order_info as oi', RC_DB::raw('cr.order_id'), '=', RC_DB::raw('oi.order_id'))
-                    ->select('count(*) as count', 'SUM((goods_amount - discount + tax + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee)) AS total_fee')
+                    ->select(RC_DB::raw('count(*) as count'), RC_DB::raw('SUM((goods_amount - discount + tax + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee)) AS total_fee'))
                     ->where(RC_DB::raw('oi.pay_status'), 2)
                     ->whereBetween(RC_DB::raw('oi.pay_time'), array($start_date, $end_date))
                     ->where(RC_DB::raw('cr.staff_id'), $_SESSION['staff_id'])

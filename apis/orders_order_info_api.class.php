@@ -90,6 +90,7 @@ class orders_order_info_api extends Component_Event_Api {
 
 	    /* 格式化金额字段 */
 	    if ($order) {
+	    	$order['expect_shipping_time']		= empty($order['expect_shipping_time']) ? '' : $order['expect_shipping_time'];
 	        $order['formated_goods_amount']		= price_format($order['goods_amount'], false);
 	        $order['formated_discount']			= price_format($order['discount'], false);
 	        $order['formated_tax']				= price_format($order['tax'], false);

@@ -63,7 +63,7 @@ class merchant extends ecjia_merchant
     private $db_user_address;
     private $db_bonus;
     private $db_order_goodview;
-    private $db_shipping;
+    //private $db_shipping;
     private $db_delivery;
     private $db_goods;
     private $db_products;
@@ -95,7 +95,7 @@ class merchant extends ecjia_merchant
         $this->db_user_address = RC_Model::model('user/user_address_viewmodel');
         $this->db_bonus = RC_Model::model('orders/bonus_type_user_viewmodel');
         $this->db_order_goodview = RC_Model::model('orders/order_order_goods_viewmodel');
-        $this->db_shipping = RC_Model::model('shipping/shipping_model');
+        //$this->db_shipping = RC_Model::model('shipping/shipping_model');
         $this->db_delivery = RC_Model::model('orders/delivery_goods_model');
         $this->db_goods = RC_Model::model('goods/goods_model');
         $this->db_products = RC_Model::model('goods/products_model');
@@ -748,8 +748,9 @@ class merchant extends ecjia_merchant
                 /* 代码 */
                 echo $this->fetch_string($shipping['shipping_print']);
             } else {
-                $shipping_code = $this->db_shipping->where(array('shipping_id' => $order['shipping_id']))->get_field('shipping_code');
-                if ($shipping_code) {
+                //$shipping_code = $this->db_shipping->where(array('shipping_id' => $order['shipping_id']))->get_field('shipping_code');
+            	$shipping_code = RC_DB::table('shipping')->where('shipping_id', $order['shipping_id'])->pluck('shipping_code');
+            	if ($shipping_code) {
                     //todo 暂时注释
                     //include_once(ROOT_PATH . 'includes/modules/shipping/' . $shipping_code . '.php');
                 }

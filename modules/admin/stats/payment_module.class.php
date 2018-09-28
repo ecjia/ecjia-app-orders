@@ -106,13 +106,19 @@ class admin_stats_payment_module extends api_admin implements api_interface
         //$payment_where		= array('enabled' => 1, 'pay_code' => $cashdesk_payment);
         //$pay_id_group		= RC_Model::model('payment/payment_model')->where($payment_where)->get_field('pay_code, pay_id, pay_name', true);
         $pay_id_group 		= RC_DB::table('payment')->where('enabled', 1)->whereIn('pay_code', $cashdesk_payment)->select('pay_code', 'pay_id', 'pay_name')->get();
-
+        $pay_id_group_new 	= [];
+       	if (!empty($pay_id_group)) {
+       		foreach ($pay_id_group as $key => $value) {
+       			$pay_id_group_new[$value['pay_code']] = $value;
+       		}
+       	}
+     
         /* 定义默认数据*/
         $data = array();
 
         $field = 'count(*) as count, SUM((goods_amount - discount + tax + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee)) AS total_fee';
         foreach ($cashdesk_payment as $val) {
-            if (isset($pay_id_group[$val])) {
+            if (isset($pay_id_group_new[$val])) {
 // 			$order_stats = RC_Model::model('orders/cashier_record_viewmodel')->join(array('order_info', 'staff_user'))
 // 														->field($field)
 // 														->where(
@@ -126,18 +132,20 @@ class admin_stats_payment_module extends api_admin implements api_interface
 // 														)
 // 		    ->find();
 //
+
                 $order_stats = RC_DB::table('cashier_record as cr')
                     ->leftJoin('order_info as oi', RC_DB::raw('cr.order_id'), '=', RC_DB::raw('oi.order_id'))
-                    ->select(RC_DB::raw('count(*) as count'), RC_DB::raw('SUM((goods_amount - discount + tax + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee)) AS total_fee'))
+                    ->select(RC_DB::raw('count("cr.id") as count'), RC_DB::raw('SUM((goods_amount - discount + tax + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee)) AS total_fee'))
                     ->where(RC_DB::raw('oi.pay_status'), 2)
-                    ->whereBetween(RC_DB::raw('oi.pay_time'), array($start_date, $end_date))
+                    ->where(RC_DB::raw('oi.pay_time'), '>=', $start_date) 
+                    ->where(RC_DB::raw('oi.pay_time'), '<=', $end_date)
                     ->where(RC_DB::raw('cr.staff_id'), $_SESSION['staff_id'])
                     ->where(RC_DB::raw('cr.mobile_device_id'), $_SESSION['device_id'])
-                    ->where('pay_id', $pay_id_group[$val]['pay_id'])
+                    ->where('pay_id', $pay_id_group_new[$val]['pay_id'])
                     ->first();
                 $data[] = array(
                     'pay_code'		=> $val,
-                    'pay_name'		=> $pay_id_group[$val]['pay_name'],
+                    'pay_name'		=> $pay_id_group_new[$val]['pay_name'],
                     'order_count'	=> $order_stats['count'],
                     'order_amount'	=> empty($order_stats['total_fee']) ? '0.00' : $order_stats['total_fee'],
                     'formatted_order_amount' => empty($order_stats['total_fee']) ? '0.00' : price_format($order_stats['total_fee']),

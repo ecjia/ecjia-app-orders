@@ -60,7 +60,6 @@ class merchant extends ecjia_merchant
     private $db_order_view;
     private $db_order_action;
     private $db_user_rank;
-    private $db_user_address;
     private $db_bonus;
     private $db_order_goodview;
     private $db_delivery;
@@ -91,7 +90,6 @@ class merchant extends ecjia_merchant
         $this->db_order_view = RC_Model::model('orders/order_order_info_viewmodel');
         $this->db_order_action = RC_Model::model('orders/order_action_model');
         $this->db_user_rank = RC_Model::model('user/user_rank_model');
-        $this->db_user_address = RC_Model::model('user/user_address_viewmodel');
         $this->db_bonus = RC_Model::model('orders/bonus_type_user_viewmodel');
         $this->db_order_goodview = RC_Model::model('orders/order_order_goods_viewmodel');
         $this->db_delivery = RC_Model::model('orders/delivery_goods_model');
@@ -519,7 +517,7 @@ class merchant extends ecjia_merchant
             $this->assign('user', $user);
 
             // 地址信息
-            $data = $this->db_user_address->where(array('user_id' => $order['user_id']))->select();
+            $data = Ecjia\App\User\UserAddress::UserAddressList($order['user_id']);
             $this->assign('address_list', $data);
         }
 

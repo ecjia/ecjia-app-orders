@@ -1503,9 +1503,8 @@ class merchant extends ecjia_merchant
             }
             //如果是会员订单则读取会员地址信息
             if ($order['user_address'] > 0 && $old_order['user_id'] > 0) {
-                $db_address = RC_Loader::load_app_model('user_address_model', 'user');
                 $field = "consignee, email, country, province, city, district, street, address, zipcode, tel,mobile, sign_building, best_time";
-                $orders = $db_address->field($field)->find(array('user_id' => $old_order['user_id'], 'address_id' => $order['user_address']));
+                $orders = RC_DB::table('user_address')->select(RC_DB::raw($field))->where('user_id', $old_order['user_id'])->where('address_id', $order['user_address'])->first();
                 update_order($order_id, $orders);
             } else {
                 if (isset($order['user_address'])) {

@@ -962,7 +962,6 @@ function get_goods_attr_info($arr, $type = 'pice', $warehouse_id = 0, $area_id =
 * @return  array
 */
 function get_consignee($user_id) {
-    $dbview = RC_Loader::load_app_model('user_address_user_viewmodel', 'user');
     if (isset($_SESSION['flow_consignee'])) {
         /* 如果存在session，则直接返回session中的收货人信息 */
         return $_SESSION['flow_consignee'];
@@ -971,7 +970,7 @@ function get_consignee($user_id) {
         $arr = array();
         if ($user_id > 0) {
             /* 取默认地址 */
-            $arr = $dbview->join('users')->find(array('u.user_id' => $user_id));
+        	$arr = Ecjia\App\User\UserAddress::UserDefaultAddressInfo($user_id);
         }
         return $arr;
     }

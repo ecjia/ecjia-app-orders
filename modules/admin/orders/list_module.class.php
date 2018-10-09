@@ -94,7 +94,7 @@ class admin_orders_list_module extends api_admin implements api_interface {
 			$where[] = "( oi.order_sn like '%".$keywords."%' or oi.consignee like '%".$keywords."%' or oi.mobile like '%".$keywords."%' )";
 		}
 		$codes = array('8001', '8011');
-		
+
 		if (!in_array($device_code, $codes) || $user_id > 0) {
 			if ($user_id > 0) {
 				$where['oi.user_id'] = $user_id;
@@ -277,7 +277,7 @@ class admin_orders_list_module extends api_admin implements api_interface {
 			} else {
 // 				$total_fee = goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee + tax - integral_money - bonus - discount;
 				$total_fee = "(oi.goods_amount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) as total_fee";
-				$field = 'oi.order_id, oi.surplus, oi.money_paid, oi.order_amount, oi.store_id, su.name, oi.integral, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time,og.goods_id, og.goods_number, og.goods_name, og.goods_price, g.goods_thumb, g.goods_img, g.original_img';
+				$field = 'oi.order_id, oi.surplus, oi.money_paid, oi.order_amount, oi.store_id, su.name, oi.integral, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time,og.goods_id, og.goods_number, og.goods_name, og.goods_price, og.extension_code, og.goods_buy_weight, g.goods_thumb, g.goods_img, g.original_img';
 				$field .= $type == 'verify' ? ', tm.meta_value' : '';
 				$where['cr.order_id'] =  $order_id_groups;
 				$where[] = "oi.order_id is not null";
@@ -301,6 +301,12 @@ class admin_orders_list_module extends api_admin implements api_interface {
 					}
 					$goods_lists = array();
 					$total_goods_price = $val['goods_number']*$val['goods_price'];
+					
+					if ($val['extension_code'] == 'bulk') {
+						$is_bulk = 1; 
+					} else {
+						$is_bulk = 0;
+					}
 
 					$goods_lists[] = array(
 						'goods_id'					 => $val['goods_id'],
@@ -310,6 +316,8 @@ class admin_orders_list_module extends api_admin implements api_interface {
 						'formated_goods_price'		 => price_format($val['goods_price'], false),
 						'total_goods_price'			 => sprintf('%.2f', $total_goods_price),
 						'formated_total_goods_price' => price_format($total_goods_price, false),
+						'is_bulk'					 => $is_bulk,
+						'goods_buy_weight'			 => $val['goods_buy_weight'] > 0 ? $val['goods_buy_weight'] : '',
 						'img'		=> array(
 							'thumb'	=> (isset($val['goods_img']) && !empty($val['goods_img']))		 ? RC_Upload::upload_url($val['goods_img'])		: RC_Uri::admin_url('statics/images/nopic.png'),
 							'url'	=> (isset($val['original_img']) && !empty($val['original_img'])) ? RC_Upload::upload_url($val['original_img'])  : RC_Uri::admin_url('statics/images/nopic.png'),

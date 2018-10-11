@@ -94,7 +94,7 @@ class admin_orders_list_module extends api_admin implements api_interface {
 			$where[] = "( oi.order_sn like '%".$keywords."%' or oi.consignee like '%".$keywords."%' or oi.mobile like '%".$keywords."%' )";
 		}
 		$codes = array('8001', '8011');
-
+		
 		if (!in_array($device_code, $codes) || $user_id > 0) {
 			if ($user_id > 0) {
 				$where['oi.user_id'] = $user_id;
@@ -284,7 +284,7 @@ class admin_orders_list_module extends api_admin implements api_interface {
 				$data = $db_cashier_record_view->field($field)->join($join)->where($where)->limit($page_row->limit())->order(array('cr.create_at' => 'desc'))->select();
 			}
 		}
-
+		
 		$order_list = array();
 		if (!empty($data)) {
 			$order_id = $goods_number = 0;
@@ -300,13 +300,6 @@ class admin_orders_list_module extends api_admin implements api_interface {
 						$payment = with(new Ecjia\App\Payment\PaymentPlugin)->getPluginDataById($val['pay_id']);
 					}
 					$goods_lists = array();
-					$total_goods_price = $val['goods_number']*$val['goods_price'];
-					
-					if ($val['extension_code'] == 'bulk') {
-						$is_bulk = 1; 
-					} else {
-						$is_bulk = 0;
-					}
 
 					$goods_lists[] = array(
 						'goods_id'					 => $val['goods_id'],
@@ -314,9 +307,9 @@ class admin_orders_list_module extends api_admin implements api_interface {
 						'goods_number' 				 => $val['goods_number'],
 						'goods_price'				 => $val['goods_price'],
 						'formated_goods_price'		 => price_format($val['goods_price'], false),
-						'total_goods_price'			 => sprintf('%.2f', $total_goods_price),
-						'formated_total_goods_price' => price_format($total_goods_price, false),
-						'is_bulk'					 => $is_bulk,
+						'total_goods_price'			 => sprintf('%.2f', $val['goods_number']*$val['goods_price']),
+						'formated_total_goods_price' => price_format($val['goods_number']*$val['goods_price'], false),
+						'is_bulk'					 => $val['extension_code'] == 'bulk' ? 1 : 0,
 						'goods_buy_weight'			 => $val['goods_buy_weight'] > 0 ? $val['goods_buy_weight'] : '',
 						'img'		=> array(
 							'thumb'	=> (isset($val['goods_img']) && !empty($val['goods_img']))		 ? RC_Upload::upload_url($val['goods_img'])		: RC_Uri::admin_url('statics/images/nopic.png'),
@@ -419,6 +412,12 @@ class admin_orders_list_module extends api_admin implements api_interface {
 						'goods_id'		=> $val['goods_id'],
 						'name'			=> $val['goods_name'],
 						'goods_number' 	=> intval($val['goods_number']),
+						'goods_price'				 => $val['goods_price'],
+						'formated_goods_price'		 => price_format($val['goods_price'], false),
+						'total_goods_price'			 => sprintf('%.2f', $val['goods_number']*$val['goods_price']),
+						'formated_total_goods_price' => price_format($val['goods_number']*$val['goods_price'], false),
+						'is_bulk'					 => $val['extension_code'] == 'bulk' ? 1 : 0,
+						'goods_buy_weight'			 => $val['goods_buy_weight'] > 0 ? $val['goods_buy_weight'] : '',
 						'img' => array(
 							'thumb'	=> (isset($val['goods_img']) && !empty($val['goods_img']))		 ? RC_Upload::upload_url($val['goods_img'])		: '',
 							'url'	=> (isset($val['original_img']) && !empty($val['original_img'])) ? RC_Upload::upload_url($val['original_img'])  : '',

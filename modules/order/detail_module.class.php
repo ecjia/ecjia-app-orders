@@ -62,9 +62,9 @@ class order_detail_module extends api_front implements api_interface {
     	}
 
 		RC_Loader::load_app_func('admin_order', 'orders');
-		$order_id = $this->requestData('order_id', 0);
-		$with_goods = $this->requestData('with_goods', 1); //是否携带返回商品信息，默认返回
-		$with_log = $this->requestData('with_log', 1);  //是否携带返回订单状态记录信息，默认返回
+		$order_id = $this->requestData('order_id', '0');
+		$with_goods = $this->requestData('with_goods', 'yes'); //是否携带返回商品信息，默认返回
+		$with_log = $this->requestData('with_log', 'yes');  //是否携带返回订单状态记录信息，默认返回
 		
 		if (!$order_id) {
 			return new ecjia_error('invalid_parameter', RC_Lang::get('orders::order.invalid_parameter'));
@@ -269,8 +269,8 @@ class order_detail_module extends api_front implements api_interface {
 		}
 		
 		//是否携带返回订单商品信息
-		$with_goods = $with_goods == '' ? 1 : 0;
-		if ($with_goods == '1') {
+		$with_goods = strtolower($with_goods);		
+		if ($with_goods == 'yes') {
 			$goods_list = array();
 			$goods_list = EM_order_goods($order_id);
 			if (!empty($goods_list)) {
@@ -312,8 +312,8 @@ class order_detail_module extends api_front implements api_interface {
 		}
 		
 		//是否携带返回订单状态记录信息
-		$with_log = $with_log == '' ? 1 : 0;
-		if ($with_log == '1' ) {
+		$with_log = strtolower($with_log);
+		if ($with_log == 'yes' ) {
 			$order_status_log = RC_Model::model('orders/order_status_log_model')->where(array('order_id' => $order_id))->order(array('log_id' => 'desc'))->select();
 			$order['order_status_log'] = array();
 			if (!empty($order_status_log)) {

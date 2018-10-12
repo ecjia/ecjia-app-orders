@@ -205,6 +205,9 @@ class admin_orders_list_module extends api_admin implements api_interface {
 			if (!empty($pay_id)) {
 				$where['oi.pay_id'] = $pay_id;
 			}
+			if (!empty($_SESSION['store_id'])) {
+				$where['cr.store_id'] = $_SESSION['store_id'];
+			}
 			$where['cr.action'] = array('billing', 'receipt');
 			$join = array('order_info', 'order_goods', 'staff_user', 'goods');
 			

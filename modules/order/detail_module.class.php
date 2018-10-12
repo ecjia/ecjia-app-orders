@@ -98,9 +98,11 @@ class order_detail_module extends api_front implements api_interface {
 		}
 		
 		/*订单状态处理*/
-		$order_status_info = $this->get_order_status($order['order_status'], $order['shipping_status'], $order['pay_status'], $payment['is_cod']);
-		$order['order_status_code'] = empty($order_status_info['status_code']) ? '' : $order_status_info['status_code'];
-		$order['label_order_status'] = empty($order_status_info['label_order_status']) ? '' : $order_status_info['label_order_status'];
+		//$order_status_info = $this->get_order_status($order['order_status'], $order['shipping_status'], $order['pay_status'], $payment['is_cod']);
+		list($label_order_status, $status_code)  = Ecjia\App\Orders\OrderStatus::getOrderStatusLabel($order['order_status'], $order['shipping_status'], $order['pay_status'], $payment['is_cod']);
+		
+		$order['order_status_code'] = empty($status_code) ? '' : $status_code;
+		$order['label_order_status'] = empty($label_order_status) ? '' : $label_order_status;
 		
 		//配送费：已发货的不退，未发货的退
 		if ($order['shipping_status'] > SS_UNSHIPPED) {

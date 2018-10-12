@@ -94,7 +94,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    $order_id = $order['order_id'];
 	    $order_sn = $order['order_sn'];
 	    RC_Logger::getLogger('pay')->info('orders_buy_order_paid');
-	    RC_Logger::getLogger('pay')->info($order);
+// 	    RC_Logger::getLogger('pay')->info($order);
 	    
 	    $time = RC_Time::gmtime();
 	    $orders_auto_confirm = Ecjia\App\Cart\StoreStatus::StoreOrdersAutoConfirm($order['store_id']);

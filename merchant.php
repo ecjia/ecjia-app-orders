@@ -4126,6 +4126,7 @@ class merchant extends ecjia_merchant
         $this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
 
         $order_id = intval($_POST['order_id']);
+        $shipping_id = intval($_POST['shipping_id']);
 
         if (empty($order_id)) {
             return $this->showmessage(__('无法找到对应的订单！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
@@ -4136,6 +4137,11 @@ class merchant extends ecjia_merchant
         /* 一键发货 */
         $order = RC_Api::api('orders', 'merchant_order_info', array('order_id' => $order_id));
 
+        if ($shipping_id != $order['shipping_id']) {
+            $ship_info = ecjia_shipping::pluginData($shipping_id);
+            $order['shipping_id'] = $ship_info['shipping_id'];
+            $order['shipping_name'] = $ship_info['shipping_name'];
+        }
         /* 查询：取得订单商品 */
         $_goods = get_order_goods(array('order_id' => $order['order_id'], 'order_sn' => $order['order_sn']));
 
@@ -4708,6 +4714,8 @@ class merchant extends ecjia_merchant
         $arr['shipping_status'] = $shipping_status;
         $arr['shipping_time'] = GMTIME_UTC; // 发货时间
         $arr['invoice_no'] = $_delivery['invoice_no'];
+        $arr['shipping_id'] = $order['shipping_id'];
+        $arr['shipping_name'] = $order['shipping_name'];
         
         update_order($order_id, $arr);
         /* 记录日志 */

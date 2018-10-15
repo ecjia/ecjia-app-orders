@@ -4574,16 +4574,16 @@ class merchant extends ecjia_merchant
         }
 
         /*配送方式为o2o速递或众包配送时，自动生成运单号*/
-        // if (empty($delivery_order['invoice_no'])) {
-        //     $shipping_id = $delivery_order['shipping_id'];
-        //     $shipping_info = RC_DB::table('shipping')->where('shipping_id', $shipping_id)->first();
-        //     if ($shipping_info['shipping_code'] == 'ship_o2o_express' || $shipping_info['shipping_code'] == 'ship_ecjia_express') {
-        //         $rand1 = mt_rand(100000, 999999);
-        //         $rand2 = mt_rand(1000000, 9999999);
-        //         $invoice_no = $rand1 . $rand2;
-        //         $delivery_order['invoice_no'] = $invoice_no;
-        //     }
-        // }
+        if (empty($delivery_order['invoice_no'])) {
+            $shipping_id = $delivery_order['shipping_id'];
+            $shipping_info = RC_DB::table('shipping')->where('shipping_id', $shipping_id)->first();
+            if ($shipping_info['shipping_code'] == 'ship_o2o_express' || $shipping_info['shipping_code'] == 'ship_ecjia_express') {
+                $rand1 = mt_rand(100000, 999999);
+                $rand2 = mt_rand(1000000, 9999999);
+                $invoice_no = $rand1 . $rand2;
+                $delivery_order['invoice_no'] = $invoice_no;
+            }
+        }
         /*检查订单商品是否存在或已移除到回收站*/
         $order_goods_ids = RC_DB::table('order_goods')->where('order_id', $order_id)->select(RC_DB::raw('goods_id'))->get();
         foreach ($order_goods_ids as $key => $val) {

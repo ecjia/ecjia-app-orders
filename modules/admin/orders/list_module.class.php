@@ -63,6 +63,7 @@ class admin_orders_list_module extends api_admin implements api_interface {
         $device_udid = isset($device['udid']) ? $device['udid'] : '';
         $device_client = isset($device['client']) ? $device['client'] : '';
         $codes = array('8001', '8011');
+        
         if (!in_array($device_code, $codes)) {
         	$result = $this->admin_priv('order_view');
         	if (is_ecjia_error($result)) {
@@ -93,7 +94,8 @@ class admin_orders_list_module extends api_admin implements api_interface {
 		if ( !empty($keywords)) {
 			$where[] = "( oi.order_sn like '%".$keywords."%' or oi.consignee like '%".$keywords."%' or oi.mobile like '%".$keywords."%' )";
 		}
-		$codes = array('8001', '8011');
+		
+		$order_list = [];
 		
 		if (!in_array($device_code, $codes) || $user_id > 0) {
 			if ($user_id > 0) {
@@ -129,8 +131,9 @@ class admin_orders_list_module extends api_admin implements api_interface {
 			}
 			
 			$total_fee = "(oi.goods_amount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) as total_fee";
-			$field = 'oi.order_id, oi.store_id, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time, og.goods_number, og.goods_id, og.goods_name, g.goods_thumb, g.goods_img, g.original_img, oi.integral, oi.money_paid, oi.surplus, oi.order_amount';
-
+			//$field = 'oi.order_id, oi.store_id, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time, og.goods_number, og.goods_id, og.goods_name, g.goods_thumb, g.goods_img, g.original_img, oi.integral, oi.money_paid, oi.surplus, oi.order_amount';
+			$field = 'oi.order_id, oi.store_id, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time, oi.integral, oi.money_paid, oi.surplus, oi.order_amount';
+			
 			$db_orderinfo_view = RC_Model::model('orders/order_info_viewmodel');
 			$result = ecjia_app::validate_application('store');
 			if (!is_ecjia_error($result)) {
@@ -165,7 +168,10 @@ class admin_orders_list_module extends api_admin implements api_interface {
 					foreach ($order_id_group as $val) {
 						$where['oi.order_id'][] = $val['order_id'];
 					}
-					$data = $db_orderinfo_view->field($field)->join(array('order_info', 'order_goods', 'goods'))->where($where)->order(array('oi.add_time' => 'desc'))->select();
+					//$data = $db_orderinfo_view->field($field)->join(array('order_info', 'order_goods', 'goods'))->where($where)->order(array('oi.add_time' => 'desc'))->select();
+					$data = $db_orderinfo_view->field($field)->where($where)->join(null)->order(array('oi.add_time' => 'desc'))->select();
+					$data = $this->formated_admin_order_list($data, $device_code);
+					$order_list = $data;
 				}
 			} else {
 				$db_orderinfo_view->view = array(
@@ -190,7 +196,9 @@ class admin_orders_list_module extends api_admin implements api_interface {
 					$data = array();
 				} else {
 					$where['oi.order_id'] =  $order_id_group;
-					$data = $db_orderinfo_view->field($field)->join(array('order_goods', 'goods'))->where($where)->order(array('oi.add_time' => 'desc'))->select();
+					$data = $db_orderinfo_view->field($field)->join(null)->where($where)->order(array('oi.add_time' => 'desc'))->select();
+					$data = $this->formated_admin_order_list($data, $device_code);
+					$order_list = $data;
 				}
 			}
 		} else {
@@ -209,7 +217,7 @@ class admin_orders_list_module extends api_admin implements api_interface {
 				$where['cr.store_id'] = $_SESSION['store_id'];
 			}
 			$where['cr.action'] = array('billing', 'receipt');
-			$join = array('order_info', 'order_goods', 'staff_user', 'goods');
+			$join = array('order_info'/*, 'order_goods', 'staff_user', 'goods'*/);
 			
 			switch ($type) {
 				case 'await_pay':
@@ -239,35 +247,22 @@ class admin_orders_list_module extends api_admin implements api_interface {
 			
 			if ($type == 'verify') {
 				$where['cr.action'] = 'check_order';//验单
-				$join = array('order_info', 'order_goods', 'staff_user', 'goods', 'term_meta');
+				$join = array('order_info'/*, 'order_goods', 'staff_user', 'goods', 'term_meta'*/);
 			}elseif ($type == 'billing') {
 				$where['cr.action'] = 'billing'; //开单
-				$join = array('order_info', 'order_goods', 'staff_user', 'goods');
+				$join = array('order_info'/*, 'order_goods', 'staff_user', 'goods'*/);
 			} 
 			
-			//if ($type == 'verify') {
-			//    $where['cr.action'] = 'check_order';
-			//    $join = array('order_info', 'order_goods', 'staff_user', 'goods', 'term_meta');
-			//} else {
-			//    $where['cr.action'] = array('billing', 'receipt');
-			//    $join = array('order_info', 'order_goods', 'staff_user', 'goods');
-			//}
-			/*获取记录条数 */
-			//$record_count = $db_cashier_record_view->join(null)->where($where)->count('cr.order_id');
-			//$page_row = new ecjia_page($record_count, $size, 6, '', $page);
-			//$order_id_group = $db_cashier_record_view->join(null)->where($where)->limit($page_row->limit())->order(array('create_at' => 'desc'))->get_field('order_id', true);
-			
-			//if ($type != 'verify') {
-				
+			if ($type != 'verify') {
 				if (is_array($where_query)) {
 					$where = array_merge($where, $where_query);
 				}
-			//}
+			}
 			
-			$record_count = $db_cashier_record_view->join(array('order_info'))->where($where)->count('cr.order_id');
+			$record_count = $db_cashier_record_view->join(array('order_info'))->where($where)->count('DISTINCT oi.order_id');
 			
 			$page_row = new ecjia_page($record_count, $size, 6, '', $page);
-			$order_id_group = $db_cashier_record_view->join(array('order_info'))->where($where)->limit($page_row->limit())->order(array('create_at' => 'desc'))->field('cr.order_id')->select();
+			$order_id_group = $db_cashier_record_view->join(array('order_info'))->where($where)->limit($page_row->limit())->order(array('create_at' => 'desc'))->field('oi.order_id')->group('oi.order_id')->select();
 			
 			if (!empty($order_id_group)) {
 				foreach ($order_id_group as $val) {
@@ -280,163 +275,327 @@ class admin_orders_list_module extends api_admin implements api_interface {
 			} else {
 // 				$total_fee = goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee + tax - integral_money - bonus - discount;
 				$total_fee = "(oi.goods_amount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) as total_fee";
-				$field = 'oi.order_id, oi.surplus, oi.money_paid, oi.order_amount, oi.store_id, su.name, oi.integral, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time,og.goods_id, og.goods_number, og.goods_name, og.goods_price, og.extension_code, og.goods_buy_weight, g.goods_thumb, g.goods_img, g.original_img';
-				$field .= $type == 'verify' ? ', tm.meta_value' : '';
-				$where['cr.order_id'] =  $order_id_groups;
-				$where[] = "oi.order_id is not null";
+				//$field = 'oi.order_id, oi.surplus, oi.money_paid, oi.order_amount, oi.store_id, su.name, oi.integral, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time,og.goods_id, og.goods_number, og.goods_name, og.goods_price, og.extension_code, og.goods_buy_weight, g.goods_thumb, g.goods_img, g.original_img';
+				//$field .= $type == 'verify' ? ', tm.meta_value' : '';
+				$field = 'oi.order_id, oi.surplus, oi.money_paid, oi.order_amount, oi.store_id, oi.integral, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time';
+				$where['oi.order_id'] =  $order_id_groups;
+				//$where[] = "oi.order_id is not null";
 				$data = $db_cashier_record_view->field($field)->join($join)->where($where)->limit($page_row->limit())->order(array('cr.create_at' => 'desc'))->select();
+				$data = $this->formated_admin_order_list($data, $device_code);
+				$order_list = $data;
 			}
 		}
 		
-		$order_list = array();
-		if (!empty($data)) {
-			$order_id = $goods_number = 0;
-			foreach ($data as $val) {
-				if ($order_id == 0 || $val['order_id'] != $order_id ) {
-					$goods_number = 0;
-					$order_status = ($val['order_status'] != '2' || $val['order_status'] != '3') ? RC_Lang::get('orders::order.os.'.$val['order_status']) : '';
-					$order_status = $val['order_status'] == '2' ? __('已取消') : $order_status;
-					$order_status = $val['order_status'] == '3' ? __('无效') : $order_status;
+// 		$order_list = array();
+// 		if (!empty($data)) {
+// 			$order_id = $goods_number = 0;
+// 			foreach ($data as $val) {
+// 				if ($order_id == 0 || $val['order_id'] != $order_id ) {
+// 					$goods_number = 0;
+// 					$order_status = ($val['order_status'] != '2' || $val['order_status'] != '3') ? RC_Lang::get('orders::order.os.'.$val['order_status']) : '';
+// 					$order_status = $val['order_status'] == '2' ? __('已取消') : $order_status;
+// 					$order_status = $val['order_status'] == '3' ? __('无效') : $order_status;
 
-// 					$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
-					if ($val['pay_id'] > 0) {
-						$payment = with(new Ecjia\App\Payment\PaymentPlugin)->getPluginDataById($val['pay_id']);
-					}
-					$goods_lists = array();
+// // 					$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
+// 					if ($val['pay_id'] > 0) {
+// 						$payment = with(new Ecjia\App\Payment\PaymentPlugin)->getPluginDataById($val['pay_id']);
+// 					}
+// 					$goods_lists = array();
 
-					$goods_lists[] = array(
-						'goods_id'					 => $val['goods_id'],
-						'name'						 => $val['goods_name'],
-						'goods_number' 				 => $val['goods_number'],
-						'goods_price'				 => $val['goods_price'],
-						'formated_goods_price'		 => price_format($val['goods_price'], false),
-						'total_goods_price'			 => sprintf('%.2f', $val['goods_number']*$val['goods_price']),
-						'formated_total_goods_price' => price_format($val['goods_number']*$val['goods_price'], false),
-						'is_bulk'					 => $val['extension_code'] == 'bulk' ? 1 : 0,
-						'goods_buy_weight'			 => $val['goods_buy_weight'] > 0 ? $val['goods_buy_weight'] : '',
-						'img'		=> array(
-							'thumb'	=> (isset($val['goods_img']) && !empty($val['goods_img']))		 ? RC_Upload::upload_url($val['goods_img'])		: RC_Uri::admin_url('statics/images/nopic.png'),
-							'url'	=> (isset($val['original_img']) && !empty($val['original_img'])) ? RC_Upload::upload_url($val['original_img'])  : RC_Uri::admin_url('statics/images/nopic.png'),
-							'small'	=> (isset($val['goods_thumb']) && !empty($val['goods_thumb']))   ? RC_Upload::upload_url($val['goods_thumb'])   : RC_Uri::admin_url('statics/images/nopic.png')
-						)
-					);
-				$codes = array('8001', '8011');
-				if (in_array($device_code , $codes)) {
-						if (in_array($val['order_status'], array(OS_CANCELED, OS_INVALID, OS_RETURNED))) {
-							$label_order_status = '已撤销';
-							$status_code		= 'canceled';
-						} elseif ($val['pay_status'] == PS_PAYED) {
-							$label_order_status = '已支付';
-							$status_code		= 'payed';
-						} elseif ($val['pay_status'] == PS_UNPAYED) {
-							$label_order_status = '未支付';
-							$status_code		= 'unpay';
-						}
-					} else {
-						if (in_array($val['order_status'], array(OS_CONFIRMED, OS_SPLITED)) &&
-						in_array($val['shipping_status'], array(SS_RECEIVED)) &&
-						in_array($val['pay_status'], array(PS_PAYED, PS_PAYING)))
-						{
-							$label_order_status = '已完成';
-							$status_code = 'finished';
-						}
-						elseif (in_array($val['shipping_status'], array(SS_SHIPPED)))
-						{
-							$label_order_status = '已发货';
-							$status_code = 'shipped';
-						}
-						elseif (in_array($val['order_status'], array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) &&
-								in_array($val['pay_status'], array(PS_UNPAYED)) &&
-								(in_array($val['shipping_status'], array(SS_SHIPPED, SS_RECEIVED)) || !$payment['is_cod']))
-						{
-							$label_order_status = '待付款';
-							$status_code = 'await_pay';
-						}
-						elseif (in_array($val['order_status'], array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
-								in_array($val['shipping_status'], array(SS_UNSHIPPED, SS_SHIPPED_PART, SS_PREPARING, SS_SHIPPED_ING, OS_SHIPPED_PART)) &&
-								(in_array($val['pay_status'], array(PS_PAYED, PS_PAYING)) || $payment['is_cod']))
-						{
-							if (!in_array($val['pay_status'], array(PS_PAYED)) && $type == 'payed') {
-								continue;
-							}
-							$label_order_status = '待发货';
-							$status_code = 'await_ship';
-						}
-						elseif (in_array($val['order_status'], array(OS_CANCELED))) {
-							$label_order_status = '已关闭';
-							$status_code = 'canceled';
-						}
+// 					$goods_lists[] = array(
+// 						'goods_id'					 => $val['goods_id'],
+// 						'name'						 => $val['goods_name'],
+// 						'goods_number' 				 => $val['goods_number'],
+// 						'goods_price'				 => $val['goods_price'],
+// 						'formated_goods_price'		 => price_format($val['goods_price'], false),
+// 						'total_goods_price'			 => sprintf('%.2f', $val['goods_number']*$val['goods_price']),
+// 						'formated_total_goods_price' => price_format($val['goods_number']*$val['goods_price'], false),
+// 						'is_bulk'					 => $val['extension_code'] == 'bulk' ? 1 : 0,
+// 						'goods_buy_weight'			 => $val['goods_buy_weight'] > 0 ? $val['goods_buy_weight'] : '',
+// 						'img'		=> array(
+// 							'thumb'	=> (isset($val['goods_img']) && !empty($val['goods_img']))		 ? RC_Upload::upload_url($val['goods_img'])		: RC_Uri::admin_url('statics/images/nopic.png'),
+// 							'url'	=> (isset($val['original_img']) && !empty($val['original_img'])) ? RC_Upload::upload_url($val['original_img'])  : RC_Uri::admin_url('statics/images/nopic.png'),
+// 							'small'	=> (isset($val['goods_thumb']) && !empty($val['goods_thumb']))   ? RC_Upload::upload_url($val['goods_thumb'])   : RC_Uri::admin_url('statics/images/nopic.png')
+// 						)
+// 					);
+// 				$codes = array('8001', '8011');
+// 				if (in_array($device_code , $codes)) {
+// 						if (in_array($val['order_status'], array(OS_CANCELED, OS_INVALID, OS_RETURNED))) {
+// 							$label_order_status = '已撤销';
+// 							$status_code		= 'canceled';
+// 						} elseif ($val['pay_status'] == PS_PAYED) {
+// 							$label_order_status = '已支付';
+// 							$status_code		= 'payed';
+// 						} elseif ($val['pay_status'] == PS_UNPAYED) {
+// 							$label_order_status = '未支付';
+// 							$status_code		= 'unpay';
+// 						}
+// 					} else {
+// 						if (in_array($val['order_status'], array(OS_CONFIRMED, OS_SPLITED)) &&
+// 						in_array($val['shipping_status'], array(SS_RECEIVED)) &&
+// 						in_array($val['pay_status'], array(PS_PAYED, PS_PAYING)))
+// 						{
+// 							$label_order_status = '已完成';
+// 							$status_code = 'finished';
+// 						}
+// 						elseif (in_array($val['shipping_status'], array(SS_SHIPPED)))
+// 						{
+// 							$label_order_status = '已发货';
+// 							$status_code = 'shipped';
+// 						}
+// 						elseif (in_array($val['order_status'], array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) &&
+// 								in_array($val['pay_status'], array(PS_UNPAYED)) &&
+// 								(in_array($val['shipping_status'], array(SS_SHIPPED, SS_RECEIVED)) || !$payment['is_cod']))
+// 						{
+// 							$label_order_status = '待付款';
+// 							$status_code = 'await_pay';
+// 						}
+// 						elseif (in_array($val['order_status'], array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
+// 								in_array($val['shipping_status'], array(SS_UNSHIPPED, SS_SHIPPED_PART, SS_PREPARING, SS_SHIPPED_ING, OS_SHIPPED_PART)) &&
+// 								(in_array($val['pay_status'], array(PS_PAYED, PS_PAYING)) || $payment['is_cod']))
+// 						{
+// 							if (!in_array($val['pay_status'], array(PS_PAYED)) && $type == 'payed') {
+// 								continue;
+// 							}
+// 							$label_order_status = '待发货';
+// 							$status_code = 'await_ship';
+// 						}
+// 						elseif (in_array($val['order_status'], array(OS_CANCELED))) {
+// 							$label_order_status = '已关闭';
+// 							$status_code = 'canceled';
+// 						}
 						
 						
-// 						$label_order_status = $order_status.','.RC_Lang::lang('ps/'.$val['pay_status']).','.RC_Lang::lang('ss/'.$val['shipping_status']);
-					}
+// // 						$label_order_status = $order_status.','.RC_Lang::lang('ps/'.$val['pay_status']).','.RC_Lang::lang('ss/'.$val['shipping_status']);
+// 					}
 
-					$goods_number = $val['goods_number'];
-					$order_list[$val['order_id']] = array(
-						'order_id'	=> $val['order_id'],
-						'order_sn'	=> $val['order_sn'],
-						'total_fee' => $val['total_fee'],
-						'pay_name'	=> $val['pay_name'],
-						'consignee' => $val['consignee'],
-						'mobile'	=> empty($val['mobile']) ? $val['tel'] : $val['mobile'],
-						'formated_total_fee' 		=> price_format($val['total_fee'], false),
-					    'order_amount'				=> $val['order_amount'],
-					    'surplus'					=> $val['surplus'],
-					    'money_paid'				=> $val['money_paid'],
-					    'formated_order_amount'		=> price_format($val['order_amount'], false),
-					    'formated_surplus'			=> price_format($val['surplus'], false),
-					    'formated_money_paid'		=> price_format($val['money_paid'], false),
-						'formated_integral_money'	=> price_format($val['integral_money'], false),
-					    'integral'					=> intval($val['integral']),
-						'formated_bonus'			=> price_format($val['bonus'], false),
-						'formated_shipping_fee'		=> price_format($val['shipping_fee'], false),
-						'formated_discount'			=> price_format($val['discount'], false),
-						'status'					=> $order_status.','.RC_Lang::get('orders::order.ps.'.$val['pay_status']).','.RC_Lang::get('orders::order.ss.'.$val['shipping_status']),
-						'label_order_status'		=> $label_order_status,
-					    'order_status_code'			=> $status_code,
-						'goods_number'				=> intval($goods_number),
-						'create_time' 				=> RC_Time::local_date(ecjia::config('date_format'), $val['add_time']),
-						//'username' 					=> $val['username'],
-					    'verify_code'				=> (isset($val['meta_value']) && !empty($val['meta_value'])) ? $val['meta_value'] : null,
-						'goods_items' 				=> $goods_lists
-					);
+// 					$goods_number = $val['goods_number'];
+// 					$order_list[$val['order_id']] = array(
+// 						'order_id'	=> $val['order_id'],
+// 						'order_sn'	=> $val['order_sn'],
+// 						'total_fee' => $val['total_fee'],
+// 						'pay_name'	=> $val['pay_name'],
+// 						'consignee' => $val['consignee'],
+// 						'mobile'	=> empty($val['mobile']) ? $val['tel'] : $val['mobile'],
+// 						'formated_total_fee' 		=> price_format($val['total_fee'], false),
+// 					    'order_amount'				=> $val['order_amount'],
+// 					    'surplus'					=> $val['surplus'],
+// 					    'money_paid'				=> $val['money_paid'],
+// 					    'formated_order_amount'		=> price_format($val['order_amount'], false),
+// 					    'formated_surplus'			=> price_format($val['surplus'], false),
+// 					    'formated_money_paid'		=> price_format($val['money_paid'], false),
+// 						'formated_integral_money'	=> price_format($val['integral_money'], false),
+// 					    'integral'					=> intval($val['integral']),
+// 						'formated_bonus'			=> price_format($val['bonus'], false),
+// 						'formated_shipping_fee'		=> price_format($val['shipping_fee'], false),
+// 						'formated_discount'			=> price_format($val['discount'], false),
+// 						'status'					=> $order_status.','.RC_Lang::get('orders::order.ps.'.$val['pay_status']).','.RC_Lang::get('orders::order.ss.'.$val['shipping_status']),
+// 						'label_order_status'		=> $label_order_status,
+// 					    'order_status_code'			=> $status_code,
+// 						'goods_number'				=> intval($goods_number),
+// 						'create_time' 				=> RC_Time::local_date(ecjia::config('date_format'), $val['add_time']),
+// 						//'username' 					=> $val['username'],
+// 					    'verify_code'				=> (isset($val['meta_value']) && !empty($val['meta_value'])) ? $val['meta_value'] : null,
+// 						'goods_items' 				=> $goods_lists
+// 					);
 					
-					if ($val['store_id'] > 0) {
-						$store_name = RC_DB::table('store_franchisee')->where('store_id', $val['store_id'])->pluck('merchants_name');
-						$order_list[$val['order_id']]['store_id'] = $val['store_id'];
-						$order_list[$val['order_id']]['store_name'] = $store_name;
-					}
+// 					if ($val['store_id'] > 0) {
+// 						$store_name = RC_DB::table('store_franchisee')->where('store_id', $val['store_id'])->pluck('merchants_name');
+// 						$order_list[$val['order_id']]['store_id'] = $val['store_id'];
+// 						$order_list[$val['order_id']]['store_name'] = $store_name;
+// 					}
 					
-					$order_id = $val['order_id'];
-				} else {
-					$goods_number += $val['goods_number'];
-					$order_list[$val['order_id']]['goods_number'] = $goods_number;
-					$order_list[$val['order_id']]['goods_items'][] = array(
-						'goods_id'		=> $val['goods_id'],
-						'name'			=> $val['goods_name'],
-						'goods_number' 	=> intval($val['goods_number']),
-						'goods_price'				 => $val['goods_price'],
-						'formated_goods_price'		 => price_format($val['goods_price'], false),
-						'total_goods_price'			 => sprintf('%.2f', $val['goods_number']*$val['goods_price']),
-						'formated_total_goods_price' => price_format($val['goods_number']*$val['goods_price'], false),
-						'is_bulk'					 => $val['extension_code'] == 'bulk' ? 1 : 0,
-						'goods_buy_weight'			 => $val['goods_buy_weight'] > 0 ? $val['goods_buy_weight'] : '',
-						'img' => array(
-							'thumb'	=> (isset($val['goods_img']) && !empty($val['goods_img']))		 ? RC_Upload::upload_url($val['goods_img'])		: '',
-							'url'	=> (isset($val['original_img']) && !empty($val['original_img'])) ? RC_Upload::upload_url($val['original_img'])  : '',
-							'small'	=> (isset($val['goods_thumb']) && !empty($val['goods_thumb']))   ? RC_Upload::upload_url($val['goods_thumb'])   : ''
-						)
-					);
-				}
-		    }
-		}
-		$order_list = array_merge($order_list);
+// 					$order_id = $val['order_id'];
+// 				} else {
+// 					$goods_number += $val['goods_number'];
+// 					$order_list[$val['order_id']]['goods_number'] = $goods_number;
+// 					$order_list[$val['order_id']]['goods_items'][] = array(
+// 						'goods_id'		=> $val['goods_id'],
+// 						'name'			=> $val['goods_name'],
+// 						'goods_number' 	=> intval($val['goods_number']),
+// 						'goods_price'				 => $val['goods_price'],
+// 						'formated_goods_price'		 => price_format($val['goods_price'], false),
+// 						'total_goods_price'			 => sprintf('%.2f', $val['goods_number']*$val['goods_price']),
+// 						'formated_total_goods_price' => price_format($val['goods_number']*$val['goods_price'], false),
+// 						'is_bulk'					 => $val['extension_code'] == 'bulk' ? 1 : 0,
+// 						'goods_buy_weight'			 => $val['goods_buy_weight'] > 0 ? $val['goods_buy_weight'] : '',
+// 						'img' => array(
+// 							'thumb'	=> (isset($val['goods_img']) && !empty($val['goods_img']))		 ? RC_Upload::upload_url($val['goods_img'])		: '',
+// 							'url'	=> (isset($val['original_img']) && !empty($val['original_img'])) ? RC_Upload::upload_url($val['original_img'])  : '',
+// 							'small'	=> (isset($val['goods_thumb']) && !empty($val['goods_thumb']))   ? RC_Upload::upload_url($val['goods_thumb'])   : ''
+// 						)
+// 					);
+// 				}
+// 		    }
+// 		}
+		//$order_list = array_merge($order_list);
 		$pager = array(
 			'total'	=> $page_row->total_records,
 			'count' => $page_row->total_records,
 			'more'	=> $page_row->total_pages <= $page ? 0 : 1,
 		);
 		return array('data' => $order_list, 'pager' => $pager);
+	}
+	
+	/**
+	 * 订单列表数据处理
+	 * @param array $data
+	 * return array
+	 */
+	private function formated_admin_order_list($data = array(), $device_code = '') {
+		$codes = array('8001', '8011');
+		if (!empty($data)) {
+			foreach ($data as $key => $val) {
+				$order_status = ($val['order_status'] != '2' || $val['order_status'] != '3') ? RC_Lang::get('orders::order.os.'.$val['order_status']) : '';
+				$order_status = $val['order_status'] == '2' ? __('已取消') : $order_status;
+				$order_status = $val['order_status'] == '3' ? __('无效') : $order_status;
+				
+				if ($val['pay_id'] > 0) {
+					$payment = with(new Ecjia\App\Payment\PaymentPlugin)->getPluginDataById($val['pay_id']);
+				}
+				
+				list($label_order_status, $status_code) = $this->get_label_order_status($val['order_status'], $val['pay_status'], $val['shipping_status'], $payment, $device_code, $codes);
+				
+				$data[$key]['mobile']					= empty($val['mobile']) ? $val['tel'] : $val['mobile'];
+				$data[$key]['formated_total_fee'] 		= price_format($val['total_fee'], false);
+				$data[$key]['formated_order_amount']	= price_format($val['order_amount'], false);
+				$data[$key]['formated_surplus']			= price_format($val['surplus'], false);
+				$data[$key]['formated_money_paid']		= price_format($val['money_paid'], false);
+				$data[$key]['formated_integral_money']	= price_format($val['integral_money'], false);
+				$data[$key]['integral']					= intval($val['integral']);
+				$data[$key]['formated_bonus']			= price_format($val['bonus'], false);
+				$data[$key]['formated_shipping_fee']	= price_format($val['shipping_fee'], false);
+				$data[$key]['formated_discount']		= price_format($val['discount'], false);
+				$data[$key]['status']					= $order_status.','.RC_Lang::get('orders::order.ps.'.$val['pay_status']).','.RC_Lang::get('orders::order.ss.'.$val['shipping_status']);
+				$data[$key]['verify_code']				= $this->get_verify_code($val['order_id']);
+				$data[$key]['store_name'] 				= $val['store_id'] > 0 ? $this->get_store_name($val['store_id']) : '';
+				$order_goods_list 						= $this->get_order_goods($val['order_id']);
+				$data[$key]['goods_items'] 				= [];
+				$data[$key]['goods_number'] 			= 0;
+				
+				if (!empty($order_goods_list)) {
+					foreach ($order_goods_list as $k => $v) {
+						$data[$key]['goods_number'] += $v['goods_number'];
+						$data[$key]['goods_items'][] = array(
+							'goods_id'					 => $v['goods_id'],
+							'name'						 => $v['goods_name'],
+							'goods_number' 				 => intval($v['goods_number']),
+							'goods_price'				 => $v['goods_price'],
+							'formated_goods_price'		 => price_format($v['goods_price'], false),
+							'total_goods_price'			 => sprintf('%.2f', $v['goods_number']*$v['goods_price']),
+							'formated_total_goods_price' => price_format($v['goods_number']*$v['goods_price'], false),
+							'is_bulk'					 => $v['extension_code'] == 'bulk' ? 1 : 0,
+							'goods_buy_weight'			 => $v['goods_buy_weight'] > 0 ? $v['goods_buy_weight'] : '',
+							'img' 						=> array(
+															'thumb'	=> (!empty($v['goods_img']))   ? RC_Upload::upload_url($v['goods_img'])		: '',
+															'url'	=> (!empty($v['original_img']))? RC_Upload::upload_url($v['original_img'])  : '',
+															'small'	=> (!empty($v['goods_thumb'])) ? RC_Upload::upload_url($v['goods_thumb'])   : ''
+														)
+						);
+					}
+				}
+				
+			}
+		}
+		return $data;
+	}
+	
+	/**
+	 * 获取格式化订单状态
+	 */
+	private function get_label_order_status($order_status, $pay_status, $shipping_status, $payment =array(), $device_code = '', $codes) {
+		$label_order_status = '';
+		$status_code = '';
+		if (in_array($device_code , $codes)) {
+			if (in_array($order_status, array(OS_CANCELED, OS_INVALID, OS_RETURNED))) {
+				$label_order_status = '已撤销';
+				$status_code		= 'canceled';
+			} elseif ($pay_status == PS_PAYED) {
+				$label_order_status = '已支付';
+				$status_code		= 'payed';
+			} elseif ($pay_status == PS_UNPAYED) {
+				$label_order_status = '未支付';
+				$status_code		= 'unpay';
+			}
+		} else {
+			if (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED)) &&
+			in_array($shipping_status, array(SS_RECEIVED)) &&
+			in_array($pay_status, array(PS_PAYED, PS_PAYING)))
+			{
+				$label_order_status = '已完成';
+				$status_code = 'finished';
+			}
+			elseif (in_array($shipping_status, array(SS_SHIPPED)))
+			{
+				$label_order_status = '已发货';
+				$status_code = 'shipped';
+			}
+			elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) &&
+					in_array($pay_status, array(PS_UNPAYED)) &&
+					(in_array($shipping_status, array(SS_SHIPPED, SS_RECEIVED)) || !$payment['is_cod']))
+			{
+				$label_order_status = '待付款';
+				$status_code = 'await_pay';
+			}
+			elseif (in_array($order_status, array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
+					in_array($shipping_status, array(SS_UNSHIPPED, SS_SHIPPED_PART, SS_PREPARING, SS_SHIPPED_ING, OS_SHIPPED_PART)) &&
+					(in_array($pay_status, array(PS_PAYED, PS_PAYING)) || $payment['is_cod']))
+			{
+				//if (!in_array($val['pay_status'], array(PS_PAYED)) && $type == 'payed') {
+				//	continue;
+				//}
+				$label_order_status = '待发货';
+				$status_code = 'await_ship';
+			}
+			elseif (in_array($order_status, array(OS_CANCELED))) {
+				$label_order_status = '已关闭';
+				$status_code = 'canceled';
+			}
+		}
+		
+		return array($label_order_status, $status_code);
+	}
+	
+	/**
+	 * 订单提货码
+	 */
+	private function get_verify_code($order_id = 0) {
+		$verify_code = '';
+		if (!empty($order_id)) {
+			$verify_code = RC_DB::table('term_meta')->where('object_id', $order_id)->where('object_type', 'ecjia.order')->where('object_group', 'order')->where('meta_key', 'receipt_verification')->pluck('meta_value');
+			$verify_code = empty($verify_code) ? '' : $verify_code;
+		}
+		return $verify_code;
+	}
+	
+	private function get_order_goods($order_id = 0) {
+		//og.goods_number, og.goods_id, og.goods_name, og.goods_price, og.extension_code, og.goods_buy_weight,g.goods_thumb, g.goods_img, g.original_img,
+		$result = [];
+		if (!empty($order_id)) {
+			$field = 'og.goods_number, og.goods_id, og.goods_name, og.goods_price, og.extension_code, og.goods_buy_weight,g.goods_thumb, g.goods_img, g.original_img';
+			$dbview = RC_DB::table('order_goods as og')->leftJoin('goods as g', RC_DB::raw('og.goods_id'), '=', RC_DB::raw('g.goods_id'));
+			$result = $dbview->where(RC_DB::raw('og.order_id'), $order_id)->select(RC_DB::raw($field))->get();
+			if (!empty($result)) {
+				foreach ($result as $key => $val) {
+					if ($val['extension_code'] == 'bulk') {
+						if ($val['goods_buy_weight'] > 0) {
+							$goods_price = $val['goods_price']/$val['goods_buy_weight'];
+							$goods_price = sprintf('%.2f', $goods_price);
+							$result[$key]['goods_price'] = $goods_price;
+						}
+					}
+				}
+			}
+		}
+		return $result;
+	}
+	
+	private function get_store_name($store_id = 0) {
+		$store_name = '';
+		if (!empty($store_id)) {
+			$store_name = RC_DB::table('store_franchisee')->where('store_id', $store_id)->pluck('merchants_name');
+		}
+		return $store_name;
 	}
 }
 

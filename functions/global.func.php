@@ -1179,7 +1179,7 @@ function merge_order($from_order_sn, $to_order_sn) {
         $weight_price['weight'] += $from_weight_price['weight'];
         $weight_price['amount'] += $from_weight_price['amount'];
         $weight_price['number'] += $from_weight_price['number'];
-        $region_id_list = array($order['country'], $order['province'], $order['city'], $order['district']);
+        $region_id_list = array($order['country'], $order['province'], $order['city'], $order['district'], $order['street']);
         $shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
         $shipping_area = $shipping_method->shipping_area_info($order['shipping_id'], $region_id_list);
         $order['shipping_fee'] = $shipping_method->shipping_fee($shipping_area['shipping_code'], unserialize($shipping_area['configure']), $weight_price['weight'], $weight_price['amount'], $weight_price['number']);

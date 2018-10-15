@@ -880,7 +880,7 @@ class admin extends ecjia_admin
                 $ur_here = RC_Lang::get('orders::order.edit_order_shipping');
                 /* 取得可用的配送方式列表 */
                 $region_id_list = array(
-                    $order['country'], $order['province'], $order['city'], $order['district'],
+                    $order['country'], $order['province'], $order['city'], $order['district'], $order['street']
                 );
                 $shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
                 $shipping_list = ecjia_shipping::availableUserShippings($region_id_list, $order['store_id']);
@@ -908,7 +908,7 @@ class admin extends ecjia_admin
             if (exist_real_goods($order_id)) {
                 /* 存在实体商品 */
                 $region_id_list = array(
-                    $order['country'], $order['province'], $order['city'], $order['district'],
+                    $order['country'], $order['province'], $order['city'], $order['district'], $order['street']
                 );
                 $shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
                 $shipping_area = $shipping_method->shipping_area_info($order['shipping_id'], $region_id_list);
@@ -967,7 +967,7 @@ class admin extends ecjia_admin
 
             /* 取得可用的配送方式列表 */
             $region_id_list = array(
-                $order['country'], $order['province'], $order['city'], $order['district'],
+                $order['country'], $order['province'], $order['city'], $order['district'], $order['street']
             );
             $shipping_method = RC_Loader::load_app_class("shipping_method", "shipping");
             $shipping_list = $shipping_method->available_shipping_list($region_id_list, $order['store_id']);
@@ -1351,7 +1351,7 @@ class admin extends ecjia_admin
             /* 保存配送信息 */
             /* 取得订单信息 */
             $order_info = order_info($order_id);
-            $region_id_list = array($order_info['country'], $order_info['province'], $order_info['city'], $order_info['district']);
+            $region_id_list = array($order_info['country'], $order_info['province'], $order_info['city'], $order_info['district'],  $order_info['street']);
             /* 保存订单 */
 
             $shipping_id = $_POST['shipping'];
@@ -1394,7 +1394,7 @@ class admin extends ecjia_admin
             $order_amount = order_amount($order_id);
             if ($payment['is_cod'] == 1) {
                 $order = order_info($order_id);
-                $region_id_list = array($order['country'], $order['province'], $order['city'], $order['district']);
+                $region_id_list = array($order['country'], $order['province'], $order['city'], $order['district'], $order['street']);
                 $shipping_method = RC_Loader::load_app_class('shipping_method', 'shipping');
                 $shipping = $shipping_method->shipping_area_info($order['shipping_id'], $region_id_list);
                 $pay_fee = pay_fee($pay_id, $order_amount, $shipping['pay_fee']);

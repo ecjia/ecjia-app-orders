@@ -4494,6 +4494,9 @@ class merchant extends ecjia_merchant
 
             $arr['order_status'] = $order_finish ? OS_SPLITED : OS_SPLITING_PART; // 全部分单、部分分单
             $arr['shipping_status'] = $shipping_status;
+            $arr['shipping_id'] = $order['shipping_id'];
+            $arr['shipping_name'] = $order['shipping_name'];
+            
             update_order($order_id, $arr);
         }
 
@@ -4714,9 +4717,7 @@ class merchant extends ecjia_merchant
         $arr['shipping_status'] = $shipping_status;
         $arr['shipping_time'] = GMTIME_UTC; // 发货时间
         $arr['invoice_no'] = $_delivery['invoice_no'];
-        $arr['shipping_id'] = $order['shipping_id'];
-        $arr['shipping_name'] = $order['shipping_name'];
-        
+
         update_order($order_id, $arr);
         /* 记录日志 */
         ecjia_merchant::admin_log('发货，订单号是' . $order['order_sn'], 'setup', 'order');

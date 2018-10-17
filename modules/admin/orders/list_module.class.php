@@ -96,7 +96,7 @@ class admin_orders_list_module extends api_admin implements api_interface {
 		}
 		
 		$order_list = [];
-		
+		//$device_code = '8001';
 		if (!in_array($device_code, $codes) || $user_id > 0) {
 			if ($user_id > 0) {
 				$where['oi.user_id'] = $user_id;
@@ -280,7 +280,7 @@ class admin_orders_list_module extends api_admin implements api_interface {
 				$field = 'oi.order_id, oi.surplus, oi.money_paid, oi.order_amount, oi.store_id, oi.integral, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time';
 				$where['oi.order_id'] =  $order_id_groups;
 				//$where[] = "oi.order_id is not null";
-				$data = $db_cashier_record_view->field($field)->join($join)->where($where)->limit($page_row->limit())->order(array('cr.create_at' => 'desc'))->select();
+				$data = $db_cashier_record_view->field($field)->join($join)->where($where)->limit($page_row->limit())->order(array('cr.create_at' => 'desc'))->group('oi.order_id')->select();
 				$data = $this->formated_admin_order_list($data, $device_code);
 				$order_list = $data;
 			}

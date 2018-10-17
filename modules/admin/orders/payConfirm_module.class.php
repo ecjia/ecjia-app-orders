@@ -158,6 +158,9 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
 			/* 记录log */
 			order_action($order['order_sn'], OS_SPLITED, SS_RECEIVED, PS_PAYED, '收银台确认收货');
 			
+			//更新商品销量
+			RC_Api::api('goods', 'update_goods_sales', array('order_id' => $order_id));
+			
 			$order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => ''));
 			$data = array(
 					'order_id' 		=> $order_info['order_id'],

@@ -98,7 +98,7 @@ class admin extends ecjia_admin
     public function init()
     {
         /* 检查权限 */
-        $this->admin_priv('order_view');
+        $this->admin_priv('order_manage');
 
         ecjia_screen::get_current_screen()->add_help_tab(array(
             'id' => 'overview',
@@ -189,7 +189,7 @@ class admin extends ecjia_admin
      */
     public function info()
     {
-        $this->admin_priv('order_view');
+        $this->admin_priv('order_manage');
 
         /* 根据订单id或订单号查询订单信息 */
         if (isset($_GET['order_id'])) {
@@ -220,7 +220,7 @@ class admin extends ecjia_admin
         if (order_finished($order)) {
             $this->admin_priv('order_view_finished', ecjia::MSGTYPE_JSON);
         } else {
-            $this->admin_priv('order_view', ecjia::MSGTYPE_JSON);
+            $this->admin_priv('order_manage', ecjia::MSGTYPE_JSON);
         }
 
         if (in_array($order['extension_code'], array('storebuy', 'cashdesk'))) {
@@ -650,7 +650,7 @@ class admin extends ecjia_admin
      */
     public function query_info()
     {
-        $this->admin_priv('order_view', ecjia::MSGTYPE_JSON);
+        $this->admin_priv('order_manage', ecjia::MSGTYPE_JSON);
         $ordercount = "order_id = '" . $_POST['keywords'] . "' OR order_sn = '" . $_POST['keywords'] . "'";
 
         $query_id = RC_DB::table('order_info')->whereRaw($ordercount)->pluck('order_id');
@@ -668,7 +668,7 @@ class admin extends ecjia_admin
     public function order_query()
     {
         /* 检查权限 */
-        $this->admin_priv('order_view');
+        $this->admin_priv('order_manage');
 
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('system::system.02_order_list'), RC_Uri::url('orders/admin/init')));
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('system::system.03_order_query')));
@@ -1800,7 +1800,7 @@ class admin extends ecjia_admin
         if (order_finished($order)) {
             $this->admin_priv('order_view_finished');
         } else {
-            $this->admin_priv('order_view');
+            $this->admin_priv('order_manage');
         }
 
         /* 查询：取得用户名 */
@@ -2135,7 +2135,7 @@ class admin extends ecjia_admin
                         continue;
                     }
                 } else {
-                    if (!$this->admin_priv('order_view', ecjia::MSGTYPE_JSON, false)) {
+                    if (!$this->admin_priv('order_manage', ecjia::MSGTYPE_JSON, false)) {
                         continue;
                     }
                 }

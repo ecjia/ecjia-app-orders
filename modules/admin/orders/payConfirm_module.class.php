@@ -108,6 +108,11 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
 // 				RC_Logger::getLogger('error')->info('订单支付【订单id|'.$order_id.'】：'.$result->get_error_message());
 // 			}
 			$order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => ''));
+			
+			RC_Logger::getLogger('error')->info('test555');
+			RC_Logger::getLogger('error')->info($order);
+			RC_Logger::getLogger('error')->info('test666');
+			
 			$operate = RC_Loader::load_app_class('order_operate', 'orders');
 			$operate->operate($order, 'pay', '收银台收款');
 			

@@ -160,19 +160,19 @@ class admin_orders_list_module extends api_admin implements api_interface {
 				//实例化分页
 				$page_row = new ecjia_page($record_count, $size, 6, '', $page);
 
-				$order_id_group = $db_orderinfo_view->field('oi.order_id')->join(array('order_goods'))->where($where)->limit($page_row->limit())->order(array('oi.add_time' => 'desc'))->group('oi.order_id')->select();
+// 				$order_id_group = $db_orderinfo_view->field('oi.order_id')->join(array('order_goods'))->where($where)->limit($page_row->limit())->order(array('oi.add_time' => 'desc'))->group('oi.order_id')->select();
 
-				if (empty($order_id_group)) {
-					$data = array();
-				} else {
-					foreach ($order_id_group as $val) {
-						$where['oi.order_id'][] = $val['order_id'];
-					}
+// 				if (empty($order_id_group)) {
+// 					$data = array();
+// 				} else {
+// 					foreach ($order_id_group as $val) {
+// 						$where['oi.order_id'][] = $val['order_id'];
+// 					}
 					//$data = $db_orderinfo_view->field($field)->join(array('order_info', 'order_goods', 'goods'))->where($where)->order(array('oi.add_time' => 'desc'))->select();
-					$data = $db_orderinfo_view->field($field)->where($where)->join(null)->order(array('oi.add_time' => 'desc'))->select();
+					$data = $db_orderinfo_view->field($field)->where($where)->join(null)->limit($page_row->limit())->order(array('oi.add_time' => 'desc'))->select();
 					$data = $this->formated_admin_order_list($data, $device_code);
 					$order_list = $data;
-				}
+// 				}
 			} else {
 				$db_orderinfo_view->view = array(
 					'order_goods' => array(
@@ -191,15 +191,15 @@ class admin_orders_list_module extends api_admin implements api_interface {
 				//实例化分页
 				$page_row = new ecjia_page($record_count, $size, 6, '', $page);
 
-				$order_id_group = $db_orderinfo_view->join(null)->where($where)->limit($page_row->limit())->order(array('oi.add_time' => 'desc'))->get_field('order_id', true);
-				if (empty($order_id_group)) {
-					$data = array();
-				} else {
-					$where['oi.order_id'] =  $order_id_group;
+// 				$order_id_group = $db_orderinfo_view->join(null)->where($where)->limit($page_row->limit())->order(array('oi.add_time' => 'desc'))->get_field('order_id', true);
+// 				if (empty($order_id_group)) {
+// 					$data = array();
+// 				} else {
+// 					$where['oi.order_id'] =  $order_id_group;
 					$data = $db_orderinfo_view->field($field)->join(null)->where($where)->order(array('oi.add_time' => 'desc'))->select();
 					$data = $this->formated_admin_order_list($data, $device_code);
 					$order_list = $data;
-				}
+// 				}
 			}
 		} else {
 			
@@ -264,26 +264,26 @@ class admin_orders_list_module extends api_admin implements api_interface {
 			$page_row = new ecjia_page($record_count, $size, 6, '', $page);
 			$order_id_group = $db_cashier_record_view->join(array('order_info'))->where($where)->limit($page_row->limit())->order(array('create_at' => 'desc'))->field('oi.order_id')->group('oi.order_id')->select();
 			
-			if (!empty($order_id_group)) {
-				foreach ($order_id_group as $val) {
-					$order_id_groups[] = $val['order_id']; 
-				}
-			}
+// 			if (!empty($order_id_group)) {
+// 				foreach ($order_id_group as $val) {
+// 					$order_id_groups[] = $val['order_id']; 
+// 				}
+// 			}
 			
-			if (empty($order_id_groups)) {
-				$data = array();
-			} else {
+// 			if (empty($order_id_groups)) {
+// 				$data = array();
+// 			} else {
 // 				$total_fee = goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee + tax - integral_money - bonus - discount;
 				$total_fee = "(oi.goods_amount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) as total_fee";
 				//$field = 'oi.order_id, oi.surplus, oi.money_paid, oi.order_amount, oi.store_id, su.name, oi.integral, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time,og.goods_id, og.goods_number, og.goods_name, og.goods_price, og.extension_code, og.goods_buy_weight, g.goods_thumb, g.goods_img, g.original_img';
 				//$field .= $type == 'verify' ? ', tm.meta_value' : '';
 				$field = 'oi.order_id, oi.surplus, oi.money_paid, oi.order_amount, oi.store_id, oi.integral, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time';
-				$where['oi.order_id'] =  $order_id_groups;
+// 				$where['oi.order_id'] =  $order_id_groups;
 				//$where[] = "oi.order_id is not null";
 				$data = $db_cashier_record_view->field($field)->join($join)->where($where)->limit($page_row->limit())->order(array('cr.create_at' => 'desc'))->group('oi.order_id')->select();
 				$data = $this->formated_admin_order_list($data, $device_code);
 				$order_list = $data;
-			}
+// 			}
 		}
 		
 // 		$order_list = array();

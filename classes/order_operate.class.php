@@ -62,7 +62,7 @@ class order_operate {
 		RC_Loader::load_app_func('global', 'orders');
 		/* 标记订单为已确认 */
 		$this->update_order($order['order_id'], array('order_status' => OS_CONFIRMED, 'confirm_time' => RC_Time::gmtime()));
-		update_order_amount($order['order_id']);
+		//update_order_amount($order['order_id']);
 		
 		/* 记录日志 */
 		ecjia_admin::admin_log('订单号是 '.$order['order_sn'], 'edit', 'order_status');
@@ -95,11 +95,6 @@ class order_operate {
 	
 	/* 设置已付款*/
 	private function order_pay($order, $note) {
-		
-		RC_Logger::getLogger('error')->info('testaaa');
-		RC_Logger::getLogger('error')->info($order);
-		RC_Logger::getLogger('error')->info('testbbb');
-		
 		/* 付款 */
 		/* 标记订单为已确认、已付款，更新付款时间和已支付金额，如果是货到付款，同时修改订单为“收货确认” */
 		if ($order['order_status'] != OS_CONFIRMED) {

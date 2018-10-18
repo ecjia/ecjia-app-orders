@@ -462,11 +462,6 @@ function update_order_amount($order_id) {
     $order_amount = $order_info['order_amount'] + $order_info['goods_amount'] + $order_info['tax'] + $order_info['shipping_fee'] + 
                     $order_info['insure_fee'] + $order_info['pay_fee'] + $order_info['pack_fee'] + $order_info['card_fee'] - 
                     $order_info['money_paid'] - $order_info['surplus'] - $order_info['integral_money'] - $order_info['bonus'] - $order_info['discount'];
-
-    RC_Logger::getLogger('error')->info('testxxx');
-    RC_Logger::getLogger('error')->info($order_info);
-    RC_Logger::getLogger('error')->info($order_amount);
-    RC_Logger::getLogger('error')->info('testyyy');
     
     return RC_DB::table('order_info')->where('order_id', $order_id)->decrement('order_amount', $order_amount);
 }

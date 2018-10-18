@@ -83,7 +83,7 @@ class admin_orders_list_module extends api_admin implements api_interface {
 		
 		if (!empty($start_date) && !empty($end_date)) {
 			$start_date = RC_Time::local_strtotime($start_date);
-			$end_date = $start_date + 86399;
+			$end_date = RC_Time::local_strtotime($end_date) + 86399;
 		}
 
 		$order_query = RC_Loader::load_app_class('order_query', 'orders');

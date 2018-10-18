@@ -147,6 +147,7 @@ class history_module extends api_admin implements api_interface {
 				$data[$key]['formated_bonus']			= price_format($val['bonus'], false);
 				$data[$key]['formated_shipping_fee']	= price_format($val['shipping_fee'], false);
 				$data[$key]['formated_discount']		= price_format($val['discount'], false);
+				$data[$key]['create_time'] 				= RC_Time::local_date(ecjia::config('date_format'), $val['add_time']);
 				$data[$key]['status']					= $order_status.','.RC_Lang::get('orders::order.ps.'.$val['pay_status']).','.RC_Lang::get('orders::order.ss.'.$val['shipping_status']);
 				$data[$key]['verify_code']				= $this->get_verify_code($val['order_id']);
 				$data[$key]['store_name'] 				= $val['store_id'] > 0 ? $this->get_store_name($val['store_id']) : '';

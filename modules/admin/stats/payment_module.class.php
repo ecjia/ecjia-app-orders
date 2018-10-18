@@ -147,7 +147,7 @@ class admin_stats_payment_module extends api_admin implements api_interface
                     'pay_code'		=> $val,
                     'pay_name'		=> $pay_id_group_new[$val]['pay_name'],
                     'order_count'	=> $order_stats['count'],
-                    'order_amount'	=> empty($order_stats['total_fee']) ? '0.00' : $order_stats['total_fee'],
+                    'order_amount'	=> $order_stats['total_fee'] > 0 ? $order_stats['total_fee'] : '0.00',
                     'formatted_order_amount' => price_format($order_stats['total_fee'], false),
                 );
             }

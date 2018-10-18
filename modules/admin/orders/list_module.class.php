@@ -351,9 +351,8 @@ class admin_orders_list_module extends api_admin implements api_interface {
 				$label_order_status = '已发货';
 				$status_code = 'shipped';
 			}
-			elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) &&
-					in_array($pay_status, array(PS_UNPAYED)) &&
-					(in_array($shipping_status, array(SS_SHIPPED, SS_RECEIVED)) || !$payment['is_cod']))
+			elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED)) &&
+					in_array($pay_status, array(PS_UNPAYED)) && ( !$payment['is_cod']))
 			{
 				$label_order_status = '待付款';
 				$status_code = 'await_pay';
@@ -362,12 +361,16 @@ class admin_orders_list_module extends api_admin implements api_interface {
 					in_array($shipping_status, array(SS_UNSHIPPED, SS_SHIPPED_PART, SS_PREPARING, SS_SHIPPED_ING, OS_SHIPPED_PART)) &&
 					(in_array($pay_status, array(PS_PAYED, PS_PAYING)) || $payment['is_cod']))
 			{
-				//if (!in_array($val['pay_status'], array(PS_PAYED)) && $type == 'payed') {
-				//	continue;
-				//}
 				$label_order_status = '待发货';
 				$status_code = 'await_ship';
 			}
+			elseif (in_array($order_status, array(OS_UNCONFIRMED)) &&
+					in_array($shipping_status, array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING)) &&
+					in_array($pay_status, array(PS_PAYED))) {
+				$label_order_status = '已付款';
+				$status_code = 'payed';
+			}
+			
 			elseif (in_array($order_status, array(OS_CANCELED))) {
 				$label_order_status = '已关闭';
 				$status_code = 'canceled';

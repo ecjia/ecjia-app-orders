@@ -85,7 +85,9 @@ class history_module extends api_admin implements api_interface {
 		$order_list = [];
 		
 		$dbview->where(RC_DB::raw('cr.mobile_device_id'), $_SESSION['device_id'])
+			   ->where(RC_DB::raw('oi.pay_status'), PS_PAYED)
 			   ->whereIn(RC_DB::raw('cr.action'), array('billing', 'receipt'));
+		
 		if (!empty($pay_id)) {
 			$dbview->where(RC_DB::raw('oi.pay_id'), $pay_id);
 		}

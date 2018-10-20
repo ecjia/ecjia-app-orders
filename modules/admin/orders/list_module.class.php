@@ -363,9 +363,9 @@ class admin_orders_list_module extends api_admin implements api_interface {
 					in_array($shipping_status, array(SS_UNSHIPPED, SS_SHIPPED_PART, SS_PREPARING, SS_SHIPPED_ING, OS_SHIPPED_PART)) &&
 					(in_array($pay_status, array(PS_PAYED, PS_PAYING)) || $payment['is_cod']))
 			{
-				if (!in_array($pay_status, array(PS_PAYED)) && $type == 'payed') {
-					continue;
-				}
+// 				if (!in_array($pay_status, array(PS_PAYED)) && $type == 'payed') {
+// 					continue;
+// 				}
 				$label_order_status = '待发货';
 				$status_code = 'await_ship';
 			}

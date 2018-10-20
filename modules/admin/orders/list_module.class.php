@@ -158,7 +158,7 @@ class admin_orders_list_module extends api_admin implements api_interface {
 				//实例化分页
 				$page_row = new ecjia_page($record_count, $size, 6, '', $page);
 				$data = $db_orderinfo_view->field($field)->where($where)->join(null)->limit($page_row->limit())->order(array('oi.add_time' => 'desc'))->select();
-				$data = $this->formated_admin_order_list($data, $device_code);
+				$data = $this->formated_admin_order_list($data, $device_code, $type);
 				$order_list = $data;
 			} else {
 				$db_orderinfo_view->view = array(
@@ -178,7 +178,7 @@ class admin_orders_list_module extends api_admin implements api_interface {
 				//实例化分页
 				$page_row = new ecjia_page($record_count, $size, 6, '', $page);
 				$data = $db_orderinfo_view->field($field)->join(null)->where($where)->order(array('oi.add_time' => 'desc'))->select();
-				$data = $this->formated_admin_order_list($data, $device_code);
+				$data = $this->formated_admin_order_list($data, $device_code, $type);
 				$order_list = $data;
 			}
 		} else {
@@ -246,7 +246,7 @@ class admin_orders_list_module extends api_admin implements api_interface {
 			$total_fee = "(oi.goods_amount + oi.tax + oi.shipping_fee + oi.insure_fee + oi.pay_fee + oi.pack_fee + oi.card_fee) as total_fee";
 			$field = 'oi.order_id, oi.surplus, oi.money_paid, oi.order_amount, oi.store_id, oi.integral, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, '.$total_fee.', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time';
 			$data = $db_cashier_record_view->field($field)->join($join)->where($where)->limit($page_row->limit())->order(array('cr.create_at' => 'desc'))->group('oi.order_id')->select();
-			$data = $this->formated_admin_order_list($data, $device_code);
+			$data = $this->formated_admin_order_list($data, $device_code, $type);
 			$order_list = $data;
 		}
 		$pager = array(
@@ -262,7 +262,7 @@ class admin_orders_list_module extends api_admin implements api_interface {
 	 * @param array $data
 	 * return array
 	 */
-	private function formated_admin_order_list($data = array(), $device_code = '') {
+	private function formated_admin_order_list($data = array(), $device_code = '', $type='') {
 		$codes = array('8001', '8011');
 		if (!empty($data)) {
 			foreach ($data as $key => $val) {
@@ -274,7 +274,7 @@ class admin_orders_list_module extends api_admin implements api_interface {
 					$payment = with(new Ecjia\App\Payment\PaymentPlugin)->getPluginDataById($val['pay_id']);
 				}
 				
-				list($label_order_status, $status_code) = $this->get_label_order_status($val['order_status'], $val['pay_status'], $val['shipping_status'], $payment, $device_code, $codes);
+				list($label_order_status, $status_code) = $this->get_label_order_status($val['order_status'], $val['pay_status'], $val['shipping_status'], $payment, $device_code, $codes, $type);
 				
 				$data[$key]['mobile']					= empty($val['mobile']) ? $val['tel'] : $val['mobile'];
 				$data[$key]['formated_total_fee'] 		= price_format($val['total_fee'], false);
@@ -288,6 +288,8 @@ class admin_orders_list_module extends api_admin implements api_interface {
 				$data[$key]['formated_discount']		= price_format($val['discount'], false);
 				$data[$key]['create_time'] 				= RC_Time::local_date(ecjia::config('date_format'), $val['add_time']);
 				$data[$key]['status']					= $order_status.','.RC_Lang::get('orders::order.ps.'.$val['pay_status']).','.RC_Lang::get('orders::order.ss.'.$val['shipping_status']);
+				$data[$key]['label_order_status']		= $label_order_status;
+				$data[$key]['order_status_code']		= $status_code;
 				$data[$key]['verify_code']				= $this->get_verify_code($val['order_id']);
 				$data[$key]['store_name'] 				= $val['store_id'] > 0 ? $this->get_store_name($val['store_id']) : '';
 				$order_goods_list 						= $this->get_order_goods($val['order_id']);
@@ -324,7 +326,7 @@ class admin_orders_list_module extends api_admin implements api_interface {
 	/**
 	 * 获取格式化订单状态
 	 */
-	private function get_label_order_status($order_status, $pay_status, $shipping_status, $payment =array(), $device_code = '', $codes) {
+	private function get_label_order_status($order_status, $pay_status, $shipping_status, $payment =array(), $device_code = '', $codes, $type = '') {
 		$label_order_status = '';
 		$status_code = '';
 		if (in_array($device_code , $codes)) {
@@ -339,8 +341,7 @@ class admin_orders_list_module extends api_admin implements api_interface {
 				$status_code		= 'unpay';
 			}
 		} else {
-			if (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED)) &&
-			in_array($shipping_status, array(SS_RECEIVED)) &&
+			if (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED)) && in_array($shipping_status, array(SS_RECEIVED)) &&
 			in_array($pay_status, array(PS_PAYED, PS_PAYING)))
 			{
 				$label_order_status = '已完成';
@@ -351,8 +352,9 @@ class admin_orders_list_module extends api_admin implements api_interface {
 				$label_order_status = '已发货';
 				$status_code = 'shipped';
 			}
-			elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED)) &&
-					in_array($pay_status, array(PS_UNPAYED)) && ( !$payment['is_cod']))
+			elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) &&
+					in_array($pay_status, array(PS_UNPAYED)) &&
+					(in_array($shipping_status, array(SS_SHIPPED, SS_RECEIVED)) || !$payment['is_cod']))
 			{
 				$label_order_status = '待付款';
 				$status_code = 'await_pay';
@@ -361,16 +363,12 @@ class admin_orders_list_module extends api_admin implements api_interface {
 					in_array($shipping_status, array(SS_UNSHIPPED, SS_SHIPPED_PART, SS_PREPARING, SS_SHIPPED_ING, OS_SHIPPED_PART)) &&
 					(in_array($pay_status, array(PS_PAYED, PS_PAYING)) || $payment['is_cod']))
 			{
+				if (!in_array($pay_status, array(PS_PAYED)) && $type == 'payed') {
+					continue;
+				}
 				$label_order_status = '待发货';
 				$status_code = 'await_ship';
 			}
-			elseif (in_array($order_status, array(OS_UNCONFIRMED)) &&
-					in_array($shipping_status, array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING)) &&
-					in_array($pay_status, array(PS_PAYED))) {
-				$label_order_status = '已付款';
-				$status_code = 'payed';
-			}
-			
 			elseif (in_array($order_status, array(OS_CANCELED))) {
 				$label_order_status = '已关闭';
 				$status_code = 'canceled';

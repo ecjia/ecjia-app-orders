@@ -291,13 +291,13 @@ function order_fee($order, $goods, $consignee, $cart_id = array()) {
         $total['market_price'] += $val['market_price'] * $val['goods_number'];
         $area_id = $consignee['province'];
         //多店铺开启库存管理以及地区后才会去判断
-        if ($area_id > 0) {
-            $warehouse_db = RC_Loader::load_app_model('warehouse_model', 'warehouse');
-            $warehouse = $warehouse_db->where(array('regionId' => $area_id))->find();
-            $warehouse_id = $warehouse['parent_id'];
-            $goods[$key]['warehouse_id'] = $warehouse_id;
-            $goods[$key]['area_id'] = $area_id;
-        }
+//         if ($area_id > 0) {
+//             $warehouse_db = RC_Loader::load_app_model('warehouse_model', 'warehouse');
+//             $warehouse = $warehouse_db->where(array('regionId' => $area_id))->find();
+//             $warehouse_id = $warehouse['parent_id'];
+//             $goods[$key]['warehouse_id'] = $warehouse_id;
+//             $goods[$key]['area_id'] = $area_id;
+//         }
     }
     $total['saving'] = $total['market_price'] - $total['goods_price'];
     $total['save_rate'] = $total['market_price'] ? round($total['saving'] * 100 / $total['market_price']) . '%' : 0;

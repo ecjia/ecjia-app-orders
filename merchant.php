@@ -3744,7 +3744,7 @@ class merchant extends ecjia_merchant
         }
 
         //退款编号
-        $refund_sn = order_refund::get_refund_sn();
+        $refund_sn = ecjia_order_refund_sn();
         if ($refund_type == 'refund') { //仅退款
             $return_status = 0;
             $refund_status = 1;
@@ -3983,7 +3983,7 @@ class merchant extends ecjia_merchant
         }
 
         //退款编号
-        $refund_sn = order_refund::get_refund_sn();
+        $refund_sn = ecjia_order_refund_sn();
 
         //仅退款
         $refund_type = 'refund';

@@ -1240,7 +1240,7 @@ class merchant extends ecjia_merchant
                 'from_ad' => 0,
                 'referer' => RC_Lang::get('orders::order.admin'),
             );
-            $order['order_sn'] = get_order_sn();
+            $order['order_sn'] = ecjia_order_buy_sn();
             $order_id = $this->db_order_info->insert($order);
             if (!$order_id) {
                 return $this->showmessage(__('订单生成失败！请重新尝试！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);

@@ -1026,7 +1026,7 @@ class admin extends ecjia_admin
                 'from_ad' => 0,
                 'referer' => RC_Lang::get('orders::order.admin'),
             );
-            $order['order_sn'] = get_order_sn();
+            $order['order_sn'] = ecjia_order_buy_sn();
 
             $order_id = RC_DB::table('order_info')->insertGetId($order);
 

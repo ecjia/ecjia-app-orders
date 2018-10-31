@@ -866,15 +866,7 @@ function order_bonus($order_id) {
     }
     return $list;
 }
-/**
-* 得到新发货单号
-* @return  string
-*/
-function get_delivery_sn() {
-    /* 选择一个随机的方案 */
-    mt_srand((double) microtime() * 1000000);
-    return date('YmdHi') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT);
-}
+
 /**
  * 记录订单操作记录
  *

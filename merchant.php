@@ -361,7 +361,10 @@ class merchant extends ecjia_merchant
         if (empty($order) || is_ecjia_error($order) || $order['store_id'] != $_SESSION['store_id']) {
             return $this->showmessage(__('无法找到对应的订单！'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
         }
-
+        
+        $order_id = $order['order_id'];
+        $order_sn = $order['order_sn'];
+        
         /* 根据订单是否完成检查权限 */
         if (order_finished($order)) {
             $this->admin_priv('order_view_finished');

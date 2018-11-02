@@ -2807,6 +2807,10 @@ class merchant extends ecjia_merchant
             if ($order['order_status'] != OS_UNCONFIRMED && ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_PLACE) {
                 change_order_goods_storage($order_id, true, SDT_PLACE);
             }
+            
+            //更新商家会员
+            RC_Api::api('customer', 'store_user_buy', array('store_id' => $order['store_id'], 'user_id' => $order['user_id']));
+            
             //订单已接单短信通知
             if (!empty($order['user_id'])) {
                 $user_info = RC_DB::table('users')->where('user_id', $order['user_id'])->select('mobile_phone', 'user_name')->first();

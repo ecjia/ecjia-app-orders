@@ -447,6 +447,7 @@ class order_operate {
 // 		    RC_Api::api('commission', 'add_bill_detail', array('store_id' => $order['store_id'], 'order_type' => 'buy', 'order_id' => $order['order_id'], 'order_amount' => $order['order_amount']));
 		    RC_Api::api('commission', 'add_bill_queue', array('order_type' => 'buy', 'order_id' => $order['order_id']));
 		    RC_Api::api('goods', 'update_goods_sales', array('order_id' => $order['order_id']));
+		    RC_Api::api('customer', 'store_user_buy', array('store_id' => $order['store_id'], 'user_id' => $order['user_id']));
 		    
 		    return true;
 		} else {

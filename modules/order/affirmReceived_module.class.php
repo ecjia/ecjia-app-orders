@@ -69,6 +69,7 @@ class order_affirmReceived_module extends api_front implements api_interface {
 // 		    RC_Api::api('commission', 'add_bill_detail', array('order_type' => 'buy', 'order_id' => $order_id));
 		    RC_Api::api('commission', 'add_bill_queue', array('order_type' => 'buy', 'order_id' => $order_id));
 		    RC_Api::api('goods', 'update_goods_sales', array('order_id' => $order_id));
+		    RC_Api::api('customer', 'store_user_buy', array('order_id' => $order_id, 'user_id' => $user_id));
 		    
 		    return array();
 		} else {

@@ -263,7 +263,7 @@ function order_weight_price($order_id) {
  * @param   bool    $is_gb_deposit  是否团购保证金（如果是，应付款金额只计算商品总额和支付费用，可以获得的积分取 $gift_integral）
  * @return  array
  */
-function order_fee($order, $goods, $consignee, $cart_id = array(), $cart_goods_list = []) {
+function order_fee($order, $goods, $consignee, $cart_id = array(), $cart_goods_list = [], $shipping_list = []) {
     RC_Loader::load_app_func('global', 'goods');
     RC_Loader::load_app_func('cart', 'cart');
     $db = RC_Loader::load_app_model('cart_model', 'cart');
@@ -272,7 +272,6 @@ function order_fee($order, $goods, $consignee, $cart_id = array(), $cart_goods_l
     if (!isset($order['extension_code'])) {
         $order['extension_code'] = '';
     }
-    $shipping_list = array();
 // 	TODO: 团购等促销活动注释后暂时给的固定参数
     $order['extension_code'] = '';
     $group_buy = '';

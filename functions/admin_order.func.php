@@ -263,7 +263,7 @@ function order_weight_price($order_id) {
  * @param   bool    $is_gb_deposit  是否团购保证金（如果是，应付款金额只计算商品总额和支付费用，可以获得的积分取 $gift_integral）
  * @return  array
  */
-function order_fee($order, $goods, $consignee, $cart_id = array(), $cart_goods_list = [], $shipping_list = []) {
+function order_fee($order, $goods, $consignee, $cart_id = array(), $cart_goods_list = [], $shipping_ids = []) {
     RC_Loader::load_app_func('global', 'goods');
     RC_Loader::load_app_func('cart', 'cart');
     $db = RC_Loader::load_app_model('cart_model', 'cart');
@@ -364,7 +364,7 @@ function order_fee($order, $goods, $consignee, $cart_id = array(), $cart_goods_l
         $region['city'] = $consignee['city'];
         $region['district'] = $consignee['district'];
         $region['street'] = $consignee['street'];
-        $total['shipping_fee'] = get_order_shipping_fee($cart_goods_list, $shipping_list);
+        $total['shipping_fee'] = get_order_shipping_fee($cart_goods_list, $shipping_ids);
     }
     $total['shipping_fee_formated'] = price_format($total['shipping_fee'], false);
 //     $total['shipping_insure_formated'] = price_format($total['shipping_insure'], false);
@@ -461,7 +461,7 @@ function order_fee($order, $goods, $consignee, $cart_id = array(), $cart_goods_l
  * 取得可用的配送区域的运费
  * @param  array   $cart_goods 购物车商品
  * @param  array   $cart_value 购物车选择商品
- * @param  array   $shipping_list  配送方式列表
+ * @param  array   $shipping_list  配送方式ids列表
  * @return $shipping_fee 运费金额
  */
 function get_order_shipping_fee($cart_goods, $shipping_list = []/* $cart_value = [], */) {

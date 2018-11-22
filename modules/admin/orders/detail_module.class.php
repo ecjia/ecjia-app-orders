@@ -223,7 +223,7 @@ class admin_orders_detail_module extends api_admin implements api_interface {
 				);
 			}
 		}
-
+		$order['goods_number'] = count($goods_list);
 		$order['goods_items'] = $goods_list;
 
 

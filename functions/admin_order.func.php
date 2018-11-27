@@ -824,7 +824,12 @@ function send_order_bonus($order_id) {
         $count = 0;
         $money = '';
         foreach ($bonus_list as $bonus) {
-            $count += $bonus['number'];
+            //$count += $bonus['number'];
+            //优化一个订单只能发一个红包
+            if ($bonus['number']) {
+                $count = 1;
+                $bonus['number'] = 1;
+            }
             $money .= price_format($bonus['type_money']) . ' [' . $bonus['number'] . '], ';
             /* 修改用户红包 */
             $data = array('bonus_type_id' => $bonus['type_id'], 'user_id' => $user['user_id']);

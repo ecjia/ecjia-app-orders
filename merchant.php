@@ -1202,7 +1202,7 @@ class merchant extends ecjia_merchant
             $this->assign('shipping_list', $shipping_list);
         }
         $this->assign('ur_here', $ur_here);
-        /* 显示模版 */
+        /* 显示模板 */
         $this->assign_lang();
         $this->display('order_step.dwt');
     }

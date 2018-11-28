@@ -182,7 +182,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
 			return array('payment' => $data, 'print_data' => $print_data);
 		}
 		
-		if (in_array($pay_info['pay_code'], array('pay_koolyun', 'pay_koolyun_alipay', 'pay_koolyun_unionpay', 'pay_koolyun_wxpay', 'pay_balance'))) {
+		if (in_array($pay_info['pay_code'], array('pay_koolyun', 'pay_koolyun_alipay', 'pay_koolyun_unionpay', 'pay_koolyun_wxpay', 'pay_balance', 'pay_shouqianba'))) {
 			/* 更新支付流水记录*/
 			RC_Api::api('payment', 'update_payment_record', [
 			'order_sn' 		=> $order['order_sn'],
@@ -493,7 +493,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
     				'order_sn' 						=> $order_info['order_sn'],
     				'trade_no'						=> empty($payment_record_info['trade_no']) ? '' : $payment_record_info['trade_no'],
     				'trade_type'					=> 'buy',
-    				'trade_type'					=> empty($order_info['pay_time']) ? '' : RC_Time::local_date(ecjia::config('time_format'), $order_info['pay_time']),
+    				'pay_time'						=> empty($order_info['pay_time']) ? '' : RC_Time::local_date(ecjia::config('time_format'), $order_info['pay_time']),
     				'goods_list'					=> $order_goods['list'],
     				'total_goods_number' 			=> $order_goods['total_goods_number'],
     				'total_goods_amount'			=> $order_goods['taotal_goods_amount'],

@@ -177,12 +177,14 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    //支付后扩展处理
 	    RC_Hook::do_action('order_payed_do_something', $order);
 	    
-	    /*门店自提，时发送提货验证码；*/
-	    if ($order['shipping_id'] > 0) {
-	    	Ecjia\App\Orders\SendPickupCode::send_pickup_code($order);
-	    }
-		
+	    
 	    if (!empty($order['store_id'])) {
+	    	
+	    	/*门店自提，时发送提货验证码；*/
+	    	if ($order['shipping_id'] > 0) {
+	    		Ecjia\App\Orders\SendPickupCode::send_pickup_code($order);
+	    	}
+	    	
 	    	//会员店铺消费过，记录为店铺会员
 	    	if (!empty($order['user_id'])) {
     			RC_Loader::load_app_class('add_storeuser', 'user', false);

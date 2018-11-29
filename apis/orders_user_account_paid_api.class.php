@@ -200,13 +200,12 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		//支付后扩展处理
 		RC_Hook::do_action('order_payed_do_something', $order_info);
 		
-		/*门店自提，时发送提货验证码；*/
-		if ($order_info['shipping_id'] > 0) {
-			Ecjia\App\Orders\SendPickupCode::send_pickup_code($order_info);
-		}
-		
 		if (!empty($order_info['store_id'])) {
-				
+			/*门店自提，时发送提货验证码；*/
+			if ($order_info['shipping_id'] > 0) {
+				Ecjia\App\Orders\SendPickupCode::send_pickup_code($order_info);
+			}	
+			
 			/* 打印订单 */
 			$res = with(new Ecjia\App\Orders\OrderPrint($order_id, $order_info['store_id']))->doPrint(true);
 			if (is_ecjia_error($res)) {

@@ -206,8 +206,6 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		}
 		
 		if (!empty($order_info['store_id'])) {
-			//更新商家会员
-			RC_Api::api('customer', 'store_user_buy', array('store_id' => $order_info['store_id'], 'user_id' => $order_info['user_id']));
 				
 			/* 打印订单 */
 			$res = with(new Ecjia\App\Orders\OrderPrint($order_id, $order_info['store_id']))->doPrint(true);
@@ -219,6 +217,8 @@ class orders_user_account_paid_api extends Component_Event_Api {
 			if (!empty($order_info['user_id'])) {
 				RC_Loader::load_app_class('add_storeuser', 'user', false);
 				add_storeuser::add_store_user(array('user_id' => $order_info['user_id'], 'store_id' => $order_info['store_id']));
+				//更新商家会员消费
+				RC_Api::api('customer', 'store_user_buy', array('store_id' => $order_info['store_id'], 'user_id' => $order_info['user_id']));
 			}
 		}
 		

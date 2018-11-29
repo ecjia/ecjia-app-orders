@@ -140,6 +140,7 @@ class orders_user_account_paid_api extends Component_Event_Api {
 					$order_status = OS_UNCONFIRMED;
 				}
 			}
+			$order_info['pay_status'] = PS_PAYED;
 		    $data = array(
 		        'order_status'    => $order_status,
 		        'confirm_time'    => $time,
@@ -152,6 +153,9 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		    update_order($order_info['order_id'], $data);
 		    order_action($order_info['order_sn'], $order_status, SS_UNSHIPPED, PS_PAYED, '', RC_Lang::get('orders::order.buyers'));
 		}
+		
+		//支付后扩展处理
+		RC_Hook::do_action('order_payed_do_something', $order_info);
 		
 		//会员店铺消费过，记录为店铺会员
 		if (!empty($order_info['user_id'])) {

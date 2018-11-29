@@ -68,8 +68,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    $order_sn = $options['order_sn'];
 
 	    /* 取得订单信息 */
-	    $order = RC_DB::table('order_info')->select('order_id', 'store_id', 'user_id', 'order_sn', 'consignee', 'address', 'tel', 'mobile', 'shipping_id', 'extension_code', 'extension_id', 'goods_amount', 'order_amount', 'money_paid', 'pay_status', 'add_time')
-	    ->where('order_sn', $order_sn)->first();
+	    $order = RC_Api::api('orders', 'order_info', array('order_sn' => $order_sn));;
 	    
 	    if (intval($order['pay_status']) === PS_PAYED) {
 	        return new ecjia_error('order_has_been_paid', '订单已经支付了');
@@ -180,6 +179,9 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    		OrderStatusLog::orderpaid_autoconfirm(array('order_id' => $order['order_id']));
 	    	}
 	    }
+	    
+	    //支付后扩展处理
+	    RC_Hook::do_action('order_payed_do_something', $order);
 	    
 	    /*门店自提，时发送提货验证码；*/
 	    if ($order['shipping_id'] > 0) {

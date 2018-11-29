@@ -252,26 +252,27 @@ class orders_user_account_paid_api extends Component_Event_Api {
 		}
 		
 		/* 通知记录*/
-		$orm_staff_user_db = RC_Model::model('express/orm_staff_user_model');
-		$staff_user_ob = $orm_staff_user_db->find($staff_user['user_id']);
-		
-		$order_data = array(
-			'title'	=> '客户付款',
-			'body'	=> '您有一笔新订单，订单号为：'.$order_info['order_sn'],
-			'data'	=> array(
-				'order_id'		=> $order_info['order_id'],
-				'order_sn'		=> $order_info['order_sn'],
-				'order_amount'	=> $order_info['order_amount'],
-				'formatted_order_amount' => price_format($order_info['order_amount']),
-				'consignee'		=> $order_info['consignee'],
-				'mobile'		=> $order_info['mobile'],
-				'address'		=> $order_info['address'],
-				'order_time'	=> RC_Time::local_date(ecjia::config('time_format'), $order_info['add_time']),
-			),
-		);
-		 
-		$push_order_pay = new OrderPay($order_data);
-		RC_Notification::send($staff_user_ob, $push_order_pay);
+		if (!empty($staff_user)) {
+			$orm_staff_user_db = RC_Model::model('express/orm_staff_user_model');
+			$staff_user_ob = $orm_staff_user_db->find($staff_user['user_id']);
+			
+			$order_data = array(
+					'title'	=> '客户付款',
+					'body'	=> '您有一笔新订单，订单号为：'.$order_info['order_sn'],
+					'data'	=> array(
+							'order_id'		=> $order_info['order_id'],
+							'order_sn'		=> $order_info['order_sn'],
+							'order_amount'	=> $order_info['order_amount'],
+							'formatted_order_amount' => price_format($order_info['order_amount']),
+							'consignee'		=> $order_info['consignee'],
+							'mobile'		=> $order_info['mobile'],
+							'address'		=> $order_info['address'],
+							'order_time'	=> RC_Time::local_date(ecjia::config('time_format'), $order_info['add_time']),
+					),
+			);
+			$push_order_pay = new OrderPay($order_data);
+			RC_Notification::send($staff_user_ob, $push_order_pay);
+		}
 		
 		/* 打印订单 */
 		$res = with(new Ecjia\App\Orders\OrderPrint($order_id, $order_info['store_id']))->doPrint(true);

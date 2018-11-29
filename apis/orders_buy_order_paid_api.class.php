@@ -143,13 +143,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	        order_action($order_sn, $order_status, SS_UNSHIPPED, $pay_status, '', RC_Lang::get('orders::order.buyers'));
 	    }
 	    
-	    //会员店铺消费过，记录为店铺会员 
-	    if (!empty($order['user_id'])) {
-	    	if (!empty($order['store_id'])) {
-	    		RC_Loader::load_app_class('add_storeuser', 'user', false);
-	    		add_storeuser::add_store_user(array('user_id' => $order['user_id'], 'store_id' => $order['store_id']));
-	    	}
-	    }
+	   
 	    
 	    //订单状态log记录区分
 	    if (in_array($order['extension_code'], array('storebuy', 'cashdesk', 'storepickup'))) {
@@ -185,15 +179,23 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    if ($order['shipping_id'] > 0) {
 	    	Ecjia\App\Orders\SendPickupCode::send_pickup_code($order);
 	    }
-
-        /* 打印订单 */
-        $res = with(new Ecjia\App\Orders\OrderPrint($order_id, $order['store_id']))->doPrint(true);
-        if (is_ecjia_error($res)) {
-            RC_Logger::getLogger('error')->error($res->get_error_message());
-        }
-        
-        //更新商家会员
-        RC_Api::api('customer', 'store_user_buy', array('store_id' => $order['store_id'], 'user_id' => $order['user_id']));
+		
+	    if (!empty($order['store_id'])) {
+	    	//会员店铺消费过，记录为店铺会员
+	    	if (!empty($order['user_id'])) {
+    			RC_Loader::load_app_class('add_storeuser', 'user', false);
+    			add_storeuser::add_store_user(array('user_id' => $order['user_id'], 'store_id' => $order['store_id']));
+	    	}
+	    	
+	    	/* 打印订单 */
+	    	$res = with(new Ecjia\App\Orders\OrderPrint($order_id, $order['store_id']))->doPrint(true);
+	    	if (is_ecjia_error($res)) {
+	    		RC_Logger::getLogger('error')->error($res->get_error_message());
+	    	}
+	    	
+	    	//更新商家会员
+	    	RC_Api::api('customer', 'store_user_buy', array('store_id' => $order['store_id'], 'user_id' => $order['user_id']));
+	    }
 	    
 	    /* 客户付款通知（默认通知店长）*/
 	    /* 获取店长的记录*/

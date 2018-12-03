@@ -262,6 +262,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
 
 
     private function delivery_ship($order_id, $delivery_id, $invoice_no, $action_note) {
+    	
         RC_Logger::getLogger('error')->info('订单发货处理【订单id|'.$order_id.'】');
         RC_Loader::load_app_func('global', 'orders');
         RC_Loader::load_app_func('admin_order', 'orders');
@@ -417,6 +418,12 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
         /* 标记订单为已确认 “已发货” */
         /* 更新发货时间 */
         $order_finish				= get_all_delivery_finish($order_id);
+        
+        RC_Logger::getLogger('error')->info('testaaa');
+        RC_Logger::getLogger('error')->info($order_finish);
+        RC_Logger::getLogger('error')->info('testbbb');
+        
+        
         $shipping_status			= ($order_finish == 1) ? SS_SHIPPED : SS_SHIPPED_PART;
         $arr['shipping_status']		= $shipping_status;
         $arr['shipping_time']		= RC_Time::gmtime(); // 发货时间
@@ -434,6 +441,8 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
 
 
         RC_Logger::getLogger('error')->info('判断是否全部发货'.$order_finish);
+        
+        
         /* 如果当前订单已经全部发货 */
         if ($order_finish) {
             RC_Logger::getLogger('error')->info('订单发货，积分红包处理');

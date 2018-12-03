@@ -448,7 +448,9 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
                     'user_id'		=> $order['user_id'],
                     'rank_points'	=> intval($integral['rank_points']),
                     'pay_points'	=> intval($integral['custom_points']),
-                    'change_desc'	=> sprintf(RC_Lang::lang('order_gift_integral'), $order['order_sn'])
+                    'change_desc'	=> sprintf(RC_Lang::lang('order_gift_integral'), $order['order_sn']),
+                	'from_type'		=> 'order_give_integral',
+                	'from_value'	=> $order['order_sn'],
                 );
                 RC_Api::api('user', 'account_change_log',$options);
                 /* 发放红包 */

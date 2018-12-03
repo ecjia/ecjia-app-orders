@@ -290,7 +290,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
             $delivery_order = delivery_order_info($delivery_id);
             
             RC_Logger::getLogger('error')->info('tesooo');
-            RC_Logger::getLogger('error')->info($delivery_id);
+            RC_Logger::getLogger('error')->info($delivery_order);
             RC_Logger::getLogger('error')->info('testppp');
         } 
         if (empty($delivery_order)) {

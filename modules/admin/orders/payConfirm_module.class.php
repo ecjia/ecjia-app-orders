@@ -284,17 +284,15 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
         $delivery['invoice_no']	= isset($invoice_no) ? trim($invoice_no) : '';
         $action_note			= isset($action_note) ? trim($action_note) : '';
 
-        RC_Logger::getLogger('error')->info('testtt');
-        RC_Logger::getLogger('error')->info($delivery_id);
-        RC_Logger::getLogger('error')->info('testrrr');
-        
         /* 根据发货单id查询发货单信息 */
         if (!empty($delivery_id)) {
         	$delivery_id = intval($delivery_id);
             $delivery_order = delivery_order_info($delivery_id);
-        } else {
-            return new ecjia_error('delivery_id_error', __('无法找到对应发货单！'));
-        }
+            
+            RC_Logger::getLogger('error')->info('tesooo');
+            RC_Logger::getLogger('error')->info($delivery_id);
+            RC_Logger::getLogger('error')->info('testppp');
+        } 
         if (empty($delivery_order)) {
             return new ecjia_error('delivery_error', __('无法找到对应发货单！'));
         }

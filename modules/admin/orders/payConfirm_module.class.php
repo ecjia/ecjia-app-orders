@@ -207,7 +207,11 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
 			
 			/* 发货*/
 			$db_delivery_order	= RC_Loader::load_app_model('delivery_order_model', 'orders');
-			$delivery_id = $db_delivery_order->where(array('order_sn' => array('like' => '%'.$order['order_sn'].'%')))->order(array('delivery_id' => 'desc'))->get_field('delivery_id');
+			$delivery_id = $db_delivery_order->where(array('order_sn' => $order['order_sn']))->order(array('delivery_id' => 'desc'))->get_field('delivery_id');
+			
+			RC_Logger::getLogger('error')->info('testaaa');
+			RC_Logger::getLogger('error')->info($delivery_id);
+			RC_Logger::getLogger('error')->info('testbbb');
 			
 			$result = $this->delivery_ship($order_id, $delivery_id, $invoice_no, $action_note);
 			if (is_ecjia_error($result)) {
@@ -418,11 +422,6 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
         /* 标记订单为已确认 “已发货” */
         /* 更新发货时间 */
         $order_finish				= get_all_delivery_finish($order_id);
-        
-        RC_Logger::getLogger('error')->info('testaaa');
-        RC_Logger::getLogger('error')->info($order_finish);
-        RC_Logger::getLogger('error')->info('testbbb');
-        
         
         $shipping_status			= ($order_finish == 1) ? SS_SHIPPED : SS_SHIPPED_PART;
         $arr['shipping_status']		= $shipping_status;

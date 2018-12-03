@@ -175,7 +175,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    }
 	    
 	    //支付后扩展处理
-	    RC_Hook::do_action('order_payed_do_something', $order);
+// 	    RC_Hook::do_action('order_payed_do_something', $order);
 	    
 	    
 	    if (!empty($order['store_id'])) {

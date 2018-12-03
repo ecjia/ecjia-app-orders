@@ -439,11 +439,18 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
             RC_Logger::getLogger('error')->info('订单发货，积分红包处理');
             /* 如果订单用户不为空，计算积分，并发给用户；发红包 */
             if ($order['user_id'] > 0) {
+            	
+            	
                 /* 取得用户信息 */
                 $user = user_info($order['user_id']);
                 /* 计算并发放积分 */
                 $integral = integral_to_give($order);
+                
+
+                RC_Logger::getLogger('error')->info('test111');
                 RC_Logger::getLogger('error')->info($integral);
+                RC_Logger::getLogger('error')->info('test222');
+                
                 $options = array(
                     'user_id'		=> $order['user_id'],
                     'rank_points'	=> intval($integral['rank_points']),

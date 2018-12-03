@@ -140,8 +140,15 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
 			
 			/* 发货*/
 			$db_delivery_order	= RC_Loader::load_app_model('delivery_order_model', 'orders');
-			$delivery_id = $db_delivery_order->where(array('order_sn' => array('like' => '%'.$order['order_sn'].'%')))->order(array('delivery_id' => 'desc'))->get_field('delivery_id');
+			$delivery_id = $db_delivery_order->where(array('order_sn' => $order['order_sn']))->order(array('delivery_id' => 'desc'))->get_field('delivery_id');
+			
+			RC_Logger::getLogger('error')->info('testxxx');
+			RC_Logger::getLogger('error')->info($delivery_id);
+			RC_Logger::getLogger('error')->info('testyyy');
+			
 			$result = $this->delivery_ship($order_id, $delivery_id, $invoice_no, $action_note);
+			
+			
 			
 			if (is_ecjia_error($result)) {
 				RC_Logger::getLogger('error')->info('订单发货【订单id|'.$order_id.'】：'.$result->get_error_message());

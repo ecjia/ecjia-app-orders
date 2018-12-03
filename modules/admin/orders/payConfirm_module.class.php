@@ -108,6 +108,9 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
 			$operate = RC_Loader::load_app_class('order_operate', 'orders');
 			$operate->operate($order, 'pay', '收银台现金收款');
 			
+			//支付后扩展处理
+			RC_Hook::do_action('order_payed_do_something', $order);
+			
 			//会员店铺消费过，记录为店铺会员
 			if (!empty($order['user_id'])) {
 				if (!empty($order['store_id'])) {
@@ -239,6 +242,8 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
 			}
 			
 			$order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => ''));
+			//支付后扩展处理
+			RC_Hook::do_action('order_payed_do_something', $order_info);
 			$data = array(
 					'order_id' 		=> $order_info['order_id'],
 					'money_paid'	=> $order_info['money_paid'],

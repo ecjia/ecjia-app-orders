@@ -210,10 +210,6 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
 			$db_delivery_order	= RC_Loader::load_app_model('delivery_order_model', 'orders');
 			$delivery_id = $db_delivery_order->where(array('order_sn' => $order['order_sn']))->order(array('delivery_id' => 'desc'))->get_field('delivery_id');
 			
-			RC_Logger::getLogger('error')->info('testaaa');
-			RC_Logger::getLogger('error')->info($delivery_id);
-			RC_Logger::getLogger('error')->info('testbbb');
-			
 			$result = $this->delivery_ship($order_id, $delivery_id, $invoice_no, $action_note);
 			if (is_ecjia_error($result)) {
 				RC_Logger::getLogger('error')->info('订单发货【订单id|'.$order_id.'】：'.$result->get_error_message());
@@ -288,10 +284,6 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
         if (!empty($delivery_id)) {
         	$delivery_id = intval($delivery_id);
             $delivery_order = delivery_order_info($delivery_id);
-            
-            RC_Logger::getLogger('error')->info('tesooo');
-            RC_Logger::getLogger('error')->info($delivery_order);
-            RC_Logger::getLogger('error')->info('testppp');
         } 
         if (empty($delivery_order)) {
             return new ecjia_error('delivery_error', __('无法找到对应发货单！'));

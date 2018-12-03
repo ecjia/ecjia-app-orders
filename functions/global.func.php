@@ -1017,10 +1017,6 @@ function delivery_order_info($delivery_id, $delivery_sn = '') {
 //     isset($_SESSION['store_id']) ? $db_delivery_order->where(RC_DB::raw('store_id'), $_SESSION['store_id']) : '';
     $delivery = $db_delivery_order->first();
     
-    RC_Logger::getLogger('error')->info('testccc');
-    RC_Logger::getLogger('error')->info($delivery);
-    RC_Logger::getLogger('error')->info('testddd');
-    
     if ($delivery) {
         /* 格式化金额字段 */
         $delivery['formated_insure_fee'] = price_format($delivery['insure_fee'], false);

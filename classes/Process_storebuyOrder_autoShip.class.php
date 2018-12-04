@@ -80,10 +80,6 @@ class Process_storebuyOrder_autoShip {
 			RC_Loader::load_app_class('order_ship', 'orders', false);
 				
 			$delivery_id = RC_DB::table('delivery_order')->where('order_sn', $order_info['order_sn'])->orderBy('delivery_id', 'desc')->pluck('delivery_id');
-							
-			RC_Logger::getLogger('error')->error('testaaa到店购订单');
-			RC_Logger::getLogger('error')->error($delivery_id);
-			RC_Logger::getLogger('error')->error('testbbb到店购订单');
 			
 			$result = order_ship::delivery_ship($order_info['order_id'], $delivery_id, '', '系统操作');
 			if (is_ecjia_error($result)) {

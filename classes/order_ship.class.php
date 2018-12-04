@@ -212,7 +212,7 @@ class order_ship {
 						'user_id'		=> $order['user_id'],
 						'rank_points'	=> intval($integral['rank_points']),
 						'pay_points'	=> intval($integral['custom_points']),
-						'change_desc'	=> sprintf(RC_Lang::lang('order_gift_integral'), $order['order_sn']),
+						'change_desc'	=> '订单'.$order['order_sn'].'赠送的积分',
 						'from_type'		=> 'order_give_integral',
 						'from_value'	=> $order['order_sn'],
 				);

@@ -49,12 +49,12 @@ defined('IN_ECJIA') or exit('No permission resources.');
 class orders_front_plugin
 {
 
-	public static function storebuy_order_payed_autoship($order_sn)
+	public static function storebuy_order_payed_autoship($order)
 	{
-		if (empty($order_sn)) {
+		if (empty($order['order_sn'])) {
 			RC_Logger::getLogger('error')->error('storebuy_order_payed_autoship_error');return false;
 		}
-		
+		$order_sn = $order['order_sn'];
 		$order_info = RC_DB::table('order_info')->where('order_sn', $order_sn)->first();
 		
 		if(empty($order_info)) {

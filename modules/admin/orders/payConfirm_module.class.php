@@ -450,11 +450,6 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
                 /* 计算并发放积分 */
                 $integral = integral_to_give($order);
                 
-
-                RC_Logger::getLogger('error')->info('test111');
-                RC_Logger::getLogger('error')->info($integral);
-                RC_Logger::getLogger('error')->info('test222');
-                
                 $options = array(
                     'user_id'		=> $order['user_id'],
                     'rank_points'	=> intval($integral['rank_points']),

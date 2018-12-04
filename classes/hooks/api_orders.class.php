@@ -46,15 +46,14 @@
 //
 defined('IN_ECJIA') or exit('No permission resources.');
 
-class orders_front_plugin
+class orders_api_plugin
 {
 
-	public static function front_storebuy_order_payed_autoship($order)
+	public static function api_storebuy_order_payed_autoship($order)
 	{
-		
-		RC_Logger::getLogger('error')->error('test111到店购订单');
+		RC_Logger::getLogger('error')->error('test333到店购订单');
 		RC_Logger::getLogger('error')->error($order);
-		RC_Logger::getLogger('error')->error('test222到店购订单');
+		RC_Logger::getLogger('error')->error('test444到店购订单');
 		
 		if (empty($order['order_sn'])) {
 			RC_Logger::getLogger('error')->error('storebuy_order_payed_autoship_error');return false;
@@ -73,8 +72,9 @@ class orders_front_plugin
 			Process_storebuyOrder_autoShip::storebuy_order_ship($order_info);
 		}
 	}
+    
 }
 
-RC_Hook::add_action('order_payed_do_something', array('orders_front_plugin', 'front_storebuy_order_payed_autoship'));
+RC_Hook::add_action('order_payed_do_something', array('orders_api_plugin', 'api_storebuy_order_payed_autoship'));
 
 // end

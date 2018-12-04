@@ -75,6 +75,11 @@ class order_ship {
 			$delivery_id = intval($delivery_id);
 			$delivery_order = delivery_order_info($delivery_id);
 		}
+		
+		RC_Logger::getLogger('error')->error('testccc到店购订单');
+		RC_Logger::getLogger('error')->error($delivery_order);
+		RC_Logger::getLogger('error')->error('testddd到店购订单');
+		
 		if (empty($delivery_order)) {
 			return new ecjia_error('delivery_error', __('无法找到对应发货单！'));
 		}

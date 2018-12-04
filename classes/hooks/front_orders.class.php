@@ -50,12 +50,7 @@ class orders_front_plugin
 {
 
 	public static function front_storebuy_order_payed_autoship($order)
-	{
-		
-		RC_Logger::getLogger('error')->error('test111到店购订单');
-		RC_Logger::getLogger('error')->error($order);
-		RC_Logger::getLogger('error')->error('test222到店购订单');
-		
+	{	
 		if (empty($order['order_sn'])) {
 			RC_Logger::getLogger('error')->error('storebuy_order_payed_autoship_error');return false;
 		}

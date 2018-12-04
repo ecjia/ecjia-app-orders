@@ -50,11 +50,7 @@ class orders_api_plugin
 {
 
 	public static function api_storebuy_order_payed_autoship($order)
-	{
-		RC_Logger::getLogger('error')->error('test333到店购订单');
-		RC_Logger::getLogger('error')->error($order);
-		RC_Logger::getLogger('error')->error('test444到店购订单');
-		
+	{	
 		if (empty($order['order_sn'])) {
 			RC_Logger::getLogger('error')->error('storebuy_order_payed_autoship_error');return false;
 		}

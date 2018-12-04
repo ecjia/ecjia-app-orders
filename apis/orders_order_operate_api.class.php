@@ -69,15 +69,12 @@ class orders_order_operate_api extends Component_Event_Api {
 	    /* 检查能否操作 */
 		$operable_list = RC_Api::api('orders', 'order_operable_list', $order);
 		
-		RC_Logger::getLogger('error')->error('testxxx到店购订单');
-		RC_Logger::getLogger('error')->error($operable_list);
-		RC_Logger::getLogger('error')->error($options['operation']);
-		RC_Logger::getLogger('error')->error($operable_list[$options['operation']]);
-		RC_Logger::getLogger('error')->error('testyyy到店购订单');
-		
-		if (!isset($operable_list[$options['operation']])) {
-			return new ecjia_error('operate_error', RC_Lang::get('orders::order.unable_operation_order'));
+		if ($order['extension_code'] !='storebuy') {
+			if (!isset($operable_list[$options['operation']])) {
+				return new ecjia_error('operate_error', RC_Lang::get('orders::order.unable_operation_order'));
+			}
 		}
+		
 		$operate = RC_Loader::load_app_class('order_operate', 'orders');
 		
 		$result = $operate->operate($order, $options['operation'], $options['note']);

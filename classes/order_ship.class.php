@@ -184,7 +184,7 @@ class order_ship {
 		update_order($order_id, $arr);
 	
 		/* 发货单发货记录log */
-		order_action($order['order_sn'], OS_CONFIRMED, $shipping_status, $order['pay_status'], '收银台发货', null, 1);
+// 		order_action($order['order_sn'], OS_CONFIRMED, $shipping_status, $order['pay_status'], '收银台发货', null, 1);
 		// 记录管理员操作
 		if ($_SESSION['store_id'] > 0) {
 			RC_Api::api('merchant', 'admin_log', array('text' => '发货，订单号是'.$order['order_sn'].'【来源掌柜】', 'action' => 'setup', 'object' => 'order'));

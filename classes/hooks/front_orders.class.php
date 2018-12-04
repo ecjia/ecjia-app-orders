@@ -105,6 +105,6 @@ class orders_front_plugin
     
 }
 
-RC_Hook::add_action( 'order_payed_do_something', array('orders_front_plugin', 'storebuy_order_payed_autoship'));
+RC_Hook::add_action('order_payed_do_something', array('orders_front_plugin', 'storebuy_order_payed_autoship'));
 
 // end

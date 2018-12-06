@@ -124,6 +124,9 @@ class orders_order_info_api extends Component_Event_Api {
 	        if ($order['pay_id'] > 0) {
 	        	$payment = with(new Ecjia\App\Payment\PaymentPlugin)->getPluginDataById($order['pay_id']);
 	        }
+	        if(!isset($order['pay_code'])) {
+	            $order['pay_code'] = $payment['pay_code'];
+	        }
 	        
 	        if (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED)) &&
 	        in_array($order['shipping_status'], array(SS_RECEIVED)) &&

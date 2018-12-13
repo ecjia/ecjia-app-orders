@@ -247,7 +247,11 @@ class admin_orders_detail_module extends api_admin implements api_interface {
 			   );
 			}
 		}
-		$order['action_logs']   = $act_list;
+		$order['action_logs']   	= $act_list;
+		$payment_record_info 		= $this->_payment_record_info($order['order_sn'], 'buy');
+		$order['trade_no']			= empty($payment_record_info['trade_no']) ? '' : $payment_record_info['trade_no'];
+		$order['order_trade_no']	= empty($payment_record_info['order_trade_no']) ? '' : $payment_record_info['order_trade_no'];
+		$order['pay_code']			= empty($payment_record_info['pay_code']) ? '' : $payment_record_info['pay_code'];
 		//订单小票打印数据
 		$print_data = $this->getOrderPrintData($order);
 		$order['print_data'] = $print_data;

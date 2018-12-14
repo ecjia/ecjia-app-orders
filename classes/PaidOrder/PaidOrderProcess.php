@@ -88,6 +88,7 @@ class PaidOrderProcess implements PaidOrderProcessInterface
     public function getPrintData()
     {
         $buy_print_data = array();
+        $order_info = $this->getOrderInfo();
         if (!empty($order_info)) {
             $order_goods 			= $this->getOrderGoods($order_info['order_id']);
             $total_discount 		= $order_info['discount'] + $order_info['integral_money'] + $order_info['bonus'];

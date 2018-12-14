@@ -9,7 +9,7 @@
 class orders_payment_paid_process_api
 {
 
-    public function run(& $option)
+    public function call(& $option)
     {
         $record_model = array_get($option, 'record_model');
 

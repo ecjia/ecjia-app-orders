@@ -78,7 +78,8 @@ class PaidOrderProcess implements PaidOrderProcessInterface
         if ($order_info['extension_code'] == 'cashdesk') {
             CashierPaidProcessOrder::processOrderDefaultship($order_info);
         }
-
+        //更新结算记录
+        RC_Api::api('commission', 'add_bill_queue', array('order_type' => 'buy', 'order_id' => $order_info['order_id']));
         return $pay_data;
     }
 

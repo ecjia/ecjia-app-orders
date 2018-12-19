@@ -305,6 +305,13 @@ class orders_admin_plugin
             }
         }
     }
+    
+    public static function append_admin_setting_group($menus)
+    {
+    	$menus[] = ecjia_admin::make_admin_menu('nav-header', '订单', '', 122)->add_purview(array('order_manage'));
+    	$menus[] = ecjia_admin::make_admin_menu('orders_setting', '订单设置', RC_Uri::url('orders/admin_config/init'), 123)->add_purview('order_manage');
+    	return $menus;
+    }
 }
 
 // RC_Hook::add_action('admin_dashboard_top', array('orders_admin_plugin', 'widget_admin_dashboard_shopchart'));
@@ -317,4 +324,5 @@ RC_Hook::add_action('admin_dashboard_right', array('orders_admin_plugin', 'widge
 // RC_Hook::add_action('admin_dashboard_left', array('orders_admin_plugin', 'widget_admin_dashboard_orderslist'));
 RC_Hook::add_filter('stats_admin_menu_api', array('orders_admin_plugin', 'orders_stats_admin_menu_api'));
 
+RC_Hook::add_action('append_admin_setting_group', array('orders_admin_plugin', 'append_admin_setting_group'));
 // end

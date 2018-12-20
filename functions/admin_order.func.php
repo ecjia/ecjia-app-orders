@@ -618,7 +618,7 @@ function integral_of_value($value) {
 /**
 * 订单退款
 * @param   array   $order		  订单
-* @param   int	 $refund_type	退款方式 1 到帐户余额 2 到退款申请（先到余额，再申请提款） 3 不处理
+* @param   int	 $refund_type	退款方式 1 到账户余额 2 到退款申请（先到余额，再申请提款） 3 不处理
 * @param   string  $refund_note	退款说明
 * @param   float   $refund_amount  退款金额（如果为0，取订单已付款金额）
 * @return  bool
@@ -628,7 +628,7 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0) {
     $user_id = $order['user_id'];
     if ($user_id == 0 && $refund_type == 1) {
         if (isset($_SESSION['store_id'])) {
-            return ecjia_merchant::$controller->showmessage(__('匿名用户不能返回退款到帐户余额！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+            return ecjia_merchant::$controller->showmessage(__('匿名用户不能返回退款到账户余额！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
         } else {
             return ecjia_admin::$controller->showmessage(RC_Lang::get('orders::order.refund_error_notice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
         }

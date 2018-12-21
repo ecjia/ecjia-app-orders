@@ -48,6 +48,7 @@ defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
  * 订单支付
+ * @deprecated 此接口已经废弃了，变更为'payment::order/pay
  * @author royalwang
  * 16-12-09 增加支付状态
  */

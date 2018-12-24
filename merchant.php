@@ -839,6 +839,11 @@ class merchant extends ecjia_merchant
             } elseif ($order_model == 'storepickup') {
                 $this->display('order_storepickup_info.dwt');
             } else {
+                if ($order_model == 'group_buy') {
+                    RC_Loader::load_app_func('admin_goods', 'goods');
+                    $groupbuy_info = group_buy_info($order['extension_id']);
+                    $this->assign('groupbuy_info', $groupbuy_info);
+                }
                 $this->display('order_info.dwt');
             }
         }

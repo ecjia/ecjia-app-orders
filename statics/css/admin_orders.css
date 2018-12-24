@@ -386,7 +386,10 @@
 
 .order_userinfo_modal .modal .user-info .user-money {
     overflow: hidden;
-    margin: 30px 0;
+    padding: 30px 0;
+    background-color: #f7f7f7;
+    margin: 20px 0;
+    border-radius: 5px;
 }
 
 .order_userinfo_modal .modal .user-info .user-money .item {
@@ -425,4 +428,10 @@
     overflow: hidden;
     -ms-text-overflow: ellipsis;
     text-overflow: ellipsis;
+}
+
+.order_userinfo_modal .modal .user-info .user-address .address-content {
+    height: 100px;
+    line-height: 100px;
+    text-align: center;
 }

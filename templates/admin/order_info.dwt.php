@@ -30,12 +30,12 @@
                     <img src="{if $user.avatar_img}{RC_Upload::upload_url($user.avatar_img)}{/if}" />
                     <div class="detail">
                         <p>
-                            <span class="name">{$user.user_name}</span>
+                            <span class="name">{if $user.user_name}{$user.user_name}{else}匿名用户{/if}</span>
                             {if $user.rank_name}<span class="rank_name">{$user.rank_name}</span>{/if}
                         </p>
                         <p>注册时间：{RC_Time::local_date('Y-m-d H:i:s', $user.reg_time)}</p>
                     </div>
-                    <a target="__blank" class="view-detail" href='{url path="user/admin/info" args="id={$user.user_id}"}'>查看详细信息>></a>
+                    <a target="__blank" class="view-detail" href='{url path="user/admin/info" args="id={$user.user_id}"}'>查看详细信息 >></a>
                 </div>
                 <div class="user-money">
                     <div class="item">
@@ -65,6 +65,8 @@
                                 <p class="address_info">{$list.address}</p>
                             </div>
                         </div>
+                        {foreachelse}
+                        <div class="no-records">暂无收货地址</div>
                         {/foreach}
                     </div>
                 </div>

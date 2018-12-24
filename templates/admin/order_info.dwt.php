@@ -40,18 +40,18 @@
                 <div class="user-money">
                     <div class="item">
                         <p>账户余额</p>
-                        <span class="ecjiafc-FF0000">{$user.formated_user_money}</span>
+                        <span class="ecjiafc-FF0000">{if $user.formated_user_money}{$user.formated_user_money}{else}￥0.00{/if}</span>
                     </div>
                     <div class="item">
                         <p>消费积分</p>
-                        <span class="ecjiafc-FF0000">{$user.pay_points}</span>
+                        <span class="ecjiafc-FF0000">{if $user.pay_points}{$user.pay_points}{else}0{/if}</span>
                     </div>
                     <div class="item">
                         <p>成长值</p>
-                        <span class="ecjiafc-FF0000">{$user.rank_points}</span>
+                        <span class="ecjiafc-FF0000">{if $user.rank_points}{$user.rank_points}{else}0{/if}</span>
                     </div><div class="item">
                         <p>红包数量</p>
-                        <span class="ecjiafc-FF0000">{$user.bonus_count}</span>
+                        <span class="ecjiafc-FF0000">{if $user.bonus_count}{$user.bonus_count}{else}0{/if}</span>
                     </div>
                 </div>
                 <div class="user-address">

@@ -641,6 +641,11 @@ class admin extends ecjia_admin
                 $this->assign('order_finished', $order_finishied);
             }
             if (empty($order['extension_code']) || $order['extension_code'] == 'group_buy') {
+                if ($order['extension_code'] == 'group_buy') {
+                    RC_Loader::load_app_func('admin_goods', 'goods');
+                    $groupbuy_info = group_buy_info($order['extension_id']);
+                    $this->assign('groupbuy_info', $groupbuy_info);
+                }
                 $this->display('order_info.dwt');
             } else {
                 $this->display('other_order_info.dwt');

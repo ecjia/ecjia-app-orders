@@ -104,8 +104,8 @@ class OrderAutoRefuse
     	//退款编号
     	$refund_sn = ecjia_order_refund_sn();
     	
-    	//仅退款
-    	$refund_type = 'refund';
+    	//撤单退款
+    	$refund_type = 'cancel'; 
     	$return_status = 0;
     	$refund_status = 1;
     	

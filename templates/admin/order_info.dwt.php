@@ -62,7 +62,13 @@
                             <div class="box-placeholder">
                                 <p class="address_name">{$list.consignee} </p>
                                 <p class="address_tel">{$list.mobile}</p>
-                                <p class="address_info">{$list.address}</p>
+                                <p class="address_info">
+                                    {if $list.province}{ecjia_region::getRegionName($list.province)}{/if}
+                                    {if $list.city}{ecjia_region::getRegionName($list.city)}{/if}
+                                    {if $list.district}{ecjia_region::getRegionName($list.district)}{/if}
+                                    {if $list.street}{ecjia_region::getRegionName($list.street)}{/if}
+                                    {$list.address}
+                                </p>
                             </div>
                         </div>
                         {foreachelse}

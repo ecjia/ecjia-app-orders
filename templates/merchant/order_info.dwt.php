@@ -425,7 +425,7 @@ ecjia.merchant.order.info();
                         </tr>
                         <tr>
                             <td><div align="right"><strong>活动商品：</strong></div></td>
-                            <td colspan="3">{$groupbuy_info.goods_name}</td>
+                            <td colspan="3">{$groupbuy_info.goods_name} <a target="__blank" href="{RC_Uri::url('groupbuy/merchant/edit')}&id={$groupbuy_info.act_id}">[ 活动详情 ]</a></td>
                         </tr>
                         </tbody>
                     </table>

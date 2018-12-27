@@ -234,7 +234,6 @@ class OrderAutoRefuse
     	//update commission_bill
     	$res = RC_Api::api('commission', 'add_bill_queue', array('order_type' => 'refund', 'order_id' => $refund_id));
     	if (is_ecjia_error($res)) {
-    		RC_Logger::getLogger('error')->info('订单自动拒单退款【退款单id|'.$refund_id.'】：更新结算记录错误');
     	}
     }
     

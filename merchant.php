@@ -1984,8 +1984,8 @@ class merchant extends ecjia_merchant
             $refund_amount = $_POST['refund_amount'];
             $order = order_info($order_id);
             $result = order_refund($order, $refund_type, $refund_note, $refund_amount);
-            if ($result == false) {
-                return false;
+            if (is_ecjia_error($result)) {
+                return $this->showmessage($result->get_error_message(), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
             }
             /* 修改应付款金额为0，已付款金额减少 $refund_amount */
             update_order($order_id, array('order_amount' => 0, 'money_paid' => $order['money_paid'] - $refund_amount));
@@ -3373,8 +3373,8 @@ class merchant extends ecjia_merchant
                 $refund_type = $_POST['refund'];
                 $refund_note = $_POST['refund_note'];
                 $result = order_refund($order, $refund_type, $refund_note);
-                if ($result == false) {
-                    return false;
+                if (is_ecjia_error($result)) {
+                    return $this->showmessage($result->get_error_message(), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
                 }
             }
 

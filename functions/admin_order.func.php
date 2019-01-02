@@ -969,7 +969,7 @@ function get_goods_attr_info($arr, $type = 'pice', $warehouse_id = 0, $area_id =
 * @return  array
 */
 function get_consignee($user_id) {
-    if (isset($_SESSION['flow_consignee'])) {
+    if (isset($_SESSION['flow_consignee']) && !empty($_SESSION['flow_consignee']['id'])) {
         /* 如果存在session，则直接返回session中的收货人信息 */
         return $_SESSION['flow_consignee'];
     } else {

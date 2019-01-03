@@ -937,7 +937,11 @@ function get_goods_attr_info($arr, $type = 'pice', $warehouse_id = 0, $area_id =
     $dbview = RC_Loader::load_app_model('goods_attr_viewmodel', 'goods');
     $attr = '';
     if (!empty($arr)) {
-        $fmt = "%s:%s[%s] \n";
+        if ($type == 'no') {
+            $fmt = "%s:%s \n";
+        } else {
+            $fmt = "%s:%s[%s] \n";
+        }
         $field = "ga.goods_attr_id, a.attr_name, ga.attr_value, " .
          " ga.attr_price as attr_price ";
         $dbview->view = array(

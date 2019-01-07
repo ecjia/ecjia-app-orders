@@ -645,6 +645,9 @@ class admin extends ecjia_admin
                     RC_Loader::load_app_func('admin_goods', 'goods');
                     $groupbuy_info = group_buy_info($order['extension_id']);
                     $this->assign('groupbuy_info', $groupbuy_info);
+
+                    $groupbuy_deposit_status = $this->get_groupbuy_deposit_status($order, $groupbuy_info);
+                    $this->assign('groupbuy_deposit_status', $groupbuy_deposit_status);
                 }
                 $this->display('order_info.dwt');
             } else {
@@ -3495,6 +3498,52 @@ class admin extends ecjia_admin
             $url = RC_Uri::url('orders/admin/init', $param);
         }
         return array('url' => $url, 'param' => $param);
+    }
+
+    //获取团购活动保证金状态
+    private function get_groupbuy_deposit_status($order = [], $groupbuy = [])
+    {
+        //团购活动保证金
+        $formated_deposit = $groupbuy['formated_deposit'];
+
+        //活动失败
+        if ($groupbuy['status'] == GBS_FAIL && $groupbuy['is_finished'] == GBS_FAIL) {
+            //已付款
+            if ($order['pay_status'] == PS_PAYED) {
+                $total_amount     = $order['surplus'] + $order['money_paid'];
+                $total_amount     = ecjia_price_format($total_amount);
+                $formated_deposit .= '（需退款：' . $total_amount . '）';
+            }
+
+            //进行中
+        } elseif ($groupbuy['status'] == GBS_UNDER_WAY) {
+            $formated_deposit .= '（等待团购活动结束）';
+
+            //活动成功
+        } elseif ($groupbuy['status'] == GBS_SUCCEED && $groupbuy['is_finished'] == GBS_SUCCEED) {
+
+            //活动失败完成
+        } elseif ($groupbuy['status'] == GBS_FAIL && $groupbuy['is_finished'] == GBS_FAIL_COMPLETE) {
+
+            $refund_id = RC_DB::table('refund_order')->where('order_sn', $order['order_sn'])->pluck('refund_id');
+
+            RC_Loader::load_app_class('RefundOrderInfo', 'refund', false);
+            $refund_info = RefundOrderInfo::get_refund_order_info($refund_id);
+
+            if ($refund_info['refund_status'] == 1) {
+                $refund_total_amount = price_format($refund_info['money_paid'] + $refund_info['surplus']);
+
+                $formated_deposit .= '（需退款：' . $refund_total_amount . '）';
+            }
+
+            //活动成功完成
+        } elseif ($groupbuy['status'] == GBS_SUCCEED && $groupbuy['is_finished'] == GBS_SUCCEED_COMPLETE) {
+            if ($order['pay_status'] == PS_UNPAYED) {
+                $formated_deposit .= '（需支付尾款：' . $order['order_amount'] . '）';
+            }
+        }
+
+        return $formated_deposit;
     }
 }
 

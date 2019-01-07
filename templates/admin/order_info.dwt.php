@@ -295,34 +295,42 @@
                     <div class="accordion-body in collapse" id="collapseGroupBuy">
                         <table class="table table-oddtd m_b0">
                             <tbody class="first-td-no-leftbd">
-                            <tr>
-                                <td>
-                                    <div align="right">
-                                        <strong>活动类型：</strong>
-                                    </div>
-                                </td>
-                                <td>团购</td>
-                                <td>
-                                    <div align="right">
-                                        <strong>活动状态：</strong>
-                                    </div>
-                                </td>
-                                <td>{$groupbuy_info.status_desc}</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div align="right">
-                                        <strong>店铺名称：</strong>
-                                    </div>
-                                </td>
-                                <td>{$order.merchants_name}</td>
-                                <td>
-                                    <div align="right">
-                                        <strong>活动商品：</strong>
-                                    </div>
-                                </td>
-                                <td>{$groupbuy_info.goods_name} <a target="__blank" href="{RC_Uri::url('groupbuy/admin/view')}&id={$groupbuy_info.act_id}">[ 活动详情 ]</a></td>
-                            </tr>
+                                <tr>
+                                    <td>
+                                        <div align="right">
+                                            <strong>活动类型：</strong>
+                                        </div>
+                                    </td>
+                                    <td>团购</td>
+                                    <td>
+                                        <div align="right">
+                                            <strong>活动状态：</strong>
+                                        </div>
+                                    </td>
+                                    <td>{$groupbuy_info.status_desc}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div align="right">
+                                            <strong>店铺名称：</strong>
+                                        </div>
+                                    </td>
+                                    <td>{$order.merchants_name}</td>
+                                    <td>
+                                        <div align="right">
+                                            <strong>活动商品：</strong>
+                                        </div>
+                                    </td>
+                                    <td>{$groupbuy_info.goods_name} <a target="__blank" href="{RC_Uri::url('groupbuy/admin/view')}&id={$groupbuy_info.act_id}">[ 活动详情 ]</a></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div align="right">
+                                            <strong>保证金：</strong>
+                                        </div>
+                                    </td>
+                                    <td class="ecjiafc-FF0000" colspan="3">{$groupbuy_deposit_status}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

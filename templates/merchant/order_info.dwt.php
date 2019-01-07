@@ -707,7 +707,7 @@ ecjia.merchant.order.info();
                 </div>
 			</div>
 			
-			{if !$invalid_order && $order.order_status neq 2}
+			{if !$invalid_order && $order.order_status neq 2 && $order_info.to_buyer neq ''}
 			<div class="accordion-group panel panel-default">
 				<div class="panel-heading">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseEight">

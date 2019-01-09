@@ -75,6 +75,10 @@ class OrderPrint
         //7.获取该订单获得积分
         $integral_give = $this->getIntegralGive($order);
         
+        \RC_Logger::getLogger('error')->info('test111');
+        \RC_Logger::getLogger('error')->info($type);
+        \RC_Logger::getLogger('error')->info('test222');
+        
         if ($type == 'print_buy_orders') {
             return $this->printBuyOrders($type, $order, $store, $user, $goods_list, $order_trade_no, $integral_give, $auto_print);
         } elseif ($type == 'print_takeaway_orders') {
@@ -89,6 +93,7 @@ class OrderPrint
      */
     public function printBuyOrders($type, $order, $store, $user, $goods_list, $order_trade_no, $integral_give, $auto_print = false)
     {
+    	\RC_Logger::getLogger('error')->info('test333');
         $data = array(
             'order_sn'            => $order['order_sn'], //订单编号
             'order_trade_no'      => $order_trade_no, //流水编号
@@ -133,6 +138,7 @@ class OrderPrint
      */
     public function printTakeawayOrders($type, $order, $store, $user, $goods_list, $order_trade_no, $integral_give, $auto_print = false)
     {
+    	\RC_Logger::getLogger('error')->info('test444');
         $address = '';
         if (!empty($order['province'])) {
             $address .= ecjia_region::getRegionName($order['province']);
@@ -200,6 +206,7 @@ class OrderPrint
      */
     public function printStoreOrders($type, $order, $store, $goods_list, $order_trade_no, $auto_print = false)
     {
+    	\RC_Logger::getLogger('error')->info('test555');
     	$address = '';
     	if (!empty($store['province'])) {
     		$address .= ecjia_region::getRegionName($store['province']);

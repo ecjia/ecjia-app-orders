@@ -131,7 +131,7 @@ class history_module extends api_admin implements api_interface {
 	 * return array
 	 */
 	private function formated_admin_order_list($data = array(), $device_code = '') {
-		$codes = array('8001', '8011');
+		$codes = config('app-cashier::cashier_device_code');
 		if (!empty($data)) {
 			foreach ($data as $key => $val) {
 				$order_status = ($val['order_status'] != '2' || $val['order_status'] != '3') ? RC_Lang::get('orders::order.os.'.$val['order_status']) : '';

@@ -60,7 +60,7 @@ class admin_stats_payment_module extends api_admin implements api_interface
 		}
 		
 		$device		  = $this->device;
-		$codes = array('8001', '8011');
+		$codes = config('app-cashier::cashier_device_code');
 		
 		if (!in_array($device['code'], $codes)) {
 			$result = $this->admin_priv('order_stats');

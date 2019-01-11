@@ -59,7 +59,7 @@ class admin_orders_detail_module extends api_admin implements api_interface {
         } 
         
         $device = $this->device;
-        $codes = array('8001', '8011');
+        $codes = config('app-cashier::cashier_device_code');
         if (!in_array($device['code'], $codes)) {
         	$result = $this->admin_priv('order_view');
         	if (is_ecjia_error($result)) {
@@ -105,11 +105,8 @@ class admin_orders_detail_module extends api_admin implements api_interface {
 			}
 		}
 		
-		$codes = array('8001', '8011');
-		
 		if (in_array($device['code'], $codes)) {
-			//$order['adviser_name'] = RC_Model::model('orders/adviser_log_viewmodel')->join(array('adviser'))->where(array('al.order_id' => $order['order_id']))->get_field('username');
-			$order['cashier_name'] = RC_DB::table('cashier_record as cr')->leftJoin('staff_user as su', RC_DB::raw('cr.staff_id'), '=', RC_DB::raw('su.user_id'))->where(RC_DB::raw('cr.order_id'), $order['order_id'])->pluck('name');
+			$order['cashier_name'] = RC_DB::table('cashier_record as cr')->leftJoin('staff_user as su', RC_DB::raw('cr.staff_id'), '=', RC_DB::raw('su.user_id'))->where(RC_DB::raw('cr.order_id'), $order['order_id'])->pluck(RC_DB::raw('su.name'));
 		}
 		
 		$order['label_order_source'] = '';

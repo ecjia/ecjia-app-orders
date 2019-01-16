@@ -249,6 +249,9 @@ class admin_orders_detail_module extends api_admin implements api_interface {
 		$order['trade_no']			= empty($payment_record_info['trade_no']) ? '' : $payment_record_info['trade_no'];
 		$order['order_trade_no']	= empty($payment_record_info['order_trade_no']) ? '' : $payment_record_info['order_trade_no'];
 		$order['pay_code']			= empty($payment_record_info['pay_code']) ? '' : $payment_record_info['pay_code'];
+		//手续费字段
+		$order['formatted_pay_fee'] = $order['formated_pay_fee'];
+		unset( $order['formated_pay_fee']);
 		//订单小票打印数据
 		$print_data = $this->getOrderPrintData($order);
 		$order['print_data'] = $print_data;

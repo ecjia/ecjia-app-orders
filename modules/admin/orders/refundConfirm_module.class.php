@@ -153,9 +153,7 @@ class admin_orders_refundConfirm_module extends api_admin implements api_interfa
 			/* 记录日志 */
 			if ($_SESSION['store_id'] > 0) {
 			    RC_Api::api('merchant', 'admin_log', array('text' => '未付款，订单号是 '.$order['order_sn'].'【来源掌柜】', 'action' => 'edit', 'object' => 'order_status'));
-			} else {
-			    ecjia_admin::admin_log('未付款，订单号是 '.$order['order_sn'].'【来源掌柜】', 'edit', 'order_status'); // 记录日志
-			}
+			} 
 			/* 记录log */
 			order_action($order['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_UNPAYED, '');
 			

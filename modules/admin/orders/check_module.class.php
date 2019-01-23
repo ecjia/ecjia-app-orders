@@ -151,9 +151,7 @@ class admin_orders_check_module extends api_admin implements api_interface
 			$order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => ''));
 			if ($_SESSION['store_id'] > 0) {
 			    RC_Api::api('merchant', 'admin_log', array('text'=>'验单，订单号：'.$order['order_sn'].'【来源掌柜】', 'action'=>'edit', 'object'=>'order'));
-			} else {
-			    ecjia_admin::admin_log('验单，订单号：'.$order['order_sn'].'【来源掌柜】', 'edit', 'order'); // 记录日志
-			}
+			} 
 		}
 		
 		

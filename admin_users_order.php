@@ -85,12 +85,12 @@ class admin_users_order extends ecjia_admin
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('system::system.report_users')));
         ecjia_screen::get_current_screen()->add_help_tab(array(
             'id'      => 'overview',
-            'title'   => RC_Lang::get('orders::statistic.overview'),
+            'title'   => '概述',
             'content' => '<p>' . RC_Lang::get('orders::statistic.users_order_help') . '</p>'
         ));
 
         ecjia_screen::get_current_screen()->set_help_sidebar(
-            '<p><strong>' . RC_Lang::get('orders::statistic.more_info') . '</strong></p>' .
+            '<p><strong>' . '更多信息：' . '</strong></p>' .
             '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:会员排行" target="_blank">' . RC_Lang::get('orders::statistic.about_users_order') . '</a>') . '</p>'
         );
 
@@ -143,7 +143,7 @@ class admin_users_order extends ecjia_admin
         header("Content-type: application/vnd.ms-excel; charset=utf-8");
         header("Content-Disposition: attachment; filename=$file_name.xls");
 
-        $data = RC_Lang::get('orders::statistic.order_by') . "\t" . RC_Lang::get('orders::statistic.member_name') . "\t" . RC_Lang::get('orders::statistic.order_amount') . "\t" . RC_Lang::get('orders::statistic.buy_sum') . "\n";
+        $data = '排行' . "\t" . RC_Lang::get('orders::statistic.member_name') . "\t" . RC_Lang::get('orders::statistic.order_amount') . "\t" . RC_Lang::get('orders::statistic.buy_sum') . "\n";
         if (!empty($users_order_data['item'])) {
             foreach ($users_order_data['item'] as $k => $v) {
                 $order_by = $k + 1;

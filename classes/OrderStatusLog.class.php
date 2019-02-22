@@ -144,7 +144,7 @@ class OrderStatusLog
     {
         $data = array(
             'order_status' => RC_Lang::get('orders::order.ss.' . SS_SHIPPED),
-            'message'      => sprintf(RC_Lang::get('orders::order.order_send_message'), $options['order_sn']),
+            'message'      => sprintf('订单号为 %s 的商品已发货，请您耐心等待', $options['order_sn']),
             'order_id'     => $options['order_id'],
             'add_time'     => RC_Time::gmtime(),
         );

@@ -68,7 +68,7 @@ class admin_shopkeeper_order_checking_confirm_module extends api_admin implement
         $order_id = $this->requestData('order_id');
 
         if (empty($order_id)) {
-            return new ecjia_error('invalid_parameter', RC_Lang::get('system::system.invalid_parameter'));
+            return new ecjia_error('invalid_parameter', '参数无效');
         }
 
         /* 查询订单信息 */
@@ -265,7 +265,7 @@ class admin_shopkeeper_order_checking_confirm_module extends api_admin implement
                     if ($pg_value['goods_number'] < $goods_no_package[$pg_value['g_p']] && ((ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) ||
                             (ecjia::config('use_storage') == '0' && $pg_value['is_real'] == 0))) {
                         /* 操作失败 */
-                        return new ecjia_error('out_of_stock', sprintf(RC_Lang::get('orders::order.act_goods_vacancy'), $pg_value['goods_name']));
+                        return new ecjia_error('out_of_stock', sprintf('商品 %s 已缺货', $pg_value['goods_name']));
                     }
 
                     /* 商品（超值礼包） 虚拟商品列表 package_virtual_goods*/
@@ -306,8 +306,8 @@ class admin_shopkeeper_order_checking_confirm_module extends api_admin implement
                 if (($num < $goods_no_package[$_key]) && ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) {
                     /* 操作失败 */
                     //$links[] = array('text' => RC_Lang::get('orders::order.order_info'), 'href' => RC_Uri::url('orders/merchant/info', array('order_id' => $order_id)));
-                    //return $this->showmessage(sprintf(RC_Lang::get('orders::order.act_goods_vacancy'), $value['goods_name']) , ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_ERROR);
-                    return new ecjia_error('out_of_stock', sprintf(RC_Lang::get('orders::order.act_goods_vacancy'), $value['goods_name']));
+                    //return $this->showmessage(sprintf('商品 %s 已缺货', $value['goods_name']) , ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_ERROR);
+                    return new ecjia_error('out_of_stock', sprintf('商品 %s 已缺货', $value['goods_name']));
                 }
             }
         }
@@ -414,8 +414,8 @@ class admin_shopkeeper_order_checking_confirm_module extends api_admin implement
             }
         } else {
             /* 操作失败 */
-            //return $this->showmessage(RC_Lang::get('orders::order.act_false'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-            return new ecjia_error('act_fail', RC_Lang::get('orders::order.act_false'));
+            //return $this->showmessage('操作失败', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+            return new ecjia_error('act_fail', '操作失败');
         }
 
         unset($filter_fileds, $delivery, $_delivery);
@@ -517,7 +517,7 @@ class admin_shopkeeper_order_checking_confirm_module extends api_admin implement
                     ((ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) ||
                         (ecjia::config('use_storage') == '0' && $value['is_real'] == 0))) {
                     /* 操作失败 */
-                    return new ecjia_error('goods_out_of_stock', sprintf(RC_Lang::get('orders::order.act_goods_vacancy'), $value['goods_name']));
+                    return new ecjia_error('goods_out_of_stock', sprintf('商品 %s 已缺货', $value['goods_name']));
                 }
 
                 /* 虚拟商品列表 virtual_card */
@@ -553,8 +553,8 @@ class admin_shopkeeper_order_checking_confirm_module extends api_admin implement
                     ((ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) ||
                         (ecjia::config('use_storage') == '0' && $value['is_real'] == 0))) {
                     /* 操作失败 */
-                    //return $this->showmessage(sprintf(RC_Lang::get('orders::order.act_goods_vacancy'), $value['goods_name']), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-                    return new ecjia_error('goods_out_of_stock', sprintf(RC_Lang::get('orders::order.act_goods_vacancy'), $value['goods_name']));
+                    //return $this->showmessage(sprintf('商品 %s 已缺货', $value['goods_name']), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+                    return new ecjia_error('goods_out_of_stock', sprintf('商品 %s 已缺货', $value['goods_name']));
                 }
 
                 /* 虚拟商品列表 virtual_card*/
@@ -615,14 +615,14 @@ class admin_shopkeeper_order_checking_confirm_module extends api_admin implement
         if ($result) {
             $data = array(
                 'order_status' => RC_Lang::get('orders::order.ss.' . SS_SHIPPED),
-                'message'      => sprintf(RC_Lang::get('orders::order.order_send_message'), $order['order_sn']),
+                'message'      => sprintf('订单号为 %s 的商品已发货，请您耐心等待', $order['order_sn']),
                 'order_id'     => $order_id,
                 'add_time'     => RC_Time::gmtime(),
             );
             RC_DB::table('order_status_log')->insert($data);
         } else {
-            //return $this->showmessage(RC_Lang::get('orders::order.act_false'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-            return new ecjia_error('act_fail', RC_Lang::get('orders::order.act_false'), $value['goods_name']);
+            //return $this->showmessage('操作失败', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+            return new ecjia_error('act_fail', '操作失败', $value['goods_name']);
         }
 
         /* 标记订单为已确认 “已发货” */
@@ -682,7 +682,7 @@ class admin_shopkeeper_order_checking_confirm_module extends api_admin implement
                 $content = $this->fetch_string($tpl['template_content']);
 
                 if (!RC_Mail::send_mail($order['consignee'], $order['email'], $tpl['template_subject'], $content, $tpl['is_html'])) {
-                    //return $this->showmessage(RC_Lang::get('orders::order.send_mail_fail') , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+                    //return $this->showmessage('发送邮件失败' , ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
                 }
             }
 

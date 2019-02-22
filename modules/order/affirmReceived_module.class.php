@@ -64,7 +64,7 @@ class order_affirmReceived_module extends api_front implements api_interface
         }
         $order_id = $this->requestData('order_id', 0);
         if ($order_id < 1) {
-            return new ecjia_error('invalid_parameter', RC_Lang::get('system::system.invalid_parameter'));
+            return new ecjia_error('invalid_parameter', '参数无效');
         }
 
         $result = $this->affirm_received(intval($order_id), $user_id);

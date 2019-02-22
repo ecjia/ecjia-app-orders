@@ -79,21 +79,21 @@ class admin_sale_order extends ecjia_admin
         /* 权限检查 */
         $this->admin_priv('sale_order_stats');
 
-        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.sale_order_stats')));
+        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here('销售排行'));
         ecjia_screen::get_current_screen()->add_help_tab(array(
             'id'      => 'overview',
-            'title'   => RC_Lang::get('orders::statistic.overview'),
-            'content' => '<p>' . RC_Lang::get('orders::statistic.sale_order_help') . '</p>'
+            'title'   => '概述',
+            'content' => '<p>' . '欢迎访问ECJia智能后台销售排行页面，系统中所有的销售排行信息都会显示在此页面中。' . '</p>'
         ));
 
         ecjia_screen::get_current_screen()->set_help_sidebar(
-            '<p><strong>' . RC_Lang::get('orders::statistic.more_info') . '</strong></p>' .
-            '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:销售排行" target="_blank">' . RC_Lang::get('orders::statistic.about_sale_order') . '</a>') . '</p>'
+            '<p><strong>' . '更多信息：' . '</strong></p>' .
+            '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:销售排行" target="_blank">' . '关于销售排行帮助文档' . '</a>') . '</p>'
         );
 
         /* 赋值到模板 */
-        $this->assign('ur_here', RC_Lang::get('orders::order.sale_order_stats'));
-        $this->assign('action_link', array('text' => RC_Lang::get('orders::statistic.download_sale_sort'), 'href' => RC_Uri::url('orders/admin_sale_order/download')));
+        $this->assign('ur_here', '销售排行');
+        $this->assign('action_link', array('text' => '销售排行报表下载', 'href' => RC_Uri::url('orders/admin_sale_order/download')));
 
         /*时间参数*/
         $start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date(ecjia::config('date_format'), strtotime('-1 month') - 8 * 3600);
@@ -124,7 +124,7 @@ class admin_sale_order extends ecjia_admin
 
         if ($_REQUEST['store_id']) {
             $store_info = RC_DB::table('store_franchisee')->where('store_id', $_GET['store_id'])->first();
-            $this->assign('ur_here', $store_info['merchants_name'] . ' - ' . RC_Lang::get('orders::order.sale_order_stats'));
+            $this->assign('ur_here', $store_info['merchants_name'] . ' - ' . '销售排行');
         }
         $goods_order_data = $this->get_sales_order(true, $filter);
 
@@ -159,7 +159,7 @@ class admin_sale_order extends ecjia_admin
         $filter['sort_by']           = empty($_REQUEST['sort_by']) ? 'goods_num' : trim($_REQUEST['sort_by']);
         $filter['sort_order']        = empty($_REQUEST['sort_order']) ? 'DESC' : trim($_REQUEST['sort_order']);
         $filter['merchant_keywords'] = $merchant_keywords;
-        $file                        .= RC_Lang::get('orders::statistic.sale_order_statement') . '_' . $start_date . '至' . $end_date;
+        $file                        .= '销售排行报表' . '_' . $start_date . '至' . $end_date;
         $goods_order_data            = $this->get_sales_order(false, $filter);
 
         $filename = mb_convert_encoding($file, "GBK", "UTF-8");
@@ -167,7 +167,7 @@ class admin_sale_order extends ecjia_admin
         header("Content-type: application/vnd.ms-excel; charset=utf-8");
         header("Content-Disposition: attachment; filename=$filename.xls");
 
-        $data = RC_Lang::get('orders::statistic.order_by') . "\t" . RC_Lang::get('orders::statistic.goods_name') . "\t" . '商家名称' . "\t" . RC_Lang::get('orders::statistic.goods_sn') . "\t" . RC_Lang::get('orders::statistic.sell_amount') . "\t" . RC_Lang::get('orders::statistic.sell_sum') . "\t" . RC_Lang::get('orders::statistic.percent_count') . "\n";
+        $data = '排行' . "\t" . '商品名称' . "\t" . '商家名称' . "\t" . '货号' . "\t" . '销售量' . "\t" . '销售额' . "\t" . '均价' . "\n";
 
         if (!empty($goods_order_data['item'])) {
             foreach ($goods_order_data['item'] as $k => $v) {

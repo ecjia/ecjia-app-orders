@@ -138,15 +138,15 @@ class mh_order_stats extends ecjia_merchant
     {
         $this->admin_priv('order_stats');
 
-        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::statistic.order_stats')));
+        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here('订单统计'));
         ecjia_screen::get_current_screen()->add_help_tab(array(
             'id'      => 'overview',
-            'title'   => RC_Lang::get('orders::statistic.overview'),
+            'title'   => '概述',
             'content' => '<p>' . RC_Lang::get('orders::statistic.order_stats_help') . '</p>',
         ));
 
         ecjia_screen::get_current_screen()->set_help_sidebar(
-            '<p><strong>' . RC_Lang::get('orders::statistic.more_info') . '</strong></p>' .
+            '<p><strong>' . '更多信息：' . '</strong></p>' .
             '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E9.85.8D.E9.80.81.E6.96.B9.E5.BC.8F" target="_blank">' . RC_Lang::get('orders::statistic.about_order_stats') . '</a>') . '</p>'
         );
 
@@ -193,15 +193,15 @@ class mh_order_stats extends ecjia_merchant
     {
         $this->admin_priv('order_stats');
 
-        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::statistic.order_stats')));
+        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here('订单统计'));
         ecjia_screen::get_current_screen()->add_help_tab(array(
             'id'      => 'overview',
-            'title'   => RC_Lang::get('orders::statistic.overview'),
+            'title'   => '概述',
             'content' => '<p>' . RC_Lang::get('orders::statistic.order_stats_help') . '</p>',
         ));
 
         ecjia_screen::get_current_screen()->set_help_sidebar(
-            '<p><strong>' . RC_Lang::get('orders::statistic.more_info') . '</strong></p>' .
+            '<p><strong>' . '更多信息：' . '</strong></p>' .
             '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E6.94.AF.E4.BB.98.E6.96.B9.E5.BC.8F" target="_blank">' . RC_Lang::get('orders::statistic.about_order_stats') . '</a>') . '</p>'
         );
 

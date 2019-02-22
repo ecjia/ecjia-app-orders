@@ -82,18 +82,18 @@ class admin_sale_list extends ecjia_admin
         /* 权限判断 */
         $this->admin_priv('sale_list_stats');
 
-        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::statistic.sales_list')));
+        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here('销售明细'));
         ecjia_screen::get_current_screen()->add_help_tab(array(
             'id'      => 'overview',
-            'title'   => RC_Lang::get('orders::statistic.overview'),
-            'content' => '<p>' . RC_Lang::get('orders::statistic.sale_list_help') . '</p>'
+            'title'   => '概述',
+            'content' => '<p>' . '欢迎访问ECJia智能后台销售明细页面，系统中所有的销售明细信息都会显示在此列表中。' . '</p>'
         ));
 
         ecjia_screen::get_current_screen()->set_help_sidebar(
-            '<p><strong>' . RC_Lang::get('orders::statistic.more_info') . '</strong></p>' .
-            '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:销售明细" target="_blank">' . RC_Lang::get('orders::statistic.about_sale_list') . '</a>') . '</p>'
+            '<p><strong>' . '更多信息：' . '</strong></p>' .
+            '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:销售明细" target="_blank">' . '关于销售明细帮助文档' . '</a>') . '</p>'
         );
-        $this->assign('ur_here', RC_Lang::get('orders::statistic.sales_list'));
+        $this->assign('ur_here', '销售明细');
         $this->assign('action_link', array('text' => '下载销售明细报表', 'href' => RC_Uri::url('orders/admin_sale_list/download')));
 
         /* 时间参数 */
@@ -118,7 +118,7 @@ class admin_sale_list extends ecjia_admin
 
         if (!empty($_GET['store_id'])) {
             $store_info = RC_DB::table('store_franchisee')->where('store_id', $_GET['store_id'])->first();
-            $this->assign('ur_here', $store_info['merchants_name'] . ' - ' . RC_Lang::get('orders::statistic.sales_list'));
+            $this->assign('ur_here', $store_info['merchants_name'] . ' - ' . '销售明细');
         }
 
         $sale_list_data = $this->get_sale_list();
@@ -143,9 +143,9 @@ class admin_sale_list extends ecjia_admin
         $end_date   = !empty($_GET['end_date']) ? $_GET['end_date'] : RC_Time::local_date(ecjia::config('date_format'), RC_Time::local_strtotime('today'));
         if (!empty($_GET['store_id'])) {
             $store_info = RC_DB::table('store_franchisee')->where('store_id', $_GET['store_id'])->first();
-            $file_name  = mb_convert_encoding(RC_Lang::get('orders::statistic.sales_list_statement') . '_' . $store_info['merchants_name'] . '_' . $_GET['start_date'] . '-' . $_GET['end_date'], "GBK", "UTF-8");
+            $file_name  = mb_convert_encoding('销售明细报表' . '_' . $store_info['merchants_name'] . '_' . $_GET['start_date'] . '-' . $_GET['end_date'], "GBK", "UTF-8");
         } else {
-            $file_name = mb_convert_encoding(RC_Lang::get('orders::statistic.sales_list_statement') . '_' . $_GET['start_date'] . '-' . $_GET['end_date'], "GBK", "UTF-8");
+            $file_name = mb_convert_encoding('销售明细报表' . '_' . $_GET['start_date'] . '-' . $_GET['end_date'], "GBK", "UTF-8");
         }
 
         /*文件名*/
@@ -155,7 +155,7 @@ class admin_sale_list extends ecjia_admin
         header("Content-type: application/vnd.ms-excel; charset=utf-8");
         header("Content-Disposition: attachment; filename=$file_name.xls");
 
-        $data = RC_Lang::get('orders::statistic.goods_name') . "\t商家名称\t" . RC_Lang::get('orders::statistic.order_sn') . "\t" . RC_Lang::get('orders::statistic.amount') . "\t" . RC_Lang::get('orders::statistic.sell_price') . "\t" . RC_Lang::get('orders::statistic.sell_date') . "\n";
+        $data = '商品名称' . "\t商家名称\t" . '订单号' . "\t" . '数量' . "\t" . '售价' . "\t" . '售出日期' . "\n";
         if (!empty($goods_sales_list['item'])) {
             foreach ($goods_sales_list['item'] as $v) {
                 $data .= mb_convert_encoding($v['goods_name'] . "\t" . $v['merchants_name'] . "\t" . $v['order_sn'] . "\t" . $v['goods_num'] . "\t" . $v['sales_price'] . "\t" . $v['sales_time'] . "\n", 'UTF-8', 'auto');

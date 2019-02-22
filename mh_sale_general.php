@@ -91,8 +91,8 @@ class mh_sale_general extends ecjia_merchant
         ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here('报表统计', RC_Uri::url('stats/mh_keywords_stats/init')));
         ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('销售概况')));
 
-        $this->assign('ur_here', RC_Lang::get('orders::statistic.report_sell'));
-        $this->assign('action_link', array('text' => RC_Lang::get('orders::statistic.down_sales_stats'), 'href' => RC_Uri::url('orders/mh_sale_general/download')));
+        $this->assign('ur_here', '销售概况');
+        $this->assign('action_link', array('text' => '销售概况报表下载', 'href' => RC_Uri::url('orders/mh_sale_general/download')));
 
         $this->assign('page', 'init');
         $this->assign('form_action', RC_Uri::url('orders/mh_sale_general/init'));
@@ -117,8 +117,8 @@ class mh_sale_general extends ecjia_merchant
 
         ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('销售概况')));
 
-        $this->assign('ur_here', RC_Lang::get('orders::statistic.report_sell'));
-        $this->assign('action_link', array('text' => RC_Lang::get('orders::statistic.down_sales_stats'), 'href' => RC_Uri::url('orders/mh_sale_general/download')));
+        $this->assign('ur_here', '销售概况');
+        $this->assign('action_link', array('text' => '销售概况报表下载', 'href' => RC_Uri::url('orders/mh_sale_general/download')));
 
         $this->assign('page', 'sales_trends');
         $this->assign('form_action', RC_Uri::url('orders/mh_sale_general/sales_trends'));
@@ -277,7 +277,7 @@ class mh_sale_general extends ecjia_merchant
         header("Content-Disposition: attachment; filename=$filename.xls");
 
         /* 文件标题 */
-        echo mb_convert_encoding($filename . RC_Lang::get('orders::statistic.sales_statistics'), 'UTF-8', 'UTF-8') . "\t\n";
+        echo mb_convert_encoding($filename . '销售统计', 'UTF-8', 'UTF-8') . "\t\n";
 
         /* 订单数量, 销售出商品数量, 销售金额 */
         echo mb_convert_encoding(RC_LANG::lang('period'), 'UTF-8', 'UTF-8') . "\t";

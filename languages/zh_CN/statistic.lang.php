@@ -135,7 +135,7 @@ return array(
     'guest_member_ordercount'  => '匿名会员订单总数',
     'guest_member_orderamount' => '匿名会员购物总额',
 
-    'percent_buy_member'  => '会员购买率 ',
+    'percent_buy_member'  => '会员购买率',
     'buy_member_formula'  => '（会员购买率 = 有订单会员数 ÷ 会员总数）',
     'member_order_amount' => '（每会员订单数 = 会员订单总数 ÷ 会员总数）',
     'member_buy_amount'   => '（每会员购物额 = 会员购物总额 ÷ 会员总数）',
@@ -205,7 +205,7 @@ return array(
     'gen_order_amount'   => '产生订单总数',
     'adsense_statement'  => '广告转化率报表',
 
-    // 	追加
+    //追加
     'adsense_js_goods'   => '站外JS调用商品',
     'search_keywords'    => '搜索关键字',
     'start_date_msg'     => '开始日期',
@@ -219,7 +219,7 @@ return array(
     'this_week'          => '本周',
     'this_month'         => '本月',
     'month'              => '月',
-    'loading'            => '正在加载中……',
+    'loading'            => '正在加载中...',
     'guest_stats'        => '客户统计',
 
     'adsense'              => '广告转化率',

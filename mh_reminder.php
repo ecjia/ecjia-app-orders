@@ -81,12 +81,12 @@ class mh_reminder extends ecjia_merchant
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.reminder_list')));
         ecjia_screen::get_current_screen()->add_help_tab(array(
             'id'      => 'overview',
-            'title'   => RC_Lang::get('orders::order.overview'),
+            'title'   => __('概述', 'orders'),
             'content' => '<p>' . RC_Lang::get('orders::order.order_reminder_help') . '</p>'
         ));
 
         ecjia_screen::get_current_screen()->set_help_sidebar(
-            '<p><strong>' . RC_Lang::get('orders::order.more_info') . '</strong></p>' .
+            '<p><strong>' . __('更多信息', 'orders') . '</strong></p>' .
             '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:发货提醒列表" target="_blank">' . RC_Lang::get('orders::order.about_order_reminder') . '</a>') . '</p>'
         );
 

@@ -452,4 +452,69 @@ class OrderStatus
         );
     }
 
+    public static function getOrderCsStatusList()
+    {
+        return array(
+            CS_AWAIT_PAY    => '待付款',
+            CS_UNCONFIRMED  => '待接单',
+            CS_AWAIT_SHIP   => '待发货',
+            CS_SHIPPED      => '已发货',
+            CS_FINISHED     => '已完成',
+            CS_CANCELED     => '取消',
+            CS_REFUND       => '退货',
+            CS_SHIPPED_PART => '部分发货',
+        );
+    }
+
+    public static function getOrderSsStatusLabel($shipping_status = '')
+    {
+        $ss = array(
+            SS_UNSHIPPED    => '未发货',
+            SS_PREPARING    => '配货中',
+            SS_SHIPPED      => '已发货',
+            SS_RECEIVED     => '收货确认',
+            SS_SHIPPED_PART => '已发货(部分商品)',
+            SS_SHIPPED_ING  => '发货中',
+        );
+
+        if (!array_key_exists($ss, $shipping_status)) {
+            return '未发货';
+        }
+
+        return array_get($shipping_status, $ss);
+    }
+
+    public static function getOrderPsStatusLabel($pay_status = '')
+    {
+        $ps = array(
+            PS_UNPAYED => '未付款',
+            PS_PAYING  => '付款中',
+            PS_PAYED   => '已付款',
+        );
+
+        if (!array_key_exists($ps, $pay_status)) {
+            return '未付款';
+        }
+
+        return array_get($pay_status, $ps);
+    }
+
+    public static function getOrderOsStatusLabel($order_status = '')
+    {
+        $os = array(
+            OS_UNCONFIRMED   => '未接单',
+            OS_CONFIRMED     => '已接单',
+            OS_CANCELED      => '<font color="red">取消</font>',
+            OS_INVALID       => '<font color="red">无效</font>',
+            OS_RETURNED      => '<font color="red">退货</font>',
+            OS_SPLITED       => '已分单',
+            OS_SPLITING_PART => '部分分单',
+        );
+        if (!array_key_exists($os, $order_status)) {
+            return '未发货';
+        }
+
+        return array_get($order_status, $os);
+    }
+
 }

@@ -68,7 +68,7 @@ class orders_buy_order_paid_api extends Component_Event_Api {
 	    $order_sn = $options['order_sn'];
 
 	    /* 取得订单信息 */
-	    $order = RC_Api::api('orders', 'order_info', array('order_sn' => $order_sn));;
+	    $order = RC_Api::api('orders', 'order_info', array('order_sn' => $order_sn));
 	    
 	    if (intval($order['pay_status']) === PS_PAYED) {
 	        return new ecjia_error('order_has_been_paid', '订单已经支付了');

@@ -55,7 +55,7 @@ class orders_merchant_menu_api extends Component_Event_Api
 
     public function call(&$options)
     {
-        $menus = ecjia_merchant::make_admin_menu('04_order', __('订单'), '', 2)->add_icon('fa-list')->add_purview(array('order_view', 'order_os_edit', 'delivery_view', 'back_view', 'remind_order_view', 'validate_order', 'refund_manage'))->add_base('order');
+        $menus    = ecjia_merchant::make_admin_menu('04_order', __('订单'), '', 2)->add_icon('fa-list')->add_purview(array('order_view', 'order_os_edit', 'delivery_view', 'back_view', 'remind_order_view', 'validate_order', 'refund_manage'))->add_base('order');
         $submenus = array(
             ecjia_merchant::make_admin_menu('01_today_order', __('当天订单'), RC_Uri::url('orders/merchant/today_order'), 1)->add_purview('order_view')->add_icon('fa-sun-o'),
             ecjia_merchant::make_admin_menu('02_back_order', __('催单提醒'), RC_Uri::url('orders/mh_reminder/init'), 2)->add_purview('remind_order_view')->add_icon('fa-file-o'),
@@ -73,8 +73,8 @@ class orders_merchant_menu_api extends Component_Event_Api
 
             ecjia_merchant::make_admin_menu('divider', '', '', 13)->add_purview(array('mh_comment_manage', 'mh_appeal_manage')),
 
-            ecjia_merchant::make_admin_menu('14_comment_list', __('评论列表'), RC_Uri::url('comment/mh_comment/init'), 14)->add_purview('mh_comment_manage')->add_icon('fa-comment'), 
-			ecjia_merchant::make_admin_menu('15_appeal_list', __('申诉列表'), RC_Uri::url('comment/mh_appeal/init'), 15)->add_purview('mh_appeal_manage')->add_icon('fa-exclamation-circle')
+            ecjia_merchant::make_admin_menu('14_comment_list', __('评论列表'), RC_Uri::url('comment/mh_comment/init'), 14)->add_purview('mh_comment_manage')->add_icon('fa-comment'),
+            ecjia_merchant::make_admin_menu('15_appeal_list', __('申诉列表'), RC_Uri::url('comment/mh_appeal/init'), 15)->add_purview('mh_appeal_manage')->add_icon('fa-exclamation-circle')
         );
         $menus->add_submenu($submenus);
 

@@ -51,21 +51,22 @@ use RC_Lang;
 
 class Helper
 {
-    
+
     /**
      * 添加管理员记录日志操作对象
      */
-    public static function assign_adminlog_content() {
-    	ecjia_admin_log::instance()->add_action('produce', RC_Lang::get('orders::order.produce'));
-    	ecjia_admin_log::instance()->add_action('batch_setup', '批量设置');
-    	
-    	ecjia_admin_log::instance()->add_object('delivery_order', RC_Lang::get('orders::order.delivery_sn'));
-    	ecjia_admin_log::instance()->add_object('back_order', RC_Lang::get('orders::order.back_sn'));
-    	ecjia_admin_log::instance()->add_object('order_payment', RC_Lang::get('orders::order.order_payment'));
-    	ecjia_admin_log::instance()->add_object('order_status', RC_Lang::get('orders::order.order_status'));
-    	ecjia_admin_log::instance()->add_object('order_consignee', RC_Lang::get('orders::order.order_consignee'));
+    public static function assign_adminlog_content()
+    {
+        ecjia_admin_log::instance()->add_action('produce', RC_Lang::get('orders::order.produce'));
+        ecjia_admin_log::instance()->add_action('batch_setup', '批量设置');
+
+        ecjia_admin_log::instance()->add_object('delivery_order', RC_Lang::get('orders::order.delivery_sn'));
+        ecjia_admin_log::instance()->add_object('back_order', RC_Lang::get('orders::order.back_sn'));
+        ecjia_admin_log::instance()->add_object('order_payment', RC_Lang::get('orders::order.order_payment'));
+        ecjia_admin_log::instance()->add_object('order_status', RC_Lang::get('orders::order.order_status'));
+        ecjia_admin_log::instance()->add_object('order_consignee', RC_Lang::get('orders::order.order_consignee'));
     }
-    
+
 }
 
 // end

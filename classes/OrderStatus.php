@@ -61,22 +61,22 @@ class OrderStatus
      * @var array
      */
     protected static $orderTypes = [
-        self::FINISHED => 'queryOrderFinished',
-        self::AWAIT_PAY => 'queryOrderAwaitPay',
-        self::AWAIT_SHIP => 'queryOrderAwaitShip',
-        self::ADMIN_AWAIT_SHIP => 'queryAdminOrderAwaitShip',
-        self::UNCONFIRMED => 'queryOrderUnconfirmed',
+        self::FINISHED          => 'queryOrderFinished',
+        self::AWAIT_PAY         => 'queryOrderAwaitPay',
+        self::AWAIT_SHIP        => 'queryOrderAwaitShip',
+        self::ADMIN_AWAIT_SHIP  => 'queryAdminOrderAwaitShip',
+        self::UNCONFIRMED       => 'queryOrderUnconfirmed',
         self::ADMIN_UNCONFIRMED => 'queryAdminOrderUnconfirmed',
-        self::UNPROCESSED => 'queryOrderUnprocessed',
-        self::UNPAY_UNSHIP => 'queryOrderUnpayUnship',
-        self::SHIPPED => 'queryOrderShipped',
-        self::REFUND => 'queryOrderRefund',
-        self::INVALID => 'queryOrderInvalid',
-        self::CANCELED => 'queryOrderCanceled',
-        self::ALLOW_COMMENT => 'queryOrderAllowComment',
-        self::PREPARING => 'queryOrderPreparing',
-        self::SHIPPED_ING => 'queryOrderShippedIng',
-        self::SHIPPED_PART => 'queryOrderShippedPart',
+        self::UNPROCESSED       => 'queryOrderUnprocessed',
+        self::UNPAY_UNSHIP      => 'queryOrderUnpayUnship',
+        self::SHIPPED           => 'queryOrderShipped',
+        self::REFUND            => 'queryOrderRefund',
+        self::INVALID           => 'queryOrderInvalid',
+        self::CANCELED          => 'queryOrderCanceled',
+        self::ALLOW_COMMENT     => 'queryOrderAllowComment',
+        self::PREPARING         => 'queryOrderPreparing',
+        self::SHIPPED_ING       => 'queryOrderShippedIng',
+        self::SHIPPED_PART      => 'queryOrderShippedPart',
     ];
 
     public static function getOrderStatusLabel($order_status, $shipping_status, $pay_status, $is_cod)
@@ -84,48 +84,48 @@ class OrderStatus
         if (in_array($order_status, array(OS_UNCONFIRMED, OS_SPLITED)) &&
             (in_array($pay_status, array(PS_UNPAYED)) && !$is_cod)) {
             $label_order_status = '未付款';
-            $status_code = 'await_pay';
+            $status_code        = 'await_pay';
         } elseif (in_array($order_status, array(OS_UNCONFIRMED)) &&
             in_array($shipping_status, array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING)) &&
             in_array($pay_status, array(PS_PAYED))) {
             $label_order_status = '已付款';
-            $status_code = 'payed';
+            $status_code        = 'payed';
         } elseif (in_array($order_status, array(OS_UNCONFIRMED)) &&
             in_array($shipping_status, array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING)) &&
             (in_array($pay_status, array(PS_PAYED, PS_PAYING)) || $is_cod)) {
             $label_order_status = '未接单';
-            $status_code = 'unconfirmed';
+            $status_code        = 'unconfirmed';
         } elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
             in_array($shipping_status, array(SS_UNSHIPPED)) &&
             (in_array($pay_status, array(PS_PAYED, PS_PAYING)) || $is_cod)) {
             $label_order_status = '已接单';
-            $status_code = 'confirmed';
+            $status_code        = 'confirmed';
         } elseif (in_array($shipping_status, array(SS_PREPARING)) && $order_status != OS_RETURNED) {
             $label_order_status = '备货中';
-            $status_code = 'shipping';
+            $status_code        = 'shipping';
         } elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
-            in_array($shipping_status, array(SS_SHIPPED_ING)) && 
-        	(in_array($pay_status, array(PS_PAYED)) || $is_cod)) {
+            in_array($shipping_status, array(SS_SHIPPED_ING)) &&
+            (in_array($pay_status, array(PS_PAYED)) || $is_cod)) {
             $label_order_status = '发货中';
-            $status_code = 'shipped_ing';
+            $status_code        = 'shipped_ing';
         } elseif (in_array($shipping_status, array(SS_SHIPPED)) && ($order_status != OS_RETURNED)) {
             $label_order_status = '已发货';
-            $status_code = 'shipped';
+            $status_code        = 'shipped';
         } elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
             in_array($shipping_status, array(SS_SHIPPED_PART))) {
             $label_order_status = '已发货（部分商品）';
-            $status_code = 'shipped_part';
+            $status_code        = 'shipped_part';
         } elseif (in_array($order_status, array(OS_CANCELED, OS_INVALID))) {
             $label_order_status = '已取消';
-            $status_code = 'canceled';
+            $status_code        = 'canceled';
         } elseif (in_array($order_status, array(OS_RETURNED)) && $pay_status == PS_PAYED) {
             $label_order_status = '已申请退货';
-            $status_code = 'refund';
+            $status_code        = 'refund';
         } elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED)) &&
             in_array($shipping_status, array(SS_RECEIVED)) &&
             in_array($pay_status, array(PS_PAYED, PS_PAYING))) {
             $label_order_status = '交易完成';
-            $status_code = 'finished';
+            $status_code        = 'finished';
         }
         return array($label_order_status, $status_code);
     }
@@ -173,7 +173,7 @@ class OrderStatus
     public static function queryOrderAwaitShip()
     {
         $payment_method = RC_Loader::load_app_class('payment_method', 'payment');
-        $payment_ids = $payment_method->payment_id_list(true);
+        $payment_ids    = $payment_method->payment_id_list(true);
 
         if (!empty($payment_ids)) {
             return function ($query) use ($payment_ids) {
@@ -200,7 +200,7 @@ class OrderStatus
     public static function queryAdminOrderAwaitShip()
     {
         $payment_method = RC_Loader::load_app_class('payment_method', 'payment');
-        $payment_ids = $payment_method->payment_id_list(true);
+        $payment_ids    = $payment_method->payment_id_list(true);
 
         if (!empty($payment_ids)) {
             return function ($query) use ($payment_ids) {
@@ -350,51 +350,51 @@ class OrderStatus
         if (in_array($order_status, array(OS_SPLITED, OS_UNCONFIRMED)) &&
             in_array($pay_status, array(PS_UNPAYED))) {
             $label_order_status = '未付款';
-            $status_code = 'await_pay';
+            $status_code        = 'await_pay';
         } elseif (in_array($order_status, array(OS_UNCONFIRMED)) &&
             in_array($shipping_status, array(SS_UNSHIPPED)) &&
             (in_array($pay_status, array(PS_PAYED, PS_PAYING)) || $is_cod)) {
             $label_order_status = '未接单';
-            $status_code = 'unconfirmed';
+            $status_code        = 'unconfirmed';
         } elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
             in_array($shipping_status, array(SS_UNSHIPPED)) &&
             (in_array($pay_status, array(PS_PAYED, PS_PAYING)) || $is_cod)) {
             $label_order_status = '已接单';
-            $status_code = 'confirmed';
+            $status_code        = 'confirmed';
         } elseif (in_array($shipping_status, array(SS_PREPARING)) && $order_status != OS_RETURNED) {
             $label_order_status = '备货中';
-            $status_code = 'shipping';
+            $status_code        = 'shipping';
         } elseif (in_array($order_status, array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
             in_array($shipping_status, array(SS_SHIPPED_ING))) {
             $label_order_status = '发货中';
-            $status_code = 'shipped_ing';
+            $status_code        = 'shipped_ing';
         } elseif (in_array($shipping_status, array(SS_SHIPPED)) && $order_status != OS_RETURNED) {
             $label_order_status = '已发货';
-            $status_code = 'shipped';
+            $status_code        = 'shipped';
         } elseif (in_array($order_status, array(OS_SPLITING_PART)) &&
             in_array($shipping_status, array(SS_SHIPPED_PART))) {
             $label_order_status = '已发货（部分商品）';
-            $status_code = 'shipped_part';
+            $status_code        = 'shipped_part';
         } elseif (in_array($order_status, array(OS_CANCELED, OS_INVALID))) {
             $label_order_status = '已取消';
-            $status_code = 'canceled';
+            $status_code        = 'canceled';
         } elseif (in_array($order_status, array(OS_RETURNED)) && $pay_status == PS_PAYED) {
             $label_order_status = '已申请退货';
-            $status_code = 'refund';
+            $status_code        = 'refund';
         } elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED)) &&
             in_array($shipping_status, array(SS_RECEIVED)) &&
             in_array($pay_status, array(PS_PAYED, PS_PAYING))) {
             $label_order_status = '交易完成';
-            $status_code = 'finished';
+            $status_code        = 'finished';
         }
         return array($label_order_status, $status_code);
     }
 
     public static function getOrderFlowLabel($order = [])
     {
-        $time_key = 1;
-        $label_pay = '买家未付款';
-        $label_confirm = '商家未接单';
+        $time_key       = 1;
+        $label_pay      = '买家未付款';
+        $label_confirm  = '商家未接单';
         $label_shipping = '商家未发货';
 
         if ($order['pay_time'] > 0 || $order['is_cod'] == 1) {
@@ -403,19 +403,19 @@ class OrderStatus
                     $label_pay = '买家未付款';
                 }
                 if ($order['is_cod'] == 1) {
-                    $time_key = 2;
+                    $time_key  = 2;
                     $label_pay = '货到付款';
                 }
                 if ($order['pay_status'] == PS_PAYED) {
-                    $time_key = 2;
+                    $time_key  = 2;
                     $label_pay = '买家已付款';
                 }
-                
+
                 if ($order['order_status'] == OS_CANCELED) {
-                	$time_key = 3;
-                	$label_confirm = '订单已取消';
+                    $time_key      = 3;
+                    $label_confirm = '订单已取消';
                 } elseif (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))) {
-                    $time_key = 3;
+                    $time_key      = 3;
                     $label_confirm = '商家已接单';
                 }
             } else {
@@ -424,31 +424,31 @@ class OrderStatus
                 } else {
                     $label_pay = '买家已付款';
                 }
-                $time_key = 3;
+                $time_key      = 3;
                 $label_confirm = '商家已接单';
             }
             if ($order['shipping_status'] == SS_SHIPPED) {
-            	$time_key = 4;
+                $time_key       = 4;
                 $label_shipping = '商家已发货';
             }
             if ($order['shipping_status'] == SS_SHIPPED_PART) {
-            	$time_key = 4;
-            	$label_shipping = '商家已发货（部分商品）';
+                $time_key       = 4;
+                $label_shipping = '商家已发货（部分商品）';
             }
             if ($order['shipping_status'] == SS_SHIPPED_ING) {
-            	$time_key = 4;
-            	$label_shipping = '发货中(处理分单)';
+                $time_key       = 4;
+                $label_shipping = '发货中(处理分单)';
             }
             if ($order['shipping_status'] == SS_RECEIVED) {
-                $time_key = 5;
+                $time_key       = 5;
                 $label_shipping = '商家已发货';
             }
         }
         return array(
-            'pay' => $label_pay,
-            'confirm' => $label_confirm,
+            'pay'      => $label_pay,
+            'confirm'  => $label_confirm,
             'shipping' => $label_shipping,
-            'key' => $time_key,
+            'key'      => $time_key,
         );
     }
 

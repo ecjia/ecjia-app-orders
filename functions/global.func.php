@@ -366,7 +366,6 @@ function order_query_sql($type = 'finished', $alias = '')
  */
 function payment_id_list($is_cod)
 {
-    //$db = RC_Loader::load_app_model('payment_model', 'orders');
     $db    = RC_DB::table('payment');
     $where = '';
     if ($is_cod) {

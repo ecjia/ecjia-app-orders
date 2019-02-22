@@ -55,7 +55,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 class mh_delivery extends ecjia_merchant
 {
     private $db_delivery_order;
-    private $db_order_region;
     private $db_delivery;
     private $db_order_action;
     private $db_goods;
@@ -71,7 +70,6 @@ class mh_delivery extends ecjia_merchant
         RC_Loader::load_app_func('global', 'goods');
         RC_Loader::load_app_func('global', 'orders');
         $this->db_delivery_order = RC_Model::model('orders/delivery_order_model');
-        $this->db_order_region   = RC_Model::model('order_region_viewmodel');
         $this->db_delivery       = RC_Model::model('delivery_goods_model');
         $this->db_order_action   = RC_Model::model('order_action_model');
         $this->db_goods          = RC_Model::model('goods/goods_model');
@@ -522,7 +520,6 @@ class mh_delivery extends ecjia_merchant
                 $orm_staff_user_db = RC_Model::model('orders/orm_staff_user_model');
                 $user              = $orm_staff_user_db->find($staff_id);
 
-                //$express_order_viewdb = RC_Model::model('orders/express_order_viewmodel');
                 //$where = array('express_id' => $express_id);
                 $field = 'eo.*, oi.add_time as order_time, oi.pay_time, oi.order_amount, oi.pay_name, sf.merchants_name, sf.district as sf_district, sf.street as sf_street, sf.address as merchant_address, sf.longitude as merchant_longitude, sf.latitude as merchant_latitude';
                 //$express_order_info = $express_order_viewdb->field($field)->join(array('delivery_order', 'order_info', 'store_franchisee'))->where($where)->find();

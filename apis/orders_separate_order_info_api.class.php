@@ -59,10 +59,10 @@ class orders_separate_order_info_api extends Component_Event_Api
      */
     public function call(&$options)
     {
-        if (!is_array($options) || !isset($options['order_sn'])) {
+        if (!is_array($options) || (!isset($options['order_sn']) && !isset($options['order_id']))) {
             return new ecjia_error('invalid_parameter', __('参数无效', 'orders'));
         }
-        return $this->order_info($options['order_sn'], $options['user_id']);
+        return $this->order_info($options['order_sn'], $options['user_id'], $options['order_id']);
     }
 
     /**
@@ -71,12 +71,16 @@ class orders_separate_order_info_api extends Component_Event_Api
      * @param   string $order_sn 订单号
      * @return  array   订单信息（金额都有相应格式化的字段，前缀是formated_）
      */
-    private function order_info($order_sn, $user_id = 0)
+    private function order_info($order_sn, $user_id = 0, $order_id = 0)
     {
         $db_order_info = RC_DB::table('separate_order_info');
         /* 计算订单各种费用之和的语句 */
         $db_order_info->select(RC_DB::raw('*'), RC_DB::raw("(goods_amount - discount + tax + shipping_fee + insure_fee + pay_fee ) AS total_fee"));
-        $db_order_info->where('order_sn', $order_sn);
+		if ($order_id > 0) {
+			$db_order_info->where('order_id', $order_id);
+		} else {
+			$db_order_info->where('order_sn', $order_sn);
+		}
         $order = $db_order_info->first();
 
         /* 格式化金额字段 */

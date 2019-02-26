@@ -65,7 +65,6 @@ class order_update_module extends api_front implements api_interface
             return new ecjia_error('invalid_parameter', __('参数无效', 'orders'));
         }
 
-// 		$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
         $payment_info = with(new Ecjia\App\Payment\PaymentPlugin)->getPluginDataById($pay_id);
 
         RC_Loader::load_app_func('admin_order', 'orders');
@@ -75,9 +74,7 @@ class order_update_module extends api_front implements api_interface
         if (is_ecjia_error($order_info)) {
             return $order_info;
         }
-// 		if (empty($payment_info) || ($payment_info['pay_code'] == 'pay_cod' && $order_info[''])) {
-// 		    return new ecjia_error('payment_error', '无法使用该支付方式，请选择其他支付方式！');
-// 		}
+
         /*重新处理订单的配送费用*/
         $shipping_cod_fee        = null;
         $payment_info['pay_fee'] = cart::pay_fee($payment_info['pay_id'], $order_info['order_amount'] - $order_info['pay_fee'], $shipping_cod_fee);
@@ -96,10 +93,16 @@ class order_update_module extends api_front implements api_interface
             'pay_status'      => 0,
             'shipping_status' => 0,
         );
-        $db_order = RC_Model::model('orders/order_info_model');
-        $result   = $db_order->where($where)->update($data);
+       
+        $db_order = RC_DB::table('order_info');
+        $result = $db_order->where('order_id', $order_id)->where('user_id', $user_id)->where('pay_status', 0)->where('shipping_status', 0)->update($data);
+        $order_result = [
+        	'order_id' 		=> $order_id,
+        	'pay_fee'  		=> $payment_info['pay_fee'],
+        	'order_amount'	=> $order_amount
+        ];
         if ($result) {
-            return array();
+            return $order_result;
         } else {
             return new ecjia_error('fail_error', '处理失败！');
         }

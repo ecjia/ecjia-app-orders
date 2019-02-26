@@ -25,7 +25,7 @@
                   </div>
             	  <form class="form-inline pull-right " action='{RC_Uri::url("orders/mh_reminder/init")}{if $smarty.get.type}&type={$smarty.get.type}{/if}' method="post" name="searchForm">
                         <div class="form-group">
-                            <input type="text" class="form-control" name="keywords" value="{$result_list.keywords}" placeholder="{lang key='orders::order.pls_consignee'}">
+                            <input type="text" class="form-control" name="keywords" value="{$result_list.keywords}" placeholder="请输入订单号或者收货人">
                             <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索 </button>
                         </div>
                   </form>

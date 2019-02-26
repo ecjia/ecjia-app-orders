@@ -44,8 +44,8 @@
                 </div>	
                 <form class="form-inline pull-right" action='{RC_Uri::url("orders/mh_delivery/init")}{if $smarty.get.type}&type={$smarty.get.type}{/if}' method="post" name="searchForm">
         			<div class="form-group">
-        				<input type="text" class="form-control" name="delivery_sn" value="{$filter.delivery_sn}" placeholder="{lang key='orders::order.pls_delivery_sn_number'}">
-        			    <input type="text" class="form-control" name="keywords" value="{$filter.keywords}" placeholder="{lang key='orders::order.pls_consignee'}">
+        				<input type="text" class="form-control" name="delivery_sn" value="{$filter.delivery_sn}" placeholder="请输入发货单流水号">
+        			    <input type="text" class="form-control" name="keywords" value="{$filter.keywords}" placeholder="请输入订单号或者收货人">
         			</div>
         			<button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索 </button>
         		</form>

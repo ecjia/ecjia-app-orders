@@ -26,11 +26,11 @@
 	<div class="choose_list f_r">
 		<form class="f_r" action="{$search_action}"  method="post" name="theForm">
 			<input type="text" name="merchant_keywords" value="{$smarty.get.merchant_keywords}" placeholder="{lang key='goods::goods.enter_merchant_keywords'}" size="15" />
-			<span>{lang key='orders::statistic.select_date_lable'}</span>
-			<input class="start_date f_l w110" name="start_date" type="text" placeholder="{lang key='orders::statistic.start_date'}" value="{$start_date}">
+			<span>按时间段查询：</span>
+			<input class="start_date f_l w110" name="start_date" type="text" placeholder="开始日期" value="{$start_date}">
 			<span class="f_l">-</span>
-			<input class="end_date f_l w110" name="end_date" type="text" placeholder="{lang key='orders::statistic.end_date'}" value="{$end_date}">
-			<input class="btn screen-btn" type="submit" value="{lang key='orders::statistic.search'}">
+			<input class="end_date f_l w110" name="end_date" type="text" placeholder="结束日期" value="{$end_date}">
+			<input class="btn screen-btn" type="submit" value="搜索">
 		</form>
 	</div>
 </div>

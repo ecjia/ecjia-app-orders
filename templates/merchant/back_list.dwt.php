@@ -26,8 +26,8 @@
                 </div>	
                 <form class="form-inline pull-right" action='{RC_Uri::url("orders/mh_back/init")}{if $smarty.get.type}&type={$smarty.get.type}{/if}' method="post" name="searchForm">
                     <div class="form-group">
-                        <input type="text" class="form-control" name="delivery_sn" value="{$filter.delivery_sn}" placeholder="{lang key='orders::order.pls_delivery_sn_number'}">
-                        <input type="text" class="form-control" name="keywords" value="{$filter.keywords}" placeholder="{lang key='orders::order.pls_consignee'}">
+                        <input type="text" class="form-control" name="delivery_sn" value="{$filter.delivery_sn}" placeholder="请输入发货单流水号">
+                        <input type="text" class="form-control" name="keywords" value="{$filter.keywords}" placeholder="请输入订单号或者收货人">
                     </div>
                         <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索 </button>
                 </form>
@@ -70,9 +70,9 @@
 					                    <a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg='{t name="{$back.delivery_sn}"}您确定要删除退货单[ %1 ]吗？{/t}' href='{url path="orders/mh_back/remove" args="back_id={$back.back_id}"}' title="{t}移除{/t}">{t}{lang key='orders::order.remove'}{/t}</a>
 					                </div>
 					            </td>
-					            <td><a href='{url path="orders/merchant/info" args="order_sn={$back.order_sn}"}' target="_blank" title="{t}{lang key='orders::order.look_order'}{/t}">{$back.order_sn}</a></td>
+					            <td><a href='{url path="orders/merchant/info" args="order_sn={$back.order_sn}"}' target="_blank" title="{t}查看订单{/t}">{$back.order_sn}</a></td>
 					            <td>{$back.add_time}</td>
-					            <td><a class="cursor_pointer consignee_info" data-url='{url path="orders/mh_back/consignee_info" args="back_id={$back.back_id}"}' title="{t}{lang key='orders::order.display_consignee_info'}{/t}">{$back.consignee|escape}</a></td>
+					            <td><a class="cursor_pointer consignee_info" data-url='{url path="orders/mh_back/consignee_info" args="back_id={$back.back_id}"}' title="{t}显示收货人信息{/t}">{$back.consignee|escape}</a></td>
 					            <td>{$back.update_time}</td>
 					            <td>{$back.return_time}</td>
 					            <td>{$back.action_user}</td>

@@ -531,7 +531,7 @@ ecjia.merchant.order.addedit();
 							<tr>
 								<td><div align="right"><strong>支付费用：</strong></div></td>
 								<td><input class="form-control" name="pay_fee" type="text" value="{$order.pay_fee}"></td>
-								<td><div align="right"><strong>{lang key='orders::order.label_integral'}</strong></div></td>
+								<td><div align="right"><strong>使用积分：</strong></div></td>
 								<td>
 									{if $order.user_id gt 0}
 									<input class="form-control" name="integral" type="text" value="{$order.integral}" >
@@ -545,7 +545,7 @@ ecjia.merchant.order.addedit();
 									<input class="form-control" name="pack_fee" type="text" value="{$order.pack_fee}" >
 									{else}0{/if}
 								</td>
-								<td><div align="right"><strong>{lang key='orders::order.label_bonus'}</strong></div></td>
+								<td><div align="right"><strong>使用红包：</strong></div></td>
 								<td>
 									<select class="form-control" name="bonus_id">
 										<option value="0" {if $order.bonus_id eq 0}selected{/if}>请选择...</option>

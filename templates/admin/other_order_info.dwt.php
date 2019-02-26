@@ -70,7 +70,7 @@
 								</td>
 								<td>
 									{$order.order_sn} {if $order.extension_code eq "group_buy"}
-									<a href='{url path="groupbuy/admin/edit" args="id={$order.extension_id}"}' target="_blank">{lang key='orders::order.group_buy'}</a>
+									<a href='{url path="groupbuy/admin/edit" args="id={$order.extension_id}"}' target="_blank"><span class="groupbuy-icon">团</span></a>
 									{/if}
 								</td>
 								<td>
@@ -137,7 +137,7 @@
 			<div class="accordion-group">
 				<div class="accordion-heading accordion-heading-url">
 					<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseStore">
-						<strong>{lang key='orders::order.store_info'}</strong>
+						<strong>店铺信息</strong>
 					</div>
 				</div>
 				<div class="accordion-body in collapse" id="collapseStore">
@@ -146,7 +146,7 @@
 							<tr>
 								<td>
 									<div align="right">
-										<strong>{lang key='orders::order.label_merchants_name'}</strong>
+										<strong>店铺名称：</strong>
 									</div>
 								</td>
 								<td>
@@ -154,7 +154,7 @@
 								</td>
 								<td>
 									<div align="right">
-										<strong>{lang key='orders::order.label_responsible_person'}</strong>
+										<strong>负责人：</strong>
 									</div>
 								</td>
 								<td>{$order.responsible_person}</td>
@@ -162,7 +162,7 @@
 							<tr>
 								<td>
 									<div align="right">
-										<strong>{lang key='orders::order.label_contact_mobile'}</strong>
+										<strong>联系方式：</strong>
 									</div>
 								</td>
 								<td>{$order.contact_mobile}</td>
@@ -387,9 +387,9 @@
 									<strong>{$order.formated_goods_amount}</strong>
 									- 折扣：
 									<strong>{$order.formated_discount}</strong>
-									- {lang key='orders::order.label_integral'}
+									- 使用积分：
 									<strong>{$order.formated_integral_money}</strong>
-									- {lang key='orders::order.label_bonus'}
+									- 使用红包：
 									<strong>{$order.formated_bonus}</strong>
 								</div>
 							</td>

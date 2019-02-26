@@ -648,8 +648,8 @@ ecjia.merchant.order.info();
 								<div align="right">
 									- {lang key='orders::order.label_money_paid'}<strong>{$order.formated_money_paid}</strong>
 									- {lang key='orders::order.label_surplus'} <strong>{$order.formated_surplus}</strong>
-									- {lang key='orders::order.label_integral'} <strong>{$order.formated_integral_money}</strong>
-									- {lang key='orders::order.label_bonus'} <strong>{$order.formated_bonus}</strong>
+									- 使用积分： <strong>{$order.formated_integral_money}</strong>
+									- 使用红包： <strong>{$order.formated_bonus}</strong>
 								</div>
 							</td>
 						</tr>

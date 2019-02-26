@@ -128,7 +128,7 @@
 				<h3>订单号：{$order.order_sn}</h3>
 			</div>
 			<span class="choose_list">
-				<input type="text" name="keywords" class="ecjiaf-fn" placeholder="{lang key='orders::order.pls_order_id'}" />
+				<input type="text" name="keywords" class="ecjiaf-fn" placeholder="请输入订单号或者订单id" />
 				<button class="btn ecjiaf-fn" type="submit">搜索</button>
 			</span>
 			<div class="f_r">
@@ -620,7 +620,7 @@
 										<strong>{$order.formated_order_amount}</strong>
 										{else} 应退款金额：
 										<strong>{$order.formated_money_refund}</strong>
-										<input class="refund_click btn" type="button" data-href="{$refund_url}" value="{lang key='orders::order.refund'}"> {/if}
+										<input class="refund_click btn" type="button" data-href="{$refund_url}" value="退款"> {/if}
                                         {if $order.extension_code eq "group_buy"}<br/>（备注：团购如果有保证金，第一次只需支付保证金和相应的支付费用）{/if}
 									</div>
 								</td>

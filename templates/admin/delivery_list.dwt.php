@@ -23,7 +23,7 @@
 					<span class="caret"></span>
 				</a>
 				<ul class="dropdown-menu">
-					<li><a class="batch-del-btn" data-toggle="ecjiabatch" data-name="delivery_id" data-idClass=".checkbox:checked" data-url="{$form_action}" data-msg="{lang key='orders::order.delivery_delete'}" data-noSelectMsg="{lang key='orders::order.pls_select_delivery'}" href="javascript:;"><i class="fontello-icon-trash"></i>删除</a></li>
+					<li><a class="batch-del-btn" data-toggle="ecjiabatch" data-name="delivery_id" data-idClass=".checkbox:checked" data-url="{$form_action}" data-msg="您确定需要删除这些发货单吗？" data-noSelectMsg="请选择需要操作的发货单！" href="javascript:;"><i class="fontello-icon-trash"></i>删除</a></li>
 				</ul>
 			</div>
 			<select class="down-menu good_br w100" name="status" id="select-rank">
@@ -32,8 +32,8 @@
 			</select>
 			<a class="btn m_l5 screen-btn">筛选</a>
 			<div class="choose_list f_r" >
-				<input type="text" name="delivery_sn" value="{$filter.delivery_sn}" placeholder="{lang key='orders::order.pls_delivery_sn_number'}"/>
-				<input type="text" name="keywords" value="{$filter.keywords}" placeholder="{lang key='orders::order.pls_consignee'}"/>
+				<input type="text" name="delivery_sn" value="{$filter.delivery_sn}" placeholder="请输入发货单流水号"/>
+				<input type="text" name="keywords" value="{$filter.keywords}" placeholder="请输入订单号或者收货人"/>
 				<button class="btn" type="submit">搜索</button>
 			</div>
 		</form>
@@ -64,12 +64,12 @@
 							{$delivery.delivery_sn}
 							<div class="edit-list">
 								<a class="data-pjax" href='{url path="orders/admin_order_delivery/delivery_info" args="delivery_id={$delivery.delivery_id}"}' title="查看">查看</a>&nbsp;|&nbsp; 
-								<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg="{lang key='orders::order.confirm_delete_one'}" href='{url path="orders/admin_order_delivery/remove" args="delivery_id={$delivery.delivery_id}"}' title="删除">删除</a>
+								<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg="您确定需要删除该退货单吗？" href='{url path="orders/admin_order_delivery/remove" args="delivery_id={$delivery.delivery_id}"}' title="删除">删除</a>
 							</div>
 						</td>
-						<td><a href='{url path="orders/admin/info" args="order_id={$delivery.order_id}"}' target="_blank" title="{lang key='orders::order.look_order'}">{$delivery.order_sn}</a></td>
+						<td><a href='{url path="orders/admin/info" args="order_id={$delivery.order_id}"}' target="_blank" title="查看订单">{$delivery.order_sn}</a></td>
 						<td>{$delivery.add_time}</td>
-						<td><a class="cursor_pointer consignee_info" data-url='{url path="orders/admin_order_delivery/consignee_info" args="delivery_id={$delivery.delivery_id}"}' title="{lang key='orders::order.display_consignee_info'}"><span class="ecjiaf-pre ecjiaf-wsn">{$delivery.consignee|escape}</span></a></td>
+						<td><a class="cursor_pointer consignee_info" data-url='{url path="orders/admin_order_delivery/consignee_info" args="delivery_id={$delivery.delivery_id}"}' title="显示收货人信息"><span class="ecjiaf-pre ecjiaf-wsn">{$delivery.consignee|escape}</span></a></td>
 						<td>{$delivery.update_time}</td>
 <!-- 							<td>{$delivery.suppliers_name}</td> -->
 						<td>{$delivery.status_name}</td>

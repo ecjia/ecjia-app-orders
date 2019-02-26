@@ -195,8 +195,8 @@ ecjia.merchant.order.info();
 								<div align="right">
 									商品总金额：<strong>{$order.formated_goods_amount}</strong>
 									- 折扣：<strong>{$order.formated_discount}</strong>
-									- {lang key='orders::order.label_integral'} <strong>{$order.formated_integral_money}</strong>
-									- {lang key='orders::order.label_bonus'} <strong>{$order.formated_bonus}</strong>
+									- 使用积分： <strong>{$order.formated_integral_money}</strong>
+									- 使用红包： <strong>{$order.formated_bonus}</strong>
 								</div>
 							</td>
 						</tr>

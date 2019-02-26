@@ -112,7 +112,7 @@
 					<!-- {foreach from=$order_list.order_list item=order key=okey} -->
 					<tr>
 						<td class="hide-edit-area">
-							{$order.order_sn}{if $order.extension_code eq "group_buy"}{lang key='orders::order.group_buy'}{elseif $order.extension_code eq "exchange_goods"}{lang key='orders::order.exchange_goods'}{/if}
+							{$order.order_sn}{if $order.extension_code eq "group_buy"}<span class="groupbuy-icon">团</span>{elseif $order.extension_code eq "exchange_goods"}（积分兑换）{/if}
 							<div class="edit-list">
 								<a href='{url path="orders/admin/info" args="order_id={$order.order_id}"}' class="data-pjax" title="查看">查看</a>
 								{if $order.can_remove}

@@ -27,5 +27,5 @@
 			<!-- {/foreach} -->
 		</tbody>
 	</table>
-	<div class="ecjiaf-tar"><a href='{url path="orders/admin/init"}' title="{lang key='orders::order.more'}">{lang key='orders::order.more'}</a></div>
+	<div class="ecjiaf-tar"><a href='{url path="orders/admin/init"}' title="查看更多">查看更多</a></div>
 </div>

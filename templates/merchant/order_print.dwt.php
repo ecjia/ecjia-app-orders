@@ -106,9 +106,9 @@ body,td { font-size:13px; }
 			<!-- 如果使用了余额支付, 减去已使用的余额 -->
 			{if $order.surplus neq '0.00'}- {lang key='orders::order.label_surplus'}{$order.formated_surplus}{/if}
 			<!-- 如果使用了积分支付, 减去已使用的积分 -->
-			{if $order.integral_money neq '0.00'}- {lang key='orders::order.label_integral'}{$order.formated_integral_money}{/if}
+			{if $order.integral_money neq '0.00'}- 使用积分：{$order.formated_integral_money}{/if}
 			<!-- 如果使用了红包支付, 减去已使用的红包 -->
-			{if $order.bonus neq '0.00'}- {lang key='orders::order.label_bonus'}{$order.formated_bonus}{/if}
+			{if $order.bonus neq '0.00'}- 使用红包：{$order.formated_bonus}{/if}
 			<!-- 应付款金额 -->
 			= 应付款金额：{$order.formated_order_amount}
 		</td>

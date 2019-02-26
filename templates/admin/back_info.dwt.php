@@ -36,9 +36,9 @@
 									<td>
 										{$back_order.order_sn}
 										{if $back_order.extension_code eq "group_buy"}
-<!-- 										<a href="group_buy.php?act=edit&id={$back_order.extension_id}">{lang key='orders::order.group_buy'}</a> -->
+<!-- 										<a href="group_buy.php?act=edit&id={$back_order.extension_id}"><span class="groupbuy-icon">团</span></a> -->
 										{elseif $back_order.extension_code eq "exchange_goods"}
-<!-- 										<a href="exchange_goods.php?act=edit&id={$back_order.extension_id}">{lang key='orders::order.exchange_goods'}</a> -->
+<!-- 										<a href="exchange_goods.php?act=edit&id={$back_order.extension_id}">（积分兑换）</a> -->
 										{/if}
 									</td>
 									<td><div align="right"><strong>下单时间：</strong></div></td>

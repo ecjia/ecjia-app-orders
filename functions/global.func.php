@@ -423,19 +423,41 @@ function get_status_list($type = 'all')
     $list = array();
     if ($type == 'all' || $type == 'order') {
         $pre = $type == 'all' ? 'os_' : '';
-        foreach (RC_Lang::get('orders::order.os') as $key => $value) {
+        $os  = array(
+            OS_UNCONFIRMED   => '未接单',
+            OS_CONFIRMED     => '已接单',
+            OS_CANCELED      => '<font color="red">取消</font>',
+            OS_INVALID       => '<font color="red">无效</font>',
+            OS_RETURNED      => '<font color="red">退货</font>',
+            OS_SPLITED       => '已分单',
+            OS_SPLITING_PART => '部分分单',
+        );
+        foreach ($os as $key => $value) {
             $list[$pre . $key] = $value;
         }
     }
     if ($type == 'all' || $type == 'shipping') {
         $pre = $type == 'all' ? 'ss_' : '';
-        foreach (RC_Lang::get('orders::order.ss') as $key => $value) {
+        $ss  = array(
+            SS_UNSHIPPED    => '未发货',
+            SS_PREPARING    => '配货中',
+            SS_SHIPPED      => '已发货',
+            SS_RECEIVED     => '收货确认',
+            SS_SHIPPED_PART => '已发货(部分商品)',
+            SS_SHIPPED_ING  => '发货中',
+        );
+        foreach ($ss as $key => $value) {
             $list[$pre . $key] = $value;
         }
     }
     if ($type == 'all' || $type == 'payment') {
         $pre = $type == 'all' ? 'ps_' : '';
-        foreach (RC_Lang::get('orders::order.ps') as $key => $value) {
+        $ps  = array(
+            PS_UNPAYED => '未付款',
+            PS_PAYING  => '付款中',
+            PS_PAYED   => '已付款',
+        );
+        foreach ($ps as $key => $value) {
             $list[$pre . $key] = $value;
         }
     }
@@ -451,13 +473,13 @@ function return_user_surplus_integral_bonus($order)
     /* 处理余额、积分、红包 */
     if ($order['user_id'] > 0 && $order['surplus'] > 0) {
         $surplus = $order['money_paid'] < 0 ? $order['surplus'] + $order['money_paid'] : $order['surplus'];
-        $options = array('user_id' => $order['user_id'], 'user_money' => $surplus, 'change_desc' => sprintf(RC_Lang::get('orders::order.return_order_surplus'), $order['order_sn']));
+        $options = array('user_id' => $order['user_id'], 'user_money' => $surplus, 'change_desc' => sprintf('由于取消、无效或退货操作，退回支付订单 %s 时使用的预付款', $order['order_sn']));
         RC_Api::api('user', 'account_change_log', $options);
         $data = array('order_amount' => '0');
         RC_DB::table('order_info')->where('order_id', $order['order_id'])->update($data);
     }
     if ($order['user_id'] > 0 && $order['integral'] > 0) {
-        $options = array('user_id' => $order['user_id'], 'pay_points' => $order['integral'], 'change_desc' => sprintf(RC_Lang::get('orders::order.return_order_integral'), $order['order_sn']));
+        $options = array('user_id' => $order['user_id'], 'pay_points' => $order['integral'], 'change_desc' => sprintf('由于取消、无效或退货操作，退回支付订单 %s 时使用的积分', $order['order_sn']));
         RC_Api::api('user', 'account_change_log', $options);
     }
     if ($order['bonus_id'] > 0) {
@@ -501,12 +523,12 @@ function handle_order_money_change($order, &$msgs, &$links)
         if ($money_dues > 0) {
             /* 修改订单为未付款 */
             update_order($order_id, array('pay_status' => PS_UNPAYED, 'pay_time' => 0));
-            $msgs[]  = RC_Lang::get('orders::order.amount_increase');
-            $links[] = array('text' => RC_Lang::get('orders::order.order_info'), 'href' => RC_Uri::url('orders/admin/info', 'order_id=' . $order_id));
+            $msgs[]  = '由于您修改了订单，导致订单总金额增加，需要再次付款';
+            $links[] = array('text' => '订单信息', 'href' => RC_Uri::url('orders/admin/info', 'order_id=' . $order_id));
         } elseif ($money_dues < 0) {
             $anonymous = $order['user_id'] > 0 ? 0 : 1;
-            $msgs[]    = RC_Lang::get('orders::order.amount_decrease');
-            $links[]   = array('text' => RC_Lang::get('orders::order.refund'), 'href' => RC_Uri::url('orders/admin/process', 'func=load_refund&anonymous=' . $anonymous . '&order_id=' . $order_id . '&refund_amount=' . abs($money_dues)));
+            $msgs[]    = '由于您修改了订单，导致订单总金额减少，需要退款';
+            $links[]   = array('text' => '退款', 'href' => RC_Uri::url('orders/admin/process', 'func=load_refund&anonymous=' . $anonymous . '&order_id=' . $order_id . '&refund_amount=' . abs($money_dues)));
         }
     }
 }
@@ -910,12 +932,12 @@ function package_goods(&$package_goods, $goods_number, $order_id, $extension_cod
         $return_array[$key]['send']              = $value['order_goods_number'] * $goods_number - $return_array[$key]['sended'];
         $return_array[$key]['storage']           = $value['goods_number'];
         if ($return_array[$key]['send'] <= 0) {
-            $return_array[$key]['send']     = RC_Lang::get('orders::order.act_good_delivery');
+            $return_array[$key]['send']     = '货已发完';
             $return_array[$key]['readonly'] = 'readonly="readonly"';
         }
         /* 是否缺货 */
         if ($return_array[$key]['storage'] <= 0 && ecjia::config('use_storage') == '1') {
-            $return_array[$key]['send']     = RC_Lang::get('orders::order.act_good_vacancy');
+            $return_array[$key]['send']     = '商品已缺货';
             $return_array[$key]['readonly'] = 'readonly="readonly"';
         }
     }
@@ -1190,43 +1212,43 @@ function merge_order($from_order_sn, $to_order_sn)
 {
     /* 订单号不能为空 */
     if (trim($from_order_sn) == '' || trim($to_order_sn) == '') {
-        return ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.order_sn_not_null'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+        return ecjia_front::$controller->showmessage('请填写要合并的订单号', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
     }
     /* 订单号不能相同 */
     if ($from_order_sn == $to_order_sn) {
-        return ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.two_order_sn_same'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+        return ecjia_front::$controller->showmessage('要合并的两个订单号不能相同', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
     }
     /* 取得订单信息 */
     $from_order = order_info(0, $from_order_sn);
     $to_order   = order_info(0, $to_order_sn);
     /* 检查订单是否存在 */
     if (!$from_order) {
-        return ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.order_not_exist'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+        return ecjia_front::$controller->showmessage(sprintf('订单 %s 不存在', $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
     } elseif (!$to_order) {
-        return ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.order_not_exist'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+        return ecjia_front::$controller->showmessage(sprintf('订单 %s 不存在', $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
     }
     /* 检查合并的订单是否为普通订单，非普通订单不允许合并 */
     if ($from_order['extension_code'] != '' || $to_order['extension_code'] != 0) {
-        return ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.merge_invalid_order'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+        return ecjia_front::$controller->showmessage('对不起，您选择合并的订单不允许进行合并的操作。', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
     }
     /* 检查订单状态是否是已确认或未确认、未付款、未发货 */
     if ($from_order['order_status'] != OS_UNCONFIRMED && $from_order['order_status'] != OS_CONFIRMED) {
-        return ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.os_not_unconfirmed_or_confirmed'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+        return ecjia_front::$controller->showmessage(sprintf('%s 的订单状态不是“未接单”或“已接单”', $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
     } elseif ($from_order['pay_status'] != PS_UNPAYED) {
-        return ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.ps_not_unpayed'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+        return ecjia_front::$controller->showmessage(sprintf('订单 %s 的付款状态不是“未付款”', $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
     } elseif ($from_order['shipping_status'] != SS_UNSHIPPED) {
-        return ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.ss_not_unshipped'), $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+        return ecjia_front::$controller->showmessage(sprintf('订单 %s 的发货状态不是“未发货”', $from_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
     }
     if ($to_order['order_status'] != OS_UNCONFIRMED && $to_order['order_status'] != OS_CONFIRMED) {
-        return ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.os_not_unconfirmed_or_confirmed'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+        return ecjia_front::$controller->showmessage(sprintf('%s 的订单状态不是“未接单”或“已接单”', $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
     } elseif ($to_order['pay_status'] != PS_UNPAYED) {
-        return ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.ps_not_unpayed'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+        return ecjia_front::$controller->showmessage(sprintf('订单 %s 的付款状态不是“未付款”', $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
     } elseif ($to_order['shipping_status'] != SS_UNSHIPPED) {
-        return ecjia_front::$controller->showmessage(sprintf(RC_Lang::get('orders::order.ss_not_unshipped'), $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+        return ecjia_front::$controller->showmessage(sprintf('订单 %s 的发货状态不是“未发货”', $to_order_sn), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
     }
     /* 检查订单用户是否相同 */
     if ($from_order['user_id'] != $to_order['user_id']) {
-        return ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.order_user_not_same'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+        return ecjia_front::$controller->showmessage('要合并的两个订单不是同一个用户下的', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
     }
     /* 合并订单 */
     $order             = $to_order;
@@ -1278,7 +1300,7 @@ function merge_order($from_order_sn, $to_order_sn)
     $order['order_sn'] = ecjia_order_buy_sn();
     $order_id          = RC_Model::model('orders/order_info_model')->insert(rc_addslashes($order));
     if (!$order_id) {
-        return ecjia_front::$controller->showmessage(RC_Lang::get('orders::order.order_merge_invalid'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+        return ecjia_front::$controller->showmessage('订单合并失败', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
     }
     /* 更新订单商品 */
     $data = array('order_id' => $order_id);
@@ -1308,7 +1330,7 @@ function merge_order($from_order_sn, $to_order_sn)
         RC_Loader::load_app_func('admin_bonus', 'bonus');
         unuse_bonus($from_order['bonus_id']);
     }
-    ecjia_admin::admin_log(sprintf(RC_Lang::get('orders::order.merge_success_notice'), $to_order['order_sn'], $from_order['order_sn'], $order['order_sn']), 'merge', 'order');
+    ecjia_admin::admin_log(sprintf('%s 与 %s 合并成新订单，订单号为：%s', $to_order['order_sn'], $from_order['order_sn'], $order['order_sn']), 'merge', 'order');
     /* 返回成功 */
     return true;
 }

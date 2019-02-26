@@ -142,12 +142,12 @@ class mh_order_stats extends ecjia_merchant
         ecjia_screen::get_current_screen()->add_help_tab(array(
             'id'      => 'overview',
             'title'   => '概述',
-            'content' => '<p>' . RC_Lang::get('orders::statistic.order_stats_help') . '</p>',
+            'content' => '<p>' . '欢迎访问ECJia智能后台订单统计页面，系统中所有的订单统计信息都会显示在此页面中。' . '</p>',
         ));
 
         ecjia_screen::get_current_screen()->set_help_sidebar(
             '<p><strong>' . '更多信息：' . '</strong></p>' .
-            '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E9.85.8D.E9.80.81.E6.96.B9.E5.BC.8F" target="_blank">' . RC_Lang::get('orders::statistic.about_order_stats') . '</a>') . '</p>'
+            '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E9.85.8D.E9.80.81.E6.96.B9.E5.BC.8F" target="_blank">' . '关于订单统计帮助文档' . '</a>') . '</p>'
         );
 
         $this->assign('ur_here', '订单统计');
@@ -197,12 +197,12 @@ class mh_order_stats extends ecjia_merchant
         ecjia_screen::get_current_screen()->add_help_tab(array(
             'id'      => 'overview',
             'title'   => '概述',
-            'content' => '<p>' . RC_Lang::get('orders::statistic.order_stats_help') . '</p>',
+            'content' => '<p>' . '欢迎访问ECJia智能后台订单统计页面，系统中所有的订单统计信息都会显示在此页面中。' . '</p>',
         ));
 
         ecjia_screen::get_current_screen()->set_help_sidebar(
             '<p><strong>' . '更多信息：' . '</strong></p>' .
-            '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E6.94.AF.E4.BB.98.E6.96.B9.E5.BC.8F" target="_blank">' . RC_Lang::get('orders::statistic.about_order_stats') . '</a>') . '</p>'
+            '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:订单统计#.E6.94.AF.E4.BB.98.E6.96.B9.E5.BC.8F" target="_blank">' . '关于订单统计帮助文档' . '</a>') . '</p>'
         );
 
         $this->assign('ur_here', '订单统计');
@@ -269,7 +269,7 @@ class mh_order_stats extends ecjia_merchant
         $start_date = RC_Time::local_strtotime($start_time);
         $end_date   = RC_Time::local_strtotime($end_time);
 
-        $filename = RC_Lang::get('orders::statistic.order_statement');
+        $filename = '订单统计报表';
         if (!empty($start_time) && !empty($end_time)) {
             $filename .= '_' . $start_time . '至' . $end_time;
         }
@@ -521,39 +521,39 @@ class mh_order_stats extends ecjia_merchant
         if (!empty($order_info)) {
             foreach ($order_info as $k => $v) {
                 if ($k == 'await_pay_num') {
-                    $key              = RC_Lang::get('orders::statistic.await_pay_order');
+                    $key              = '待付款订单';
                     $order_info[$key] = $order_info['await_pay_num'];
                     unset($order_info['await_pay_num']);
 
                 } elseif ($k == 'await_ship_num') {
-                    $key              = RC_Lang::get('orders::statistic.await_ship_order');
+                    $key              = '待发货订单';
                     $order_info[$key] = $order_info['await_ship_num'];
                     unset($order_info['confirmed_num']);
 
                 } elseif ($k == 'shipped_num') {
-                    $key              = RC_Lang::get('orders::statistic.shipped_order');
+                    $key              = '已发货订单';
                     $order_info[$key] = $order_info['shipped_num'];
                     unset($order_info['shipped_num']);
 
                 } elseif ($k == 'returned_num') {
-                    $key              = RC_Lang::get('orders::statistic.returned_order');
+                    $key              = '退货订单';
                     $order_info[$key] = $order_info['returned_num'];
                     unset($order_info['returned_num']);
                 } elseif ($k == 'canceled_num') {
-                    $key              = RC_Lang::get('orders::statistic.canceled_order');
+                    $key              = '已取消订单';
                     $order_info[$key] = $order_info['canceled_num'];
                     unset($order_info['canceled_num']);
                 } elseif ($k == 'finished_num') {
-                    $key              = RC_Lang::get('orders::statistic.succeed_order');
+                    $key              = '已完成订单';
                     $order_info[$key] = $order_info['finished_num'];
                     unset($order_info['finished_num']);
                 }
             }
             arsort($order_info);
             foreach ($order_info as $k => $v) {
-                if ($order_info[RC_Lang::get('orders::statistic.await_pay_order')] == 0 && $order_info[RC_Lang::get('orders::statistic.await_ship_order')] == 0
-                    && $order_info[RC_Lang::get('orders::statistic.shipped_order')] == 0 && $order_info[RC_Lang::get('orders::statistic.returned_order')] == 0
-                    && $order_info[RC_Lang::get('orders::statistic.canceled_order')] == 0 && $order_info[RC_Lang::get('orders::statistic.succeed_order')] == 0) {
+                if ($order_info['待付款订单'] == 0 && $order_info['待发货订单'] == 0
+                    && $order_info['已发货订单'] == 0 && $order_info['退货订单'] == 0
+                    && $order_info['已取消订单'] == 0 && $order_info['已完成订单'] == 0) {
                     $order_info = null;
                 } else {
                     break;

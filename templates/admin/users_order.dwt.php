@@ -11,7 +11,7 @@
 <!--会员排行-->
 <div class="alert alert-info">
 	<a class="close" data-dismiss="alert">×</a>
-	<strong>{lang key='orders::statistic.tips'}</strong>{lang key='orders::statistic.no_included_member'}
+	<strong>温馨提示：</strong>{lang key='orders::statistic.no_included_member'}
 </div>
 <div>
 	<h3 class="heading">
@@ -51,7 +51,7 @@
 				<td>{$list.turnover}</td>
 			</tr>
 			<!-- {foreachelse} -->
-	    	<tr><td class="dataTables_empty" colspan="4">{lang key='system::system.no_records'}</td></tr>
+	    	<tr><td class="dataTables_empty" colspan="4">没有找到任何记录</td></tr>
 	  		<!-- {/foreach} -->
 		</tbody>
 	</table>

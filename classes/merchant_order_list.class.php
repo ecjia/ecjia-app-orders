@@ -111,7 +111,7 @@ class merchant_order_list
                 $order[$key]['formated_money_paid']   = price_format($value['money_paid']);
                 $order[$key]['formated_total_fee']    = price_format($value['total_fee']);
                 $order[$key]['short_order_time']      = RC_Time::local_date('Y-m-d H:i', $value['add_time']);
-                $order[$key]['user_name']             = empty($value['user_name']) ? RC_Lang::get('orders.order.anonymous') : $value['user_name'];
+                $order[$key]['user_name']             = empty($value['user_name']) ? '匿名用户' : $value['user_name'];
                 $order[$key]['order_id']              = $value['order_id'];
                 $order[$key]['order_sn']              = $value['order_sn'];
                 $order[$key]['add_time']              = $value['add_time'];

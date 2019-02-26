@@ -406,9 +406,8 @@ class admin_order_delivery extends ecjia_admin
 
         /*操作成功*/
         if ($result) {
-            $ss_label = with(new Ecjia\App\Orders\OrderStatus())->getOrderSsStatusLabel(SS_SHIPPED);
-            $data     = array(
-                'order_status' => $ss_label,
+            $data = array(
+                'order_status' => '已发货',
                 'message'      => sprintf('订单号为 %s 的商品已发货，请您耐心等待', $order['order_sn']),
                 'order_id'     => $order_id,
                 'add_time'     => RC_Time::gmtime(),
@@ -561,7 +560,7 @@ class admin_order_delivery extends ecjia_admin
 
         if (!$result) {
             /* 操作失败 */
-            $links[] = array('text' => RC_Lang::get('orders::order.delivery_sn') . RC_Lang::get('orders::order.detail'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info', 'delivery_id=' . $delivery_id));
+            $links[] = array('text' => '发货单查看', 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info', 'delivery_id=' . $delivery_id));
             return $this->showmessage('操作失败', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
         }
 

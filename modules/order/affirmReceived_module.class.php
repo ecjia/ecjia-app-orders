@@ -98,12 +98,12 @@ class order_affirmReceived_module extends api_front implements api_interface
 
         // 如果用户ID大于 0 。检查订单是否属于该用户
         if ($user_id > 0 && $order['user_id'] != $user_id) {
-            return new ecjia_error('no_priv', RC_Lang::get('orders::order.no_priv'));
+            return new ecjia_error('no_priv', '该订单不存在');
         }    /* 检查订单 */
         elseif ($order['shipping_status'] == SS_RECEIVED) {
-            return new ecjia_error('order_already_received', RC_Lang::get('orders::order.order_already_received'));
+            return new ecjia_error('order_already_received', '此订单已经确认过了，感谢您在本站购物，欢迎再次光临。');
         } elseif ($order['shipping_status'] != SS_SHIPPED) {
-            return new ecjia_error('order_invalid', RC_Lang::get('orders::order.order_invalid'));
+            return new ecjia_error('order_invalid', '您提交的订单不正确。');
         }     /* 修改订单发货状态为“确认收货” */
         else {
             $data['shipping_status'] = SS_RECEIVED;
@@ -123,7 +123,7 @@ class order_affirmReceived_module extends api_front implements api_interface
             if ($query) {
                 $db_order_status_log = RC_Model::model('orders/order_status_log_model');
                 $order_status_data   = array(
-                    'order_status' => RC_Lang::get('orders::order.confirm_receipted'),
+                    'order_status' => '已确认收货',
                     'order_id'     => $order_id,
                     'message'      => '宝贝已签收，购物愉快！',
                     'add_time'     => RC_Time::gmtime()
@@ -132,7 +132,7 @@ class order_affirmReceived_module extends api_front implements api_interface
 
 
                 $order_status_data = array(
-                    'order_status' => RC_Lang::get('orders::order.order_finished'),
+                    'order_status' => '订单已完成',
                     'order_id'     => $order_id,
                     'message'      => '感谢您在' . ecjia::config('shop_name') . '购物，欢迎您再次光临！',
                     'add_time'     => RC_Time::gmtime()

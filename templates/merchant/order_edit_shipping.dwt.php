@@ -103,7 +103,7 @@ ecjia.merchant.order.addedit();
 	<p align="center">
 		<button class="btn btn-info" type="submit">{lang key='orders::order.button_submit'}</button>
 		<input type="hidden" name="action_note" value="{$action_note}" />
-		<a class="data-pjax" href='{url path="orders/merchant/go_shipping" args="order_id={$order_id}{if $action_note}&action_note={$action_note}{/if}"}'><button class="btn btn-default" type="button">{lang key='orders::order.button_cancel'}</button></a>
+		<a class="data-pjax" href='{url path="orders/merchant/go_shipping" args="order_id={$order_id}{if $action_note}&action_note={$action_note}{/if}"}'><button class="btn btn-default" type="button">取消</button></a>
 	</p>
 </form>
 <!-- {/block} -->

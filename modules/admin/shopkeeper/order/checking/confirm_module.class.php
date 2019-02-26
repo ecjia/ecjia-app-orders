@@ -168,7 +168,7 @@ class admin_shopkeeper_order_checking_confirm_module extends api_admin implement
 
         /* 订单是否已全部分单检查 */
         if ($order['order_status'] == OS_SPLITED) {
-            return new ecjia_error('order_all_splited', sprintf(RC_Lang::get('orders::order.order_splited_sms'), $order['order_sn'], RC_Lang::get('orders::order.os.' . OS_SPLITED), RC_Lang::get('orders::order.ss.' . SS_SHIPPED_ING), ecjia::config('shop_name')));
+            return new ecjia_error('order_all_splited', sprintf('您的订单%s，%s正在%s，%s', $order['order_sn'], '已分单', '发货中', ecjia::config('shop_name')));
         }
 
         /* 取得订单商品 */
@@ -283,7 +283,7 @@ class admin_shopkeeper_order_checking_confirm_module extends api_admin implement
 
                 if (($num < $goods_no_package[$value['goods_id']]) && !(ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_PLACE)) {
                     /* 操作失败 */
-                    return new ecjia_error('virtual_out_of_stock', sprintf(RC_Lang::get('orders::order.virtual_card_oos'), $value['goods_name']));
+                    return new ecjia_error('virtual_out_of_stock', sprintf('虚拟卡已缺货', $value['goods_name']));
                 }
 
                 /* 虚拟商品列表 virtual_card*/
@@ -305,7 +305,7 @@ class admin_shopkeeper_order_checking_confirm_module extends api_admin implement
 
                 if (($num < $goods_no_package[$_key]) && ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) {
                     /* 操作失败 */
-                    //$links[] = array('text' => RC_Lang::get('orders::order.order_info'), 'href' => RC_Uri::url('orders/merchant/info', array('order_id' => $order_id)));
+                    //$links[] = array('text' => '订单信息', 'href' => RC_Uri::url('orders/merchant/info', array('order_id' => $order_id)));
                     //return $this->showmessage(sprintf('商品 %s 已缺货', $value['goods_name']) , ecjia::MSGTYPE_JSON |ecjia::MSGSTAT_ERROR);
                     return new ecjia_error('out_of_stock', sprintf('商品 %s 已缺货', $value['goods_name']));
                 }
@@ -357,9 +357,9 @@ class admin_shopkeeper_order_checking_confirm_module extends api_admin implement
 
         if ($delivery_id) {
             $data = array(
-                'order_status' => RC_Lang::get('orders::order.ss.' . SS_PREPARING),
+                'order_status' => '配货中',
                 'order_id'     => $order['order_id'],
-                'message'      => sprintf(RC_Lang::get('orders::order.order_prepare_message'), $order['order_sn']),
+                'message'      => sprintf('订单号为 %s 的商品正在备货中，请您耐心等待', $order['order_sn']),
                 'add_time'     => RC_Time::gmtime()
             );
             RC_DB::table('order_status_log')->insert($data);
@@ -614,7 +614,7 @@ class admin_shopkeeper_order_checking_confirm_module extends api_admin implement
         /*操作成功*/
         if ($result) {
             $data = array(
-                'order_status' => RC_Lang::get('orders::order.ss.' . SS_SHIPPED),
+                'order_status' => '已发货',
                 'message'      => sprintf('订单号为 %s 的商品已发货，请您耐心等待', $order['order_sn']),
                 'order_id'     => $order_id,
                 'add_time'     => RC_Time::gmtime(),

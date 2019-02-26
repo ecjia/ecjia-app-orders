@@ -57,14 +57,14 @@ class Helper
      */
     public static function assign_adminlog_content()
     {
-        ecjia_admin_log::instance()->add_action('produce', RC_Lang::get('orders::order.produce'));
+        ecjia_admin_log::instance()->add_action('produce', '生成');
         ecjia_admin_log::instance()->add_action('batch_setup', '批量设置');
 
-        ecjia_admin_log::instance()->add_object('delivery_order', RC_Lang::get('orders::order.delivery_sn'));
-        ecjia_admin_log::instance()->add_object('back_order', RC_Lang::get('orders::order.back_sn'));
-        ecjia_admin_log::instance()->add_object('order_payment', RC_Lang::get('orders::order.order_payment'));
-        ecjia_admin_log::instance()->add_object('order_status', RC_Lang::get('orders::order.order_status'));
-        ecjia_admin_log::instance()->add_object('order_consignee', RC_Lang::get('orders::order.order_consignee'));
+        ecjia_admin_log::instance()->add_object('delivery_order', '发货单');
+        ecjia_admin_log::instance()->add_object('back_order', '退货单');
+        ecjia_admin_log::instance()->add_object('order_payment', '订单支付方式');
+        ecjia_admin_log::instance()->add_object('order_status', '订单状态');
+        ecjia_admin_log::instance()->add_object('order_consignee', '订单收货人');
     }
 
 }

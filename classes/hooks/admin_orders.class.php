@@ -74,9 +74,33 @@ class orders_admin_plugin
         ecjia_admin::$controller->assign('order_count', $order_list['filter']['record_count']);
         ecjia_admin::$controller->assign('order_list', $order_list['orders']);
 
-        ecjia_admin::$controller->assign('lang_os', RC_Lang::get('orders::order.os'));
-        ecjia_admin::$controller->assign('lang_ps', RC_Lang::get('orders::order.ps'));
-        ecjia_admin::$controller->assign('lang_ss', RC_Lang::get('orders::order.ss'));
+        $os = array(
+            OS_UNCONFIRMED   => '未接单',
+            OS_CONFIRMED     => '已接单',
+            OS_CANCELED      => '<font color="red">取消</font>',
+            OS_INVALID       => '<font color="red">无效</font>',
+            OS_RETURNED      => '<font color="red">退货</font>',
+            OS_SPLITED       => '已分单',
+            OS_SPLITING_PART => '部分分单',
+        );
+
+        $ps = array(
+            PS_UNPAYED => '未付款',
+            PS_PAYING  => '付款中',
+            PS_PAYED   => '已付款',
+        );
+
+        $ss = array(
+            SS_UNSHIPPED    => '未发货',
+            SS_PREPARING    => '配货中',
+            SS_SHIPPED      => '已发货',
+            SS_RECEIVED     => '收货确认',
+            SS_SHIPPED_PART => '已发货(部分商品)',
+            SS_SHIPPED_ING  => '发货中',
+        );
+        ecjia_admin::$controller->assign('lang_os', $os);
+        ecjia_admin::$controller->assign('lang_ps', $ps);
+        ecjia_admin::$controller->assign('lang_ss', $ss);
 
         ecjia_admin::$controller->assign_lang();
         ecjia_admin::$controller->display(ecjia_app::get_app_template('library/widget_admin_dashboard_orderslist.lbi', 'orders'));
@@ -230,8 +254,7 @@ class orders_admin_plugin
             return false;
         }
 
-        $title = RC_Lang::get('orders::order.order_stats_info');
-
+        $title = '订单统计信息';
         $order = RC_Cache::app_cache_get('admin_dashboard_order_stats', 'orders');
         if (!$order) {
             $order_query = RC_Loader::load_app_class('order_query', 'orders');

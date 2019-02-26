@@ -90,7 +90,7 @@ class mh_delivery extends ecjia_merchant
 
         ecjia_merchant_screen::get_current_screen()->set_parentage('order', 'order/mh_delivery.php');
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('订单管理'), RC_Uri::url('orders/merchant/init')));
-        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.order_delivery_list'), RC_Uri::url('orders/mh_delivery/init')));
+        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here('发货单列表', RC_Uri::url('orders/mh_delivery/init')));
     }
 
     /**
@@ -102,12 +102,12 @@ class mh_delivery extends ecjia_merchant
         $this->admin_priv('delivery_view');
 
         ecjia_screen::get_current_screen()->remove_last_nav_here();
-        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('orders::order.order_delivery_list')));
+        ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here('发货单列表'));
 
         /* 查询 */
         $result = get_merchant_delivery_list();
         /* 模板赋值 */
-        $this->assign('ur_here', RC_Lang::get('orders::order.order_delivery_list'));
+        $this->assign('ur_here', '发货单列表');
         $this->assign('os_unconfirmed', OS_UNCONFIRMED);
         $this->assign('cs_await_pay', CS_AWAIT_PAY);
         $this->assign('cs_await_ship', CS_AWAIT_SHIP);
@@ -247,7 +247,7 @@ class mh_delivery extends ecjia_merchant
 
         /* 显示模板 */
         $this->assign('ur_here', '查看发货单');
-        $this->assign('action_link', array('href' => RC_Uri::url('orders/mh_delivery/init'), 'text' => RC_Lang::get('orders::order.order_delivery_list')));
+        $this->assign('action_link', array('href' => RC_Uri::url('orders/mh_delivery/init'), 'text' => '发货单列表'));
         $this->assign('action_act', ($delivery_order['status'] == 2) ? 'delivery_ship' : 'delivery_cancel_ship');
         $this->assign('form_action', ($delivery_order['status'] == 2) ? RC_Uri::url('orders/mh_delivery/delivery_ship') : RC_Uri::url('orders/mh_delivery/delivery_cancel_ship'));
 
@@ -329,7 +329,7 @@ class mh_delivery extends ecjia_merchant
                         (ecjia::config('use_storage') == '0' && $value['is_real'] == 0))) {
 
                     /* 操作失败 */
-                    $links[] = array('text' => RC_Lang::get('orders::order.order_info'), 'href' => RC_Uri::url('orders/mh_delivery/delivery_info', 'delivery_id=' . $delivery_id));
+                    $links[] = array('text' => '订单信息', 'href' => RC_Uri::url('orders/mh_delivery/delivery_info', 'delivery_id=' . $delivery_id));
                     return $this->showmessage(sprintf('商品 %s 已缺货', $value['goods_name']), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
                 }
 
@@ -355,7 +355,7 @@ class mh_delivery extends ecjia_merchant
                     ((ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) ||
                         (ecjia::config('use_storage') == '0' && $value['is_real'] == 0))) {
                     /* 操作失败 */
-                    $links[] = array('text' => RC_Lang::get('orders::order.order_info'), 'href' => RC_Uri::url('orders/order_delilvery/delivery_info', 'delivery_id=' . $delivery_id));
+                    $links[] = array('text' => '订单信息', 'href' => RC_Uri::url('orders/order_delilvery/delivery_info', 'delivery_id=' . $delivery_id));
                     return $this->showmessage(sprintf('商品 %s 已缺货', $value['goods_name']), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
                 }
 
@@ -412,14 +412,14 @@ class mh_delivery extends ecjia_merchant
         /*操作成功*/
         if ($result) {
             $data = array(
-                'order_status' => RC_Lang::get('orders::order.ss.' . SS_SHIPPED),
+                'order_status' => '已发货',
                 'message'      => sprintf('订单号为 %s 的商品已发货，请您耐心等待', $order['order_sn']),
                 'order_id'     => $order_id,
                 'add_time'     => RC_Time::gmtime(),
             );
             RC_DB::table('order_status_log')->insert($data);
         } else {
-            $links[] = array('text' => RC_Lang::get('orders::order.delivery_sn') . RC_Lang::get('orders::order.detail'), 'href' => RC_Uri::url('orders/mh_delivery/delivery_info', array('delivery_id' => $delivery_id)));
+            $links[] = array('text' => '发货单查看', 'href' => RC_Uri::url('orders/mh_delivery/delivery_info', array('delivery_id' => $delivery_id)));
             return $this->showmessage('操作失败', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
         }
 
@@ -707,8 +707,8 @@ class mh_delivery extends ecjia_merchant
         RC_Notification::send($user_ob, $push_order_shipped);
 
         /* 操作成功 */
-        $links[] = array('text' => RC_Lang::get('orders::order.order_delivery_list'), 'href' => RC_Uri::url('orders/mh_delivery/init'));
-        $links[] = array('text' => RC_Lang::get('orders::order.delivery_sn') . RC_Lang::get('orders::order.detail'), 'href' => RC_Uri::url('orders/mh_delivery/delivery_info', 'delivery_id=' . $delivery_id));
+        $links[] = array('text' => '发货单列表', 'href' => RC_Uri::url('orders/mh_delivery/init'));
+        $links[] = array('text' => '发货单查看', 'href' => RC_Uri::url('orders/mh_delivery/delivery_info', 'delivery_id=' . $delivery_id));
 
         return $this->showmessage('操作成功', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('orders/mh_delivery/delivery_info', array('delivery_id' => $delivery_id)), 'links' => $links));
     }
@@ -751,7 +751,7 @@ class mh_delivery extends ecjia_merchant
         $result                  = $this->db_delivery_order->where(array('delivery_id' => $delivery_id))->update($_delivery);
         if (!$result) {
             /* 操作失败 */
-            $links[] = array('text' => RC_Lang::get('orders::order.delivery_sn') . RC_Lang::get('orders::order.detail'), 'href' => RC_Uri::url('orders/mh_delivery/delivery_info', 'delivery_id=' . $delivery_id));
+            $links[] = array('text' => '发货单查看', 'href' => RC_Uri::url('orders/mh_delivery/delivery_info', 'delivery_id=' . $delivery_id));
             return $this->showmessage('操作失败', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
         }
 
@@ -837,7 +837,7 @@ class mh_delivery extends ecjia_merchant
             RC_DB::table('express_track_record')->where('track_number', $delivery['invoice_no'])->delete();
         }
         /* 操作成功 */
-        $links[] = array('text' => RC_Lang::get('orders::order.delivery_sn') . RC_Lang::get('orders::order.detail'), 'href' => RC_Uri::url('orders/mh_delivery/delivery_info', 'delivery_id=' . $delivery_id));
+        $links[] = array('text' => '发货单查看', 'href' => RC_Uri::url('orders/mh_delivery/delivery_info', 'delivery_id=' . $delivery_id));
         return $this->showmessage('操作成功', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('orders/mh_delivery/delivery_info', array('delivery_id' => $delivery_id)), 'links' => $links));
     }
 

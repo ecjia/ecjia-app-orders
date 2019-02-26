@@ -104,7 +104,7 @@ class order_ship
                     ((ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) ||
                         (ecjia::config('use_storage') == '0' && $value['is_real'] == 0))) {
                     RC_Logger::getLogger('error')->info('缺货处理a');
-                    return new ecjia_error('act_good_vacancy', sprintf(RC_Lang::lang('act_good_vacancy'), $value['goods_name']));
+                    return new ecjia_error('act_good_vacancy', sprintf('商品已缺货', $value['goods_name']));
                 }
 
                 /* 虚拟商品列表 virtual_card */
@@ -129,7 +129,7 @@ class order_ship
                     ((ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) ||
                         (ecjia::config('use_storage') == '0' && $value['is_real'] == 0))) {
                     RC_Logger::getLogger('error')->info('缺货处理b');
-                    return new ecjia_error('act_good_vacancy', sprintf(RC_Lang::lang('act_good_vacancy'), $value['goods_name']));
+                    return new ecjia_error('act_good_vacancy', sprintf('商品已缺货', $value['goods_name']));
                 }
 
                 /* 虚拟商品列表 virtual_card*/
@@ -172,7 +172,7 @@ class order_ship
         $result                  = $db_delivery_order->where(array('delivery_id' => $delivery_id))->update($_delivery);
 
         if (!$result) {
-            return new ecjia_error('act_false', RC_Lang::lang('act_false'));
+            return new ecjia_error('act_false', '操作失败');
         }
 
         /* 标记订单为已确认 “已发货” */
@@ -194,9 +194,7 @@ class order_ship
 // 			ecjia_admin::admin_log('发货，订单号是'.$order['order_sn'].'【来源掌柜】', 'setup', 'order'); // 记录日志
 // 		}
 
-
         RC_Logger::getLogger('error')->info('判断是否全部发货' . $order_finish);
-
 
         /* 如果当前订单已经全部发货 */
         if ($order_finish) {

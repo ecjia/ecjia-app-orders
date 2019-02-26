@@ -320,19 +320,19 @@ class order_detail_module extends api_front implements api_interface
             $order['order_status_log'] = array();
             if (!empty($order_status_log)) {
                 $labe_order_status = array(
-                    'place_order'          => RC_Lang::get('orders::order.place_order'),//下单
-                    'unpay'                => RC_Lang::get('orders::order.unpay'),
-                    'payed'                => RC_Lang::get('orders::order.payed'),
-                    'merchant_process'     => RC_Lang::get('orders::order.merchant_process'),//等待接单
-                    'shipping'             => RC_Lang::get('orders::order.shipping'),
-                    'shipped'              => RC_Lang::get('orders::order.shipped'),
-                    'express_user_pickup'  => RC_Lang::get('orders::order.express_user_pickup'),
-                    'cancel'               => RC_Lang::get('orders::order.order_cancel'),
-                    'confirm_receipt'      => RC_Lang::get('orders::order.confirm_receipted'),
-                    'finished'             => RC_Lang::get('orders::order.order_finished'),
-                    'pickup_success'       => RC_Lang::get('orders::order.order_pickup_success'),
-                    'merchant_confirmed'   => RC_Lang::get('orders::order.merchant_confirmed'),
-                    'merchant_unconfirmed' => RC_Lang::get('orders::order.merchant_unconfirmed'),
+                    'place_order'          => '订单提交成功',//下单
+                    'unpay'                => '待付款',
+                    'payed'                => '已付款',
+                    'merchant_process'     => '等待商家接单',//等待接单
+                    'shipping'             => '配货中',
+                    'shipped'              => '已发货',
+                    'express_user_pickup'  => '配送员已取货',
+                    'cancel'               => '订单已取消',
+                    'confirm_receipt'      => '已确认收货',
+                    'finished'             => '订单已完成',
+                    'pickup_success'       => '已提货',
+                    'merchant_confirmed'   => '商家已接单',
+                    'merchant_unconfirmed' => '无法接单',
                 );
 
                 foreach ($order_status_log as $val) {
@@ -364,25 +364,25 @@ class order_detail_module extends api_front implements api_interface
         );
 
         if (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED)) && in_array($shipping_status, array(SS_RECEIVED)) && in_array($pay_status, array(PS_PAYED, PS_PAYING))) {
-            $label_order_status = RC_Lang::get('orders::order.cs.' . CS_FINISHED);
+            $label_order_status = '已完成';
             $status_code        = 'finished';
         } elseif (in_array($shipping_status, array(SS_SHIPPED))) {
-            $label_order_status = RC_Lang::get('orders::order.label_await_confirm');
+            $label_order_status = '待收货';
             $status_code        = 'shipped';
         } elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) && in_array($pay_status, array(PS_UNPAYED)) && (in_array($shipping_status, array(SS_SHIPPED, SS_RECEIVED)) || !$is_cod)) {
-            $label_order_status = RC_Lang::get('orders::order.label_await_pay');
+            $label_order_status = '待付款';
             $status_code        = 'await_pay';
         } elseif (in_array($order_status, array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) && in_array($shipping_status, array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING)) && (in_array($pay_status, array(PS_PAYED, PS_PAYING)) || $is_cod)) {
-            $label_order_status = RC_Lang::get('orders::order.label_await_ship');
+            $label_order_status = '待发货';
             $status_code        = 'await_ship';
         } elseif (in_array($order_status, array(OS_SPLITING_PART)) && in_array($shipping_status, array(SS_SHIPPED_PART))) {
-            $label_order_status = RC_Lang::get('orders::order.label_shipped_part');
+            $label_order_status = '部分发货';
             $status_code        = 'shipped_part';
         } elseif (in_array($order_status, array(OS_CANCELED))) {
-            $label_order_status = RC_Lang::get('orders::order.label_canceled');
+            $label_order_status = '已取消';
             $status_code        = 'canceled';
         } elseif (in_array($order_status, array(OS_RETURNED))) {
-            $label_order_status = RC_Lang::get('orders::order.label_refunded');
+            $label_order_status = '退款';
             $status_code        = 'refunded';
         }
 

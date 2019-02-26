@@ -8,10 +8,10 @@
 	<table class="table table-striped table-bordered mediaTable">
 		<thead>
 			<tr>
-				<th class="optional">{lang key='orders::order.order_sn'}</th>
-				<th class="essential persist">{lang key='orders::order.order_time'}</th>
-				<th class="optional">{lang key='orders::order.total_fee'}</th>
-				<th class="optional">{lang key='orders::order.order_status'}</th>
+				<th class="optional">订单号</th>
+				<th class="essential persist">下单时间</th>
+				<th class="optional">总金额</th>
+				<th class="optional">订单状态</th>
 			</tr>
 		</thead>
 		<tbody>

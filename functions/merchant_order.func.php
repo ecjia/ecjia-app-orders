@@ -326,9 +326,9 @@ function get_merchant_back_list()
             $row[$key]['add_time']    = RC_Time::local_date(ecjia::config('time_format'), $value['add_time']);
             $row[$key]['update_time'] = RC_Time::local_date(ecjia::config('time_format'), $value['update_time']);
             if ($value['status'] == 1) {
-                $row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.1');
+                $row[$key]['status_name'] = '退货';
             } else {
-                $row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.0');
+                $row[$key]['status_name'] = '已发货';
             }
         }
     }
@@ -422,11 +422,11 @@ function get_merchant_delivery_list()
             $row[$key]['add_time']    = RC_Time::local_date(ecjia::config('time_format'), $value['add_time']);
             $row[$key]['update_time'] = RC_Time::local_date(ecjia::config('time_format'), $value['update_time']);
             if ($value['status'] == 1) {
-                $row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.1');
+                $row[$key]['status_name'] = '退货';
             } elseif ($value['status'] == 2) {
-                $row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.2');
+                $row[$key]['status_name'] = '正常';
             } else {
-                $row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.0');
+                $row[$key]['status_name'] = '已发货';
             }
         }
     }

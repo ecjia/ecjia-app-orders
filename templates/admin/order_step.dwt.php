@@ -10,17 +10,17 @@
 <!-- {block name="main_content"} -->
 {if $shipping_list_error}
 <div class="alert alert-error">
-	<strong>{lang key='orders::order.no_correspondence'}</strong>
+	<strong>您可能没有添加配送插件或填写收货人地址信息！暂无对应的配送方式！</strong>
 </div>
 {/if}
 {if $step eq "invoice"}
 <div class="alert alert-info">
-	<strong>{lang key='orders::order.shipping_note'}</strong>
+	<strong>说明：因为订单已发货，修改配送方式将不会改变配送费和保价费。</strong>
 </div>
 {/if}
 {if $step eq "user"}
 <div class="alert alert-info">
-	<strong>{lang key='orders::order.notice_user'}</strong>
+	<strong>注意：搜索结果只显示前50条记录，如果没有找到相应会员，请更精确地查找。另外，如果该会员是从论坛注册的且没有在商城登录过，也无法找到，需要先在商城登录。</strong>
 </div>
 {/if}
 {if $step_act eq 'add'}
@@ -29,37 +29,37 @@
 		<li class="step-first">
 			<div class="{if $time_key lt '2'}step-cur{else}step-done{/if}">
 				<div class="step-no">{if $time_key lt '2'}1{/if}</div>
-				<div class="m_t5">{lang key='orders::order.buy_select'}</div>
+				<div class="m_t5">选择购买用户</div>
 			</div>
 		</li>
 		<li>
 			<div class="{if $time_key eq '2'}step-cur{elseif $time_key gt '2'}step-done{/if}">
 				<div class="step-no">{if $time_key lt '3'}2{/if}</div>
-				<div class="m_t5">{lang key='orders::order.order_goods_select'}</div>
+				<div class="m_t5">选择订单商品</div>
 			</div>
 		</li>
 		<li>
 			<div class="{if $time_key eq '3'}step-cur{elseif $time_key gt '3'}step-done{/if}">
 				<div class="step-no">{if $time_key lt '4'}3{/if}</div>
-				<div class="m_t5">{lang key='orders::order.confirm_shipping_address'}</div>
+				<div class="m_t5">确认收货地址</div>
 			</div>
 		</li>
 		<li>
 			<div class="{if $time_key eq '4'}step-cur{elseif $time_key gt '4'}step-done{/if}">
 				<div class="step-no">{if $time_key lt '5'}4{/if}</div>
-				<div class="m_t5">{lang key='orders::order.payment_delivery'}</div>
+				<div class="m_t5">支付方式/配送方式</div>
 			</div>
 		</li>
 		<li>
 			<div class="{if $time_key eq '6'}step-cur{elseif $time_key gt '6'}step-done{/if}">
 				<div class="step-no">{if $time_key lt '7'}5{/if}</div>
-				<div class="m_t5">{lang key='orders::order.other_info'}</div>
+				<div class="m_t5">其他信息</div>
 			</div>
 		</li>
 		<li class="step-last">
 			<div class="{if $time_key eq '7'}step-cur{/if}">
 				<div class="step-no">{if $time_key lt '8'}6{/if}</div>
-				<div>{lang key='orders::order.claim_costs'}</div>
+				<div>确认费用</div>
 			</div>
 		</li>
 	</ul>
@@ -76,13 +76,13 @@
 		<a class="anonymous_user ecjiaf-csp" data-href='{url path="orders/admin/step_post" args="step={$step}&order_id={$order_id}&step_act={$step_act}&user=0"}'>
 		<li>
 			<div class="user-anonymous"></div>
-			<div class="user-title">{lang key='orders::order.anonymous'}</div>
+			<div class="user-title">匿名用户</div>
 		</li>
 		</a>
 		<a class="data-pjax" href='{url path="orders/admin/add" args="step=user"}'>
 		<li class="m_l70">
 			<div class="user"></div>
-			<div class="user-title">{lang key='orders::order.member_user'}</div>
+			<div class="user-title">会员用户</div>
 		</li>
 		</a>
 	</ul>
@@ -92,85 +92,85 @@
 <form class="form-horizontal" name="userForm" action='{url path="orders/admin/step_post" args="step={$step}&order_id={$order_id}&step_act={$step_act}"}' method="post" data-search-url='{url path="orders/admin/search_users"}'>
 	<fieldset>
 <!-- 		<div class="control-group"> -->
-<!-- 			<label class="t_l w200"><input type="radio" name="anonymous"  value="1" checked="checked" /><span>&nbsp;{lang key='orders::order.anonymous'}</span></label> -->
+<!-- 			<label class="t_l w200"><input type="radio" name="anonymous"  value="1" checked="checked" /><span>&nbsp;匿名用户</span></label> -->
 <!-- 		</div> -->
 		<div class="control-group">
-			<label class="control-label"><span>&nbsp;{lang key='orders::order.user_email_search'}</span></label>
+			<label class="control-label"><span>&nbsp;按会员邮箱或会员名搜索：</span></label>
 			<input type="hidden" name="anonymous" value="0" id="user_useridname" />
 			<div class="controls">
-				<input type="text" name="keywords" class="f_l m_r5" placeholder="{lang key='orders::order.pls_keywords'}"/>
-				<button class="btn searchUser" type="button">{lang key='system::system.button_search'}</button>
+				<input type="text" name="keywords" class="f_l m_r5" placeholder="请输入关键字"/>
+				<button class="btn searchUser" type="button">搜索</button>
 				<input type="hidden" name="user" value='0'/>
 			</div>
 		</div>
-		<p><span class="help-inline">{lang key='orders::order.search_user_list'}</span></p>
+		<p><span class="help-inline">搜索会员，搜到的会员将展示在下方列表框中。点击列表中选项，背景变蓝即为选中状态。</span></p>
 		<div class="row-fluid draggable">
 			<div class="ms-container ms-container-nobg" id="ms-custom-navigation">
 				<div id="userslist" class="ms-selectable ms-not-selectable" data-change-url='{url path="orders/admin/user_info"}'>
 					<div class="search-header">
-						<input class="span12" id="ms-search" type="text" placeholder="{lang key='orders::order.filter_information_members'}" autocomplete="off">
+						<input class="span12" id="ms-search" type="text" placeholder="筛选搜索到的会员信息" autocomplete="off">
 					</div>
 					<ul class="ms-list nav-list-ready order-select-users">
-						<li class="ms-elem-selectable disabled"><span>{lang key='orders::order.no_content_yet'}</span></li>
+						<li class="ms-elem-selectable disabled"><span>暂无内容</span></li>
 					</ul>
 				</div>
 				<div class="ms-selection ms-not-selection order-users-select">
-					<div class="custom-header custom-header-align"><span>{lang key='orders::order.member_info'}</span>
+					<div class="custom-header custom-header-align"><span>会员信息</span>
 					</div>
 					<div class="ms-list nav-list-content">
 						<ul class="ecjiaf-dn users_info">
 							<li>
 								<div class="control-group">
-									<label class="control-label">{lang key='orders::order.member_name_lable'}</label>
+									<label class="control-label">会员名称：</label>
 									<div class="controls" id="user_name">
 									</div>
 								</div>
 							</li>
 							<li>
 								<div class="control-group">
-									<label class="control-label">{lang key='orders::order.member_email_lable'}</label>
+									<label class="control-label">会员邮箱：</label>
 									<div class="controls" id="user_email">
 									</div>
 								</div>
 							</li>
 							<li>
 								<div class="control-group">
-									<label class="control-label">{lang key='orders::order.member_iphone_lable'}</label>
+									<label class="control-label">会员手机：</label>
 									<div class="controls" id="user_mobile">
 									</div>
 								</div>
 							</li>
 							<li>
 								<div class="control-group">
-									<label class="control-label">{lang key='orders::order.member_rank_lable'}</label>
+									<label class="control-label">会员等级：</label>
 									<div class="controls" id="user_rank">
 									</div>
 								</div>
 							</li>
 							<li>
 								<div class="control-group">
-									<label class="control-label">{lang key='orders::order.registration_time'}</label>
+									<label class="control-label">注册时间：</label>
 									<div class="controls" id="user_regtime">
 									</div>
 								</div>
 							</li>
 							<li>
 								<div class="control-group">
-									<label class="control-label">{lang key='orders::order.email_verification'}</label>
+									<label class="control-label">邮箱验证：</label>
 									<div class="controls" id="user_isvalidated">
 									</div>
 								</div>
 							</li>
 							<li>
 								<div class="control-group">
-									<label class="control-label">{lang key='orders::order.last_login_time'}</label>
+									<label class="control-label">最后登录时间：</label>
 									<div class="controls" id="user_lasttime">
 									</div>
 								</div>
 							</li>
 							<li>
 								<div class="control-group">
-									<label class="control-label">{lang key='orders::order.last_login_ip'}</label>
+									<label class="control-label">最后登录IP：</label>
 									<div class="controls" id="user_lastip">
 									</div>
 								</div>
@@ -181,8 +181,8 @@
 			</div>
 		</div>
 		<p class="ecjiaf-tac m_t15">
-			<button class="btn btn-gebo" type="submit">{lang key='orders::order.button_next'}</button>
-			<a class="cancel_order" data-href='{url path="orders/admin/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn" type="button">{lang key='orders::order.button_cancel'}</button></a>
+			<button class="btn btn-gebo" type="submit">下一步</button>
+			<a class="cancel_order" data-href='{url path="orders/admin/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn" type="button">取消</button></a>
 		</p>
 	</fieldset>
 </form>
@@ -192,13 +192,13 @@
 	<table class="table order-goods-select form-inline formSep">
 		<thead>
 			<tr>
-				<th class="w200">{lang key='orders::order.goods_name'}</th>
-				<th class="w100">{lang key='orders::order.goods_sn'}</th>
-				<th>{lang key='orders::order.goods_price'}</th>
-				<th class="w120">{lang key='orders::order.goods_number'}</th>
-				<th>{lang key='orders::order.goods_attr'}</th>
-				<th class="w100">{lang key='orders::order.subtotal'}</th>
-				<th class="w150">{lang key='system::system.handler'}</th>
+				<th class="w200">商品名称</th>
+				<th class="w100">货号</th>
+				<th>价格</th>
+				<th class="w120">数量</th>
+				<th>属性</th>
+				<th class="w100">小计</th>
+				<th class="w150">操作</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -227,22 +227,22 @@
 				</td>
 				<td>{$goods.subtotal}</td>
 				<td>
-					<a class="ajaxremove no-underline" data-toggle="ajaxremove" data-msg="{lang key='orders::order.confirm_delete_order_goods'}" href='{url path="orders/admin/process" args="func=drop_order_goods&rec_id={$goods.rec_id}&step_act={$step_act}&order_id={$order_id}"}' title="{lang key='orders::order.op_remove'}"><i class="fontello-icon-trash"></i></a>
+					<a class="ajaxremove no-underline" data-toggle="ajaxremove" data-msg="{lang key='orders::order.confirm_delete_order_goods'}" href='{url path="orders/admin/process" args="func=drop_order_goods&rec_id={$goods.rec_id}&step_act={$step_act}&order_id={$order_id}"}' title="删除"><i class="fontello-icon-trash"></i></a>
 				</td>
 			</tr>
 			<!-- {/foreach} -->
 			<tr>
 				<td colspan="4" class="left-td"><span class="input-must">{lang key='orders::order.price_note'}</span></td>
-				<td colspan="1" class="right-td"><strong>{lang key='orders::order.label_total'}</strong>{$goods_amount}</td>
+				<td colspan="1" class="right-td"><strong>合计：</strong>{$goods_amount}</td>
 <!-- 				<td>{$goods_amount}</td> -->
 				<td colspan="2" class="right-td">
 <!-- 					{if $smarty.foreach.goods.total gt 0} -->
 <!-- 					<button class="btn" type="submit" name="edit_goods">{lang key='orders::order.update_goods'}</button> -->
 <!-- 					{/if} -->
             			<p class="ecjiaf-tac m_t15">
-            				<button class="btn btn-gebo" type="submit" name="{if $step_act eq 'add'}next{else}finish{/if}">{if $step_act eq 'add'}{lang key='orders::order.button_next'}{else}{lang key='orders::order.update_goods'}{/if}</button>&nbsp;&nbsp;&nbsp;
-            				<input name="{if $step_act eq 'add'}next{else}finish{/if}" type="hidden" value="{if $step_act eq 'add'}{lang key='orders::order.button_next'}{else}{lang key='system::system.button_submit'}{/if}" />
-            				<a class="cancel_order" data-href='{url path="orders/admin/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn" type="button">{lang key='orders::order.button_cancel'}</button></a>
+            				<button class="btn btn-gebo" type="submit" name="{if $step_act eq 'add'}next{else}finish{/if}">{if $step_act eq 'add'}下一步{else}{lang key='orders::order.update_goods'}{/if}</button>&nbsp;&nbsp;&nbsp;
+            				<input name="{if $step_act eq 'add'}next{else}finish{/if}" type="hidden" value="{if $step_act eq 'add'}下一步{else}确定{/if}" />
+            				<a class="cancel_order" data-href='{url path="orders/admin/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn" type="button">取消</button></a>
             			</p>
 					<input name="goods_count" type="hidden" value="{$smarty.foreach.goods.total}" />
 				</td>
@@ -255,8 +255,8 @@
 <div class="row-fluid">
 	<div class="choose_list span12">
 		<span>{lang key='orders::order.search_goods'}</span>
-		<input type="text" name="keyword" placeholder="{lang key='orders::order.pls_keywords'}" />
-		<button class="btn searchGoods" type="button">{lang key='system::system.button_search'}</button>
+		<input type="text" name="keyword" placeholder="请输入关键字" />
+		<button class="btn searchGoods" type="button">搜索</button>
 	</div>
 </div>
 <div class="row-fluid draggable">
@@ -266,13 +266,13 @@
 				<input class="span12" id="ms-search" type="text" placeholder="{lang key='orders::order.filter_information_goods'}" autocomplete="off">
 			</div>
 			<ul class="ms-list nav-list-ready order-select-goods">
-				<li class="ms-elem-selectable disabled"><span>{lang key='orders::order.no_content_yet'}</span></li>
+				<li class="ms-elem-selectable disabled"><span>暂无内容</span></li>
 			</ul>
 		</div>
 		<form class="form-horizontal" name="goodsForm" action='{url path="orders/admin/step_post" args="step=add_goods&order_id={$order_id}&step_act={$step_act}"}' method="post"  data-search-url='{url path="orders/admin/search_goods" args="step=goods&order_id={$order_id}"}' data-goods-url='{url path="orders/admin/add" args="step=goods&order_id={$order_id}"}'>
 			<fieldset class="edit-page">
 				<div class="ms-selection order-goods-select">
-					<div class="custom-header custom-header-align"><span>{lang key='orders::order.goods_info'}</span>
+					<div class="custom-header custom-header-align"><span>商品信息</span>
 					</div>
 					<div class="add-goods"><a class="goods_info ecjiaf-dn" href="javascript:;">{lang key='orders::order.add_to_order'}</a></div>
 					<div class="ms-list nav-list-content ">
@@ -330,7 +330,7 @@
 					<thead>
 						<tr>
 							<th class="w30">&nbsp;</th>
-							<th class="w100">{lang key='orders::order.consignee'}</th>
+							<th class="w100">收货人</th>
 							<th class="w200">{lang key='orders::order.region_list'}</th>
 							<th>{lang key='orders::order.region_list'}</th>
 							<th class="w80">{lang key='orders::order.zipcode'}</th>
@@ -350,8 +350,8 @@
 							</td>
 							<td>{$val.address|escape}{$val.address_info|escape}</td>
 							<td>{$val.zipcode|escape}</td>
-							<td>{lang key='orders::order.label_tel'}{$val.tel}<br/>
-								{lang key='orders::order.label_mobile'}{$val.mobile}
+							<td>电话：{$val.tel}<br/>
+								手机：{$val.mobile}
 							</td>
 							<!-- <td>{$lang.best_time}：{$val.best_time|escape}<br/>{$lang.sign_building}：{$val.sign_building|escape}<br/>email：{$val.email}</td> -->
 						</tr>
@@ -366,10 +366,10 @@
 		<!--{/if}-->
 		<div class="row-fluid m_t20 {if $address_list && $order.consignee eq ''}ecjiaf-dn{/if}" id='add_address'>
 			<div class="control-group">
-				<label class="control-label w110">{lang key='orders::order.label_consignee'}</label>
+				<label class="control-label w110">收货人：</label>
 				<div class="controls m_l130">
 					<input type="text" name="consignee" class="span4" value="{$order.consignee}"/>
-					<span class="input-must">{lang key='system::system.require_field'}</span>
+					<span class="input-must">*</span>
 				</div>
 			</div>
 			<!--{if $exist_real_goods} -->
@@ -377,41 +377,41 @@
 				<label class="control-label w110">{lang key='orders::order.address_lable'}</label>
 				<div class="controls m_l130">
 					<input type="text" name="address" class="span4" value="{$order.address}"/>
-					<span class="input-must">{lang key='system::system.require_field'}</span>
+					<span class="input-must">*</span>
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label w110">{lang key='orders::order.label_area'}</label>
 				<div class="controls choose_list not-line-height m_l130">
 					<select class="region-summary-provinces w120" name="province" id="selProvinces" data-url="{url path='setting/region/init'}" data-toggle="regionSummary" data-type="2" data-target="region-summary-cities" >
-						<option value='0'>{lang key='system::system.select_please'}</option>
+						<option value='0'>请选择...</option>
 						<!-- {foreach from=$province item=region} -->
 						<option value="{$region.region_id}" {if $region.region_id eq $order.province}selected{/if}>{$region.region_name}</option>
 						<!-- {/foreach} -->
 					</select>
 					<select class="region-summary-cities w120" name="city" id="selCities" data-toggle="regionSummary" data-type="3" data-target="region-summary-district">
-						<option value='0'>{lang key='system::system.select_please'}</option>
+						<option value='0'>请选择...</option>
 						<!-- {foreach from=$city item=region} -->
 						<option value="{$region.region_id}" {if $region.region_id eq $order.city}selected{/if}>{$region.region_name}</option>
 						<!-- {/foreach} -->
 					</select>
 					<select class="region-summary-district w120" name="district" id="seldistrict" data-toggle="regionSummary" data-type="4" data-target="region-summary-street">
-						<option value='0'>{lang key='system::system.select_please'}</option>
+						<option value='0'>请选择...</option>
 						<!-- {foreach from=$district item=region} -->
 						<option value="{$region.region_id}" {if $region.region_id eq $order.district}selected{/if}>{$region.region_name}</option>
 						<!-- {/foreach} -->
 					</select>
 					<select class="region-summary-street w120" name="street" id="selstreet" >
-						<option value='0'>{lang key='system::system.select_please'}</option>
+						<option value='0'>请选择...</option>
 						<!-- {foreach from=$street item=region} -->
 						<option value="{$region.region_id}" {if $region.region_id eq $order.street}selected{/if}>{$region.region_name}</option>
 						<!-- {/foreach} -->
 					</select>        						
-					<span class="input-must">{lang key='system::system.require_field'}</span>
+					<span class="input-must">*</span>
 				</div>
 			</div>
 			<div class="control-group">
-				<label class="control-label w110">{lang key='orders::order.label_zipcode'}</label>
+				<label class="control-label w110">邮编：</label>
 				<div class="controls m_l130">
 					<input type="text" name="zipcode" class="span4" value="{$order.zipcode}" />
 				</div>
@@ -430,23 +430,23 @@
 <!-- 			</div> -->
 			<!--{/if}-->
 			<div class="control-group">
-				<label class="control-label w110">{lang key='orders::order.label_tel'}</label>
+				<label class="control-label w110">电话：</label>
 				<div class="controls m_l130">
 					<input type="text" name="tel" class="span4" value="{$order.tel}" />
-					<span class="input-must">{lang key='system::system.require_field'}</span>
+					<span class="input-must">*</span>
 				</div>
 			</div>
 			<div class="control-group">
-				<label class="control-label w110">{lang key='orders::order.label_mobile'}</label>
+				<label class="control-label w110">手机：</label>
 				<div class="controls m_l130">
 					<input type="text" name="mobile" class="span4" value="{$order.mobile}" />
 				</div>
 			</div>
 			<div class="control-group">
-				<label class="control-label w110">{lang key='orders::order.label_email'}</label>
+				<label class="control-label w110">电子邮件：</label>
 				<div class="controls m_l130">
 					<input type="text" name="email" class="span4" value="{$order.email}"/>
-					<span class="input-must">{lang key='system::system.require_field'}</span>
+					<span class="input-must">*</span>
 				</div>
 			</div>
 		</div>
@@ -454,9 +454,9 @@
 			{if $step_act eq "add"}
 			<a class="data-pjax" href='{url path="orders/admin/add" args="order_id={$order_id}&step=goods"}'><button class="btn" type="button">{lang key='orders::order.button_prev'}</button></a>&nbsp;&nbsp;&nbsp;
 			{/if}
-			<button class="btn btn-gebo" type="submit" name="{if $step_act eq 'add'}next{else}finish{/if}">{if $step_act eq 'add'}{lang key='orders::order.button_next'}{else}{lang key='system::system.button_submit'}{/if}</button>&nbsp;&nbsp;&nbsp;
-			<a class="cancel_order" data-href='{url path="orders/admin/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn" type="button">{lang key='orders::order.button_cancel'}</button></a>
-			<input name="{if $step_act eq 'add'}next{else}finish{/if}" type="hidden" value="{if $step_act eq 'add'}{lang key='orders::order.button_next'}{else}{lang key='system::system.button_submit'}{/if}" />
+			<button class="btn btn-gebo" type="submit" name="{if $step_act eq 'add'}next{else}finish{/if}">{if $step_act eq 'add'}下一步{else}确定{/if}</button>&nbsp;&nbsp;&nbsp;
+			<a class="cancel_order" data-href='{url path="orders/admin/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn" type="button">取消</button></a>
+			<input name="{if $step_act eq 'add'}next{else}finish{/if}" type="hidden" value="{if $step_act eq 'add'}下一步{else}确定{/if}" />
 		</p>
 	</fieldset>
 </form>
@@ -524,9 +524,9 @@
 	</div>
 	<p align="center">
 		{if $step_act eq "add"}<a class="data-pjax" href='{url path="orders/admin/add" args="order_id={$order_id}&step=consignee"}'><button class="btn" type="button">{lang key='orders::order.button_prev'}</button></a>&nbsp;&nbsp;&nbsp;{/if}
-		<button class="btn btn-gebo" type="submit" name="{if $step_act eq 'add'}next{else}finish{/if}">{if $step_act eq 'add'}{lang key='orders::order.button_next'}{else}{lang key='system::system.button_submit'}{/if}</button>&nbsp;&nbsp;&nbsp;
-		<a class="cancel_order" data-href='{url path="orders/admin/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn" type="button">{lang key='orders::order.button_cancel'}</button></a>
-		<input name="{if $step_act eq 'add'}next{else}finish{/if}" type="hidden" value="{if $step_act eq 'add'}{lang key='orders::order.button_next'}{else}{lang key='system::system.button_submit'}{/if}" />
+		<button class="btn btn-gebo" type="submit" name="{if $step_act eq 'add'}next{else}finish{/if}">{if $step_act eq 'add'}下一步{else}确定{/if}</button>&nbsp;&nbsp;&nbsp;
+		<a class="cancel_order" data-href='{url path="orders/admin/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn" type="button">取消</button></a>
+		<input name="{if $step_act eq 'add'}next{else}finish{/if}" type="hidden" value="{if $step_act eq 'add'}下一步{else}确定{/if}" />
 	</p>
 </form>
 {elseif $step eq "other"}
@@ -542,11 +542,11 @@
 					<div class="accordion-body in collapse" id="collapseThree">
 						<div class="accordion-inner">
 							<p>
-								<label class="label-title">{lang key='orders::order.label_inv_type'}</label>
+								<label class="label-title">发票类型：</label>
 								<input name="inv_type" class="span8" type="text" id="inv_type" value="{$order.inv_type}"/>
 							</p>
 							<p>
-								<label class="label-title">{lang key='orders::order.label_inv_payee'}</label>
+								<label class="label-title">发票抬头：</label>
 								<input name="inv_payee" class="span8" value="{$order.inv_payee}" type="text" />
 								<span class="help-block">	
 									<label class="label-title"></label>
@@ -554,7 +554,7 @@
 								</span>
 							</p>
 							<p>
-								<label class="label-title">{lang key='orders::order.label_inv_content'}</label>
+								<label class="label-title">发票内容：</label>
 								<input name="inv_content" class="span8" value="{$order.inv_content}" type="text" />
 							</p>
 						</div>
@@ -570,15 +570,15 @@
 					<div class="accordion-body in collapse" id="collapseFour">
 						<div class="accordion-inner">
 							<p>
-								<label>{lang key='orders::order.label_postscript'}</label>
+								<label>客户给商家的留言：</label>
 								<textarea name="postscript" class="span12 action_note" cols="60" rows="3">{$order.postscript}</textarea>
 							</p>
 							<p>
-								<label>{lang key='orders::order.label_how_oos'}</label>
+								<label>缺货处理：</label>
 								<textarea name="how_oos" class="span12 action_note" cols="60" rows="3">{$order.how_oos}</textarea>
 							</p>
 							<p>
-								<label>{lang key='orders::order.label_to_buyer'}</label>
+								<label>商家给客户的留言：</label>
 								<textarea name="to_buyer" class="span12 action_note" cols="60" rows="3">{$order.to_buyer}</textarea>
 							</p>
 						</div>
@@ -670,9 +670,9 @@
 	</div>
 	<p align="center">
 		{if $step_act eq "add"}<a class="data-pjax" href='{url path="orders/admin/add" args="order_id={$order_id}&step=shipping"}'><button class="btn" type="button">{lang key='orders::order.button_prev'}</button></a>&nbsp;&nbsp;&nbsp;{/if}
-		<button class="btn btn-gebo" type="submit" name="{if $step_act eq 'add'}next{else}finish{/if}">{if $step_act eq 'add'}{lang key='orders::order.button_next'}{else}{lang key='system::system.button_submit'}{/if}</button>&nbsp;&nbsp;&nbsp;
-		<a class="cancel_order" data-href='{url path="orders/admin/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn" type="button">{lang key='orders::order.button_cancel'}</button></a>
-		<input name="{if $step_act eq 'add'}next{else}finish{/if}" type="hidden" value="{if $step_act eq 'add'}{lang key='orders::order.button_next'}{else}{lang key='system::system.button_submit'}{/if}" />
+		<button class="btn btn-gebo" type="submit" name="{if $step_act eq 'add'}next{else}finish{/if}">{if $step_act eq 'add'}下一步{else}确定{/if}</button>&nbsp;&nbsp;&nbsp;
+		<a class="cancel_order" data-href='{url path="orders/admin/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn" type="button">取消</button></a>
+		<input name="{if $step_act eq 'add'}next{else}finish{/if}" type="hidden" value="{if $step_act eq 'add'}下一步{else}确定{/if}" />
 	</p>
 </form>
 {elseif $step eq "money"}
@@ -688,25 +688,25 @@
 						<table class="table table-oddtd m_b0">
 							<tbody class="first-td-no-leftbd">
 								<tr>
-									<td><div align="right"><strong>{lang key='orders::order.label_goods_amount'}</strong></div></td>
+									<td><div align="right"><strong>商品总金额：</strong></div></td>
 									<td>{$order.formated_goods_amount}</td>
-									<td><div align="right"><strong>{lang key='orders::order.label_discount'}</strong></div></td>
+									<td><div align="right"><strong>折扣：</strong></div></td>
 									<td><input class="span8" name="discount" type="text" id="discount" value="{$order.discount}" /></td>
 								</tr>
 								<tr>
-									<td><div align="right"><strong>{lang key='orders::order.label_tax'}</strong></div></td>
+									<td><div align="right"><strong>发票税额：</strong></div></td>
 									<td><input class="span8" name="tax" type="text" id="tax" value="{$order.tax}" /></td>
 									<td><div align="right"><strong>{lang key='orders::order.label_order_amount'}</strong></div></td>
 									<td>{$order.formated_total_fee}</td>
 								</tr>
 								<tr>
-									<td><div align="right"><strong>{lang key='orders::order.label_shipping_fee'}</strong></div></td>
+									<td><div align="right"><strong>配送费用：</strong></div></td>
 									<td>{if $exist_real_goods}<input class="span8" name="shipping_fee" type="text" value="{$order.shipping_fee}" >{else}0{/if}</td>
 									<td><div align="right"><strong>{lang key='orders::order.label_money_paid'}</strong></div></td>
 									<td>{$order.formated_money_paid} </td>
 								</tr>
 								<tr>
-									<td><div align="right"><strong>{lang key='orders::order.label_insure_fee'}</strong></div></td>
+									<td><div align="right"><strong>保价费用：</strong></div></td>
 									<td>{if $exist_real_goods}<input class="span8" name="insure_fee" type="text" value="{$order.insure_fee}" >{else}0{/if}</td>
 									<td><div align="right"><strong>{lang key='orders::order.label_surplus'}</strong></div></td>
 									<td>
@@ -716,7 +716,7 @@
 									</td>
 								</tr>
 								<tr>
-									<td><div align="right"><strong>{lang key='orders::order.label_pay_fee'}</strong></div></td>
+									<td><div align="right"><strong>支付费用：</strong></div></td>
 									<td><input class="span8" name="pay_fee" type="text" value="{$order.pay_fee}"></td>
 									<td><div align="right"><strong>{lang key='orders::order.label_integral'}</strong></div></td>
 									<td>
@@ -726,7 +726,7 @@
 									</td>
 								</tr>
 								<tr>
-									<td><div align="right"><strong>{lang key='orders::order.label_pack_fee'}</strong></div></td>
+									<td><div align="right"><strong>包装费用：</strong></div></td>
 									<td>
 										{if $exist_real_goods}
 										<input class="span8" name="pack_fee" type="text" value="{$order.pack_fee}" >
@@ -735,7 +735,7 @@
 									<td><div align="right"><strong>{lang key='orders::order.label_bonus'}</strong></div></td>
 									<td>
 										<select class="span8" name="bonus_id">
-											<option value="0" {if $order.bonus_id eq 0}selected{/if}>{lang key='system::system.select_please'}</option>
+											<option value="0" {if $order.bonus_id eq 0}selected{/if}>请选择...</option>
 											<!-- {foreach from=$available_bonus item=bonus} -->
 											<option value="{$bonus.bonus_id}" {if $order.bonus_id eq $bonus.bonus_id}selected{/if} money="{$bonus.type_money}">{$bonus.type_name} - {$bonus.type_money}</option>
 											<!--{/foreach}  -->
@@ -743,13 +743,13 @@
 									</td>
 								</tr>
 								<tr>
-									<td><div align="right"><strong>{lang key='orders::order.label_card_fee'}</strong></div></td>
+									<td><div align="right"><strong>贺卡费用：</strong></div></td>
 									<td>
 										{if $exist_real_goods}
 										<input class="span8" name="card_fee" type="text" value="{$order.card_fee}">
 										{else}0{/if}
 									</td>
-									<td><div align="right"><strong>{if $order.order_amount >= 0} {lang key='orders::order.label_money_dues'} {else} {lang key='orders::order.label_money_refund'} {/if}</strong></div></td>
+									<td><div align="right"><strong>{if $order.order_amount >= 0} 应付款金额： {else} 应退款金额： {/if}</strong></div></td>
 									<td>{$order.formated_order_amount}</td>
 								</tr>
 							</tbody>
@@ -764,7 +764,7 @@
 			<p align="center">
 				{if $step_act eq "add"}<a class="data-pjax" href='{url path="orders/admin/add" args="order_id={$order_id}&step=other"}'><button class="btn" type="button">{lang key='orders::order.button_prev'}</button></a>&nbsp;&nbsp;&nbsp;{/if}
 				<button class="btn btn-gebo" type="submit" name="finish">{lang key='orders::order.button_finish'}</button>&nbsp;&nbsp;&nbsp;
-				<a class="cancel_order" data-href='{url path="orders/admin/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn" type="button">{lang key='orders::order.button_cancel'}</button></a>
+				<a class="cancel_order" data-href='{url path="orders/admin/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn" type="button">取消</button></a>
 				<input name="finish" type="hidden" value="{lang key='orders::order.button_finish'}" />
 			</p>
 		</div>
@@ -773,7 +773,7 @@
 {elseif $step eq "invoice"}
 <form name="invoiceForm" action='{url path="orders/admin/step_post" args="step={$step}&order_id={$order_id}&step_act={$step_act}"}' method="post">
 	<div>
-		<strong>{lang key='orders::order.label_invoice_no'}</strong><input name="invoice_no" type="text" value="{$order.invoice_no}" size="30"/><span id="noticPoints" class="help-block ecjiaf-ib">{lang key='orders::order.invoice_no_mall'}</span>
+		<strong>运单编号：</strong><input name="invoice_no" type="text" value="{$order.invoice_no}" size="30"/><span id="noticPoints" class="help-block ecjiaf-ib">{lang key='orders::order.invoice_no_mall'}</span>
 	</div>
 	<div class="row-fluid">
 		<table class="table table-striped">
@@ -798,9 +798,9 @@
 		</table>
 	</div>
 	<p align="center">
-		<button class="btn btn-gebo" type="submit" name="finish">{lang key='system::system.button_submit'}</button>&nbsp;&nbsp;&nbsp;
+		<button class="btn btn-gebo" type="submit" name="finish">确定</button>&nbsp;&nbsp;&nbsp;
 		<input name="finish" type="hidden" value="{lang key='orders::order.button_finish'}" />
-		<a class="data-pjax" href='{url path="orders/admin/info" args="order_id={$order_id}"}'><button class="btn" type="button">{lang key='orders::order.button_cancel'}</button></a>
+		<a class="data-pjax" href='{url path="orders/admin/info" args="order_id={$order_id}"}'><button class="btn" type="button">取消</button></a>
 	</p>
 </form>
 {/if}

@@ -81,8 +81,8 @@ class admin_sale_general extends ecjia_admin
         /*权限判断 */
         $this->admin_priv('sale_general_stats');
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here('销售概况'));
-        ecjia_screen::get_current_screen()->add_help_tab(array('id' => 'overview', 'title' => '概述', 'content' => '<p>' . RC_Lang::get('orders::statistic.sale_general_help') . '</p>'));
-        ecjia_screen::get_current_screen()->set_help_sidebar('<p><strong>' . '更多信息：' . '</strong></p>' . '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:销售概况" target="_blank">' . RC_Lang::get('orders::statistic.about_sale_general') . '</a>') . '</p>');
+        ecjia_screen::get_current_screen()->add_help_tab(array('id' => 'overview', 'title' => '概述', 'content' => '<p>' . '欢迎访问ECJia智能后台销售概况页面，系统中所有的销售概况信息都会显示在此页面中。' . '</p>'));
+        ecjia_screen::get_current_screen()->set_help_sidebar('<p><strong>' . '更多信息：' . '</strong></p>' . '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:销售概况" target="_blank">' . '关于销售概况帮助文档' . '</a>') . '</p>');
 
         $this->assign('ur_here', '销售概况');
         $this->assign('action_link', array('text' => '销售概况报表下载', 'href' => RC_Uri::url('orders/admin_sale_general/download')));
@@ -106,8 +106,8 @@ class admin_sale_general extends ecjia_admin
         /*权限判断 */
         $this->admin_priv('sale_general_stats');
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here('销售概况'));
-        ecjia_screen::get_current_screen()->add_help_tab(array('id' => 'overview', 'title' => '概述', 'content' => '<p>' . RC_Lang::get('orders::statistic.sale_general_help') . '</p>'));
-        ecjia_screen::get_current_screen()->set_help_sidebar('<p><strong>' . '更多信息：' . '</strong></p>' . '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:销售概况" target="_blank">' . RC_Lang::get('orders::statistic.about_sale_general') . '</a>') . '</p>');
+        ecjia_screen::get_current_screen()->add_help_tab(array('id' => 'overview', 'title' => '概述', 'content' => '<p>' . '欢迎访问ECJia智能后台销售概况页面，系统中所有的销售概况信息都会显示在此页面中。' . '</p>'));
+        ecjia_screen::get_current_screen()->set_help_sidebar('<p><strong>' . '更多信息：' . '</strong></p>' . '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:销售概况" target="_blank">' . '关于销售概况帮助文档' . '</a>') . '</p>');
         $this->assign('ur_here', '销售概况');
         $this->assign('action_link', array('text' => '销售概况报表下载', 'href' => RC_Uri::url('orders/admin_sale_general/download')));
         $this->assign('page', 'sales_trends');

@@ -293,8 +293,8 @@ return array(
     'pay_note'        => '支付备注：',
 
     'sms_time_format'                 => 'm月j日G时',
-    'order_shipped_sms'               => '您的订单%s已于%s发货 [%s',
-    'order_splited_sms'               => '您的订单%s,%s正在%s [%s',
+    'order_shipped_sms'               => '您的订单%s已于%s发货，%s',
+    'order_splited_sms'               => '您的订单%s，%s正在%s，%s',
     'order_removed'                   => '订单删除成功',
     'return_list'                     => '返回订单列表',
     'detailed_information'            => '详细信息',
@@ -335,7 +335,7 @@ return array(
     'order_merge_invalid'             => '订单合并失败',
     'and'                             => '与',
     'new_order_is'                    => '，合并成新订单，订单号为：',
-    'merge_success_notice'            => '%s 与  %s 合并成新订单，订单号为：%s',
+    'merge_success_notice'            => '%s 与 %s 合并成新订单，订单号为：%s',
 
     'from_order_sn'         => '从订单：',
     'to_order_sn'           => '主订单：',
@@ -421,7 +421,7 @@ return array(
     'select_shipping'            => '请先选择配送方式',
     'want_insure'                => '我要保价',
     'update_goods'               => '更新商品',
-    'notice_user'                => '<strong>注意：</strong>搜索结果只显示前50条记录，如果没有找到相应会员，请更精确地查找。另外，如果该会员是从论坛注册的且没有在商城登录过，也无法找到，需要先在商城登录。',
+    'notice_user'                => '注意：搜索结果只显示前50条记录，如果没有找到相应会员，请更精确地查找。另外，如果该会员是从论坛注册的且没有在商城登录过，也无法找到，需要先在商城登录。',
     'amount_increase'            => '由于您修改了订单，导致订单总金额增加，需要再次付款',
     'amount_decrease'            => '由于您修改了订单，导致订单总金额减少，需要退款',
     'continue_shipping'          => '由于您修改了收货人所在地区，导致原来的配送方式不再可用，请重新选择配送方式',

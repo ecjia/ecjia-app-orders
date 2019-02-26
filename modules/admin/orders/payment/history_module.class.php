@@ -136,8 +136,30 @@ class history_module extends api_admin implements api_interface
     {
         $codes = config('app-cashier::cashier_device_code');
         if (!empty($data)) {
+            $os = array(
+                OS_UNCONFIRMED   => '未接单',
+                OS_CONFIRMED     => '已接单',
+                OS_CANCELED      => '<font color="red">取消</font>',
+                OS_INVALID       => '<font color="red">无效</font>',
+                OS_RETURNED      => '<font color="red">退货</font>',
+                OS_SPLITED       => '已分单',
+                OS_SPLITING_PART => '部分分单',
+            );
+            $ps = array(
+                PS_UNPAYED => '未付款',
+                PS_PAYING  => '付款中',
+                PS_PAYED   => '已付款',
+            );
+            $ss = array(
+                SS_UNSHIPPED    => '未发货',
+                SS_PREPARING    => '配货中',
+                SS_SHIPPED      => '已发货',
+                SS_RECEIVED     => '收货确认',
+                SS_SHIPPED_PART => '已发货(部分商品)',
+                SS_SHIPPED_ING  => '发货中',
+            );
             foreach ($data as $key => $val) {
-                $order_status = ($val['order_status'] != '2' || $val['order_status'] != '3') ? RC_Lang::get('orders::order.os.' . $val['order_status']) : '';
+                $order_status = ($val['order_status'] != '2' || $val['order_status'] != '3') ? $os[$val['order_status']] : '';
                 $order_status = $val['order_status'] == '2' ? __('已取消') : $order_status;
                 $order_status = $val['order_status'] == '3' ? __('无效') : $order_status;
 
@@ -158,7 +180,7 @@ class history_module extends api_admin implements api_interface
                 $data[$key]['formated_shipping_fee']   = price_format($val['shipping_fee'], false);
                 $data[$key]['formated_discount']       = price_format($val['discount'], false);
                 $data[$key]['create_time']             = RC_Time::local_date(ecjia::config('date_format'), $val['add_time']);
-                $data[$key]['status']                  = $order_status . ',' . RC_Lang::get('orders::order.ps.' . $val['pay_status']) . ',' . RC_Lang::get('orders::order.ss.' . $val['shipping_status']);
+                $data[$key]['status']                  = $order_status . ',' . $ps[$val['pay_status']] . ',' . $ss[$val['shipping_status']];
                 $data[$key]['verify_code']             = $this->get_verify_code($val['order_id']);
                 $data[$key]['store_name']              = $val['store_id'] > 0 ? $this->get_store_name($val['store_id']) : '';
                 $order_goods_list                      = $this->get_order_goods($val['order_id']);

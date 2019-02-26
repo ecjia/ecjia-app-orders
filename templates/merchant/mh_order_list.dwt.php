@@ -44,7 +44,7 @@
 				<ul class="nav nav-pills">
 					{if $order_model eq 'default'}
 					<li class="{if $filter.composite_status eq ''}active{/if}">
-						<a class="data-pjax" data-href="{RC_Uri::url('orders/merchant/init')}" href="{$search_url}">{lang key='orders::order.all'}
+						<a class="data-pjax" data-href="{RC_Uri::url('orders/merchant/init')}" href="{$search_url}">全部
 							<span class="badge badge-info">{if $count.all}{$count.all}{else}0{/if}</span>
 						</a>
 					</li>
@@ -125,7 +125,7 @@
 						<li>
 							<a class="batch-del-btn" data-toggle="ecjiabatch" data-name="order_id" data-idClass=".checkbox:checked" data-url="{$form_action}&operation=remove"
 							    data-msg="{lang key='orders::order.remove_confirm'}" href="javascript:;">
-								<i class="fa fa-trash-o"></i> {lang key='system::system.remove'}</a>
+								<i class="fa fa-trash-o"></i> 删除</a>
 						</li>
 						{/if}
 						<li>
@@ -142,12 +142,12 @@
 				{if $order_model eq 'default'}
 				<div class="form-group">
 					<select class="w180" name="status" id="select-rank">
-						<option value="-1">{lang key='orders::order.all_status'}</option>
+						<option value="-1">订单状态</option>
 						<!-- {html_options options=$status_list selected=$filter.composite_status } -->
 					</select>
 				</div>
 				<button class="btn btn-primary screen-btn" type="button">
-					<i class="fa fa-search"></i> {lang key='orders::order.filter'} </button>
+					<i class="fa fa-search"></i> 筛选 </button>
 				{/if}
 				<form class="form-inline pull-right" action="{RC_Uri::url('orders/merchant/init')}{if $smarty.get.extension_code}&extension_code={$smarty.get.extension_code}{/if}{if $smarty.get.composite_status}&composite_status={$smarty.get.composite_status}{/if}"
 				    method="post" name="searchForm">
@@ -155,7 +155,7 @@
 						<input type="text" class="form-control w230" name="keywords" value="{$smarty.get.keywords}" placeholder="请输入订单编号或购买者信息">
 					</div>
 					<button type="submit" class="btn btn-primary">
-						<i class="fa fa-search"></i> {lang key='orders::order.search'}</button>
+						<i class="fa fa-search"></i> 搜索</button>
 				</form>
 			</div>
 
@@ -172,11 +172,11 @@
 										</div>
 									</th>
 									<th class="w130">订单编号</th>
-									<th class="w180">{lang key='orders::order.order_time'}</th>
+									<th class="w180">下单时间</th>
 									<th class="w150">购买者信息</th>
-									<th class="w120">{lang key='orders::order.total_fee'}</th>
-									<th class="w110">{lang key='orders::order.order_amount'}</th>
-									<th class="w150">{lang key='orders::order.all_status'}</th>
+									<th class="w120">总金额</th>
+									<th class="w110">应付金额</th>
+									<th class="w150">订单状态</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -191,7 +191,7 @@
 									<td class="hide-edit-area">
 										{$order.order_sn}
 										<div class="edit-list">
-											<a href='{url path="orders/merchant/info" args="order_id={$order.order_id}"}' class="data-pjax" title="{lang key='orders::order.detail'}">{t}查看详情{/t}</a>
+											<a href='{url path="orders/merchant/info" args="order_id={$order.order_id}"}' class="data-pjax" title="查看">{t}查看详情{/t}</a>
 											{if $order.can_remove} &nbsp;|&nbsp;
 											<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg='{t name="{$order.order_sn}"}您确定要删除订单[ %1 ]吗？{/t}' href='{url path="orders/merchant/remove_order" args="order_id={$order.order_id}"}'
 											    title="{t}移除{/t}">{t}移除{/t}</a>
@@ -210,7 +210,7 @@
 								</tr>
 								<!-- {foreachelse}-->
 								<tr>
-									<td class="no-records" colspan="8">{lang key='system::system.no_records'}</td>
+									<td class="no-records" colspan="8">没有找到任何记录</td>
 								</tr>
 								<!-- {/foreach} -->
 							</tbody>

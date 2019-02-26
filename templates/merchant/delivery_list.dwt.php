@@ -20,7 +20,7 @@
 	    <div class="panel">
     		<ul class="nav nav-pills pull-left panel-heading">
     			<li class="{if !$smarty.get.type}active{/if}">
-    				<a class="data-pjax" href="{RC_Uri::url('orders/mh_delivery/init')}{if $filter.delivery_sn}&delivery_sn={$filter.delivery_sn}{/if}{if $filter.keywords}&keywords={$filter.keywords}{/if}" >{lang key='orders::order.already_shipped'}
+    				<a class="data-pjax" href="{RC_Uri::url('orders/mh_delivery/init')}{if $filter.delivery_sn}&delivery_sn={$filter.delivery_sn}{/if}{if $filter.keywords}&keywords={$filter.keywords}{/if}" >已发货
     					<span class="badge badge-info">{$type_count.already_shipped}</span>
     				</a>
     			</li>
@@ -37,9 +37,9 @@
     		</ul>
             <div class="col-lg-12 panel-heading form-inline">
     			 <div class="btn-group form-group">
-            	      <button  type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cogs"></i> {lang key='orders::order.bulk_operations'} <span class="caret"></span></button>
+            	      <button  type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cogs"></i> 批量操作 <span class="caret"></span></button>
                       <ul class="dropdown-menu operate_note">
-                           <li><a class="batch-del-btn" data-toggle="ecjiabatch" data-name="delivery_id" data-idClass=".checkbox:checked" data-url="{$form_action}" data-msg="您确定需要删除这些发货单吗？" data-noSelectMsg="请选择需要操作的发货单！" href="javascript:;"><i class="fa fa-trash-o"></i> {lang key='system::system.remove'}</a></li>
+                           <li><a class="batch-del-btn" data-toggle="ecjiabatch" data-name="delivery_id" data-idClass=".checkbox:checked" data-url="{$form_action}" data-msg="您确定需要删除这些发货单吗？" data-noSelectMsg="请选择需要操作的发货单！" href="javascript:;"><i class="fa fa-trash-o"></i> 删除</a></li>
                       </ul>
                 </div>	
                 <form class="form-inline pull-right" action='{RC_Uri::url("orders/mh_delivery/init")}{if $smarty.get.type}&type={$smarty.get.type}{/if}' method="post" name="searchForm">
@@ -47,7 +47,7 @@
         				<input type="text" class="form-control" name="delivery_sn" value="{$filter.delivery_sn}" placeholder="{lang key='orders::order.pls_delivery_sn_number'}">
         			    <input type="text" class="form-control" name="keywords" value="{$filter.keywords}" placeholder="{lang key='orders::order.pls_consignee'}">
         			</div>
-        			<button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> {lang key='system::system.button_search'} </button>
+        			<button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 搜索 </button>
         		</form>
     		</div>
 		
@@ -62,13 +62,13 @@
 										<label for="checkall"></label>
 									</div>
 					            </th>
-								<th>{lang key='orders::order.label_delivery_sn'}</th>
-								<th>{lang key='orders::order.order_sn'}</th>
-								<th>{lang key='orders::order.order_time'}</th>
-								<th>{lang key='orders::order.consignee'}</th>
-								<th>{lang key='orders::order.label_update_time'}</th>
-								<th>{lang key='orders::order.label_delivery_status'}</th>
-								<th>{lang key='orders::order.action_user_two'}</th>
+								<th>发货单流水号</th>
+								<th>订单号</th>
+								<th>下单时间</th>
+								<th>收货人</th>
+								<th>发货时间</th>
+								<th>发货单状态</th>
+								<th>操作者</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -83,7 +83,7 @@
 								<td class="hide-edit-area">
 									{$delivery.delivery_sn}
 									<div class="edit-list">
-										<a class="data-pjax" href='{url path="orders/mh_delivery/delivery_info" args="delivery_id={$delivery.delivery_id}"}' title="{lang key='orders::order.detail'}">{t}{lang key='orders::order.detailed_information'}{/t}</a>&nbsp;|&nbsp;
+										<a class="data-pjax" href='{url path="orders/mh_delivery/delivery_info" args="delivery_id={$delivery.delivery_id}"}' title="查看">{t}{lang key='orders::order.detailed_information'}{/t}</a>&nbsp;|&nbsp;
 										<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg='{t name="{$delivery.delivery_sn}"}您确定要删除发货单[ %1 ]吗？{/t}' href='{url path="orders/mh_delivery/remove" args="delivery_id={$delivery.delivery_id}{if $smarty.get.type}&type={$smarty.get.type}{/if}"}' title="{t}移除{/t}">{t}{lang key='orders::order.remove'}{/t}</a>
 									</div>
 								</td>
@@ -95,7 +95,7 @@
 								<td>{$delivery.action_user}</td>
 							</tr>
 							<!-- {foreachelse}-->
-							<tr><td class="no-records" colspan="8">{lang key='system::system.no_records'}</td></tr>
+							<tr><td class="no-records" colspan="8">没有找到任何记录</td></tr>
 							<!-- {/foreach} -->
 						</tbody>
 					</table> 

@@ -223,10 +223,32 @@ class admin_orders_detail_module extends api_admin implements api_interface
         $db_order_action = RC_Model::model('orders/order_action_model');
         $data            = $db_order_action->where(array('order_id' => $order['order_id']))->order(array('log_time' => 'asc', 'action_id' => 'asc'))->select();
         if (!empty($data)) {
+            $os = array(
+                OS_UNCONFIRMED   => '未接单',
+                OS_CONFIRMED     => '已接单',
+                OS_CANCELED      => '<font color="red">取消</font>',
+                OS_INVALID       => '<font color="red">无效</font>',
+                OS_RETURNED      => '<font color="red">退货</font>',
+                OS_SPLITED       => '已分单',
+                OS_SPLITING_PART => '部分分单',
+            );
+            $ps = array(
+                PS_UNPAYED => '未付款',
+                PS_PAYING  => '付款中',
+                PS_PAYED   => '已付款',
+            );
+            $ss = array(
+                SS_UNSHIPPED    => '未发货',
+                SS_PREPARING    => '配货中',
+                SS_SHIPPED      => '已发货',
+                SS_RECEIVED     => '收货确认',
+                SS_SHIPPED_PART => '已发货(部分商品)',
+                SS_SHIPPED_ING  => '发货中',
+            );
             foreach ($data as $key => $row) {
-                $row['order_status']    = RC_Lang::get('orders::order.os.' . $row['order_status']);
-                $row['pay_status']      = RC_Lang::get('orders::order.ps.' . $row['pay_status']);
-                $row['shipping_status'] = RC_Lang::get('orders::order.ss.' . $row['shipping_status']);
+                $row['order_status']    = $os[$row['order_status']];
+                $row['pay_status']      = $ps[$row['pay_status']];
+                $row['shipping_status'] = $ss[$row['shipping_status']];
                 $row['order_status']    = strip_tags($row['order_status']);//处理html标签
                 $row['action_time']     = RC_Time::local_date(ecjia::config('time_format'), $row['log_time']);
                 $act_list[]             = array(

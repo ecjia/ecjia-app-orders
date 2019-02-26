@@ -271,7 +271,7 @@ class mh_sale_general extends ecjia_merchant
             ->get();
 
         /* 文件名 */
-        $filename = RC_Lang::get('orders::statistic.sale_general_statement');
+        $filename = '销售概况报表';
 
         header("Content-type: application/vnd.ms-excel; charset=utf-8");
         header("Content-Disposition: attachment; filename=$filename.xls");
@@ -280,9 +280,9 @@ class mh_sale_general extends ecjia_merchant
         echo mb_convert_encoding($filename . '销售统计', 'UTF-8', 'UTF-8') . "\t\n";
 
         /* 订单数量, 销售出商品数量, 销售金额 */
-        echo mb_convert_encoding(RC_LANG::lang('period'), 'UTF-8', 'UTF-8') . "\t";
-        echo mb_convert_encoding(RC_LANG::lang('order_count_trend'), 'UTF-8', 'UTF-8') . "\t";
-        echo mb_convert_encoding(RC_LANG::lang('order_amount_trend'), 'UTF-8', 'UTF-8') . "\t\n";
+        echo mb_convert_encoding('时间段', 'UTF-8', 'UTF-8') . "\t";
+        echo mb_convert_encoding('订单数(单位：个)', 'UTF-8', 'UTF-8') . "\t";
+        echo mb_convert_encoding('营业额(单位：元)', 'UTF-8', 'UTF-8') . "\t\n";
         foreach ($data_list AS $data) {
             echo mb_convert_encoding($data['period'], 'UTF-8', 'UTF-8') . "\t";
             echo mb_convert_encoding($data['order_count'], 'UTF-8', 'UTF-8') . "\t";

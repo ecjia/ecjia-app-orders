@@ -202,7 +202,7 @@ class admin extends ecjia_admin
             $order    = order_info(0, $order_sn);
         }
         if (empty($order)) {
-            return $this->showmessage('该订单不存在', ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR, array('links' => array(array('text' => RC_Lang::get('orders::order.return_list'), 'href' => RC_Uri::url('orders/admin/init')))));
+            return $this->showmessage('该订单不存在', ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR, array('links' => array(array('text' => '返回订单列表', 'href' => RC_Uri::url('orders/admin/init')))));
         }
 
         /*发票抬头和发票识别码处理*/
@@ -334,8 +334,7 @@ class admin extends ecjia_admin
         $order['shipping_time'] = RC_Time::local_date(ecjia::config('time_format'), $order['shipping_time']);
         $order['confirm_time']  = RC_Time::local_date(ecjia::config('time_format'), $order['confirm_time']);
 
-        $ss_label            = with(new Ecjia\App\Orders\OrderStatus())->getOrderSsStatusLabel(SS_UNSHIPPED);
-        $order['invoice_no'] = $order['shipping_status'] == SS_UNSHIPPED || $order['shipping_status'] == SS_PREPARING ? $ss_label : $order['invoice_no'];
+        $order['invoice_no'] = $order['shipping_status'] == SS_UNSHIPPED || $order['shipping_status'] == SS_PREPARING ? '未发货' : $order['invoice_no'];
 
         $is_cod          = $order['pay_code'] == 'pay_cod' ? 1 : 0;
         $status          = with(new Ecjia\App\Orders\OrderStatus())->getOrderStatusLabel($order['order_status'], $order['shipping_status'], $order['pay_status'], $is_cod);
@@ -1832,8 +1831,7 @@ class admin extends ecjia_admin
         /* 查询：其他处理 */
         $order['order_time'] = RC_Time::local_date(ecjia::config('time_format'), $order['add_time']);
 
-        $ss_label            = with(new Ecjia\App\Orders\OrderStatus())->getOrderSsStatusLabel(SS_UNSHIPPED);
-        $order['invoice_no'] = $order['shipping_status'] == SS_UNSHIPPED || $order['shipping_status'] == SS_PREPARING ? $ss_label : $order['invoice_no'];
+        $order['invoice_no'] = $order['shipping_status'] == SS_UNSHIPPED || $order['shipping_status'] == SS_PREPARING ? '未发货' : $order['invoice_no'];
 
         /* 查询：是否保价 */
         $order['insure_yn'] = empty($order['insure_fee']) ? 0 : 1;
@@ -2169,19 +2167,16 @@ class admin extends ecjia_admin
                 /* 其他处理 */
                 $order['order_time'] = RC_Time::local_date(ecjia::config('time_format'), $order['add_time']);
 
-                $ps_label          = with(new Ecjia\App\Orders\OrderStatus())->getOrderPsStatusLabel(PS_UNPAYED);
-                $order['pay_time'] = $order['pay_time'] > 0 ? RC_Time::local_date(ecjia::config('time_format'), $order['pay_time']) : $ps_label;
+                $order['pay_time'] = $order['pay_time'] > 0 ? RC_Time::local_date(ecjia::config('time_format'), $order['pay_time']) : '未付款';
 
-                $ss_label               = with(new Ecjia\App\Orders\OrderStatus())->getOrderSsStatusLabel(SS_UNSHIPPED);
-                $order['shipping_time'] = $order['shipping_time'] > 0 ? RC_Time::local_date(ecjia::config('time_format'), $order['shipping_time']) : $ss_label;
+                $order['shipping_time'] = $order['shipping_time'] > 0 ? RC_Time::local_date(ecjia::config('time_format'), $order['shipping_time']) : '未发货';
 
                 $order_status_label    = with(new Ecjia\App\Orders\OrderStatus())->getOrderOsStatusLabel($order['order_status']);
                 $pay_status_label      = with(new Ecjia\App\Orders\OrderStatus())->getOrderPsStatusLabel($order['pay_status']);
                 $shipping_status_label = with(new Ecjia\App\Orders\OrderStatus())->getOrderSsStatusLabel($order['shipping_status']);
                 $order['status']       = $order_status_label . ',' . $pay_status_label . ',' . $shipping_status_label;
 
-                $ss_label            = with(new Ecjia\App\Orders\OrderStatus())->getOrderSsStatusLabel(SS_UNSHIPPED);
-                $order['invoice_no'] = $order['shipping_status'] == SS_UNSHIPPED || $order['shipping_status'] == SS_PREPARING ? $ss_label : $order['invoice_no'];
+                $order['invoice_no'] = $order['shipping_status'] == SS_UNSHIPPED || $order['shipping_status'] == SS_PREPARING ? '未发货' : $order['invoice_no'];
 
                 /* 此订单的发货备注(此订单的最后一条操作记录) */
                 $order['invoice_note'] = RC_DB::table('order_action')->where('order_id', $order['order_id'])->where('shipping_status', 1)->orderby('log_time', 'desc')->pluck('action_note');
@@ -2481,9 +2476,30 @@ class admin extends ecjia_admin
                 $sn_str .= "<br>" . '订单号：' . $row['order_sn'] . ";&nbsp;&nbsp;&nbsp;";
 
                 $order_list_fail = '';
+                $op              = array(
+                    'confirm'        => '确认',
+                    'pay'            => '付款',
+                    'prepare'        => '配货',
+                    'ship'           => '发货',
+                    'cancel'         => '取消',
+                    'invalid'        => '无效',
+                    'return'         => '退货',
+                    'unpay'          => '设为未付款',
+                    'unship'         => '未发货',
+                    'confirm_pay'    => '确认付款',
+                    'cancel_ship'    => '取消发货',
+                    'receive'        => '已收货',
+                    'assign'         => '指派给',
+                    'after_service'  => '售后',
+                    'return_confirm' => '退货确认',
+                    'remove'         => '删除',
+                    'you_can'        => '您可进行的操作',
+                    'split'          => '生成发货单',
+                    'to_delivery'    => '去发货',
+                );
                 foreach (operable_list($row) as $key => $value) {
                     if ($key != $operation) {
-                        $order_list_fail .= "&nbsp;" . RC_Lang::get('orders::order.op_' . $key); //TODO
+                        $order_list_fail .= "&nbsp;" . $op[$key];
                     }
                 }
                 $sn_str .= '您可进行的操作：' . substr($order_list_fail, 0);
@@ -2522,8 +2538,7 @@ class admin extends ecjia_admin
             update_order_amount($order_id);
 
             /* 记录日志 */
-            $os_label = with(new Ecjia\App\Orders\OrderStatus())->getOrderOsStatusLabel(OS_CONFIRMED);
-            ecjia_admin::admin_log($os_label . ' ' . '订单号是 ' . $order['order_sn'], 'edit', 'order_status');
+            ecjia_admin::admin_log('已接单，订单号是 ' . $order['order_sn'], 'edit', 'order_status');
             /* 记录log */
             order_action($order['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_UNPAYED, $action_note);
 
@@ -2579,8 +2594,7 @@ class admin extends ecjia_admin
             update_order($order_id, $arr);
 
             /* 记录日志 */
-            $ps_label = with(new Ecjia\App\Orders\OrderStatus())->getOrderPsStatusLabel(PS_PAYED);
-            ecjia_admin::admin_log($ps_label . ' ' . '订单号是 ' . $order['order_sn'], 'edit', 'order_status');
+            ecjia_admin::admin_log('已付款，订单号是 ' . $order['order_sn'], 'edit', 'order_status');
             /* 记录log */
             order_action($order['order_sn'], OS_CONFIRMED, $order['shipping_status'], PS_PAYED, $action_note);
         } elseif ('unpay' == $operation) {
@@ -2627,8 +2641,7 @@ class admin extends ecjia_admin
             $arr['shipping_status'] = SS_PREPARING;
             update_order($order_id, $arr);
             /* 记录日志 */
-            $ss_label = with(new Ecjia\App\Orders\OrderStatus())->getOrderSsStatusLabel(SS_PREPARING);
-            ecjia_admin::admin_log($ss_label . ' ' . '订单号是 ' . $order['order_sn'], 'edit', 'order_status');
+            ecjia_admin::admin_log('配货中，订单号是 ' . $order['order_sn'], 'edit', 'order_status');
             /* 记录log */
             order_action($order['order_sn'], OS_CONFIRMED, SS_PREPARING, $order['pay_status'], $action_note);
         } elseif ('split' == $operation) {
@@ -2667,10 +2680,7 @@ class admin extends ecjia_admin
             if ($order['order_status'] == OS_SPLITED) {
                 /* 操作失败 */
                 $links[] = array('text' => '订单信息', 'href' => RC_Uri::url('orders/admin/info', 'order_id=' . $order_id));
-
-                $os_label = with(new Ecjia\App\Orders\OrderStatus())->getOrderOsStatusLabel(OS_SPLITED);
-                $ss_label = with(new Ecjia\App\Orders\OrderStatus())->getOrderSsStatusLabel(SS_SHIPPED_ING);
-                return $this->showmessage(sprintf('您的订单%s，%s正在%s %s', $order['order_sn'], $os_label, $ss_label, ecjia::config('shop_name')), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
+                return $this->showmessage(sprintf('您的订单%s，%s正在%s，%s', $order['order_sn'], '已分单', '发货中', ecjia::config('shop_name')), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
             }
 
             /* 取得订单商品 */
@@ -2886,9 +2896,8 @@ class admin extends ecjia_admin
             $delivery_id = RC_DB::table('delivery_order')->insertGetId($_delivery);
 
             if ($delivery_id) {
-                $ss_label = with(new Ecjia\App\Orders\OrderStatus())->getOrderSsStatusLabel(SS_PREPARING);
                 $data = array(
-                    'order_status' => $ss_label,
+                    'order_status' => '配货中',
                     'order_id'     => $order_id,
                     'message'      => sprintf('订单号为 %s 的商品正在备货中，请您耐心等待', $order['order_sn']),
                     'add_time'     => RC_Time::gmtime(),
@@ -3063,9 +3072,8 @@ class admin extends ecjia_admin
             }
             $update = update_order($order_id, $arr);
             if ($update) {
-                $ss_label = with(new Ecjia\App\Orders\OrderStatus())->getOrderSsStatusLabel(SS_RECEIVED);
                 $data = array(
-                    'order_status' => $ss_label,
+                    'order_status' => '收货确认',
                     'order_id'     => $order_id,
                     'message'      => '商品已送达，请签收，感谢您下次光顾！',
                     'add_time'     => RC_Time::gmtime(),

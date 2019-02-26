@@ -151,11 +151,17 @@ class OrderPrint
         }
         $address .= $order['address'];
 
+        $ps = array(
+            PS_UNPAYED => '未付款',
+            PS_PAYING  => '付款中',
+            PS_PAYED   => '已付款',
+        );
+
         $data = array(
             'order_sn'       => $order['order_sn'], //订单编号
             'order_trade_no' => $order_trade_no, //流水编号
             'payment'        => $order['pay_name'], //支付方式
-            'pay_status'     => RC_Lang::get('orders::order.ps.' . $order['pay_status']), //支付状态
+            'pay_status'     => $ps[$order['pay_status']], //支付状态
             'purchase_time'  => RC_Time::local_date('Y-m-d H:i:s', $order['add_time']), //下单时间
 
             'expect_shipping_time' => $order['expect_shipping_time'], //期望送达时间

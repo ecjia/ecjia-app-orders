@@ -90,22 +90,22 @@ class order_cancel_module extends api_front implements api_interface
         $order = $db->field('user_id, order_id, order_sn , surplus , integral , bonus_id, order_status, shipping_status, pay_status')->find(array('order_id' => $order_id));
 
         if (empty($order)) {
-            return new ecjia_error('order_exist', RC_Lang::get('orders::order.order_not_exist'));
+            return new ecjia_error('order_exist', '该订单不存在！');
         }
 
         // 如果用户ID大于0，检查订单是否属于该用户
         if ($user_id > 0 && $order['user_id'] != $user_id) {
-            return new ecjia_error('no_priv', RC_Lang::get('orders::order.no_priv'));
+            return new ecjia_error('no_priv', '你没有权限操作他人订单');
         }
 
         // 发货状态只能是“未发货”
         if ($order['shipping_status'] != SS_UNSHIPPED) {
-            return new ecjia_error('current_ss_not_cancel', RC_Lang::get('orders::order.current_ss_not_cancel'));
+            return new ecjia_error('current_ss_not_cancel', '只有在未发货状态下才能取消，你可以与店主联系。');
         }
 
         // 如果付款状态是“已付款”、“付款中”，不允许取消，要取消和商家联系
         if ($order['pay_status'] != PS_UNPAYED) {
-            return new ecjia_error('current_ps_not_cancel', RC_Lang::get('orders::order.current_ps_not_cancel'));
+            return new ecjia_error('current_ps_not_cancel', '只有未付款状态才能取消，要取消请联系店主。');
         }
 
         if ($order['order_status'] == OS_CANCELED) {
@@ -129,13 +129,13 @@ class order_cancel_module extends api_front implements api_interface
             }
 
             /* 记录log */
-            order_action($order['order_sn'], OS_CANCELED, $order['shipping_status'], PS_UNPAYED, RC_Lang::get('orders::order.buyer_cancel'), 'buyer');
+            order_action($order['order_sn'], OS_CANCELED, $order['shipping_status'], PS_UNPAYED, '用户取消', 'buyer');
             /* 退货用户余额、积分、红包 */
             if ($order['user_id'] > 0 && $order['surplus'] > 0) {
                 $options = array(
                     'user_id'     => $order['user_id'],
                     'user_money'  => $order['surplus'],
-                    'change_desc' => sprintf(RC_Lang::get('orders::order.return_surplus_on_cancel'), $order['order_sn'])
+                    'change_desc' => sprintf('取消订单 %s，退回支付订单时使用的预付款', $order['order_sn'])
                 );
                 $result  = RC_Api::api('user', 'account_change_log', $options);
                 if (is_ecjia_error($result)) {
@@ -146,7 +146,7 @@ class order_cancel_module extends api_front implements api_interface
                 $options = array(
                     'user_id'     => $order['user_id'],
                     'pay_points'  => $order['integral'],
-                    'change_desc' => sprintf(RC_Lang::get('orders::order.return_integral_order_cancel'), $order['order_sn']),
+                    'change_desc' => sprintf('取消订单 %s，退回下订单时使用的积分', $order['order_sn']),
                     'from_type'   => 'ordercancel_back_integral',
                     'from_value'  => $order['order_sn']
                 );
@@ -175,7 +175,7 @@ class order_cancel_module extends api_front implements api_interface
             );
             update_order($order['order_id'], $arr);
             RC_DB::table('order_status_log')->insert(array(
-                'order_status' => RC_Lang::get('orders::order.order_cancel'),
+                'order_status' => '订单已取消',
                 'order_id'     => $order['order_id'],
                 'message'      => '您的订单已取消成功！',
                 'add_time'     => RC_Time::gmtime(),

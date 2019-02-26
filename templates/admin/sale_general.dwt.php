@@ -16,7 +16,7 @@ var templateCounts = '{$data}';
 <!-- {block name="main_content"} -->
 <div class="alert alert-info">
 	<a class="close" data-dismiss="alert">×</a>
-	<strong>{lang key='orders::statistic.tips'}</strong>{lang key='orders::statistic.no_order_default'}
+	<strong>温馨提示：</strong>{lang key='orders::statistic.no_order_default'}
 </div>
 <div>
 	<h3 class="heading">

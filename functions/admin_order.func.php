@@ -674,7 +674,7 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0)
     if ($refund_note) {
         $change_desc = $refund_note;
     } else {
-        $change_desc = sprintf(RC_Lang::get('orders::order.order_refund'), $order['order_sn']);
+        $change_desc = sprintf('订单退款：%s', $order['order_sn']);
     }
     /* 处理退款 */
     if (1 == $refund_type) {
@@ -687,7 +687,7 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0)
             RC_Api::api('user', 'account_change_log', $options);
         }
         /* user_account 表增加提款申请记录 */
-        $account = array('user_id' => $user_id, 'amount' => -1 * $amount, 'add_time' => RC_Time::gmtime(), 'user_note' => $refund_note, 'process_type' => SURPLUS_RETURN, 'admin_user' => isset($_SESSION['store_id']) ? $_SESSION['staff_name'] : $_SESSION['admin_name'], 'admin_note' => sprintf(RC_Lang::get('orders::order.order_refund'), $order['order_sn']), 'is_paid' => 0);
+        $account = array('user_id' => $user_id, 'amount' => -1 * $amount, 'add_time' => RC_Time::gmtime(), 'user_note' => $refund_note, 'process_type' => SURPLUS_RETURN, 'admin_user' => isset($_SESSION['store_id']) ? $_SESSION['staff_name'] : $_SESSION['admin_name'], 'admin_note' => sprintf('订单退款：%s', $order['order_sn']), 'is_paid' => 0);
         RC_DB::table('user_account')->insert($account);
     }
 
@@ -785,7 +785,7 @@ function change_goods_storage($goods_id, $product_id, $number = 0)
         /* by will.chen start*/
         $product_number = RC_DB::table('products')->where('goods_id', $goods_id)->where('product_id', $product_id)->pluck('product_number');
         if ($product_number < abs($number)) {
-            return new ecjia_error('low_stocks', RC_Lang::get('orders::order.goods_num_err'));
+            return new ecjia_error('low_stocks', '库存不足，请重新选择！');
         }
         /* end*/
         $products_query = RC_DB::table('products')->where('goods_id', $goods_id)->where('product_id', $product_id)->increment('product_number', $number);
@@ -793,7 +793,7 @@ function change_goods_storage($goods_id, $product_id, $number = 0)
     /* by will.chen start*/
     $goods_number = RC_DB::table('goods')->where('goods_id', $goods_id)->pluck('goods_number');
     if ($goods_number < abs($number)) {
-        return new ecjia_error('low_stocks', RC_Lang::get('orders::order.goods_num_err'));
+        return new ecjia_error('low_stocks', '库存不足，请重新选择！');
     }
     /* end*/
     /* 处理商品库存 */
@@ -823,7 +823,7 @@ function order_due_field($alias = '')
 function integral_to_give($order)
 {
     /* 判断是否团购 */
-    // 	TODO:团购暂时注释给的固定参数
+    // TODO:团购暂时注释给的固定参数
     $order['extension_code'] = '';
     if ($order['extension_code'] == 'group_buy') {
         RC_Loader::load_app_func('admin_goods', 'goods');
@@ -1151,7 +1151,7 @@ function get_order_detail($order_id, $user_id = 0, $type = '')
     $order = order_info($order_id, '', $type);
     // 检查订单是否属于该用户
     if ($user_id > 0 && $user_id != $order['user_id']) {
-        return new ecjia_error('error_order_detail', RC_Lang::get('orders::order.error_order_detail'));
+        return new ecjia_error('error_order_detail', '订单不属于该用户');
     }
     /* 入驻商信息*/
     if ($order['store_id'] > 0) {
@@ -1159,7 +1159,7 @@ function get_order_detail($order_id, $user_id = 0, $type = '')
         $order['seller_name']   = $merchant_info['merchants_name'];
         $order['service_phone'] = RC_DB::table('merchants_config')->where(RC_DB::raw('store_id'), $order['store_id'])->where(RC_DB::raw('code'), 'shop_kf_mobile')->pluck('value');
     } else {
-        $order['seller_name']   = RC_Lang::get('orders::order.self_support');
+        $order['seller_name']   = '自营';
         $order['service_phone'] = ecjia::config('service_phone');
     }
     /* 对发货号处理 */
@@ -1179,7 +1179,7 @@ function get_order_detail($order_id, $user_id = 0, $type = '')
     $order['log_id']    = intval($pay_method->get_paylog_id($order['order_id'], $pay_type = PAY_ORDER));
     $order['user_name'] = $_SESSION['user_name'];
     /* 无配送时的处理 */
-    $order['shipping_id'] == -1 and $order['shipping_name'] = RC_Lang::get('orders::order.shipping_not_need');
+    $order['shipping_id'] == -1 and $order['shipping_name'] = '无需使用配送方式';
     /* 其他信息初始化 */
     $order['how_oos_name']     = $order['how_oos'];
     $order['how_surplus_name'] = $order['how_surplus'];
@@ -1611,9 +1611,9 @@ function get_back_list()
             $row[$key]['add_time']    = RC_Time::local_date(ecjia::config('time_format'), $value['add_time']);
             $row[$key]['update_time'] = RC_Time::local_date(ecjia::config('time_format'), $value['update_time']);
             if ($value['status'] == 1) {
-                $row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.1');
+                $row[$key]['status_name'] = '退货';
             } else {
-                $row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.0');
+                $row[$key]['status_name'] = '已发货';
             }
         }
     }
@@ -1673,11 +1673,11 @@ function get_delivery_list()
             $row[$key]['add_time']    = RC_Time::local_date(ecjia::config('time_format'), $value['add_time']);
             $row[$key]['update_time'] = RC_Time::local_date(ecjia::config('time_format'), $value['update_time']);
             if ($value['status'] == 1) {
-                $row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.1');
+                $row[$key]['status_name'] = '退货';
             } elseif ($value['status'] == 2) {
-                $row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.2');
+                $row[$key]['status_name'] = '正常';
             } else {
-                $row[$key]['status_name'] = RC_Lang::get('orders::order.delivery_status.0');
+                $row[$key]['status_name'] = '已发货';
             }
         }
     }

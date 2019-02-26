@@ -11,7 +11,7 @@
 <!--销售明细-->
 <div class="alert alert-info">
 	<a class="close" data-dismiss="alert">×</a>
-	<strong>{lang key='orders::statistic.tips'}</strong>{lang key='orders::statistic.no_sales_details'}
+	<strong>温馨提示：</strong>{lang key='orders::statistic.no_sales_details'}
 </div>
 
 <div>
@@ -40,7 +40,7 @@
 		<thead>
 			<tr>
 				<th>{lang key='orders::statistic.goods_name'}</th>
-				<th class="w200">{lang key='orders::order.merchants_name'}</th>
+				<th class="w200">商家名称</th>
 				<th class="w200">{lang key='orders::statistic.order_sn'}</th>
 				<th class="w70">{lang key='orders::statistic.amount'}</th>
 				<th class="w120">{lang key='orders::statistic.sell_price'}</th>
@@ -60,7 +60,7 @@
 				<td>{$list.sales_time}</td>
 			</tr>
 			<!-- {foreachelse} -->
-	    	<tr><td class="dataTables_empty" colspan="6">{lang key='system::system.no_records'}</td></tr>
+	    	<tr><td class="dataTables_empty" colspan="6">没有找到任何记录</td></tr>
 	  		<!-- {/foreach} -->
 		</tbody>
 	</table>

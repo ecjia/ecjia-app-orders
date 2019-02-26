@@ -91,7 +91,7 @@ class mh_sale_list extends ecjia_merchant
         ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here('销售明细'));
 
         $this->assign('ur_here', '销售明细');
-        $this->assign('action_link', array('text' => RC_Lang::get('orders::statistic.down_sales'), 'href' => RC_Uri::url('orders/mh_sale_list/download')));
+        $this->assign('action_link', array('text' => '下载销售明细', 'href' => RC_Uri::url('orders/mh_sale_list/download')));
 
         /* 时间参数 */
         $start_date = !empty($_GET['start_date']) ? $_GET['start_date'] : RC_Time::local_date(ecjia::config('date_format'), RC_Time::local_strtotime('-7 days'));
@@ -129,7 +129,7 @@ class mh_sale_list extends ecjia_merchant
         header("Content-type: application/vnd.ms-excel; charset=utf-8");
         header("Content-Disposition: attachment; filename=$file_name.xls");
 
-        echo mb_convert_encoding($filename . RC_LANG::lang('sales_list_statement'), 'UTF-8', 'UTF-8') . "\t\n";
+        echo mb_convert_encoding($file_name . '销售明细报表', 'UTF-8', 'UTF-8') . "\t\n";
         $data = '商品名称' . "\t" . '订单号' . "\t" . '数量' . "\t" . '售价' . "\t" . '售出日期' . "\n";
 
         foreach ($goods_sales_list as $row) {

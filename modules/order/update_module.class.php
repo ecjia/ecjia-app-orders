@@ -101,11 +101,7 @@ class order_update_module extends api_front implements api_interface
         	'pay_fee'  		=> $payment_info['pay_fee'],
         	'order_amount'	=> $order_amount
         ];
-        if ($result) {
-            return $order_result;
-        } else {
-            return new ecjia_error('fail_error', '处理失败！');
-        }
+        return $order_result;
     }
 }
 

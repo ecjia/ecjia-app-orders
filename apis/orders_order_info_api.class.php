@@ -120,7 +120,7 @@ class orders_order_info_api extends Component_Event_Api
 
             // 检查订单是否属于该用户
             if ($user_id > 0 && $user_id != $order['user_id']) {
-                return new ecjia_error('orders_error', '未找到相应订单！');
+                return new ecjia_error('orders_error', __('未找到相应订单！', 'orders'));
             }
 
 // 	        $payment_method = RC_Loader::load_app_class('payment_method', 'payment');
@@ -134,26 +134,26 @@ class orders_order_info_api extends Component_Event_Api
             if (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED)) &&
                 in_array($order['shipping_status'], array(SS_RECEIVED)) &&
                 in_array($order['pay_status'], array(PS_PAYED, PS_PAYING))) {
-                $order['label_order_status'] = '已完成';
+                $order['label_order_status'] = __('已完成', 'orders');
                 $order['order_status_code']  = 'finished';
             } elseif (in_array($order['shipping_status'], array(SS_SHIPPED))) {
-                $order['label_order_status'] = '待收货';
+                $order['label_order_status'] = __('待收货', 'orders');
                 $order['order_status_code']  = 'shipped';
             } elseif (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) &&
                 in_array($order['pay_status'], array(PS_UNPAYED)) &&
                 (in_array($order['shipping_status'], array(SS_SHIPPED, SS_RECEIVED)) || !$payment['is_cod'])) {
-                $order['label_order_status'] = '待付款';
+                $order['label_order_status'] = __('待付款', 'orders');
                 $order['order_status_code']  = 'await_pay';
             } elseif (in_array($order['order_status'], array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
                 in_array($order['shipping_status'], array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING)) &&
                 (in_array($order['pay_status'], array(PS_PAYED, PS_PAYING)) || $payment['is_cod'])) {
-                $order['label_order_status'] = '待发货';
+                $order['label_order_status'] = __('待发货', 'orders');
                 $order['order_status_code']  = 'await_ship';
             } elseif (in_array($order['order_status'], array(OS_CANCELED))) {
-                $order['label_order_status'] = '已取消';
+                $order['label_order_status'] = __('已取消', 'orders');
                 $order['order_status_code']  = 'canceled';
             } elseif (in_array($order['order_status'], array(OS_RETURNED))) {
-                $order['label_order_status'] = '退款';
+                $order['label_order_status'] = __('退款', 'orders');
                 $order['order_status_code']  = 'refunded';
             }
 
@@ -186,7 +186,7 @@ class orders_order_info_api extends Component_Event_Api
             if (empty($order['shipping_id'])) {
                 //$order['shipping_id'] == - 1 and $order['shipping_name'] = RC_Lang::get('orders::order.shipping_not_need');
                 $order['shipping_id']   = 0;
-                $order['shipping_name'] = '无需使用配送方式';
+                $order['shipping_name'] = __('无需使用配送方式', 'orders');
             }
 
             /* 其他信息初始化 */

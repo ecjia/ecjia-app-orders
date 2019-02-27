@@ -107,19 +107,19 @@ class orders_order_operable_list_api extends Component_Event_Api
         if (OS_UNCONFIRMED == $os) {
             /* 状态：未确认 => 未付款、未发货 */
             if ($priv_list['os']) {
-                $list['confirm'] = true;    // 确认
-                $list['invalid'] = true;    // 无效
-                $list['cancel']  = true;    // 取消
+                $list['confirm'] = true; // 确认
+                $list['invalid'] = true; // 无效
+                $list['cancel']  = true; // 取消
                 if ($is_cod) {
                     /* 货到付款 */
                     if ($priv_list['ss']) {
-                        $list['prepare'] = true;    // 配货
-                        $list['split']   = true;    // 分单
+                        $list['prepare'] = true; // 配货
+                        $list['split']   = true; // 分单
                     }
                 } else {
                     /* 不是货到付款 */
                     if ($priv_list['ps']) {
-                        $list['pay'] = true;    // 付款
+                        $list['pay'] = true; // 付款
                     }
                 }
             }
@@ -130,42 +130,42 @@ class orders_order_operable_list_api extends Component_Event_Api
                 if (SS_UNSHIPPED == $ss || SS_PREPARING == $ss) {
                     /* 状态：已确认、未付款、未发货（或配货中） */
                     if ($priv_list['os']) {
-                        $list['cancel']  = true;        // 取消
-                        $list['invalid'] = true;    // 无效
+                        $list['cancel']  = true; // 取消
+                        $list['invalid'] = true; // 无效
                     }
                     if ($is_cod) {
                         /* 货到付款 */
                         if ($priv_list['ss']) {
                             if (SS_UNSHIPPED == $ss) {
-                                $list['prepare'] = true;    // 配货
+                                $list['prepare'] = true; // 配货
                             }
-                            $list['split'] = true;    // 分单
+                            $list['split'] = true; // 分单
                         }
                     } else {
                         /* 不是货到付款 */
                         if ($priv_list['ps']) {
-                            $list['pay'] = true;    // 付款
+                            $list['pay'] = true; // 付款
                         }
                     }
                 } elseif (SS_SHIPPED_ING == $ss || SS_SHIPPED_PART == $ss) {
                     /* 状态：已确认、未付款、发货中 */
                     // 部分分单
                     if (OS_SPLITING_PART == $os) {
-                        $list['split'] = true;        // 分单
+                        $list['split'] = true; // 分单
                     }
-                    $list['to_delivery'] = true;    // 去发货
+                    $list['to_delivery'] = true; // 去发货
                 } else {
                     /* 状态：已确认、未付款、已发货或已收货 => 货到付款 */
                     if ($priv_list['ps']) {
-                        $list['pay'] = true;    // 付款
+                        $list['pay'] = true; // 付款
                     }
                     if ($priv_list['ss']) {
                         if (SS_SHIPPED == $ss) {
-                            $list['receive'] = true;    // 收货确认
+                            $list['receive'] = true; // 收货确认
                         }
-                        $list['unship'] = true;    // 设为未发货
+                        $list['unship'] = true; // 设为未发货
                         if ($priv_list['os']) {
-                            $list['return'] = true;    // 退货
+                            $list['return'] = true; // 退货
                         }
                     }
                 }
@@ -175,38 +175,38 @@ class orders_order_operable_list_api extends Component_Event_Api
                     /* 状态：已确认、已付款和付款中、未发货（配货中） => 不是货到付款 */
                     if ($priv_list['ss']) {
                         if (SS_UNSHIPPED == $ss) {
-                            $list['prepare'] = true;    // 配货
+                            $list['prepare'] = true; // 配货
                         }
-                        $list['split'] = true;    // 分单
+                        $list['split'] = true; // 分单
                     }
                     if ($priv_list['ps']) {
-                        $list['unpay'] = true;    // 设为未付款
+                        $list['unpay'] = true; // 设为未付款
                         if ($priv_list['os']) {
-                            $list['cancel'] = true;    // 取消
+                            $list['cancel'] = true; // 取消
                         }
                     }
                 } elseif (SS_SHIPPED_ING == $ss || SS_SHIPPED_PART == $ss) {
                     /* 状态：已确认、未付款、发货中 */
                     // 部分分单
                     if (OS_SPLITING_PART == $os) {
-                        $list['split'] = true;    // 分单
+                        $list['split'] = true; // 分单
                     }
-                    $list['to_delivery'] = true;    // 去发货
+                    $list['to_delivery'] = true; // 去发货
                 } else {
                     /* 状态：已确认、已付款和付款中、已发货或已收货 */
                     if ($priv_list['ss']) {
                         if (SS_SHIPPED == $ss) {
-                            $list['receive'] = true;    // 收货确认
+                            $list['receive'] = true; // 收货确认
                         }
                         if (!$is_cod) {
-                            $list['unship'] = true;    // 设为未发货
+                            $list['unship'] = true; // 设为未发货
                         }
                     }
                     if ($priv_list['ps'] && $is_cod) {
-                        $list['unpay'] = true;    // 设为未付款
+                        $list['unpay'] = true; // 设为未付款
                     }
                     if ($priv_list['os'] && $priv_list['ss'] && $priv_list['ps']) {
-                        $list['return'] = true;    // 退货（包括退款）
+                        $list['return'] = true; // 退货（包括退款）
                     }
                 }
             }
@@ -248,8 +248,8 @@ class orders_order_operable_list_api extends Component_Event_Api
 
             /* 如果部分发货 不允许 取消 订单 */
             if (order_deliveryed($order['order_id'])) {
-                $list['return'] = true;    // 退货（包括退款）
-                unset($list['cancel']);    // 取消
+                $list['return'] = true; // 退货（包括退款）
+                unset($list['cancel']); // 取消
             }
         }
 

@@ -63,7 +63,7 @@ class orders_merchant_order_info_api extends Component_Event_Api
         if (!is_array($options)
             || (!isset($options['order_id'])
                 && !isset($options['order_sn']))) {
-            return new ecjia_error('invalid_parameter', '参数无效');
+            return new ecjia_error('invalid_parameter', __('参数无效', 'orders'));
         }
         return $this->order_info($options['order_id'], $options['order_sn']);
     }

@@ -59,7 +59,7 @@ class orders_order_auto_confirm_api extends Component_Event_Api
     public function call(&$options)
     {
         if (!is_array($options) || !isset($options['order_sn'])) {
-            return new ecjia_error('invalid_parameter', '调用api文件order_auto_confirm参数错误');
+            return new ecjia_error('invalid_parameter', __('调用api文件order_auto_confirm参数错误', 'orders'));
         }
         return $this->update_order($options['order_sn']);
     }

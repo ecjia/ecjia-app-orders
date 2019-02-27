@@ -73,7 +73,7 @@ class orders_buy_order_paid_api extends Component_Event_Api
         $order = RC_Api::api('orders', 'order_info', array('order_sn' => $order_sn));
 
         if (intval($order['pay_status']) === PS_PAYED) {
-            return new ecjia_error('order_has_been_paid', '订单已经支付了');
+            return new ecjia_error('order_has_been_paid', __('订单已经支付了', 'orders'));
         }
 
         /* 改变订单状态 */
@@ -114,7 +114,7 @@ class orders_buy_order_paid_api extends Component_Event_Api
 
             RC_DB::table('order_info')->where('order_id', $order_id)->update($data);
             /* 记录订单操作记录 */
-            order_action($order_sn, OS_CONFIRMED, SS_SHIPPED_ING, $pay_status, '', '买家');
+            order_action($order_sn, OS_CONFIRMED, SS_SHIPPED_ING, $pay_status, '', __('买家', 'orders'));
             //$order_operate = RC_Loader::load_app_class('order_operate', 'orders');
             //$order['pay_status'] = PS_PAYED;
             //$order_operate->operate($order, 'receive', array('action_note' => '系统操作'));
@@ -142,7 +142,7 @@ class orders_buy_order_paid_api extends Component_Event_Api
             );
             RC_DB::table('order_info')->where('order_id', $order_id)->update($data);
             /* 记录订单操作记录 */
-            order_action($order_sn, $order_status, SS_UNSHIPPED, $pay_status, '', '买家');
+            order_action($order_sn, $order_status, SS_UNSHIPPED, $pay_status, '', __('买家', 'orders'));
         }
 
         //订单状态log记录区分
@@ -231,8 +231,8 @@ class orders_buy_order_paid_api extends Component_Event_Api
                     $staff_user_ob     = $orm_staff_user_db->find($staff_user['user_id']);
 
                     $order_data     = array(
-                        'title' => '客户付款',
-                        'body'  => '您有一笔新订单，订单号为：' . $order['order_sn'],
+                        'title' => __('客户付款', 'orders'),
+                        'body'  => sprintf(__('您有一笔新订单，订单号为：%s', 'orders'), $order['order_sn']),
                         'data'  => array(
                             'order_id'               => $order['order_id'],
                             'order_sn'               => $order['order_sn'],

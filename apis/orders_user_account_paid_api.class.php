@@ -95,19 +95,19 @@ class orders_user_account_paid_api extends Component_Event_Api
         /* 订单详情 */
         $order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));
         if ($user_id != $order_info['user_id']) {
-            return new ecjia_error('error_order_detail', '订单不属于该用户');
+            return new ecjia_error('error_order_detail', __('订单不属于该用户', 'orders'));
         }
         /* 会员详情*/
         $user_info = RC_Api::api('user', 'user_info', array('user_id' => $user_id));
 
         /* 检查订单是否已经付款 */
         if ($order_info['pay_status'] == PS_PAYED && $order_info['pay_time']) {
-            return new ecjia_error('order_paid', '该订单已经支付，请勿重复支付。');
+            return new ecjia_error('order_paid', __('该订单已经支付，请勿重复支付。', 'orders'));
         }
 
         /* 检查订单金额是否大于余额 */
         if ($order_info['order_amount'] > ($user_info['user_money'] + $user_info['credit_line'])) {
-            return new ecjia_error('balance_less', '您的余额不足以支付整个订单，请选择其他支付方式。');
+            return new ecjia_error('balance_less', __('您的余额不足以支付整个订单，请选择其他支付方式。', 'orders'));
         }
 
         //判断订单类型，到店付款订单修改订单状态和发货状态
@@ -128,7 +128,7 @@ class orders_user_account_paid_api extends Component_Event_Api
             /*更新订单状态及信息*/
             update_order($order_info['order_id'], $data);
             /* 记录订单操作记录 */
-            order_action($order_info['order_sn'], OS_CONFIRMED, SS_SHIPPED_ING, PS_PAYED, '', '买家');
+            order_action($order_info['order_sn'], OS_CONFIRMED, SS_SHIPPED_ING, PS_PAYED, '', __('买家', 'orders'));
             //$order_operate = RC_Loader::load_app_class('order_operate', 'orders');
             //$order_info['pay_status'] = PS_PAYED;
             //$order_operate->operate($order_info, 'receive', array('action_note' => '系统操作'));
@@ -144,7 +144,7 @@ class orders_user_account_paid_api extends Component_Event_Api
                     $order_status = OS_UNCONFIRMED;
                 }
             }
-            $data                     = array(
+            $data = array(
                 'order_status' => $order_status,
                 'confirm_time' => $time,
                 'pay_status'   => PS_PAYED,
@@ -152,10 +152,11 @@ class orders_user_account_paid_api extends Component_Event_Api
                 'order_amount' => 0,
                 'surplus'      => $order_info['order_amount'] + $order_info['surplus'],
             );
+
             $order_info['pay_status'] = PS_PAYED;
             /*更新订单状态及信息*/
             update_order($order_info['order_id'], $data);
-            order_action($order_info['order_sn'], $order_status, SS_UNSHIPPED, PS_PAYED, '', '买家');
+            order_action($order_info['order_sn'], $order_status, SS_UNSHIPPED, PS_PAYED, '', __('买家', 'orders'));
         }
 
         /* 处理余额变动信息 */
@@ -163,7 +164,7 @@ class orders_user_account_paid_api extends Component_Event_Api
             $options = array(
                 'user_id'     => $order_info['user_id'],
                 'user_money'  => $order_info['order_amount'] * (-1),
-                'change_desc' => sprintf('支付订单 %s', $order_info['order_sn'])
+                'change_desc' => sprintf(__('支付订单 %s', 'orders'), $order_info['order_sn'])
             );
             RC_Api::api('user', 'account_change_log', $options);
         }
@@ -271,8 +272,8 @@ class orders_user_account_paid_api extends Component_Event_Api
 
                         /* 通知记录*/
                         $order_data     = array(
-                            'title' => '客户付款',
-                            'body'  => '您有一笔新订单，订单号为：' . $order_info['order_sn'],
+                            'title' => __('客户付款', 'orders'),
+                            'body'  => sprintf(__('您有一笔新订单，订单号为：%s', 'orders'), $order_info['order_sn']),
                             'data'  => array(
                                 'order_id'               => $order_info['order_id'],
                                 'order_sn'               => $order_info['order_sn'],
@@ -286,6 +287,7 @@ class orders_user_account_paid_api extends Component_Event_Api
                         );
                         $push_order_pay = new OrderPay($order_data);
                         RC_Notification::send($staff_user_ob, $push_order_pay);
+
                     } catch (PDOException $e) {
                         RC_Logger::getLogger('info')->error($e);
                     }

@@ -76,11 +76,11 @@ class orders_separate_order_info_api extends Component_Event_Api
         $db_order_info = RC_DB::table('separate_order_info');
         /* 计算订单各种费用之和的语句 */
         $db_order_info->select(RC_DB::raw('*'), RC_DB::raw("(goods_amount - discount + tax + shipping_fee + insure_fee + pay_fee ) AS total_fee"));
-		if ($order_id > 0) {
-			$db_order_info->where('order_id', $order_id);
-		} else {
-			$db_order_info->where('order_sn', $order_sn);
-		}
+        if ($order_id > 0) {
+            $db_order_info->where('order_id', $order_id);
+        } else {
+            $db_order_info->where('order_sn', $order_sn);
+        }
         $order = $db_order_info->first();
 
         /* 格式化金额字段 */
@@ -102,7 +102,7 @@ class orders_separate_order_info_api extends Component_Event_Api
 
             // 检查订单是否属于该用户
             if ($user_id > 0 && $user_id != $order['user_id']) {
-                return new ecjia_error('orders_error', '未找到相应订单！');
+                return new ecjia_error('orders_error', __('未找到相应订单！', 'orders'));
             }
 
             if ($order['pay_id'] > 0) {
@@ -115,26 +115,26 @@ class orders_separate_order_info_api extends Component_Event_Api
             if (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED)) &&
                 in_array($order['shipping_status'], array(SS_RECEIVED)) &&
                 in_array($order['pay_status'], array(PS_PAYED, PS_PAYING))) {
-                $order['label_order_status'] = '已完成';
+                $order['label_order_status'] = __('已完成', 'orders');
                 $order['order_status_code']  = 'finished';
             } elseif (in_array($order['shipping_status'], array(SS_SHIPPED))) {
-                $order['label_order_status'] = '待收货';
+                $order['label_order_status'] = __('待收货', 'orders');
                 $order['order_status_code']  = 'shipped';
             } elseif (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) &&
                 in_array($order['pay_status'], array(PS_UNPAYED)) &&
                 (in_array($order['shipping_status'], array(SS_SHIPPED, SS_RECEIVED)) || !$payment['is_cod'])) {
-                $order['label_order_status'] = '待付款';
+                $order['label_order_status'] = __('待付款', 'orders');
                 $order['order_status_code']  = 'await_pay';
             } elseif (in_array($order['order_status'], array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
                 in_array($order['shipping_status'], array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING)) &&
                 (in_array($order['pay_status'], array(PS_PAYED, PS_PAYING)) || $payment['is_cod'])) {
-                $order['label_order_status'] = '待发货';
+                $order['label_order_status'] = __('待发货', 'orders');
                 $order['order_status_code']  = 'await_ship';
             } elseif (in_array($order['order_status'], array(OS_CANCELED))) {
-                $order['label_order_status'] = '已取消';
+                $order['label_order_status'] = __('已取消', 'orders');
                 $order['order_status_code']  = 'canceled';
             } elseif (in_array($order['order_status'], array(OS_RETURNED))) {
-                $order['label_order_status'] = '退款';
+                $order['label_order_status'] = __('退款', 'orders');
                 $order['order_status_code']  = 'refunded';
             }
 

@@ -58,7 +58,7 @@ class orders_order_auto_refuse_api extends Component_Event_Api
     public function call(&$options)
     {
         if (!is_array($options) || !isset($options['order_sn'])) {
-            return new ecjia_error('invalid_parameter', '调用api文件order_auto_refuse参数错误');
+            return new ecjia_error('invalid_parameter', __('调用api文件order_auto_refuse参数错误', 'orders'));
         }
         return $this->refuse_order($options['order_sn']);
     }
@@ -82,9 +82,9 @@ class orders_order_auto_refuse_api extends Component_Event_Api
                     if ($pay_code == 'pay_cod' && $order_info['pay_status'] == PS_UNPAYED) {
                         RC_DB::table('order_info')->where('order_id', $order_info['order_id'])->update(array('order_status' => OS_CANCELED));
                         RC_DB::table('order_status_log')->insert(array(
-                            'order_status' => '订单已取消',
+                            'order_status' => __('订单已取消', 'orders'),
                             'order_id'     => $order_info['order_id'],
-                            'message'      => '订单已取消！',
+                            'message'      => __('订单已取消！', 'orders'),
                             'add_time'     => RC_Time::gmtime()
                         ));
                     } elseif ($order_info['pay_status'] == PS_PAYED) {

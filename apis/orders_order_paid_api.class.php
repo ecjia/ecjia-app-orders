@@ -76,7 +76,7 @@ class orders_order_paid_api extends Component_Event_Api
 
         /* 检查支付的金额是否相符 */
         if (!$this->check_money($options['log_id'], $options['money'])) {
-            return new ecjia_error('check_money_fail', '支付的金额有误');
+            return new ecjia_error('check_money_fail', __('支付的金额有误', 'orders'));
         }
 
         if (in_array($options['pay_status'], array(PS_UNPAYED, PS_PAYING, PS_PAYED)) && $options['pay_status'] == PS_PAYED) {
@@ -163,7 +163,7 @@ class orders_order_paid_api extends Component_Event_Api
                     }
 
                     /* 记录订单操作记录 */
-                    order_action($order_sn, OS_CONFIRMED, SS_UNSHIPPED, $pay_status, '', '买家');
+                    order_action($order_sn, OS_CONFIRMED, SS_UNSHIPPED, $pay_status, '', __('买家', 'orders'));
                     //订单付款成功时
                     OrderStatusLog::order_paid(array('order_id' => $order_id));
                     //订单付款成功时同时通知商家
@@ -203,8 +203,8 @@ class orders_order_paid_api extends Component_Event_Api
                     $staff_user_ob     = $orm_staff_user_db->find($staff_user['user_id']);
 
                     $order_data = array(
-                        'title' => '客户付款',
-                        'body'  => '您有一笔新订单，订单号为：' . $order['order_sn'],
+                        'title' => __('客户付款', 'orders'),
+                        'body'  => sprintf(__('您有一笔新订单，订单号为：%s', 'orders'), $order['order_sn']),
                         'data'  => array(
                             'order_id'               => $order['order_id'],
                             'order_sn'               => $order['order_sn'],
@@ -257,7 +257,7 @@ class orders_order_paid_api extends Component_Event_Api
                         $options = array(
                             'user_id'     => $arr['user_id'],
                             'user_money'  => $arr['amount'],
-                            'change_desc' => '充值',
+                            'change_desc' => __('充值', 'orders'),
                             'change_type' => ACT_SAVING
                         );
                         RC_Api::api('user', 'account_change_log', $options);

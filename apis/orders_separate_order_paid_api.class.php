@@ -79,10 +79,10 @@ class orders_separate_order_paid_api extends Component_Event_Api
         }
 
         if (empty($order_info)) {
-            return new ecjia_error('order_not_exists', '订单不存在');
+            return new ecjia_error('order_not_exists', __('订单不存在', 'orders'));
         }
         if (intval($order_info['pay_status']) === PS_PAYED) {
-            return new ecjia_error('order_has_been_paid', '订单已经支付了');
+            return new ecjia_error('order_has_been_paid', __('订单已经支付了', 'orders'));
         }
 
         RC_Logger::getLogger('pay')->info('separate_order_paid');
@@ -153,7 +153,7 @@ class orders_separate_order_paid_api extends Component_Event_Api
 
                     RC_DB::table('order_info')->where('order_id', $order_id)->update($data);
                     /* 记录订单操作记录 */
-                    order_action($order_sn, OS_CONFIRMED, SS_SHIPPED_ING, $pay_status, '', '买家');
+                    order_action($order_sn, OS_CONFIRMED, SS_SHIPPED_ING, $pay_status, '', __('买家', 'orders'));
                 } else {
                     /* 修改订单状态为已付款 */
                     //配送和团购支付后order_status还是未接单；自提为已接单
@@ -182,7 +182,7 @@ class orders_separate_order_paid_api extends Component_Event_Api
                     }
                     RC_DB::table('order_info')->where('order_id', $order_id)->update($data);
                     /* 记录订单操作记录 */
-                    order_action($order_sn, $order_status, SS_UNSHIPPED, $pay_status, '', '买家');
+                    order_action($order_sn, $order_status, SS_UNSHIPPED, $pay_status, '', __('买家', 'orders'));
                 }
 
                 /* 处理余额变动信息 */
@@ -190,7 +190,7 @@ class orders_separate_order_paid_api extends Component_Event_Api
                     $options = array(
                         'user_id'     => $order['user_id'],
                         'user_money'  => $order['order_amount'] * (-1),
-                        'change_desc' => sprintf('支付订单 %s', $order['order_sn'])
+                        'change_desc' => sprintf(__('支付订单 %s', 'orders'), $order['order_sn'])
                     );
                     RC_Api::api('user', 'account_change_log', $options);
                 }
@@ -274,8 +274,8 @@ class orders_separate_order_paid_api extends Component_Event_Api
                         $staff_user_ob     = $orm_staff_user_db->find($staff_user['user_id']);
 
                         $order_data     = array(
-                            'title' => '客户付款',
-                            'body'  => '您有一笔新订单，订单号为：' . $order['order_sn'],
+                            'title' => __('客户付款', 'orders'),
+                            'body'  => sprintf(__('您有一笔新订单，订单号为：%s', 'orders'), $order['order_sn']),
                             'data'  => array(
                                 'order_id'               => $order['order_id'],
                                 'order_sn'               => $order['order_sn'],
@@ -306,12 +306,9 @@ class orders_separate_order_paid_api extends Component_Event_Api
                             RC_Api::api('sms', 'send_event_sms', $options);
                         }
                     }
-
                 }
-
-            }//foreach end
+            }
         }
-
 
         RC_Logger::getLogger('pay')->info('separate_order_pay ok');
         return true;

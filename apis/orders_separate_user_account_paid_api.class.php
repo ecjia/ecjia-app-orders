@@ -92,7 +92,7 @@ class orders_separate_user_account_paid_api extends Component_Event_Api
         /* 订单详情 */
         $order_info = RC_Api::api('orders', 'separate_order_info', array('order_sn' => $order_sn));
         if ($user_id != $order_info['user_id']) {
-            return new ecjia_error('error_order_detail', '订单不属于该用户');
+            return new ecjia_error('error_order_detail', __('订单不属于该用户', 'orders'));
         }
 
         /* 会员详情*/
@@ -100,12 +100,12 @@ class orders_separate_user_account_paid_api extends Component_Event_Api
 
         /* 检查订单是否已经付款 */
         if ($order_info['pay_status'] == PS_PAYED && $order_info['pay_time']) {
-            return new ecjia_error('order_paid', '该订单已经支付，请勿重复支付。');
+            return new ecjia_error('order_paid', __('该订单已经支付，请勿重复支付。', 'orders'));
         }
 
         /* 检查订单金额是否大于余额 */
         if ($order_info['order_amount'] > ($user_info['user_money'] + $user_info['credit_line'])) {
-            return new ecjia_error('balance_less', '您的余额不足以支付整个订单，请选择其他支付方式。');
+            return new ecjia_error('balance_less', __('您的余额不足以支付整个订单，请选择其他支付方式。', 'orders'));
         }
         $params = [
             'order_sn'   => $order_sn,

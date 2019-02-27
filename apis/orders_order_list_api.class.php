@@ -192,34 +192,34 @@ class orders_order_list_api extends Component_Event_Api
                         $payment = with(new Ecjia\App\Payment\PaymentPlugin)->getPluginDataById($row['pay_id']);
                     }
                     $goods_type_number++;
-                    $subject      = $row['goods_name'] . '等' . $goods_type_number . '种商品';
+                    $subject      = sprintf(__('%s 等 %s 种商品', 'orders'), $row['goods_name'], $goods_type_number);
                     $goods_number += isset($row['goods_number']) ? $row['goods_number'] : 0;
 
 
                     if (in_array($row['order_status'], array(OS_CONFIRMED, OS_SPLITED)) &&
                         in_array($row['shipping_status'], array(SS_RECEIVED)) &&
                         in_array($row['pay_status'], array(PS_PAYED, PS_PAYING))) {
-                        $label_order_status = '已完成';
+                        $label_order_status = __('已完成', 'orders');
                         $status_code        = 'finished';
                     } elseif (in_array($row['shipping_status'], array(SS_SHIPPED))) {
-                        $label_order_status = '待收货';
+                        $label_order_status = __('待收货', 'orders');
                         $status_code        = 'shipped';
                     } elseif (in_array($row['order_status'], array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) &&
                         in_array($row['pay_status'], array(PS_UNPAYED)) &&
                         (in_array($row['shipping_status'], array(SS_SHIPPED, SS_RECEIVED)) || !$payment['is_cod'])) {
-                        $label_order_status = '待付款';
+                        $label_order_status = __('待付款', 'orders');
                         $status_code        = 'await_pay';
                     } elseif (in_array($row['order_status'], array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
                         in_array($row['shipping_status'], array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING)) &&
                         (in_array($row['pay_status'], array(PS_PAYED, PS_PAYING)) || $payment['is_cod'])) {
-                        $label_order_status = '待发货';
+                        $label_order_status = __('待发货', 'orders');
                         $status_code        = 'await_ship';
                     } elseif (in_array($row['order_status'], array(OS_SPLITING_PART)) &&
                         in_array($row['shipping_status'], array(SS_SHIPPED_PART))) {
-                        $label_order_status = '部分发货';
+                        $label_order_status = __('部分发货', 'orders');
                         $status_code        = 'shipped_part';
                     } elseif (in_array($row['order_status'], array(OS_CANCELED))) {
-                        $label_order_status = '已取消';
+                        $label_order_status = __('已取消', 'orders');
                         $status_code        = 'canceled';
                     }
 
@@ -315,7 +315,7 @@ class orders_order_list_api extends Component_Event_Api
                     $goods_number                             += isset($row['goods_number']) ? $row['goods_number'] : 0;
                     $orders[$row['order_id']]['goods_number'] = $goods_number;
                     $goods_type_number++;
-                    $subject                                           = $row['goods_name'] . '等' . $goods_type_number . '种商品';
+                    $subject                                           = sprintf(__('%s 等 %s 种商品', 'orders'), $row['goods_name'], $goods_type_number);
                     $orders[$row['order_id']]['order_info']['subject'] = $subject;
                     $orders[$row['order_id']]['order_info']['desc']    = $subject;
                     $orders[$row['order_id']]['goods_list'][]          = array(

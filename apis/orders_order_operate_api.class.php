@@ -73,7 +73,7 @@ class orders_order_operate_api extends Component_Event_Api
 
         if ($order['extension_code'] != 'storebuy') {
             if (!isset($operable_list[$options['operation']])) {
-                return new ecjia_error('operate_error', '无法对订单执行该操作');
+                return new ecjia_error('operate_error', __('无法对订单执行该操作', 'orders'));
             }
         }
 

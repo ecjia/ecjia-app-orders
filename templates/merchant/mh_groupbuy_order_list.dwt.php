@@ -84,7 +84,7 @@
 			<div class='col-lg-12 panel-heading form-inline'>
 				<div class="btn-group form-group">
 					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-						<i class="fa fa-cogs"></i> {lang key='goods::goods.batch_handle'}
+						<i class="fa fa-cogs"></i> {t domain="orders"}批量操作{/t}
 						<span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu operate_note" data-url='{url path="orders/merchant/operate_note"}'>

@@ -465,7 +465,7 @@ ecjia.merchant.order.info();
                         </h4>
                     </a>
                     {if $order_finished neq 1 && $order.shipping_status neq 1 && !$invalid_order}
-						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=other"}'>{lang key='system::system.edit'}</a>
+						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=other"}'>{t domain="orders"}编辑{/t}</a>
 					{/if}
                 </div>
                 <div class="accordion-body in collapse " id="collapseTwo">
@@ -495,7 +495,7 @@ ecjia.merchant.order.info();
                         </h4>
                     </a>
                     {if $order_finished neq 1 && $order.shipping_status neq 1 && !$invalid_order}
-						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=other"}'>{lang key='system::system.edit'}</a>
+						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=other"}'>{t domain="orders"}编辑{/t}</a>
 					{/if}
                 </div>
                 <div class="accordion-body in collapse " id="collapseThree">
@@ -525,7 +525,7 @@ ecjia.merchant.order.info();
                         </h4>
                     </a>
                     {if $order_finished neq 1 && $order.shipping_status neq 1 && !$invalid_order}
-						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=consignee"}'>{lang key='system::system.edit'}</a>
+						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=consignee"}'>{t domain="orders"}编辑{/t}</a>
 					{/if}
                 </div>
                 <div class="accordion-body in collapse " id="collapseFour">
@@ -553,7 +553,7 @@ ecjia.merchant.order.info();
                         </h4>
                     </a>
                     {if $order_finished neq 1 && $order.shipping_status neq 1}
-<!-- 						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=goods"}'>{lang key='system::system.edit'}</a> -->
+<!-- 						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=goods"}'>{t domain="orders"}编辑{/t}</a> -->
 					{/if}
                 </div>
                 <div class="accordion-body in collapse " id="collapseFive">
@@ -621,7 +621,7 @@ ecjia.merchant.order.info();
                         </h4>
                     </a>
                     {if $order_finished neq 1 && $order.shipping_status neq 1 && !$invalid_order}
-						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=money"}'>{lang key='system::system.edit'}</a>
+						<a class="data-pjax accordion-group-heading-absolute" href='{url path="orders/merchant/edit" args="order_id={$order.order_id}&step=money"}'>{t domain="orders"}编辑{/t}</a>
 					{/if}
                 </div>
                 <div class="accordion-body in collapse " id="collapseSix">

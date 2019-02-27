@@ -46,7 +46,7 @@ ecjia.merchant.order.addedit();
 							<th class="w120">数量</th>
 							<th>属性</th>
 							<th class="w100">小计</th>
-							<th class="w150">{lang key='orders::order.handler'}</th>
+							<th class="w150">操作</th>
 						</tr>
 					</thead>
 					<tbody>

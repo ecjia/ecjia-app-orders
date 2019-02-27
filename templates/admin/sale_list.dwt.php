@@ -25,7 +25,7 @@
 <div class="row-fluid">
 	<div class="choose_list f_r">
 		<form class="f_r" action="{$search_action}"  method="post" name="theForm">
-			<input type="text" name="merchant_keywords" value="{$smarty.get.merchant_keywords}" placeholder="{lang key='goods::goods.enter_merchant_keywords'}" size="15" />
+			<input type="text" name="merchant_keywords" value="{$smarty.get.merchant_keywords}" placeholder="{t domain="orders"}请输入商家关键字{/t}" size="15" />
 			<span>按时间段查询：</span>
 			<input class="start_date f_l w110" name="start_date" type="text" placeholder="开始日期" value="{$start_date}">
 			<span class="f_l">-</span>

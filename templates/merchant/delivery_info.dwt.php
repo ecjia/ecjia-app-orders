@@ -52,7 +52,7 @@
 							</tr>
 							<tr>
 								<td><div align="right"><strong>购买人：</strong></div></td>
-								<td>{$delivery_order.user_name|default:匿名用户}</td>
+								<td>{$delivery_order.user_name}</td>
 								<td><div align="right"><strong>缺货处理：</strong></div></td>
 								<td>{if $delivery_order.how_oos}{$delivery_order.how_oos}{else}暂无{/if}</td>
 							</tr>

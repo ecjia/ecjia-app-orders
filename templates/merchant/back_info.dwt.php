@@ -61,7 +61,7 @@
 
 							<tr>
 								<td><div align="right"><strong>购货人：</strong></div></td>
-								<td>{$back_order.user_name|default:匿名用户}</td>
+								<td>{$back_order.user_name}</td>
 								<td><div align="right"><strong>缺货处理：</strong></div></td>
 								<td>{$back_order.how_oos}</td>
 							</tr>

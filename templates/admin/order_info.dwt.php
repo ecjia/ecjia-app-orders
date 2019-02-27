@@ -19,67 +19,67 @@
 
 <div class="order_userinfo_modal">
     <div class="modal hide fade" id="consigneeinfo">
-	<div class="modal-header">
-		<button class="close" data-dismiss="modal">×</button>
-		<h3>购货人信息</h3>
-	</div>
-	<div class="modal-body">
-		<div class="row-fluid">
-			<div class="span12 user-info">
-                <div class="basic-info clearfix">
-                    <img src="{if $user.avatar_img}{RC_Upload::upload_url($user.avatar_img)}{/if}" />
-                    <div class="detail">
-                        <p>
-                            <span class="name">{if $user.user_name}{$user.user_name}{else}匿名用户{/if}</span>
-                            {if $user.rank_name}<span class="rank_name">{$user.rank_name}</span>{/if}
-                        </p>
-                        <p>注册时间：{RC_Time::local_date('Y-m-d H:i:s', $user.reg_time)}</p>
-                    </div>
-                    <a target="__blank" class="view-detail" href='{url path="user/admin/info" args="id={$user.user_id}"}'>查看详细信息 >></a>
-                </div>
-                <div class="user-money">
-                    <div class="item">
-                        <p>账户余额</p>
-                        <span class="ecjiafc-FF0000">{if $user.formated_user_money}{$user.formated_user_money}{else}￥0.00{/if}</span>
-                    </div>
-                    <div class="item">
-                        <p>消费积分</p>
-                        <span class="ecjiafc-FF0000">{if $user.pay_points}{$user.pay_points}{else}0{/if}</span>
-                    </div>
-                    <div class="item">
-                        <p>成长值</p>
-                        <span class="ecjiafc-FF0000">{if $user.rank_points}{$user.rank_points}{else}0{/if}</span>
-                    </div><div class="item">
-                        <p>红包数量</p>
-                        <span class="ecjiafc-FF0000">{if $user.bonus_count}{$user.bonus_count}{else}0{/if}</span>
-                    </div>
-                </div>
-                <div class="user-address">
-                    <div class="address-title">收货地址</div>
-                    <div class="address-content">
-                        {foreach from=$address_list item=list}
-                        <div class="address-item">
-                            <div class="box-placeholder">
-                                <p class="address_name">{$list.consignee} </p>
-                                <p class="address_tel">{$list.mobile}</p>
-                                <p class="address_info">
-                                    {if $list.province}{ecjia_region::getRegionName($list.province)}{/if}
-                                    {if $list.city}{ecjia_region::getRegionName($list.city)}{/if}
-                                    {if $list.district}{ecjia_region::getRegionName($list.district)}{/if}
-                                    {if $list.street}{ecjia_region::getRegionName($list.street)}{/if}
-                                    {$list.address}
-                                </p>
-                            </div>
+        <div class="modal-header">
+            <button class="close" data-dismiss="modal">×</button>
+            <h3>购货人信息</h3>
+        </div>
+        <div class="modal-body">
+            <div class="row-fluid">
+                <div class="span12 user-info">
+                    <div class="basic-info clearfix">
+                        <img src="{if $user.avatar_img}{RC_Upload::upload_url($user.avatar_img)}{/if}" />
+                        <div class="detail">
+                            <p>
+                                <span class="name">{if $user.user_name}{$user.user_name}{else}匿名用户{/if}</span>
+                                {if $user.rank_name}<span class="rank_name">{$user.rank_name}</span>{/if}
+                            </p>
+                            <p>注册时间：{RC_Time::local_date('Y-m-d H:i:s', $user.reg_time)}</p>
                         </div>
-                        {foreachelse}
-                        <div class="no-records">暂无收货地址</div>
-                        {/foreach}
+                        <a target="__blank" class="view-detail" href='{url path="user/admin/info" args="id={$user.user_id}"}'>查看详细信息 >></a>
+                    </div>
+                    <div class="user-money">
+                        <div class="item">
+                            <p>账户余额</p>
+                            <span class="ecjiafc-FF0000">{if $user.formated_user_money}{$user.formated_user_money}{else}￥0.00{/if}</span>
+                        </div>
+                        <div class="item">
+                            <p>消费积分</p>
+                            <span class="ecjiafc-FF0000">{if $user.pay_points}{$user.pay_points}{else}0{/if}</span>
+                        </div>
+                        <div class="item">
+                            <p>成长值</p>
+                            <span class="ecjiafc-FF0000">{if $user.rank_points}{$user.rank_points}{else}0{/if}</span>
+                        </div><div class="item">
+                            <p>红包数量</p>
+                            <span class="ecjiafc-FF0000">{if $user.bonus_count}{$user.bonus_count}{else}0{/if}</span>
+                        </div>
+                    </div>
+                    <div class="user-address">
+                        <div class="address-title">收货地址</div>
+                        <div class="address-content">
+                            {foreach from=$address_list item=list}
+                            <div class="address-item">
+                                <div class="box-placeholder">
+                                    <p class="address_name">{$list.consignee} </p>
+                                    <p class="address_tel">{$list.mobile}</p>
+                                    <p class="address_info">
+                                        {if $list.province}{ecjia_region::getRegionName($list.province)}{/if}
+                                        {if $list.city}{ecjia_region::getRegionName($list.city)}{/if}
+                                        {if $list.district}{ecjia_region::getRegionName($list.district)}{/if}
+                                        {if $list.street}{ecjia_region::getRegionName($list.street)}{/if}
+                                        {$list.address}
+                                    </p>
+                                </div>
+                            </div>
+                            {foreachelse}
+                            <div class="no-records">暂无收货地址</div>
+                            {/foreach}
+                        </div>
                     </div>
                 </div>
             </div>
-		</div>
-	</div>
-</div>
+        </div>
+    </div>
 </div>
 
 <div class="order-status-base order-five-base m_b20">
@@ -188,7 +188,7 @@
 										</div>
 									</td>
 									<td>
-										{$order.user_name|default:匿名用户}
+										{$order.user_name}
                                         {if $order.user_id gt 0}
                                         [ <a class="userInfo cursor_pointer" data-toggle="modal" href="#consigneeinfo" title="显示购货人信息">显示购货人信息</a> ]
                                         {/if}
@@ -361,7 +361,7 @@
 					</div>
 				</div>
 				{/if}
-				
+
 				<div class="accordion-group">
 					<div class="accordion-heading accordion-heading-url">
 						<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseTwo-a">
@@ -403,7 +403,7 @@
 						</table>
 					</div>
 				</div>
-				
+
 				<div class="accordion-group">
 					<div class="accordion-heading accordion-heading-url">
 						<div class="accordion-toggle acc-in" data-toggle="collapse" data-target="#collapseTwo">
@@ -670,7 +670,7 @@
 						</table>
 					</div>
 				</div>
-				
+
 			</div>
 		</form>
 	</div>

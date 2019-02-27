@@ -91,7 +91,7 @@ ecjia.merchant.order.info();
 							<tr>
 								<td><div align="right"><strong>购买人姓名：</strong></div></td>
 								<td>
-									{$order.user_name|default:匿名用户}
+									{$order.user_name}
 								</td>
 								<td><div align="right"><strong>购买人手机号：</strong></div></td>
 								<td>{$order.mobile}</td>

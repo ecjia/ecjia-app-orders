@@ -87,7 +87,7 @@
 									</div>
 								</td>
 								<td>
-									{$order.user_name|default:匿名用户}
+									{$order.user_name}
 								</td>
 								<td>
 									<div align="right">

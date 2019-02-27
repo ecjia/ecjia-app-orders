@@ -337,7 +337,7 @@ ecjia.merchant.order.info();
 							<tr>
 								<td><div align="right"><strong>购买人：</strong></div></td>
 								<td>
-									{$order.user_name|default:匿名用户}
+									{$order.user_name}
 								</td>
 								<td><div align="right"><strong>下单时间：</strong></div></td>
 								<td>{$order.formated_add_time}</td>

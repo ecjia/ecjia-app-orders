@@ -269,7 +269,7 @@ ecjia.merchant.order.info();
 								<td colspan="3">
 									<input type='hidden' class="operate_note" data-url='{url path="orders/merchant/operate_note"}'>
 									{if $operable_list.cancel}
-									<button class="btn operatesubmit btn-info" type="submit" name="cancel">{lang key='orders::order.op_cancel'}</button>
+									<button class="btn operatesubmit btn-info" type="submit" name="cancel">{t domain="orders"}取消{/t}</button>
 									{/if}
 									<input name="order_id" class="order_id" type="hidden" value="{$order.order_id}">
 								</td>

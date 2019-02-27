@@ -32,7 +32,7 @@
 						<table class="table table-oddtd m_b0">
 							<tbody class="first-td-no-leftbd">
 							<tr>
-								<td><div align="right"><strong>{lang key='orders::order.return_time'}</strong></div></td>
+								<td><div align="right"><strong>{t domain="orders"}退货时间：{/t}</strong></div></td>
 								<td >{$back_order.formated_return_time}</td>
 								<td><div align="right"><strong>运单编号：</strong></div></td>
 								<td colspan="3">{$back_order.invoice_no}</td>
@@ -99,7 +99,7 @@
 					<div class="panel-heading">
                             <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
                                 <h4 class="panel-title">
-                                    <strong>{lang key='orders::order.buyer_info'}</strong>
+                                    <strong>{t domain="orders"}购货人信息{/t}</strong>
                                 </h4>
                             </a>
                     </div>

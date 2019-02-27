@@ -107,7 +107,7 @@ ecjia.merchant.order.init();
 	        			<div class="form-group">
 	        				<input type="text" class="form-control w230" name="keywords" value="{$smarty.get.keywords}" placeholder="请输入订单编号或购买者信息">
 	        			</div>
-	        			<button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> {lang key='orders::order.search_order'}</button>
+	        			<button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> {t domain="orders"}搜索订单{/t}</button>
 	        		</form>
         		</ul>
     		</div>
@@ -120,7 +120,7 @@ ecjia.merchant.order.init();
         					<tr>
         						<th class="w130">订单号</th>
         						<th class="w180">下单时间</th>
-        						<th>{lang key='orders::order.user_purchase_information'}</th>
+        						<th>{t domain="orders"}购买用户信息{/t}</th>
         						<th class="w120">总金额</th>
         						<th class="w110">应付金额</th>
         						<th class="w150">订单状态</th>

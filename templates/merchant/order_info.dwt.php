@@ -210,21 +210,21 @@ ecjia.merchant.order.info();
 					<div class="span12">
 						<table class="table table-bordered">
 							<tr><td colspan="2"><strong>购货人信息</strong></td></tr>
-							<tr><td class="w200">{lang key='orders::order.email'}</td><td>{$user.email}</td></tr>
-							<tr><td>{lang key='orders::order.user_money'}</td><td>{$user.user_money}</td></tr>
-							<tr><td>{lang key='orders::order.pay_points'}</td><td>{$user.pay_points}</td></tr>
-							<tr><td>{lang key='orders::order.rank_points'}</td><td>{$user.rank_points}</td></tr>
-							<tr><td>{lang key='orders::order.rank_name'}</td><td>{$user.rank_name}</td></tr>
-							<tr><td>{lang key='orders::order.bonus_count'}</td><td>{$user.bonus_count}</td></tr>
+							<tr><td class="w200">{t domain="orders"}电子邮件{/t}</td><td>{$user.email}</td></tr>
+							<tr><td>{t domain="orders"}账户余额{/t}</td><td>{$user.user_money}</td></tr>
+							<tr><td>{t domain="orders"}消费积分{/t}</td><td>{$user.pay_points}</td></tr>
+							<tr><td>{t domain="orders"}成长值{/t}</td><td>{$user.rank_points}</td></tr>
+							<tr><td>{t domain="orders"}会员等级{/t}</td><td>{$user.rank_name}</td></tr>
+							<tr><td>{t domain="orders"}红包数量{/t}</td><td>{$user.bonus_count}</td></tr>
 						</table>
 						<!-- {foreach from=$address_list item=address} -->
 						<table class="table table-bordered">
 							<tr><td colspan="2"><strong>收货人：{$order.consignee|default:$order.user_name}</strong></td></tr>
-							<tr><td class="w200">{lang key='orders::order.email'}</td><td>{$address.email}</td></tr>
-							<tr><td>{lang key='orders::order.address'}</td><td>{$address.address}{$address.address_info}</td></tr>
+							<tr><td class="w200">{t domain="orders"}电子邮件{/t}</td><td>{$address.email}</td></tr>
+							<tr><td>{t domain="orders"}地址{/t}</td><td>{$address.address}{$address.address_info}</td></tr>
 							<tr><td>邮编</td><td>{$address.zipcode}</td></tr>
-							<tr><td>{lang key='orders::order.tel'}</td><td>{$address.tel}</td></tr>
-							<tr><td>{lang key='orders::order.mobile'}</td><td>{$address.mobile}</td></tr>
+							<tr><td>{t domain="orders"}电话{/t}</td><td>{$address.tel}</td></tr>
+							<tr><td>{t domain="orders"}备用电话{/t}</td><td>{$address.mobile}</td></tr>
 						</table>
 						<!-- {/foreach} -->
 					</div>
@@ -363,7 +363,7 @@ ecjia.merchant.order.info();
 										{/if}
 										
 										{if $order.shipping_status gt 0 && $shipping_code neq 'ship_ecjia_express' && $shipping_code neq 'ship_o2o_express'}
-										<input type="button" class="btn btn-primary" onclick="window.open('{url path="orders/merchant/info" args="order_id={$order.order_id}&shipping_print=1"}')" value="{lang key='orders::order.print_shipping'}">
+										<input type="button" class="btn btn-primary" onclick="window.open('{url path="orders/merchant/info" args="order_id={$order.order_id}&shipping_print=1"}')" value="{t domain='orders'}打印快递单{/t}">
 										{/if}
 
 										{if $order.insure_fee gt 0}
@@ -641,13 +641,13 @@ ecjia.merchant.order.info();
 							</td>
 						</tr>
 						<tr>
-							<td><div align="right"> = {lang key='orders::order.label_order_amount'}<strong>{$order.formated_total_fee}</strong></div></td>
+							<td><div align="right"> = {t domain="orders"}订单总金额：{/t}<strong>{$order.formated_total_fee}</strong></div></td>
 						</tr>
 						<tr>
 							<td>
 								<div align="right">
-									- {lang key='orders::order.label_money_paid'}<strong>{$order.formated_money_paid}</strong>
-									- {lang key='orders::order.label_surplus'} <strong>{$order.formated_surplus}</strong>
+									- {t domain="orders"}已付款金额：{/t}<strong>{$order.formated_money_paid}</strong>
+									- {t domain="orders"}使用余额：{/t} <strong>{$order.formated_surplus}</strong>
 									- 使用积分： <strong>{$order.formated_integral_money}</strong>
 									- 使用红包： <strong>{$order.formated_bonus}</strong>
 								</div>
@@ -733,7 +733,7 @@ ecjia.merchant.order.info();
 									{/if}
 
 									{if $operable_list.unpay}
-									<button class="btn operatesubmit btn-info" type="submit" name="unpay">{lang key='orders::order.op_unpay'}</button>
+									<button class="btn operatesubmit btn-info" type="submit" name="unpay">{t domain="orders"}设为未付款{/t}</button>
 									{/if}
 
 									{if $operable_list.to_delivery}
@@ -741,7 +741,7 @@ ecjia.merchant.order.info();
 									{/if}
 									
 									{if $operable_list.prepare}
-									<button class="btn operatesubmit btn-info" type="submit" name="prepare">{lang key='orders::order.op_prepare'}</button>
+									<button class="btn operatesubmit btn-info" type="submit" name="prepare">{t domain="orders"}配货{/t}</button>
 									{/if}
 
 									{if $operable_list.split}
@@ -753,7 +753,7 @@ ecjia.merchant.order.info();
 									{/if}
 									
 									{if $operable_list.cancel}
-									<button class="btn operatesubmit btn-info" type="submit" name="cancel">{lang key='orders::order.op_cancel'}</button>
+									<button class="btn operatesubmit btn-info" type="submit" name="cancel">{t domain="orders"}取消{/t}</button>
 									{/if}
 									
 									{if $operable_list.return}
@@ -769,11 +769,11 @@ ecjia.merchant.order.info();
 									{/if}
 									
 									{if $operable_list.remove}
-									<button class="btn operatesubmit btn-info" type="submit" name="remove">{lang key='orders::order.remove'}</button>
+									<button class="btn operatesubmit btn-info" type="submit" name="remove">{t domain="orders"}移除{/t}</button>
 									{/if}
 
 									{if $order.extension_code eq "group_buy"}
-									<div class="m_t10">{lang key='orders::order.notice_gb_ship'}</div>
+									<div class="m_t10">{t domain="orders"}备注：团购活动未处理为成功前，不能发货{/t}</div>
 									{/if}
 									<input name="order_id" class="order_id" type="hidden" value="{$order.order_id}">
 								</td>

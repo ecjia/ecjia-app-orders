@@ -101,7 +101,7 @@ ecjia.merchant.order.addedit();
 		</div>
 	</div>
 	<p align="center">
-		<button class="btn btn-info" type="submit">{lang key='orders::order.button_submit'}</button>
+		<button class="btn btn-info" type="submit">{t domain="orders"}确定{/t}</button>
 		<input type="hidden" name="action_note" value="{$action_note}" />
 		<a class="data-pjax" href='{url path="orders/merchant/go_shipping" args="order_id={$order_id}{if $action_note}&action_note={$action_note}{/if}"}'><button class="btn btn-default" type="button">取消</button></a>
 	</p>

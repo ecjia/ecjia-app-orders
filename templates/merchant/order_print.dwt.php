@@ -96,15 +96,15 @@ body,td { font-size:13px; }
 				+ 保价费用：{$order.formated_insure_fee}
 			{/if}
 			<!-- 订单总金额 -->
-			= {lang key='orders::order.label_order_amount'}{$order.formated_total_fee}
+			= {t domain="orders"}订单总金额：{/t}{$order.formated_total_fee}
 		</td>
 	</tr>
 	<tr align="right">
 		<td>
 			<!-- 如果已付了部分款项, 减去已付款金额 -->
-			{if $order.money_paid neq '0.00'}- {lang key='orders::order.label_money_paid'}{$order.formated_money_paid}{/if}
+			{if $order.money_paid neq '0.00'}- {t domain="orders"}已付款金额：{/t}{$order.formated_money_paid}{/if}
 			<!-- 如果使用了余额支付, 减去已使用的余额 -->
-			{if $order.surplus neq '0.00'}- {lang key='orders::order.label_surplus'}{$order.formated_surplus}{/if}
+			{if $order.surplus neq '0.00'}- {t domain="orders"}使用余额：{/t}{$order.formated_surplus}{/if}
 			<!-- 如果使用了积分支付, 减去已使用的积分 -->
 			{if $order.integral_money neq '0.00'}- 使用积分：{$order.formated_integral_money}{/if}
 			<!-- 如果使用了红包支付, 减去已使用的红包 -->
@@ -134,7 +134,7 @@ body,td { font-size:13px; }
 	<tr><!-- 网店名称, 网店地址, 网店URL以及联系电话 -->
 		<td>
 			{$shop_name}（{$shop_url}）
-			{lang key='orders::order.label_shop_address'}{$shop_address}&nbsp;&nbsp;{lang key='orders::order.label_service_phone'}{$service_phone}
+			{t domain="orders"}地址：{/t}{$shop_address}&nbsp;&nbsp;{t domain="orders"}电话：{/t}{$service_phone}
 		</td>
 	</tr>
 	<tr align="right"><!-- 订单操作员以及订单打印的日期 -->

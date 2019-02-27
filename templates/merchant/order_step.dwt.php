@@ -89,7 +89,7 @@ ecjia.merchant.order.addedit();
 <!-- 								{/if} -->
                         			<p class="ecjiaf-tac m_t15">
                         				<button class="btn btn-info" type="submit" name="finish">更新商品</button>&nbsp;&nbsp;&nbsp;
-                        				<input name="finish" type="hidden" value="{lang key='orders::order.button_submit'}" />
+                        				<input name="finish" type="hidden" value="{t domain='orders'}确定{/t}" />
                         				<a class="cancel_order" data-href='{url path="orders/merchant/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn btn-info" type="button">取消</button></a>
                         			</p>
 								<input name="goods_count" type="hidden" value="{$smarty.foreach.goods.total}" />
@@ -107,7 +107,7 @@ ecjia.merchant.order.addedit();
 	<div class="col-lg-12 panel-heading form-inline">
 		<span>按商品编号或商品名称或商品货号搜索：</span>
 		<input class="form-control" type="text" name="keyword" placeholder="请输入关键字" />
-		<button class="btn searchGoods btn-info" type="button">{lang key='orders::order.button_search'}</button>
+		<button class="btn searchGoods btn-info" type="button">{t domain="orders"}搜索{/t}</button>
 	</div>
 </div>
 
@@ -136,8 +136,8 @@ ecjia.merchant.order.addedit();
 								<dl>
 									<dd><span id="goods_name"></span></dd>
 									<dd>{t}货号：{/t}<span id="goods_sn"></span></dd>
-<!-- 									<dd>{lang key='orders::order.brand'}：<span id="goods_brand"></span></dd> -->
-									<dd>{lang key='orders::order.label_category'}<span id="goods_cat"></span></dd>
+<!-- 									<dd>{t domain="orders"}品牌{/t}：<span id="goods_brand"></span></dd> -->
+									<dd>{t domain="orders"}分类：{/t}<span id="goods_cat"></span></dd>
 									<dd>{t}商品库存：{/t}<span id="goods_number"></span></dd>
 								</dl>
 							</div>
@@ -315,10 +315,10 @@ ecjia.merchant.order.addedit();
 		</div>
 	</div>
 	<p class="ecjiaf-tac m_t15">
-		<button class="btn btn-info" type="submit" name="finish">{lang key='orders::order.button_submit'}</button>
+		<button class="btn btn-info" type="submit" name="finish">{t domain="orders"}确定{/t}</button>
 		<a class="cancel_order btn-info" data-href='{url path="orders/merchant/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'>
 		<button class="btn btn-info" type="button">取消</button></a>
-		<input name="finish" type="hidden" value="{lang key='orders::order.button_submit'}" />
+		<input name="finish" type="hidden" value="{t domain='orders'}确定{/t}" />
 	</p>
 </form>
 {elseif $step eq "shipping"}
@@ -403,9 +403,9 @@ ecjia.merchant.order.addedit();
 		</div>
 	</div>
 	<p align="center">
-		<button class="btn btn-info" type="submit" name="finish">{lang key='orders::order.button_submit'}</button>
+		<button class="btn btn-info" type="submit" name="finish">{t domain="orders"}确定{/t}</button>
 		<a class="cancel_order" data-href='{url path="orders/merchant/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn btn-info" type="button">取消</button></a>
-		<input name="finish" type="hidden" value="{lang key='orders::order.button_submit'}" />
+		<input name="finish" type="hidden" value="{t domain='orders'}确定{/t}" />
 	</p>
 </form>
 {elseif $step eq "other"}
@@ -476,9 +476,9 @@ ecjia.merchant.order.addedit();
 				</div>
 			</div>
 			<p align="center">
-				<button class="btn btn-info" type="submit" name="finish">{lang key='orders::order.button_submit'}</button>
+				<button class="btn btn-info" type="submit" name="finish">{t domain="orders"}确定{/t}</button>
 				<a class="cancel_order" data-href='{url path="orders/merchant/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn btn-info" type="button">取消</button></a>
-				<input name="finish" type="hidden" value="{lang key='orders::order.button_submit'}" />
+				<input name="finish" type="hidden" value="{t domain='orders'}确定{/t}" />
 			</p>
 		</form>
 	</div>
@@ -508,24 +508,24 @@ ecjia.merchant.order.addedit();
 							<tr>
 								<td><div align="right"><strong>发票税额：</strong></div></td>
 								<td><input class="form-control" name="tax" type="text" id="tax" value="{$order.tax}" /></td>
-								<td><div align="right"><strong>{lang key='orders::order.label_order_amount'}</strong></div></td>
+								<td><div align="right"><strong>{t domain="orders"}订单总金额：{/t}</strong></div></td>
 								<td>{$order.formated_total_fee}</td>
 							</tr>
 							<tr>
 								<td><div align="right"><strong>配送费用：</strong></div></td>
 								<td>{if $exist_real_goods}<input class="form-control" name="shipping_fee" type="text" value="{$order.shipping_fee}" >{else}0{/if}</td>
-								<td><div align="right"><strong>{lang key='orders::order.label_money_paid'}</strong></div></td>
+								<td><div align="right"><strong>{t domain="orders"}已付款金额：{/t}</strong></div></td>
 								<td>{$order.formated_money_paid} </td>
 							</tr>
 							<tr>
 								<td><div align="right"><strong>保价费用：</strong></div></td>
 								<td>{if $exist_real_goods}<input class="form-control" name="insure_fee" type="text" value="{$order.insure_fee}" >{else}0{/if}</td>
-								<td><div align="right"><strong>{lang key='orders::order.label_surplus'}</strong></div></td>
+								<td><div align="right"><strong>{t domain="orders"}使用余额：{/t}</strong></div></td>
 								<td>
 									{if $order.user_id gt 0}
 									<input class="form-control" name="surplus" type="text" value="{$order.surplus}">
 									{/if}
-									{lang key='orders::order.available_surplus'}{$available_user_money|default:0}
+									{t domain="orders"}可用余额：{/t}{$available_user_money|default:0}
 								</td>
 							</tr>
 							<tr>
@@ -535,7 +535,7 @@ ecjia.merchant.order.addedit();
 								<td>
 									{if $order.user_id gt 0}
 									<input class="form-control" name="integral" type="text" value="{$order.integral}" >
-									{/if} {lang key='orders::order.available_integral'}{$available_pay_points|default:0}
+									{/if} {t domain="orders"}可用积分：{/t}{$available_pay_points|default:0}
 								</td>
 							</tr>
 							<tr>
@@ -570,9 +570,9 @@ ecjia.merchant.order.addedit();
 				</div>
 			</div>
 			<p align="center">
-				<button class="btn btn-info" type="submit" name="finish">{lang key='orders::order.button_finish'}</button>&nbsp;&nbsp;&nbsp;
+				<button class="btn btn-info" type="submit" name="finish">{t domain="orders"}完成{/t}</button>&nbsp;&nbsp;&nbsp;
 				<a class="cancel_order" data-href='{url path="orders/merchant/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn btn-info" type="button">取消</button></a>
-				<input class="btn-info" name="finish" type="hidden" value="{lang key='orders::order.button_finish'}" />
+				<input class="btn-info" name="finish" type="hidden" value="{t domain='orders'}完成{/t}" />
 			</p>
 		</form>
 	</div>
@@ -617,8 +617,8 @@ ecjia.merchant.order.addedit();
 		</table>
 	</div>
 	<p align="center">
-		<button class="btn btn-info" type="submit" name="finish">{lang key='orders::order.button_submit'}</button>
-		<input name="finish" type="hidden" value="{lang key='orders::order.button_finish'}" />
+		<button class="btn btn-info" type="submit" name="finish">{t domain="orders"}确定{/t}</button>
+		<input name="finish" type="hidden" value="{t domain='orders'}完成{/t}" />
 		<a class="data-pjax" href='{url path="orders/merchant/info" args="order_id={$order_id}"}'><button class="btn btn-info" type="button">取消</button></a>
 	</p>
 </form>

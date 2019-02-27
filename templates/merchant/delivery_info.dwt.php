@@ -128,7 +128,7 @@
 								<td>{$delivery_order.mobile|escape}</td>
 							</tr>
 							<tr>
-								<td><div align="right"><strong>{lang key='orders::order.label_shop_address'}</strong></div></td>
+								<td><div align="right"><strong>{t domain="orders"}地址：{/t}</strong></div></td>
 								<td>[{$delivery_order.region}] {$delivery_order.address|escape}</td>
 								<td><div align="right"><strong>最佳送货时间：</strong></div></td>
 								<td>

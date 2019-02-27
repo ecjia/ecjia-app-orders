@@ -284,7 +284,7 @@
 								<dl>
 									<dd><span id="goods_name"></span></dd>
 									<dd>货号：<span id="goods_sn"></span></dd>
-<!-- 									<dd>{lang key='orders::order.brand'}：<span id="goods_brand"></span></dd> -->
+<!-- 									<dd>{t domain="orders"}品牌{/t}：<span id="goods_brand"></span></dd> -->
 									<dd>分类：<span id="goods_cat"></span></dd>
 									<!-- {if $use_storage} -->
 									<dd>商品库存：<span id="goods_number"></span></dd>
@@ -695,23 +695,23 @@
 								<tr>
 									<td><div align="right"><strong>发票税额：</strong></div></td>
 									<td><input class="span8" name="tax" type="text" id="tax" value="{$order.tax}" /></td>
-									<td><div align="right"><strong>{lang key='orders::order.label_order_amount'}</strong></div></td>
+									<td><div align="right"><strong>{t domain="orders"}订单总金额：{/t}</strong></div></td>
 									<td>{$order.formated_total_fee}</td>
 								</tr>
 								<tr>
 									<td><div align="right"><strong>配送费用：</strong></div></td>
 									<td>{if $exist_real_goods}<input class="span8" name="shipping_fee" type="text" value="{$order.shipping_fee}" >{else}0{/if}</td>
-									<td><div align="right"><strong>{lang key='orders::order.label_money_paid'}</strong></div></td>
+									<td><div align="right"><strong>{t domain="orders"}已付款金额：{/t}</strong></div></td>
 									<td>{$order.formated_money_paid} </td>
 								</tr>
 								<tr>
 									<td><div align="right"><strong>保价费用：</strong></div></td>
 									<td>{if $exist_real_goods}<input class="span8" name="insure_fee" type="text" value="{$order.insure_fee}" >{else}0{/if}</td>
-									<td><div align="right"><strong>{lang key='orders::order.label_surplus'}</strong></div></td>
+									<td><div align="right"><strong>{t domain="orders"}使用余额：{/t}</strong></div></td>
 									<td>
 										{if $order.user_id gt 0}
 										<input class="span8" name="surplus" type="text" value="{$order.surplus}"><br/>
-										{/if}{lang key='orders::order.available_surplus'}{$available_user_money|default:0}
+										{/if}{t domain="orders"}可用余额：{/t}{$available_user_money|default:0}
 									</td>
 								</tr>
 								<tr>
@@ -721,7 +721,7 @@
 									<td>
 										{if $order.user_id gt 0}
 										<input class="span8" name="integral" type="text" value="{$order.integral}"><br/>
-										{/if} {lang key='orders::order.available_integral'}{$available_pay_points|default:0}
+										{/if} {t domain="orders"}可用积分：{/t}{$available_pay_points|default:0}
 									</td>
 								</tr>
 								<tr>
@@ -762,9 +762,9 @@
 		<div class="span12">
 			<p align="center">
 				{if $step_act eq "add"}<a class="data-pjax" href='{url path="orders/admin/add" args="order_id={$order_id}&step=other"}'><button class="btn" type="button">上一步</button></a>&nbsp;&nbsp;&nbsp;{/if}
-				<button class="btn btn-gebo" type="submit" name="finish">{lang key='orders::order.button_finish'}</button>&nbsp;&nbsp;&nbsp;
+				<button class="btn btn-gebo" type="submit" name="finish">{t domain="orders"}完成{/t}</button>&nbsp;&nbsp;&nbsp;
 				<a class="cancel_order" data-href='{url path="orders/admin/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn" type="button">取消</button></a>
-				<input name="finish" type="hidden" value="{lang key='orders::order.button_finish'}" />
+				<input name="finish" type="hidden" value="{t domain='orders'}完成{/t}" />
 			</p>
 		</div>
 	</div>
@@ -772,7 +772,7 @@
 {elseif $step eq "invoice"}
 <form name="invoiceForm" action='{url path="orders/admin/step_post" args="step={$step}&order_id={$order_id}&step_act={$step_act}"}' method="post">
 	<div>
-		<strong>运单编号：</strong><input name="invoice_no" type="text" value="{$order.invoice_no}" size="30"/><span id="noticPoints" class="help-block ecjiaf-ib">{lang key='orders::order.invoice_no_mall'}</span>
+		<strong>运单编号：</strong><input name="invoice_no" type="text" value="{$order.invoice_no}" size="30"/><span id="noticPoints" class="help-block ecjiaf-ib">{t domain="orders"}&nbsp;&nbsp;&nbsp;多个发货单号，请用英文逗号（“,”）隔开。{/t}</span>
 	</div>
 	<div class="row-fluid">
 		<table class="table table-striped">
@@ -798,7 +798,7 @@
 	</div>
 	<p align="center">
 		<button class="btn btn-gebo" type="submit" name="finish">确定</button>&nbsp;&nbsp;&nbsp;
-		<input name="finish" type="hidden" value="{lang key='orders::order.button_finish'}" />
+		<input name="finish" type="hidden" value="{t domain='orders'}完成{/t}" />
 		<a class="data-pjax" href='{url path="orders/admin/info" args="order_id={$order_id}"}'><button class="btn" type="button">取消</button></a>
 	</p>
 </form>

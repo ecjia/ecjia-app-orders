@@ -21,7 +21,7 @@
              <div class="col-lg-12 panel-heading form-inline">
                   <div class="btn-group form-group">
                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cogs"></i> 批量操作 <span class="caret"></span></button>
-                      <ul class="dropdown-menu operate_note"><li><a class="batch-del-btn" data-toggle="ecjiabatch" data-name="order_id" data-idClass=".checkbox:checked" data-url="{$form_action}" data-msg="您确定需要删除这些发货单吗？" data-noSelectMsg="请选择需要操作的发货单！" href="javascript:;"><i class="fa fa-trash-o"></i> {lang key='orders::order.remove'}</a></li></ul>
+                      <ul class="dropdown-menu operate_note"><li><a class="batch-del-btn" data-toggle="ecjiabatch" data-name="order_id" data-idClass=".checkbox:checked" data-url="{$form_action}" data-msg="您确定需要删除这些发货单吗？" data-noSelectMsg="请选择需要操作的发货单！" href="javascript:;"><i class="fa fa-trash-o"></i> {t domain="orders"}移除{/t}</a></li></ul>
                   </div>
             	  <form class="form-inline pull-right " action='{RC_Uri::url("orders/mh_reminder/init")}{if $smarty.get.type}&type={$smarty.get.type}{/if}' method="post" name="searchForm">
                         <div class="form-group">
@@ -43,11 +43,11 @@
             								<label for="checkall"></label>
             							</div>
 						            </th>
-            						<th>{lang key='orders::order.list_oder_sn'}</th>
+            						<th>{t domain="orders"}订单编号{/t}</th>
             						<th>收货人</th>
-            						<th>{lang key='orders::order.list_consignee_address'}</th>
-            						<th>{lang key='orders::order.list_audit_status'}</th>
-            						<th>{lang key='orders::order.lsit_reminder'}</th>
+            						<th>{t domain="orders"}收货地址{/t}</th>
+            						<th>{t domain="orders"}审核状态{/t}</th>
+            						<th>{t domain="orders"}催单时间{/t}</th>
             					</tr>
     				        </thead>
     				        <tbody>
@@ -62,8 +62,8 @@
         						<td class="hide-edit-area">
         							{$remind.order_sn}
         							<div class="edit-list">
-        								<a class="data-pjax" href='{url path="orders/merchant/info" args="order_id={$remind.order_id}"}' title="查看">{t}{lang key='orders::order.detailed_information'}{/t}</a>&nbsp;|&nbsp;
-        									<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg='{t name="{$remind.order_sn}"}您确定要删除退货单[ %1 ]吗？{/t}' href='{url path="orders/mh_reminder/remove" args="order_id={$remind.order_id}"}' title="{t}移除{/t}">{t}{lang key='orders::order.remove'}{/t}</a>
+        								<a class="data-pjax" href='{url path="orders/merchant/info" args="order_id={$remind.order_id}"}' title="查看">{t}{t domain="orders"}详细信息{/t}{/t}</a>&nbsp;|&nbsp;
+        									<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg='{t name="{$remind.order_sn}"}您确定要删除退货单[ %1 ]吗？{/t}' href='{url path="orders/mh_reminder/remove" args="order_id={$remind.order_id}"}' title="{t}移除{/t}">{t}{t domain="orders"}移除{/t}{/t}</a>
         								</div>
         						</td>
         						<td>{$remind.user_name}</td>

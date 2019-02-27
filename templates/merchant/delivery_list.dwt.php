@@ -25,12 +25,12 @@
     				</a>
     			</li>
     			<li class="{if $smarty.get.type eq 1}active{/if}">
-    				<a class="data-pjax" href='{RC_Uri::url("orders/mh_delivery/init", "type=1{if $filter.delivery_sn}&delivery_sn={$filter.delivery_sn}{/if}{if $filter.keywords}&keywords={$filter.keywords}{/if}")}'>{lang key='orders::order.op_return'}
+    				<a class="data-pjax" href='{RC_Uri::url("orders/mh_delivery/init", "type=1{if $filter.delivery_sn}&delivery_sn={$filter.delivery_sn}{/if}{if $filter.keywords}&keywords={$filter.keywords}{/if}")}'>{t domain="orders"}退货{/t}
     					<span class="badge badge-info use-plugins-num">{$type_count.op_return}</span>
     				</a>
     			</li>
     			<li class="{if $smarty.get.type eq 2}active{/if}">
-    				<a class="data-pjax" href='{RC_Uri::url("orders/mh_delivery/init", "type=2{if $filter.delivery_sn}&delivery_sn={$filter.delivery_sn}{/if}{if $filter.keywords}&keywords={$filter.keywords}{/if}")}'>{lang key='orders::order.normal'}
+    				<a class="data-pjax" href='{RC_Uri::url("orders/mh_delivery/init", "type=2{if $filter.delivery_sn}&delivery_sn={$filter.delivery_sn}{/if}{if $filter.keywords}&keywords={$filter.keywords}{/if}")}'>{t domain="orders"}正常{/t}
     					<span class="badge badge-info unuse-plugins-num">{$type_count.normal}</span>
     				</a>
     			</li>
@@ -83,8 +83,8 @@
 								<td class="hide-edit-area">
 									{$delivery.delivery_sn}
 									<div class="edit-list">
-										<a class="data-pjax" href='{url path="orders/mh_delivery/delivery_info" args="delivery_id={$delivery.delivery_id}"}' title="查看">{t}{lang key='orders::order.detailed_information'}{/t}</a>&nbsp;|&nbsp;
-										<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg='{t name="{$delivery.delivery_sn}"}您确定要删除发货单[ %1 ]吗？{/t}' href='{url path="orders/mh_delivery/remove" args="delivery_id={$delivery.delivery_id}{if $smarty.get.type}&type={$smarty.get.type}{/if}"}' title="{t}移除{/t}">{t}{lang key='orders::order.remove'}{/t}</a>
+										<a class="data-pjax" href='{url path="orders/mh_delivery/delivery_info" args="delivery_id={$delivery.delivery_id}"}' title="查看">{t}{t domain="orders"}详细信息{/t}{/t}</a>&nbsp;|&nbsp;
+										<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg='{t name="{$delivery.delivery_sn}"}您确定要删除发货单[ %1 ]吗？{/t}' href='{url path="orders/mh_delivery/remove" args="delivery_id={$delivery.delivery_id}{if $smarty.get.type}&type={$smarty.get.type}{/if}"}' title="{t}移除{/t}">{t}{t domain="orders"}移除{/t}{/t}</a>
 									</div>
 								</td>
 								<td><a href='{url path="orders/merchant/info" args="order_sn={$delivery.order_sn}"}' target="_blank" title="{t}查看订单{/t}">{$delivery.order_sn}</a></td>

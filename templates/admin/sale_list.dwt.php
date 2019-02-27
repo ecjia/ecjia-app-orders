@@ -11,7 +11,7 @@
 <!--销售明细-->
 <div class="alert alert-info">
 	<a class="close" data-dismiss="alert">×</a>
-	<strong>温馨提示：</strong>{lang key='orders::statistic.no_sales_details'}
+	<strong>温馨提示：</strong>{t domain="orders"}没有完成的订单不计入销售明细{/t}
 </div>
 
 <div>
@@ -39,12 +39,12 @@
 	<table class="table table-striped" id="smpl_tbl">
 		<thead>
 			<tr>
-				<th>{lang key='orders::statistic.goods_name'}</th>
+				<th>{t domain="orders"}商品名称{/t}</th>
 				<th class="w200">商家名称</th>
-				<th class="w200">{lang key='orders::statistic.order_sn'}</th>
-				<th class="w70">{lang key='orders::statistic.amount'}</th>
-				<th class="w120">{lang key='orders::statistic.sell_price'}</th>
-				<th class="w110">{lang key='orders::statistic.sell_date'}</th>
+				<th class="w200">{t domain="orders"}订单号{/t}</th>
+				<th class="w70">{t domain="orders"}数量{/t}</th>
+				<th class="w120">{t domain="orders"}售价{/t}</th>
+				<th class="w110">{t domain="orders"}售出日期{/t}</th>
 			</tr>
 		</thead>
 		<tbody>

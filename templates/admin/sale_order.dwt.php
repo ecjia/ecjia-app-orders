@@ -11,7 +11,7 @@
 <!--销售排行-->
 <div class="alert alert-info">
 	<a class="close" data-dismiss="alert">×</a>
-	<strong>温馨提示：</strong>{lang key='orders::statistic.no_sale_sort'}
+	<strong>温馨提示：</strong>{t domain="orders"}没有完成的订单不计入销售排行{/t}
 </div>
 
 <div>
@@ -44,12 +44,12 @@
 		<thead>
 			<tr data-sorthref='{url path="orders/admin_sale_order/init" args="start_date={$start_date}&end_date={$end_date}"}'>
 				<th class="w100">排行</th>
-				<th>{lang key='orders::statistic.goods_name'}</th>
+				<th>{t domain="orders"}商品名称{/t}</th>
 				<th>商家名称</th>
-				<th class="w100">{lang key='orders::statistic.goods_sn'}</th>
-				<th class="w80 sorting" data-toggle="sortby" data-sortby="goods_num">{lang key='orders::statistic.sell_amount'}</th>
-				<th class="w120">{lang key='orders::statistic.sell_sum'}</th>
-				<th class="w120">{lang key='orders::statistic.percent_count'}</th>
+				<th class="w100">{t domain="orders"}货号{/t}</th>
+				<th class="w80 sorting" data-toggle="sortby" data-sortby="goods_num">{t domain="orders"}销售量{/t}</th>
+				<th class="w120">{t domain="orders"}销售额{/t}</th>
+				<th class="w120">{t domain="orders"}均价{/t}</th>
 			</tr>
 		</thead>
 		<tbody>

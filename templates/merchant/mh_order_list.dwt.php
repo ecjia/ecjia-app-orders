@@ -118,24 +118,24 @@
 						{if $order_model eq 'default'}
 						<li>
 							<a class="batch-del-btn" data-toggle="ecjiabatch" data-name="order_id" data-idClass=".checkbox:checked" data-url="{$form_action}&operation=confirm"
-							    data-msg="{lang key='orders::order.confirm_approval_order'}" data-noSelectMsg="{lang key='orders::order.pls_select_order'}"
+							    data-msg="{t domain='orders'}您确定要审批这些订单吗？{/t}" data-noSelectMsg="{t domain='orders'}请选择需要操作的订单{/t}"
 							    href="javascript:;">
 								<i class="fa fa-check"></i> 接单</a>
 						</li>
 						<li>
 							<a class="batch-del-btn" data-toggle="ecjiabatch" data-name="order_id" data-idClass=".checkbox:checked" data-url="{$form_action}&operation=remove"
-							    data-msg="{lang key='orders::order.remove_confirm'}" href="javascript:;">
+							    data-msg="{t domain='orders'}删除订单将清除该订单的所有信息。您确定要这么做吗？{/t}" href="javascript:;">
 								<i class="fa fa-trash-o"></i> 删除</a>
 						</li>
 						{/if}
 						<li>
-							<a class="batch-operate batch-operate-cancel" data-operatetype="cancel" data-url="{$form_action}&operation=cancel" data-cancel-msg="{lang key='orders::order.confirm_order_cancel'}"
+							<a class="batch-operate batch-operate-cancel" data-operatetype="cancel" data-url="{$form_action}&operation=cancel" data-cancel-msg="{t domain='orders'}您确定要取消这些订单吗？{/t}"
 							    href="javascript:;">
-								<i class="fa fa-times"></i> {lang key='orders::order.op_cancel'}</a>
+								<i class="fa fa-times"></i> {t domain="orders"}取消{/t}</a>
 						</li>
 						<li>
 							<a class="batch-print" data-url="{$form_action}&print=1" href="javascript:;">
-								<i class="fa fa-print"></i> {lang key='orders::order.print_order'}</a>
+								<i class="fa fa-print"></i> {t domain="orders"}打印订单{/t}</a>
 						</li>
 					</ul>
 				</div>

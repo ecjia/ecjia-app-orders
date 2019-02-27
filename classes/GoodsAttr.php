@@ -17,6 +17,7 @@ class GoodsAttr
         if (!empty($goods_attr)) {
             $goods_attr = explode("\n", $goods_attr);
             $goods_attr = array_filter($goods_attr);
+
             foreach ($goods_attr as $val) {
                 $a = explode(':', $val);
                 if (!empty($a[0]) && !empty($a[1])) {

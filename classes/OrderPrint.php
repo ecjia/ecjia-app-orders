@@ -48,7 +48,7 @@ class OrderPrint
         //3.获取用户信息
         $user = RC_Api::api('user', 'user_info', array('user_id' => $order['user_id']));
         if (is_ecjia_error($user) || empty($user['user_name'])) {
-            $order['user_name'] = '匿名用户';
+            $order['user_name'] = __('匿名用户', 'orders');
         } else {
             $order['user_name'] = $user['user_name'];
         }
@@ -152,9 +152,9 @@ class OrderPrint
         $address .= $order['address'];
 
         $ps = array(
-            PS_UNPAYED => '未付款',
-            PS_PAYING  => '付款中',
-            PS_PAYED   => '已付款',
+            PS_UNPAYED => __('未付款', 'orders'),
+            PS_PAYING  => __('付款中', 'orders'),
+            PS_PAYED   => __('已付款', 'orders'),
         );
 
         $data = array(

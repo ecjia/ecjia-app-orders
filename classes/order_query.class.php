@@ -424,13 +424,13 @@ class order_query extends order
 
         $row = $db_order_info
             ->leftJoin('order_goods as og', RC_DB::raw('o.order_id'), '=', RC_DB::raw('og.order_id'))
-            ->select(RC_DB::raw('o.order_id'), RC_DB::raw('o.store_id'), RC_DB::raw('o.order_sn'), RC_DB::raw('
-        o.add_time'), RC_DB::raw('o.order_status'), RC_DB::raw('o.shipping_status'), RC_DB::raw('
-        o.order_amount'), RC_DB::raw('o.money_paid'), RC_DB::raw('o.pay_status'), RC_DB::raw('
-        o.consignee'), RC_DB::raw('o.address'), RC_DB::raw('o.email'), RC_DB::raw('o.tel'), RC_DB::raw('o.mobile'), RC_DB::raw('
-        o.extension_code'), RC_DB::raw('o.extension_id '), RC_DB::raw("(" . $this->order_amount_field('o.') . ") AS total_fee"), RC_DB::raw('
-        o.surplus'), RC_DB::raw('o.integral_money'), RC_DB::raw('o.bonus'), RC_DB::raw('
-        s.merchants_name'), RC_DB::raw('u.user_name'))
+            ->select(RC_DB::raw('o.order_id'), RC_DB::raw('o.store_id'), RC_DB::raw('o.order_sn'),
+                RC_DB::raw('o.add_time'), RC_DB::raw('o.order_status'), RC_DB::raw('o.shipping_status'),
+                RC_DB::raw('o.order_amount'), RC_DB::raw('o.money_paid'), RC_DB::raw('o.pay_status'),
+                RC_DB::raw('o.consignee'), RC_DB::raw('o.address'), RC_DB::raw('o.email'), RC_DB::raw('o.tel'),
+                RC_DB::raw('o.mobile'), RC_DB::raw('o.extension_code'), RC_DB::raw('o.extension_id '),
+                RC_DB::raw("(" . $this->order_amount_field('o.') . ") AS total_fee"), RC_DB::raw('o.surplus'),
+                RC_DB::raw('o.integral_money'), RC_DB::raw('o.bonus'), RC_DB::raw('s.merchants_name'), RC_DB::raw('u.user_name'))
             ->orderby($filter['sort_by'], $filter['sort_order'])
             ->take($pagesize)
             ->skip($page->start_id - 1)
@@ -453,7 +453,7 @@ class order_query extends order
                 $order[$value['order_id']]['formated_money_paid']   = price_format($value['money_paid']);
                 $order[$value['order_id']]['formated_total_fee']    = price_format($value['total_fee']);
                 $order[$value['order_id']]['short_order_time']      = RC_Time::local_date('Y-m-d H:i', $value['add_time']);
-                $order[$value['order_id']]['user_name']             = empty($value['user_name']) ? '匿名用户' : $value['user_name'];
+                $order[$value['order_id']]['user_name']             = empty($value['user_name']) ? __('匿名用户', 'orders') : $value['user_name'];
                 $order[$value['order_id']]['order_id']              = $value['order_id'];
                 $order[$value['order_id']]['order_sn']              = $value['order_sn'];
                 $order[$value['order_id']]['add_time']              = $value['add_time'];

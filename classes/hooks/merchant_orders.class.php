@@ -250,10 +250,10 @@ class orders_merchant_plugin
     public static function orders_stats_admin_menu_api($menus)
     {
         $menu = array(
-            2 => ecjia_merchant::make_admin_menu('02_order_stats', __('订单统计'), RC_Uri::url('orders/mh_order_stats/init'), 2)->add_purview('order_stats')->add_icon('fa-bar-chart-o')->add_base('stats'),
-            3 => ecjia_merchant::make_admin_menu('03_sale_general', __('销售概况'), RC_Uri::url('orders/mh_sale_general/init'), 3)->add_purview('sale_general_stats')->add_icon('fa-bar-chart-o')->add_base('stats'),
-            4 => ecjia_merchant::make_admin_menu('04_sale_list', __('销售明细'), RC_Uri::url('orders/mh_sale_list/init'), 4)->add_purview('sale_list_stats')->add_icon('fa-list')->add_base('stats'),
-            5 => ecjia_merchant::make_admin_menu('05_sale_order', __('销售排行'), RC_Uri::url('orders/mh_sale_order/init'), 5)->add_purview('sale_order_stats')->add_icon('fa-trophy')->add_base('stats'),
+            2 => ecjia_merchant::make_admin_menu('02_order_stats', __('订单统计', 'orders'), RC_Uri::url('orders/mh_order_stats/init'), 2)->add_purview('order_stats')->add_icon('fa-bar-chart-o')->add_base('stats'),
+            3 => ecjia_merchant::make_admin_menu('03_sale_general', __('销售概况', 'orders'), RC_Uri::url('orders/mh_sale_general/init'), 3)->add_purview('sale_general_stats')->add_icon('fa-bar-chart-o')->add_base('stats'),
+            4 => ecjia_merchant::make_admin_menu('04_sale_list', __('销售明细', 'orders'), RC_Uri::url('orders/mh_sale_list/init'), 4)->add_purview('sale_list_stats')->add_icon('fa-list')->add_base('stats'),
+            5 => ecjia_merchant::make_admin_menu('05_sale_order', __('销售排行', 'orders'), RC_Uri::url('orders/mh_sale_order/init'), 5)->add_purview('sale_order_stats')->add_icon('fa-trophy')->add_base('stats'),
         );
         $menus->add_submenu($menu);
         return $menus;

@@ -61,7 +61,7 @@ class orders_admin_plugin
             return false;
         }
 
-        $title = __('最新订单');
+        $title = __('最新订单', 'orders');
 
         $order_list = RC_Cache::app_cache_get('admin_dashboard_order_list', 'orders');
         if (!$order_list) {
@@ -75,29 +75,30 @@ class orders_admin_plugin
         ecjia_admin::$controller->assign('order_list', $order_list['orders']);
 
         $os = array(
-            OS_UNCONFIRMED   => '未接单',
-            OS_CONFIRMED     => '已接单',
-            OS_CANCELED      => '<font color="red">取消</font>',
-            OS_INVALID       => '<font color="red">无效</font>',
-            OS_RETURNED      => '<font color="red">退货</font>',
-            OS_SPLITED       => '已分单',
-            OS_SPLITING_PART => '部分分单',
+            OS_UNCONFIRMED   => __('未接单', 'orders'),
+            OS_CONFIRMED     => __('已接单', 'orders'),
+            OS_CANCELED      => __('<font color="red">取消</font>', 'orders'),
+            OS_INVALID       => __('<font color="red">无效</font>', 'orders'),
+            OS_RETURNED      => __('<font color="red">退货</font>', 'orders'),
+            OS_SPLITED       => __('已分单', 'orders'),
+            OS_SPLITING_PART => __('部分分单', 'orders'),
         );
 
         $ps = array(
-            PS_UNPAYED => '未付款',
-            PS_PAYING  => '付款中',
-            PS_PAYED   => '已付款',
+            PS_UNPAYED => __('未付款', 'orders'),
+            PS_PAYING  => __('付款中', 'orders'),
+            PS_PAYED   => __('已付款', 'orders'),
         );
 
         $ss = array(
-            SS_UNSHIPPED    => '未发货',
-            SS_PREPARING    => '配货中',
-            SS_SHIPPED      => '已发货',
-            SS_RECEIVED     => '收货确认',
-            SS_SHIPPED_PART => '已发货(部分商品)',
-            SS_SHIPPED_ING  => '发货中',
+            SS_UNSHIPPED    => __('未发货', 'orders'),
+            SS_PREPARING    => __('配货中', 'orders'),
+            SS_SHIPPED      => __('已发货', 'orders'),
+            SS_RECEIVED     => __('收货确认', 'orders'),
+            SS_SHIPPED_PART => __('已发货(部分商品)', 'orders'),
+            SS_SHIPPED_ING  => __('发货中', 'orders'),
         );
+
         ecjia_admin::$controller->assign('lang_os', $os);
         ecjia_admin::$controller->assign('lang_ps', $ps);
         ecjia_admin::$controller->assign('lang_ss', $ss);
@@ -296,11 +297,11 @@ class orders_admin_plugin
     {
         $menu = array(
             ecjia_admin::make_admin_menu('divider', '', '', 50)->add_purview(array('order_stats', 'guest_stats', 'sale_general_stats', 'users_order_stats', 'sale_list_stats', 'sale_order_stats', 'visit_sold_stats', 'adsense_conversion_stats')),
-            ecjia_admin::make_admin_menu('guest_stats', __('客户统计'), RC_Uri::url('orders/admin_guest_stats/init'), 51)->add_purview('guest_stats'),
-            ecjia_admin::make_admin_menu('sale_general', __('销售概况'), RC_Uri::url('orders/admin_sale_general/init'), 53)->add_purview('sale_general_stats'),
+            ecjia_admin::make_admin_menu('guest_stats', __('客户统计', 'orders'), RC_Uri::url('orders/admin_guest_stats/init'), 51)->add_purview('guest_stats'),
+            ecjia_admin::make_admin_menu('sale_general', __('销售概况', 'orders'), RC_Uri::url('orders/admin_sale_general/init'), 53)->add_purview('sale_general_stats'),
             // ecjia_admin::make_admin_menu('users_order', __('会员排行'), RC_Uri::url('orders/admin_users_order/init'), 54)->add_purview('users_order_stats'),
-            ecjia_admin::make_admin_menu('sale_list', __('销售明细'), RC_Uri::url('orders/admin_sale_list/init'), 55)->add_purview('sale_list_stats'),
-            ecjia_admin::make_admin_menu('sale_order', __('销售排行'), RC_Uri::url('orders/admin_sale_order/init'), 56)->add_purview('sale_order_stats'),
+            ecjia_admin::make_admin_menu('sale_list', __('销售明细', 'orders'), RC_Uri::url('orders/admin_sale_list/init'), 55)->add_purview('sale_list_stats'),
+            ecjia_admin::make_admin_menu('sale_order', __('销售排行', 'orders'), RC_Uri::url('orders/admin_sale_order/init'), 56)->add_purview('sale_order_stats'),
         );
         $menus->add_submenu($menu);
         return $menus;
@@ -316,8 +317,8 @@ class orders_admin_plugin
                 RC_Cache::app_cache_set($cache_key, array('time' => RC_Time::gmtime(), 'new_orders' => $remind_order['new_orders'], 'new_paid' => $remind_order['new_paid']), 'order', 5);
                 if ($remind_order['new_orders'] > 0 || $remind_order['new_paid'] > 0) {
                     $url  = RC_Uri::url('orders/admin/init');
-                    $html = '新订单通知：您有 <strong style="color:#ff0000">' . $remind_order['new_orders'] .
-                        '</strong> 个新订单以及  <strong style="color:#ff0000">' . $remind_order['new_paid'] . '</strong> 个新付款的订单。<a href="' . $url . '"><span style="color:#ff0000">点击查看</span></a>';
+                    $html = sprintf(__('新订单通知：您有 <strong style="color:#ff0000">%s</strong> 个新订单以及  <strong style="color:#ff0000">%s</strong> 个新付款的订单。<a href="' . $url . '"><span style="color:#ff0000">点击查看</span></a>', 'orders'), $remind_order['new_orders'], $remind_order['new_paid']);
+
                     RC_Cache::app_cache_set($cache_key, array('time' => RC_Time::gmtime()), 'order', 5);
                     ecjia_notification::make()->register('remind_order',
                         admin_notification::make($html)
@@ -331,8 +332,8 @@ class orders_admin_plugin
 
     public static function append_admin_setting_group($menus)
     {
-        $menus[] = ecjia_admin::make_admin_menu('nav-header', '订单', '', 122)->add_purview(array('order_manage'));
-        $menus[] = ecjia_admin::make_admin_menu('orders_setting', '订单设置', RC_Uri::url('orders/admin_config/init'), 123)->add_purview('order_manage');
+        $menus[] = ecjia_admin::make_admin_menu('nav-header', __('订单', 'orders'), '', 122)->add_purview(array('order_manage'));
+        $menus[] = ecjia_admin::make_admin_menu('orders_setting', __('订单设置', 'orders'), RC_Uri::url('orders/admin_config/init'), 123)->add_purview('order_manage');
         return $menus;
     }
 }

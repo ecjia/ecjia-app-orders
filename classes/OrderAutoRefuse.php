@@ -198,15 +198,15 @@ class OrderAutoRefuse
         RC_DB::table('order_info')->where('order_id', $order['order_id'])->update(array('order_status' => OS_RETURNED));
 
         /* 记录log */
-        $action_note = '系统自动退款';
-        order_refund::order_action($order['order_id'], OS_RETURNED, $order['shipping_status'], $order['pay_status'], $action_note, '系统');
+        $action_note = __('系统自动退款', 'orders');
+        order_refund::order_action($order['order_id'], OS_RETURNED, $order['shipping_status'], $order['pay_status'], $action_note, __('系统', 'orders'));
 
         //订单状态log记录
-        $pra = array('order_status' => '无法接单', 'order_id' => $order['order_id'], 'message' => '等待商家退款！');
+        $pra = array('order_status' => __('无法接单', 'orders'), 'order_id' => $order['order_id'], 'message' => __('等待商家退款！', 'orders'));
         order_refund::order_status_log($pra);
 
         //售后申请状态记录
-        $opt = array('status' => '无法接单', 'refund_id' => $refund_id, 'message' => '等待商家退款！');
+        $opt = array('status' => __('无法接单', 'orders'), 'refund_id' => $refund_id, 'message' => __('等待商家退款！', 'orders'));
         order_refund::refund_status_log($opt);
     }
 
@@ -305,11 +305,11 @@ class OrderAutoRefuse
             'refund_id'        => $refund_id,
             'action_user_type' => 'merchant',
             'action_user_id'   => 0,
-            'action_user_name' => '系统自动拒单自动退款',
+            'action_user_name' => __('系统自动拒单自动退款', 'orders'),
             'status'           => 1,
             'refund_status'    => $refund_status,
             'return_status'    => $refund_status,
-            'action_note'      => '系统自动拒单自动退款至余额',
+            'action_note'      => __('系统自动拒单自动退款至余额', 'orders'),
             'log_time'         => RC_Time::gmtime(),
         );
         RC_DB::table('refund_order_action')->insertGetId($data);

@@ -59,7 +59,7 @@ class orders_front_plugin
         $order_info = RC_DB::table('order_info')->where('order_sn', $order_sn)->first();
 
         if (empty($order_info)) {
-            RC_Logger::getLogger('error')->error('到店购订单' . $order_sn . '发货失败');
+            RC_Logger::getLogger('error')->error(sprintf(__('到店购订单 %s 发货失败', 'orders'), $order_sn));
             return false;
         }
 

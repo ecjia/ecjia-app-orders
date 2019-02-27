@@ -71,7 +71,7 @@ class PaidOrderProcess implements PaidOrderProcessInterface
             'pay_code'               => $this->record_model->pay_code,
             'pay_name'               => $this->record_model->pay_name,
             'pay_status'             => 'success',
-            'desc'                   => '订单支付成功！'
+            'desc'                   => __('订单支付成功！', 'orders')
         );
 
         //收银台消费订单流程；默认订单自动发货，至完成状态

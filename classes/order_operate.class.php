@@ -155,13 +155,13 @@ class order_operate
         $order_id = $order['order_id'];
         /* 获取表单提交数据 */
         $suppliers_id = isset($_POST['suppliers_id']) ? intval(trim($_POST['suppliers_id'])) : '0'; //供货商
-        // 		TODO:delivery基本信息从order中获取
+        // TODO:delivery基本信息从order中获取
 
         array_walk($_POST['send_number'], 'trim_array_walk');
         array_walk($_POST['send_number'], 'intval_array_walk');
         $send_number = $_POST['send_number'];
 
-// 		TODO:默认全部发货，后期改善分批
+        // TODO:默认全部发货，后期改善分批
         $action_note          = isset($note['action_note']) ? trim($note['action_note']) : '';
         $delivery['order_sn'] = $order['order_sn'];
         $delivery['user_id']  = intval($order['user_id']);
@@ -179,7 +179,7 @@ class order_operate
 
         /* 订单是否已全部分单检查 */
         if ($order['order_status'] == OS_SPLITED) {
-            return new ecjia_error('order_splited', '您的订单' . $order['order_sn'] . ',已分单，正在发货中');
+            return new ecjia_error('order_splited', sprintf(__('您的订单%s,已分单，正在发货中', 'orders'), $order['order_sn']));
         }
 
         /* 取得订单商品 */
@@ -191,7 +191,7 @@ class order_operate
             $send_number      = array();
             $goods_no_package = array();
             foreach ($goods_list as $key => $value) {
-                // 		TODO:默认全部发货，后期改善分批
+                // TODO:默认全部发货，后期改善分批
                 $send_number[$value['rec_id']] = $value['goods_number'];
 
                 /* 去除 此单发货数量 等于 0 的商品 */
@@ -204,7 +204,7 @@ class order_operate
                     } else {
                         $goods_no_package[$_key] += $send_number[$value['rec_id']];
                     }
-                    //去除
+                    // 去除
                     if ($send_number[$value['rec_id']] <= 0) {
                         unset($send_number[$value['rec_id']], $goods_list[$key]);
                         continue;
@@ -240,13 +240,13 @@ class order_operate
                 if (!isset($value['package_goods_list']) || !is_array($value['package_goods_list'])) {
                     $sended = order_delivery_num($order_id, $value['goods_id'], $value['product_id']);
                     if (($value['goods_number'] - $sended - $send_number[$value['rec_id']]) < 0) {
-                        return new ecjia_error('act_ship_num', '此单发货数量不能超出订单商品数量！');
+                        return new ecjia_error('act_ship_num', __('此单发货数量不能超出订单商品数量！', 'orders'));
                     }
                 } else {
                     /* 超值礼包 */
                     foreach ($goods_list[$key]['package_goods_list'] as $pg_key => $pg_value) {
                         if (($pg_value['order_send_number'] - $pg_value['sended'] - $send_number[$value['rec_id']][$pg_value['g_p']]) < 0) {
-                            return new ecjia_error('act_ship_num', '此单发货数量不能超出订单商品数量！');
+                            return new ecjia_error('act_ship_num', __('此单发货数量不能超出订单商品数量！', 'orders'));
                         }
                     }
                 }
@@ -255,7 +255,7 @@ class order_operate
 
         /* 对上一步处理结果进行判断 兼容 上一步判断为假情况的处理 */
         if (empty($send_number) || empty($goods_list)) {
-            return new ecjia_error('act_false', '操作失败！');
+            return new ecjia_error('act_false', __('操作失败！', 'orders'));
         }
 
         /* 检查此单发货商品库存缺货情况 */
@@ -269,7 +269,7 @@ class order_operate
                     if ($pg_value['goods_number'] < $goods_no_package[$pg_value['g_p']] &&
                         ((ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) ||
                             (ecjia::config('use_storage') == '0' && $pg_value['is_real'] == 0))) {
-                        return new ecjia_error('act_good_vacancy', '商品已缺货！');
+                        return new ecjia_error('act_good_vacancy', __('商品已缺货！', 'orders'));
                     }
 
                     /* 商品（超值礼包） 虚拟商品列表 package_virtual_goods*/
@@ -286,7 +286,7 @@ class order_operate
                 $num = RC_DB::table('virtual_card')->where('goods_id', $value['goods_id'])->where('is_saled', 0)->count();
 
                 if (($num < $goods_no_package[$value['goods_id']]) && !(ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_PLACE)) {
-                    return new ecjia_error('virtual_card_oos', '虚拟卡已缺货！');
+                    return new ecjia_error('virtual_card_oos', __('虚拟卡已缺货！', 'orders'));
                 }
                 /* 虚拟商品列表 virtual_card*/
                 if ($value['extension_code'] == 'virtual_card') {
@@ -305,7 +305,7 @@ class order_operate
                         ->where('product_id', $value['product_id'])->pluck('product_number');
                 }
                 if (($num < $goods_no_package[$_key]) && ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) {
-                    return new ecjia_error('act_good_vacancy', '商品已缺货！');
+                    return new ecjia_error('act_good_vacancy', __('商品已缺货！', 'orders'));
                 }
             }
         }
@@ -394,7 +394,7 @@ class order_operate
                 }
             }
         } else {
-            return new ecjia_error('act_false', '操作失败！');
+            return new ecjia_error('act_false', __('操作失败！', 'orders'));
         }
         unset($filter_fileds, $delivery, $_delivery, $order_finish);
 
@@ -511,7 +511,7 @@ class order_operate
     private function order_action($order_sn, $order_status, $shipping_status, $pay_status, $note = '', $username = null, $place = 0)
     {
         if (is_null($username)) {
-            $username = empty($_SESSION ['admin_name']) ? '系统' : $_SESSION ['admin_name'];
+            $username = empty($_SESSION ['admin_name']) ? __('系统', 'orders') : $_SESSION ['admin_name'];
         }
 
         $row = RC_DB::table('order_info')->where('order_sn', $order_sn)->first();

@@ -26,7 +26,7 @@ class CustomizeOrderList
 
                 'order_id'                => $item->order_id,
                 'order_sn'                => $item->order_sn,
-                //'order_mode'        => in_array($item->extension_code, array('storebuy', 'cashdesk')) ? 'storebuy' : 'default',
+//                'order_mode'              => in_array($item->extension_code, array('storebuy', 'cashdesk')) ? 'storebuy' : 'default',
                 'extension_code'          => empty($item->extension_code) ? null : $item->extension_code,
                 'extension_id'            => empty($item->extension_id) ? 0 : $item->extension_id,
                 'order_amount'            => $item->order_amount,
@@ -57,16 +57,16 @@ class CustomizeOrderList
             ];
             if (in_array($item->extension_code, array('storebuy', 'cashdesk'))) {
                 $data['order_mode']       = 'storebuy';
-                $data['label_order_mode'] = '扫码购';
+                $data['label_order_mode'] = __('扫码购', 'orders');
             } elseif ($item->extension_code == 'storepickup') {
                 $data['order_mode']       = 'storepickup';
-                $data['label_order_mode'] = '自提';
+                $data['label_order_mode'] = __('自提', 'orders');
             } elseif ($item->extension_code == 'group_buy') {
                 $data['order_mode']       = 'groupbuy';
-                $data['label_order_mode'] = '团购';
+                $data['label_order_mode'] = __('团购', 'orders');
             } else {
                 $data['order_mode']       = 'default';
-                $data['label_order_mode'] = '配送';
+                $data['label_order_mode'] = __('配送', 'orders');
             }
 
             $data['goods_list'] = $item->orderGoods->map(function ($item) use (&$goods_number) {
@@ -168,19 +168,19 @@ class CustomizeOrderList
             ];
             if ($item->extension_code == 'storebuy') {
                 $data['order_mode']       = 'storebuy';
-                $data['label_order_mode'] = '扫码购';
+                $data['label_order_mode'] = __('扫码购', 'orders');
             } elseif ($item->extension_code == 'cashdesk') {
                 $data['order_mode']       = 'cashdesk';
-                $data['label_order_mode'] = '收银台';
+                $data['label_order_mode'] = __('收银台', 'orders');
             } elseif ($item->extension_code == 'storepickup') {
                 $data['order_mode']       = 'storepickup';
-                $data['label_order_mode'] = '自提';
+                $data['label_order_mode'] = __('自提', 'orders');
             } elseif ($item->extension_code == 'group_buy') {
                 $data['order_mode']       = 'groupbuy';
-                $data['label_order_mode'] = '团购';
+                $data['label_order_mode'] = __('团购', 'orders');
             } else {
                 $data['order_mode']       = 'default';
-                $data['label_order_mode'] = '配送';
+                $data['label_order_mode'] = __('配送', 'orders');
             }
             return $data;
         });
@@ -257,19 +257,19 @@ class CustomizeOrderList
             ];
             if ($item->extension_code == 'storebuy') {
                 $data['order_mode']       = 'storebuy';
-                $data['label_order_mode'] = '扫码购';
+                $data['label_order_mode'] = __('扫码购', 'orders');
             } elseif ($item->extension_code == 'cashdesk') {
                 $data['order_mode']       = 'cashdesk';
-                $data['label_order_mode'] = '收银台';
+                $data['label_order_mode'] = __('收银台', 'orders');
             } elseif ($item->extension_code == 'storepickup') {
                 $data['order_mode']       = 'storepickup';
-                $data['label_order_mode'] = '自提';
+                $data['label_order_mode'] = __('自提', 'orders');
             } elseif ($item->extension_code == 'group_buy') {
                 $data['order_mode']       = 'groupbuy';
-                $data['label_order_mode'] = '团购';
+                $data['label_order_mode'] = __('团购', 'orders');
             } else {
                 $data['order_mode']       = 'default';
-                $data['label_order_mode'] = '配送';
+                $data['label_order_mode'] = __('配送', 'orders');
             }
             return $data;
         });

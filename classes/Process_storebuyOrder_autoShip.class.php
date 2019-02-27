@@ -64,15 +64,15 @@ class Process_storebuyOrder_autoShip
             RC_Loader::load_app_class('OrderStatusLog', 'orders', false);
 
             /* 配货*/
-            $result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_info['order_id'], 'order_sn' => '', 'operation' => 'prepare', 'note' => array('action_note' => '系统操作')));
+            $result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_info['order_id'], 'order_sn' => '', 'operation' => 'prepare', 'note' => array('action_note' => __('系统操作', 'orders'))));
             if (is_ecjia_error($result)) {
-                RC_Logger::getLogger('error')->info('订单配货【订单id|' . $order_info['order_id'] . '】：' . $result->get_error_message());
+                RC_Logger::getLogger('error')->info(sprintf(__('订单配货【订单id|%s】：' . $result->get_error_message(), 'orders'), $order_info['order_id']));
             }
 
             /* 分单（生成发货单）*/
-            $result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_info['order_id'], 'order_sn' => '', 'operation' => 'split', 'note' => array('action_note' => '系统操作')));
+            $result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_info['order_id'], 'order_sn' => '', 'operation' => 'split', 'note' => array('action_note' => __('系统操作', 'orders'))));
             if (is_ecjia_error($result)) {
-                RC_Logger::getLogger('error')->info('订单分单【订单id|' . $order_info['order_id'] . '】：' . $result->get_error_message());
+                RC_Logger::getLogger('error')->info(sprintf(__('订单分单【订单id|%s】：' . $result->get_error_message(), 'orders'), $order_info['order_id']));
             } else {
                 /*订单状态日志记录*/
                 OrderStatusLog::generate_delivery_orderInvoice(array('order_id' => $order_info['order_id'], 'order_sn' => $order_info['order_sn']));
@@ -83,9 +83,9 @@ class Process_storebuyOrder_autoShip
 
             $delivery_id = RC_DB::table('delivery_order')->where('order_sn', $order_info['order_sn'])->orderBy('delivery_id', 'desc')->pluck('delivery_id');
 
-            $result = order_ship::delivery_ship($order_info['order_id'], $delivery_id, '', '系统操作');
+            $result = order_ship::delivery_ship($order_info['order_id'], $delivery_id, '', __('系统操作', 'orders'));
             if (is_ecjia_error($result)) {
-                RC_Logger::getLogger('error')->info('订单发货【订单id|' . $order_info['order_id'] . '】：' . $result->get_error_message());
+                RC_Logger::getLogger('error')->info(sprintf(__('订单发货【订单id|%s】：' . $result->get_error_message(), 'orders'), $order_info['order_id']));
             } else {
                 /*订单状态日志记录*/
                 OrderStatusLog::delivery_ship_finished(array('order_id' => $order_info['order_id'], 'order_sn' => $order_info['order_sn']));
@@ -94,7 +94,7 @@ class Process_storebuyOrder_autoShip
             //交易完成
             $order_operate            = RC_Loader::load_app_class('order_operate', 'orders');
             $order_info['pay_status'] = PS_PAYED;
-            $order_operate->operate($order_info, 'receive', array('action_note' => '系统操作'));
+            $order_operate->operate($order_info, 'receive', array('action_note' => __('系统操作', 'orders')));
         }
     }
 }

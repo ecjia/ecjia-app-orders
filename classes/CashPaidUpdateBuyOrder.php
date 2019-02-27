@@ -26,7 +26,7 @@ class CashPaidUpdateBuyOrder
             return $order;
         }
         if (empty($order)) {
-            return new \ecjia_error('order_not_exist', '订单信息不存在！');
+            return new \ecjia_error('order_not_exist', __('订单信息不存在！', 'orders'));
         }
         self::_update_order_paid($order, $note);
     }
@@ -80,7 +80,7 @@ class CashPaidUpdateBuyOrder
     private static function _order_action($order_sn, $order_status, $shipping_status, $pay_status, $note = '', $username = null, $place = 0)
     {
         if (is_null($username)) {
-            $username = empty($_SESSION ['admin_name']) ? '系统' : $_SESSION ['admin_name'];
+            $username = empty($_SESSION ['admin_name']) ? __('系统', 'orders') : $_SESSION ['admin_name'];
         }
 
         $row = RC_DB::table('order_info')->where('order_sn', $order_sn)->first();

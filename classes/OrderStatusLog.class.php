@@ -60,9 +60,9 @@ class OrderStatusLog
     public static function generate_order($options)
     {
         $data = array(
-            'order_status' => '订单提交成功',
+            'order_status' => __('订单提交成功', 'orders'),
             'order_id'     => $options['order_id'],
-            'message'      => '下单成功，订单号：' . $options['order_sn'],
+            'message'      => sprintf(__('下单成功，订单号：%s', 'orders'), $options['order_sn']),
             'add_time'     => RC_Time::gmtime(),
         );
         RC_DB::table('order_status_log')->insert($data);
@@ -77,9 +77,9 @@ class OrderStatusLog
     public static function remind_pay($options)
     {
         RC_DB::table('order_status_log')->insert(array(
-            'order_status' => '待付款',
+            'order_status' => __('待付款', 'orders'),
             'order_id'     => $options['order_id'],
-            'message'      => '请尽快支付该订单，超时将会自动取消订单',
+            'message'      => __('请尽快支付该订单，超时将会自动取消订单', 'orders'),
             'add_time'     => RC_Time::gmtime(),
         ));
         return true;
@@ -93,14 +93,14 @@ class OrderStatusLog
     public static function order_paid($options)
     {
         $ps = array(
-            PS_UNPAYED => '未付款',
-            PS_PAYING  => '付款中',
-            PS_PAYED   => '已付款',
+            PS_UNPAYED => __('未付款', 'orders'),
+            PS_PAYING  => __('付款中', 'orders'),
+            PS_PAYED   => __('已付款', 'orders'),
         );
         RC_DB::table('order_status_log')->insert(array(
             'order_status' => $ps[PS_PAYED],
             'order_id'     => $options['order_id'],
-            'message'      => '已通知商家处理，请耐心等待',
+            'message'      => __('已通知商家处理，请耐心等待', 'orders'),
             'add_time'     => RC_Time::gmtime(),
         ));
         return true;
@@ -115,9 +115,9 @@ class OrderStatusLog
     public static function notify_merchant($options)
     {
         RC_DB::table('order_status_log')->insert(array(
-            'order_status' => '等待商家接单',
+            'order_status' => __('等待商家接单', 'orders'),
             'order_id'     => $options['order_id'],
-            'message'      => '订单已通知商家，等待商家处理',
+            'message'      => __('订单已通知商家，等待商家处理', 'orders'),
             'add_time'     => RC_Time::gmtime(),
         ));
         return true;
@@ -131,17 +131,17 @@ class OrderStatusLog
     public static function generate_delivery_orderInvoice($options)
     {
         $ss   = array(
-            SS_UNSHIPPED    => '未发货',
-            SS_PREPARING    => '配货中',
-            SS_SHIPPED      => '已发货',
-            SS_RECEIVED     => '收货确认',
-            SS_SHIPPED_PART => '已发货(部分商品)',
-            SS_SHIPPED_ING  => '发货中',
+            SS_UNSHIPPED    => __('未发货', 'orders'),
+            SS_PREPARING    => __('配货中', 'orders'),
+            SS_SHIPPED      => __('已发货', 'orders'),
+            SS_RECEIVED     => __('收货确认', 'orders'),
+            SS_SHIPPED_PART => __('已发货(部分商品)', 'orders'),
+            SS_SHIPPED_ING  => __('发货中', 'orders'),
         );
         $data = array(
             'order_status' => $ss[SS_PREPARING],
             'order_id'     => $options['order_id'],
-            'message'      => sprintf('订单号为 %s 的商品正在备货中，请您耐心等待', $options['order_sn']),
+            'message'      => sprintf(__('订单号为 %s 的商品正在备货中，请您耐心等待', 'orders'), $options['order_sn']),
             'add_time'     => RC_Time::gmtime()
         );
         RC_DB::table('order_status_log')->insert($data);
@@ -156,16 +156,16 @@ class OrderStatusLog
     public static function delivery_ship_finished($options)
     {
         $ss   = array(
-            SS_UNSHIPPED    => '未发货',
-            SS_PREPARING    => '配货中',
-            SS_SHIPPED      => '已发货',
-            SS_RECEIVED     => '收货确认',
-            SS_SHIPPED_PART => '已发货(部分商品)',
-            SS_SHIPPED_ING  => '发货中',
+            SS_UNSHIPPED    => __('未发货', 'orders'),
+            SS_PREPARING    => __('配货中', 'orders'),
+            SS_SHIPPED      => __('已发货', 'orders'),
+            SS_RECEIVED     => __('收货确认', 'orders'),
+            SS_SHIPPED_PART => __('已发货(部分商品)', 'orders'),
+            SS_SHIPPED_ING  => __('发货中', 'orders'),
         );
         $data = array(
             'order_status' => $ss[SS_SHIPPED],
-            'message'      => sprintf('订单号为 %s 的商品已发货，请您耐心等待', $options['order_sn']),
+            'message'      => sprintf(__('订单号为 %s 的商品已发货，请您耐心等待', 'orders'), $options['order_sn']),
             'order_id'     => $options['order_id'],
             'add_time'     => RC_Time::gmtime(),
         );
@@ -181,17 +181,17 @@ class OrderStatusLog
     public static function affirm_received($options)
     {
         $order_status_data = array(
-            'order_status' => '已确认收货',
+            'order_status' => __('已确认收货', 'orders'),
             'order_id'     => $options['order_id'],
-            'message'      => '宝贝已签收，购物愉快！',
+            'message'      => __('宝贝已签收，购物愉快！', 'orders'),
             'add_time'     => RC_Time::gmtime()
         );
         RC_DB::table('order_status_log')->insert($order_status_data);
 
         $order_status_data = array(
-            'order_status' => '订单已完成',
+            'order_status' => __('订单已完成', 'orders'),
             'order_id'     => $options['order_id'],
-            'message'      => '感谢您在' . ecjia::config('shop_name') . '购物，欢迎您再次光临！',
+            'message'      => sprintf(__('感谢您在 %s 购物，欢迎您再次光临！', 'orders'), ecjia::config('shop_name')),
             'add_time'     => RC_Time::gmtime()
         );
         RC_DB::table('order_status_log')->insert($order_status_data);
@@ -206,9 +206,9 @@ class OrderStatusLog
     public static function cancel($options)
     {
         RC_DB::table('order_status_log')->insert(array(
-            'order_status' => '订单已取消',
+            'order_status' => __('订单已取消', 'orders'),
             'order_id'     => $options['order_id'],
-            'message'      => '您的订单已取消成功！',
+            'message'      => __('您的订单已取消成功！', 'orders'),
             'add_time'     => RC_Time::gmtime(),
         ));
         return true;
@@ -222,9 +222,9 @@ class OrderStatusLog
     public static function order_auto_cancel($options)
     {
         RC_DB::table('order_status_log')->insert(array(
-            'order_status' => '超时未支付取消',
+            'order_status' => __('超时未支付取消', 'orders'),
             'order_id'     => $options['order_id'],
-            'message'      => '订单超时未支付，已自动取消！',
+            'message'      => __('订单超时未支付，已自动取消！', 'orders'),
             'add_time'     => RC_Time::gmtime(),
         ));
         return true;
@@ -238,12 +238,12 @@ class OrderStatusLog
     public static function refund_order_process($options)
     {
         if ($options['status'] == 1) {
-            $message = '申请审核已通过';
+            $message = __('申请审核已通过', 'orders');
         } else {
-            $message = '申请审核未通过';
+            $message = __('申请审核未通过', 'orders');
         }
         $data = array(
-            'order_status' => '订单退款申请已处理',
+            'order_status' => __('订单退款申请已处理', 'orders'),
             'message'      => $message,
             'order_id'     => $options['order_id'],
             'add_time'     => RC_Time::gmtime(),
@@ -260,12 +260,12 @@ class OrderStatusLog
     public static function return_order_process($options)
     {
         if ($options['status'] == 1) {
-            $message = '申请审核已通过，请选择返回方式';
+            $message = __('申请审核已通过，请选择返回方式', 'orders');
         } else {
-            $message = '申请审核未通过';
+            $message = __('申请审核未通过', 'orders');
         }
         $data = array(
-            'order_status' => '订单退货退款申请已处理',
+            'order_status' => __('订单退货退款申请已处理', 'orders'),
             'message'      => $message,
             'order_id'     => $options['order_id'],
             'add_time'     => RC_Time::gmtime(),
@@ -282,12 +282,12 @@ class OrderStatusLog
     public static function return_confirm_receive($options)
     {
         if ($options['status'] == 3) {
-            $message = '商家已确认收货，等价商家退款';
+            $message = __('商家已确认收货，等价商家退款', 'orders');
         } else {
-            $message = '商家未收到货';
+            $message = __('商家未收到货', 'orders');
         }
         $data = array(
-            'order_status' => '确认收货处理',
+            'order_status' => __('确认收货处理', 'orders'),
             'message'      => $message,
             'order_id'     => $options['order_id'],
             'add_time'     => RC_Time::gmtime(),
@@ -304,12 +304,12 @@ class OrderStatusLog
     public static function refund_payrecord($options)
     {
         if (!empty($options['back_pay_name'])) {
-            $message = '您的退款' . $options['back_money'] . '元，已退回至您的' . $options['back_pay_name'] . '账户，请查收';
+            $message = sprintf(__('您的退款 %s 元，已退回至您的 %s 账户，请查收', 'orders'), $options['back_money'], $options['back_pay_name']);
         } else {
-            $message = '您的退款' . $options['back_money'] . '元，已退回至您的余额，请查收';
+            $message = sprintf(__('您的退款 %s 元，已退回至您的余额，请查收', 'orders'), $options['back_money']);
         }
         $data = array(
-            'order_status' => '退款到账',
+            'order_status' => __('退款到账', 'orders'),
             'message'      => $message,
             'order_id'     => $options['order_id'],
             'add_time'     => RC_Time::gmtime(),
@@ -326,14 +326,14 @@ class OrderStatusLog
     public static function groupbuy_order_paid($options)
     {
         $ps   = array(
-            PS_UNPAYED => '未付款',
-            PS_PAYING  => '付款中',
-            PS_PAYED   => '已付款',
+            PS_UNPAYED => __('未付款', 'orders'),
+            PS_PAYING  => __('付款中', 'orders'),
+            PS_PAYED   => __('已付款', 'orders'),
         );
         $data = array(
             'order_status' => $ps[PS_PAYED],
             'order_id'     => $options['order_id'],
-            'message'      => '保证金支付成功，等活动成功结束后尽快支付商品部分余款！',
+            'message'      => __('保证金支付成功，等活动成功结束后尽快支付商品部分余款！', 'orders'),
             'add_time'     => RC_Time::gmtime(),
         );
 
@@ -349,9 +349,9 @@ class OrderStatusLog
     public static function orderpaid_autoconfirm($options)
     {
         $data = array(
-            'order_status' => '商家已接单',
+            'order_status' => __('商家已接单', 'orders'),
             'order_id'     => $options['order_id'],
-            'message'      => '已被商家接单，订单正在备货中',
+            'message'      => __('已被商家接单，订单正在备货中', 'orders'),
             'add_time'     => RC_Time::gmtime()
         );
         RC_DB::table('order_status_log')->insert($data);

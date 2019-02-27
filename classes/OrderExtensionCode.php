@@ -56,15 +56,15 @@ class OrderExtensionCode
     {
 
         $order_extension_code = array(
-            'default'     => '配送订单',
-            'storebuy'    => '到店订单',
-            'storepickup' => '自提订单',
-            'group_buy'   => '团购订单',
-            'cashdesk'    => '收银台订单'
+            'default'     => __('配送订单', 'orders'),
+            'storebuy'    => __('到店订单', 'orders'),
+            'storepickup' => __('自提订单', 'orders'),
+            'group_buy'   => __('团购订单', 'orders'),
+            'cashdesk'    => __('收银台订单', 'orders')
         );
 
         if (!array_key_exists($extension_code, $order_extension_code)) {
-            return '配送订单';
+            return __('配送订单', 'orders');
         }
 
         return array_get($order_extension_code, $extension_code);

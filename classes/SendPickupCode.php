@@ -68,8 +68,8 @@ class SendPickupCode
 
                             try {
                                 $order_pickup_data = array(
-                                    'title' => '订单收货验证码',
-                                    'body'  => '尊敬的' . $userinfo['user_name'] . '，您在我们网站已成功下单。订单号：' . $order['order_sn'] . '，收货验证码为：' . $code . '。请保管好您的验证码，以便收货验证',
+                                    'title' => __('订单收货验证码', 'orders'),
+                                    'body'  => sprintf(__('尊敬的%s，您在我们网站已成功下单。订单号：%s，收货验证码为：%s。请保管好您的验证码，以便收货验证', 'orders'), $userinfo['user_name'], $order['order_sn'], $code),
                                     'data'  => array(
                                         'user_id'   => $order['user_id'],
                                         'user_name' => $userinfo['user_name'],

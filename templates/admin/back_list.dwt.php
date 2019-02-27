@@ -26,7 +26,7 @@
 					<span class="caret"></span>
 				</a>
 				<ul class="dropdown-menu">
-					<li><a class="batch-del-btn" data-toggle="ecjiabatch" data-name="back_id" data-idClass=".checkbox:checked" data-url="{$del_action}" data-msg="您确定需要删除这些退货单吗？" data-noSelectMsg="{lang key='orders::order.pls_select_retun'}" href="javascript:;"><i class="fontello-icon-trash"></i>删除</a></li>
+					<li><a class="batch-del-btn" data-toggle="ecjiabatch" data-name="back_id" data-idClass=".checkbox:checked" data-url="{$del_action}" data-msg="您确定需要删除这些退货单吗？" data-noSelectMsg="请选择需要操作的退货单！" href="javascript:;"><i class="fontello-icon-trash"></i>删除</a></li>
 				</ul>
 			</div>
 			<div class="choose_list f_r" >

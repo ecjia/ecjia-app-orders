@@ -80,15 +80,15 @@ ecjia.merchant.order.addedit();
 						</tr>
 						<!-- {/foreach} -->
 						<tr>
-							<td colspan="4" class="left-td"><span class="input-must">{lang key='orders::order.price_note'}</span></td>
+							<td colspan="4" class="left-td"><span class="input-must">备注：商品价格中已包含属性加价</span></td>
 							<td colspan="1" class="right-td"><strong>合计：</strong>{$goods_amount}</td>
 			<!-- 				<td>{$goods_amount}</td> -->
 							<td colspan="2" class="panel-heading form-inline">
 <!-- 								{if $smarty.foreach.goods.total gt 0} -->
-<!-- 								<button class="btn btn-info" type="submit" name="edit_goods">{lang key='orders::order.update_goods'}</button> -->
+<!-- 								<button class="btn btn-info" type="submit" name="edit_goods">更新商品</button> -->
 <!-- 								{/if} -->
                         			<p class="ecjiaf-tac m_t15">
-                        				<button class="btn btn-info" type="submit" name="finish">{lang key='orders::order.update_goods'}</button>&nbsp;&nbsp;&nbsp;
+                        				<button class="btn btn-info" type="submit" name="finish">更新商品</button>&nbsp;&nbsp;&nbsp;
                         				<input name="finish" type="hidden" value="{lang key='orders::order.button_submit'}" />
                         				<a class="cancel_order" data-href='{url path="orders/merchant/process" args="func=cancel_order&order_id={$order_id}&step_act={$step_act}"}'><button class="btn btn-info" type="button">取消</button></a>
                         			</p>
@@ -105,7 +105,7 @@ ecjia.merchant.order.addedit();
 
 <div class="row">
 	<div class="col-lg-12 panel-heading form-inline">
-		<span>{lang key='orders::order.search_goods'}</span>
+		<span>按商品编号或商品名称或商品货号搜索：</span>
 		<input class="form-control" type="text" name="keyword" placeholder="请输入关键字" />
 		<button class="btn searchGoods btn-info" type="button">{lang key='orders::order.button_search'}</button>
 	</div>
@@ -126,7 +126,7 @@ ecjia.merchant.order.addedit();
 				<div class="ms-selection order-goods-select">
 					<div class="custom-header custom-header-align"><span>商品信息</span>
 					</div>
-					<div class="add-goods"><a class="goods_info ecjiaf-dn" href="javascript:;">{lang key='orders::order.add_to_order'}</a></div>
+					<div class="add-goods"><a class="goods_info ecjiaf-dn" href="javascript:;">加入订单</a></div>
 					<div class="ms-list nav-list-content ">
 						<div class="ecjiaf-dn goods_info h110">
 							<div class="ecjiaf-fl ecjiaf-tac col-lg-5 m_t20">
@@ -144,7 +144,7 @@ ecjia.merchant.order.addedit();
 						</div>
 						<div class="ecjiaf-dn goods_info row-fluid">
 							<div class="form-group">
-								<label class="control-label col-lg-2">{lang key='orders::order.label_goods_price'}</label>
+								<label class="control-label col-lg-2">商品价格：</label>
 								<div class="col-lg-8" id="add_price">
 								</div>
 							</div>
@@ -153,7 +153,7 @@ ecjia.merchant.order.addedit();
 						</div>
 						<div class="ecjiaf-dn goods_info row-fluid">
 							<div class="form-group">
-								<label class="control-label col-lg-2">{lang key='orders::order.label_goods_number'}</label>
+								<label class="control-label col-lg-2">商品数量：</label>
 								<div class="col-lg-6" id="add_price">
 									<input class="w50 ecjiaf-tac goods_number" name="add_number" type="text" value="1">
 								</div>
@@ -332,11 +332,11 @@ ecjia.merchant.order.addedit();
 					<thead>
 						<tr>
 							<th class="w35">&nbsp;</th>
-							<th class="w100">{lang key='orders::order.name'}</th>
-							<th>{lang key='orders::order.desc'}</th>
-							<th class="w100">{lang key='orders::order.shipping_fee'}</th>
-							<th class="w100">{lang key='orders::order.free_money'}</th>
-							<th class="w100">{lang key='orders::order.insure'}</th>
+							<th class="w100">名称</th>
+							<th>描述</th>
+							<th class="w100">配送费</th>
+							<th class="w100">免费额度</th>
+							<th class="w100">保价费</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -362,7 +362,7 @@ ecjia.merchant.order.addedit();
 	</div>
 	<p align="right">
 		<input id="insure" class="form-control" name="insure" type="checkbox" value="1" {if $order.insure_fee > 0}checked{/if} />
-		<label for="insure">{lang key='orders::order.want_insure'}</label>
+		<label for="insure">我要保价</label>
 	</p>
 	<!--{/if}-->
 
@@ -380,9 +380,9 @@ ecjia.merchant.order.addedit();
 					<thead>
 						<tr>
 							<th class="w35">&nbsp;</th>
-							<th class="w100">{lang key='orders::order.name'}</th>
-							<th>{lang key='orders::order.desc'}</th>
-							<th class="w100">{lang key='orders::order.pay_fee'}</th>
+							<th class="w100">名称</th>
+							<th>描述</th>
+							<th class="w100">手续费</th>
 						</tr>
 					</thead>
 					<!-- {foreach from=$payment_list item=payment} -->
@@ -594,8 +594,8 @@ ecjia.merchant.order.addedit();
 			<thead>
 				<tr>
 					<th width="5%">&nbsp;</th>
-					<th width="25%">{lang key='orders::order.name'}</th>
-					<th>{lang key='orders::order.desc'}</th>
+					<th width="25%">名称</th>
+					<th>描述</th>
 				</tr>
 			</thead>
 			<tbody>

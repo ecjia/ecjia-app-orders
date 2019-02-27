@@ -222,7 +222,7 @@ ecjia.merchant.order.info();
 							<tr><td colspan="2"><strong>收货人：{$order.consignee|default:$order.user_name}</strong></td></tr>
 							<tr><td class="w200">{lang key='orders::order.email'}</td><td>{$address.email}</td></tr>
 							<tr><td>{lang key='orders::order.address'}</td><td>{$address.address}{$address.address_info}</td></tr>
-							<tr><td>{lang key='orders::order.zipcode'}</td><td>{$address.zipcode}</td></tr>
+							<tr><td>邮编</td><td>{$address.zipcode}</td></tr>
 							<tr><td>{lang key='orders::order.tel'}</td><td>{$address.tel}</td></tr>
 							<tr><td>{lang key='orders::order.mobile'}</td><td>{$address.mobile}</td></tr>
 						</table>

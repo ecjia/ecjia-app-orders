@@ -59,7 +59,7 @@ class order_pay_module extends api_front implements api_interface
 
         $user_id = $_SESSION['user_id'];
         if ($user_id < 1) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
 
         $order_id  = $this->requestData('order_id', 0);
@@ -76,7 +76,7 @@ class order_pay_module extends api_front implements api_interface
         }
 
         if ($_SESSION['user_id'] != $order['user_id']) {
-            return new ecjia_error('error_order_detail', '订单不属于该用户');
+            return new ecjia_error('error_order_detail', __('订单不属于该用户', 'orders'));
         }
 
         //判断是否是管理员登录

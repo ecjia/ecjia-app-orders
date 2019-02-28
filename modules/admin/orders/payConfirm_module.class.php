@@ -57,7 +57,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
     {
         $this->authadminSession();
         if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
         $device = $this->device;
         $codes  = config('app-cashier::cashier_device_code');
@@ -82,7 +82,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
         $order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => ''));
 
         if (empty($order)) {
-            return new ecjia_error('dose_not_exist', '不存在的信息');
+            return new ecjia_error('dose_not_exist', __('不存在的信息', 'orders'));
         }
 
         $payment_method  = new Ecjia\App\Payment\PaymentPlugin();
@@ -99,14 +99,14 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
 
         if ($pay_info['pay_code'] == 'pay_cash') {
             /* 进行确认*/
-            $result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'confirm', 'note' => array('action_note' => '收银台订单确认')));
+            $result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'confirm', 'note' => array('action_note' => __('收银台订单确认', 'orders'))));
             if (is_ecjia_error($result)) {
-                RC_Logger::getLogger('error')->info('订单确认【订单id|' . $order_id . '】：' . $result->get_error_message());
+                RC_Logger::getLogger('error')->info(sprintf(__('订单确认【订单id|%s】：%s', 'orders'), $order_id, $result->get_error_message()));
             }
 
             $order   = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => ''));
             $operate = RC_Loader::load_app_class('order_operate', 'orders');
-            $operate->operate($order, 'pay', '收银台现金收款');
+            $operate->operate($order, 'pay', __('收银台现金收款', 'orders'));
 
             //支付后扩展处理
             RC_Hook::do_action('order_payed_do_something', $order);
@@ -125,14 +125,14 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
                 'trade_no' => ''
             ]);
             /* 配货*/
-            $result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'prepare', 'note' => array('action_note' => '收银台配货')));
+            $result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'prepare', 'note' => array('action_note' => __('收银台配货', 'orders'))));
             if (is_ecjia_error($result)) {
-                RC_Logger::getLogger('error')->info('订单配货【订单id|' . $order_id . '】：' . $result->get_error_message());
+                RC_Logger::getLogger('error')->info(sprintf(__('订单配货【订单id|%s】：%s', 'orders'), $order_id, $result->get_error_message()));
             }
             /* 分单（生成发货单）*/
-            $result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'split', 'note' => array('action_note' => '收银台生成发货单')));
+            $result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'split', 'note' => array('action_note' => __('收银台生成发货单', 'orders'))));
             if (is_ecjia_error($result)) {
-                RC_Logger::getLogger('error')->info('订单分单【订单id|' . $order_id . '】：' . $result->get_error_message());
+                RC_Logger::getLogger('error')->info(sprintf(__('订单分单【订单id|%s】：%s', 'orders'), $order_id, $result->get_error_message()));
             } else {
                 /*订单状态日志记录*/
                 OrderStatusLog::generate_delivery_orderInvoice(array('order_id' => $order['order_id'], 'order_sn' => $order['order_sn']));
@@ -145,7 +145,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
             $result = $this->delivery_ship($order_id, $delivery_id, $invoice_no, $action_note);
 
             if (is_ecjia_error($result)) {
-                RC_Logger::getLogger('error')->info('订单发货【订单id|' . $order_id . '】：' . $result->get_error_message());
+                RC_Logger::getLogger('error')->info(sprintf(__('订单发货【订单id|%s】：%s', 'orders'), $order_id, $result->get_error_message()));
             } else {
                 /*订单状态日志记录*/
                 OrderStatusLog::delivery_ship_finished(array('order_id' => $order['order_id'], 'order_sn' => $order['order_sn']));
@@ -165,7 +165,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
             }
 
             /* 记录log */
-            order_action($order['order_sn'], OS_SPLITED, SS_RECEIVED, PS_PAYED, '收银台确认收货');
+            order_action($order['order_sn'], OS_SPLITED, SS_RECEIVED, PS_PAYED, __('收银台确认收货', 'orders'));
 
             //更新商品销量
             RC_Api::api('goods', 'update_goods_sales', array('order_id' => $order_id));
@@ -180,7 +180,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
                 'pay_code'               => $pay_info['pay_code'],
                 'pay_name'               => $pay_info['pay_name'],
                 'pay_status'             => 'success',
-                'desc'                   => '订单支付成功！'
+                'desc'                   => __('订单支付成功！', 'orders')
             );
             $print_data = $this->_getprintdata($order_info);
             return array('payment' => $data, 'print_data' => $print_data);
@@ -193,12 +193,12 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
                 'trade_no' => ''
             ]);
             /* 配货*/
-            $result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'prepare', 'note' => array('action_note' => '收银台配货')));
+            $result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'prepare', 'note' => array('action_note' => __('收银台配货', 'orders'))));
             if (is_ecjia_error($result)) {
                 RC_Logger::getLogger('error')->info('订单配货【订单id|' . $order_id . '】：' . $result->get_error_message());
             }
             /* 分单（生成发货单）*/
-            $result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'split', 'note' => array('action_note' => '收银台生成发货单')));
+            $result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'split', 'note' => array('action_note' => __('收银台生成发货单', 'orders'))));
             if (is_ecjia_error($result)) {
                 RC_Logger::getLogger('error')->info('订单分单【订单id|' . $order_id . '】：' . $result->get_error_message());
             } else {
@@ -212,7 +212,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
 
             $result = $this->delivery_ship($order_id, $delivery_id, $invoice_no, $action_note);
             if (is_ecjia_error($result)) {
-                RC_Logger::getLogger('error')->info('订单发货【订单id|' . $order_id . '】：' . $result->get_error_message());
+                RC_Logger::getLogger('error')->info(sprintf(__('订单发货【订单id|%s】：%s', 'orders'), $order_id, $result->get_error_message()));
             } else {
                 /*订单状态日志记录*/
                 OrderStatusLog::delivery_ship_finished(array('order_id' => $order['order_id'], 'order_sn' => $order['order_sn']));
@@ -232,7 +232,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
             }
 
             /* 记录log */
-            order_action($order['order_sn'], OS_SPLITED, SS_RECEIVED, PS_PAYED, '收银台确认收货');
+            order_action($order['order_sn'], OS_SPLITED, SS_RECEIVED, PS_PAYED, __('收银台确认收货', 'orders'));
 
             //会员店铺消费过，记录为店铺会员
             if (!empty($order['user_id'])) {
@@ -254,7 +254,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
                 'pay_code'               => $pay_info['pay_code'],
                 'pay_name'               => $pay_info['pay_name'],
                 'pay_status'             => 'success',
-                'desc'                   => '订单支付成功！'
+                'desc'                   => __('订单支付成功！', 'orders')
             );
             $print_data = $this->_getprintdata($order_info);
             return array('payment' => $data, 'print_data' => $print_data);
@@ -264,8 +264,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
 
     private function delivery_ship($order_id, $delivery_id, $invoice_no, $action_note)
     {
-
-        RC_Logger::getLogger('error')->info('订单发货处理【订单id|' . $order_id . '】');
+        RC_Logger::getLogger('error')->info(sprintf(__('订单发货处理【订单id|%s】', 'orders'), $order_id));
         RC_Loader::load_app_func('global', 'orders');
         RC_Loader::load_app_func('admin_order', 'orders');
         $db_delivery       = RC_Loader::load_app_model('delivery_viewmodel', 'orders');
@@ -287,7 +286,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
             $delivery_order = delivery_order_info($delivery_id);
         }
         if (empty($delivery_order)) {
-            return new ecjia_error('delivery_error', __('无法找到对应发货单！'));
+            return new ecjia_error('delivery_error', __('无法找到对应发货单！', 'orders'));
         }
 
         /* 查询订单信息 */
@@ -325,7 +324,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
                 if (($value['sums'] > $value['storage'] || $value['storage'] <= 0) &&
                     ((ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) ||
                         (ecjia::config('use_storage') == '0' && $value['is_real'] == 0))) {
-                    RC_Logger::getLogger('error')->info('缺货处理a');
+                    RC_Logger::getLogger('error')->info(__('缺货处理a', 'orders'));
                     return new ecjia_error('act_good_vacancy', sprintf(__('商品已缺货', 'orders'), $value['goods_name']));
                 }
 
@@ -360,7 +359,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
                 if (($value['sums'] > $value['goods_number'] || $value['goods_number'] <= 0) &&
                     ((ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) ||
                         (ecjia::config('use_storage') == '0' && $value['is_real'] == 0))) {
-                    RC_Logger::getLogger('error')->info('缺货处理b');
+                    RC_Logger::getLogger('error')->info(__('缺货处理b', 'orders'));
                     return new ecjia_error('act_good_vacancy', sprintf(__('商品已缺货', 'orders'), $value['goods_name']));
                 }
 
@@ -377,12 +376,12 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
 
         /* 发货 */
         /* 处理虚拟卡 商品（虚货） */
-        if (is_array($virtual_goods) && count($virtual_goods) > 0) {
-            RC_Loader::load_app_func('common', 'goods');
-            foreach ($virtual_goods as $virtual_value) {
-                virtual_card_shipping($virtual_value, $order['order_sn'], $msg, 'split');
-            }
-        }
+        // if (is_array($virtual_goods) && count($virtual_goods) > 0) {
+        //     RC_Loader::load_app_func('common', 'goods');
+        //     foreach ($virtual_goods as $virtual_value) {
+        //         virtual_card_shipping($virtual_value, $order['order_sn'], $msg, 'split');
+        //     }
+        // }
 
         /* 如果使用库存，且发货时减库存，则修改库存 */
         if (ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) {
@@ -427,17 +426,17 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
         update_order($order_id, $arr);
 
         /* 发货单发货记录log */
-        order_action($order['order_sn'], OS_CONFIRMED, $shipping_status, $order['pay_status'], '收银台发货', null, 1);
+        order_action($order['order_sn'], OS_CONFIRMED, $shipping_status, $order['pay_status'], __('收银台发货', 'orders'), null, 1);
         // 记录管理员操作
         if ($_SESSION['store_id'] > 0) {
-            RC_Api::api('merchant', 'admin_log', array('text' => '发货，订单号是' . $order['order_sn'] . '【来源掌柜】', 'action' => 'setup', 'object' => 'order'));
+            RC_Api::api('merchant', 'admin_log', array('text' => sprintf(__('发货，订单号是%s【来源掌柜】', 'orders'), $order['order_sn']), 'action' => 'setup', 'object' => 'order'));
         }
-        RC_Logger::getLogger('error')->info('判断是否全部发货' . $order_finish);
+        RC_Logger::getLogger('error')->info(sprintf(__('判断是否全部发货%s', 'orders'), $order_finish));
 
 
         /* 如果当前订单已经全部发货 */
         if ($order_finish) {
-            RC_Logger::getLogger('error')->info('订单发货，积分红包处理');
+            RC_Logger::getLogger('error')->info(__('订单发货，积分红包处理', 'orders'));
             /* 如果订单用户不为空，计算积分，并发给用户；发红包 */
             if ($order['user_id'] > 0) {
 
@@ -448,13 +447,13 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
                 $integral      = integral_to_give($order);
                 $integral_name = ecjia::config('integral_name');
                 if (empty($integral_name)) {
-                    $integral_name = '积分';
+                    $integral_name = __('积分', 'orders');
                 }
                 $options = array(
                     'user_id'     => $order['user_id'],
                     'rank_points' => intval($integral['rank_points']),
                     'pay_points'  => intval($integral['custom_points']),
-                    'change_desc' => '订单' . $order['order_sn'] . '赠送的' . $integral_name,
+                    'change_desc' => sprintf(__('订单%s赠送的%s', 'orders'), $order['order_sn'], $integral_name),
                     'from_type'   => 'order_give_integral',
                     'from_value'  => $order['order_sn'],
                 );

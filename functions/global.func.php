@@ -424,13 +424,13 @@ function get_status_list($type = 'all')
     if ($type == 'all' || $type == 'order') {
         $pre = $type == 'all' ? 'os_' : '';
         $os  = array(
-            OS_UNCONFIRMED   => '未接单',
-            OS_CONFIRMED     => '已接单',
-            OS_CANCELED      => '<font color="red">取消</font>',
-            OS_INVALID       => '<font color="red">无效</font>',
-            OS_RETURNED      => '<font color="red">退货</font>',
-            OS_SPLITED       => '已分单',
-            OS_SPLITING_PART => '部分分单',
+            OS_UNCONFIRMED   => __('未接单', 'orders'),
+            OS_CONFIRMED     => __('已接单', 'orders'),
+            OS_CANCELED      => __('<font color="red">取消</font>', 'orders'),
+            OS_INVALID       => __('<font color="red">无效</font>', 'orders'),
+            OS_RETURNED      => __('<font color="red">退货</font>', 'orders'),
+            OS_SPLITED       => __('已分单', 'orders'),
+            OS_SPLITING_PART => __('部分分单', 'orders'),
         );
         foreach ($os as $key => $value) {
             $list[$pre . $key] = $value;
@@ -439,12 +439,12 @@ function get_status_list($type = 'all')
     if ($type == 'all' || $type == 'shipping') {
         $pre = $type == 'all' ? 'ss_' : '';
         $ss  = array(
-            SS_UNSHIPPED    => '未发货',
-            SS_PREPARING    => '配货中',
-            SS_SHIPPED      => '已发货',
-            SS_RECEIVED     => '收货确认',
-            SS_SHIPPED_PART => '已发货(部分商品)',
-            SS_SHIPPED_ING  => '发货中',
+            SS_UNSHIPPED    => __('未发货', 'orders'),
+            SS_PREPARING    => __('配货中', 'orders'),
+            SS_SHIPPED      => __('已发货', 'orders'),
+            SS_RECEIVED     => __('收货确认', 'orders'),
+            SS_SHIPPED_PART => __('已发货(部分商品)', 'orders'),
+            SS_SHIPPED_ING  => __('发货中', 'orders'),
         );
         foreach ($ss as $key => $value) {
             $list[$pre . $key] = $value;
@@ -453,9 +453,9 @@ function get_status_list($type = 'all')
     if ($type == 'all' || $type == 'payment') {
         $pre = $type == 'all' ? 'ps_' : '';
         $ps  = array(
-            PS_UNPAYED => '未付款',
-            PS_PAYING  => '付款中',
-            PS_PAYED   => '已付款',
+            PS_UNPAYED => __('未付款', 'orders'),
+            PS_PAYING  => __('付款中', 'orders'),
+            PS_PAYED   => __('已付款', 'orders'),
         );
         foreach ($ps as $key => $value) {
             $list[$pre . $key] = $value;

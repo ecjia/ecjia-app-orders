@@ -58,7 +58,7 @@ class admin_orders_refundConfirm_module extends api_admin implements api_interfa
         $this->authadminSession();
 
         if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
         $device = $this->device;
         $codes  = config('app-cashier::cashier_device_code');
@@ -77,7 +77,7 @@ class admin_orders_refundConfirm_module extends api_admin implements api_interfa
         /* 查询订单信息 */
         $order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => ''));
         if (empty($order)) {
-            return new ecjia_error(13, '不存在的信息');
+            return new ecjia_error(13, __('不存在的信息', 'orders'));
         }
 
         $payment_method = new Ecjia\App\Payment\PaymentPlugin();
@@ -87,7 +87,7 @@ class admin_orders_refundConfirm_module extends api_admin implements api_interfa
 
         /* 判断是否有支付方式以及是否为现金支付和酷银*/
         if (!$payment_handler) {
-            return new ecjia_error(8, '处理失败');
+            return new ecjia_error(8, __('处理失败', 'orders'));
         }
         $payment_handler->set_orderinfo($order);
 
@@ -110,7 +110,7 @@ class admin_orders_refundConfirm_module extends api_admin implements api_interfa
                     'pay_code'               => $pay_info['pay_code'],
                     'pay_name'               => $pay_info['pay_name'],
                     'pay_status'             => 'success',
-                    'desc'                   => '订单支付撤销成功！'
+                    'desc'                   => __('订单支付撤销成功！', 'orders')
                 );
                 return array('refund' => $data);
             }
@@ -131,7 +131,7 @@ class admin_orders_refundConfirm_module extends api_admin implements api_interfa
                     'pay_code'               => $pay_info['pay_code'],
                     'pay_name'               => $pay_info['pay_name'],
                     'pay_status'             => 'success',
-                    'desc'                   => '订单支付撤销成功！'
+                    'desc'                   => __('订单支付撤销成功！', 'orders')
                 );
                 return array('refund' => $data);
             }
@@ -152,10 +152,10 @@ class admin_orders_refundConfirm_module extends api_admin implements api_interfa
 // 			$refund_type = @$$this->requestData['refund'];
 // 			$refund_note = @$$this->requestData['refund_note'];
 // 			order_refund($order, $refund_type, $refund_note);
-            order_refund($order, 1, '收银台付款撤销');
+            order_refund($order, 1, __('收银台付款撤销', 'orders'));
             /* 记录日志 */
             if ($_SESSION['store_id'] > 0) {
-                RC_Api::api('merchant', 'admin_log', array('text' => '未付款，订单号是 ' . $order['order_sn'] . '【来源掌柜】', 'action' => 'edit', 'object' => 'order_status'));
+                RC_Api::api('merchant', 'admin_log', array('text' => sprintf(__('未付款，订单号是 %s【来源掌柜】', 'orders'), $order['order_sn']), 'action' => 'edit', 'object' => 'order_status'));
             }
             /* 记录log */
             order_action($order['order_sn'], OS_CONFIRMED, SS_UNSHIPPED, PS_UNPAYED, '');
@@ -173,7 +173,7 @@ class admin_orders_refundConfirm_module extends api_admin implements api_interfa
                     'pay_code'               => $pay_info['pay_code'],
                     'pay_name'               => $pay_info['pay_name'],
                     'pay_status'             => 'success',
-                    'desc'                   => '订单支付撤销成功！'
+                    'desc'                   => __('订单支付撤销成功！', 'orders')
                 );
                 return array('refund' => $data);
             }

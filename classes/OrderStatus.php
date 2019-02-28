@@ -83,22 +83,22 @@ class OrderStatus
     {
         if (in_array($order_status, array(OS_UNCONFIRMED, OS_SPLITED)) &&
             (in_array($pay_status, array(PS_UNPAYED)) && !$is_cod)) {
-            $label_order_status = __('未付款', 'orders');
+            $label_order_status = __(__('未付款', 'orders'), 'orders');
             $status_code        = 'await_pay';
         } elseif (in_array($order_status, array(OS_UNCONFIRMED)) &&
             in_array($shipping_status, array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING)) &&
             in_array($pay_status, array(PS_PAYED))) {
-            $label_order_status = __('已付款', 'orders');
+            $label_order_status = __(__('已付款', 'orders'), 'orders');
             $status_code        = 'payed';
         } elseif (in_array($order_status, array(OS_UNCONFIRMED)) &&
             in_array($shipping_status, array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING)) &&
             (in_array($pay_status, array(PS_PAYED, PS_PAYING)) || $is_cod)) {
-            $label_order_status = __('未接单', 'orders');
+            $label_order_status = __(__('未接单', 'orders'), 'orders');
             $status_code        = 'unconfirmed';
         } elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
             in_array($shipping_status, array(SS_UNSHIPPED)) &&
             (in_array($pay_status, array(PS_PAYED, PS_PAYING)) || $is_cod)) {
-            $label_order_status = __('已接单', 'orders');
+            $label_order_status = __(__('已接单', 'orders'), 'orders');
             $status_code        = 'confirmed';
         } elseif (in_array($shipping_status, array(SS_PREPARING)) && $order_status != OS_RETURNED) {
             $label_order_status = __('备货中', 'orders');
@@ -106,10 +106,10 @@ class OrderStatus
         } elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
             in_array($shipping_status, array(SS_SHIPPED_ING)) &&
             (in_array($pay_status, array(PS_PAYED)) || $is_cod)) {
-            $label_order_status = __('发货中', 'orders');
+            $label_order_status = __(__('发货中', 'orders'), 'orders');
             $status_code        = 'shipped_ing';
         } elseif (in_array($shipping_status, array(SS_SHIPPED)) && ($order_status != OS_RETURNED)) {
-            $label_order_status = __('已发货', 'orders');
+            $label_order_status = __(__('已发货', 'orders'), 'orders');
             $status_code        = 'shipped';
         } elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
             in_array($shipping_status, array(SS_SHIPPED_PART))) {
@@ -349,27 +349,27 @@ class OrderStatus
     {
         if (in_array($order_status, array(OS_SPLITED, OS_UNCONFIRMED)) &&
             in_array($pay_status, array(PS_UNPAYED))) {
-            $label_order_status = __('未付款', 'orders');
+            $label_order_status = __(__('未付款', 'orders'), 'orders');
             $status_code        = 'await_pay';
         } elseif (in_array($order_status, array(OS_UNCONFIRMED)) &&
             in_array($shipping_status, array(SS_UNSHIPPED)) &&
             (in_array($pay_status, array(PS_PAYED, PS_PAYING)) || $is_cod)) {
-            $label_order_status = __('未接单', 'orders');
+            $label_order_status = __(__('未接单', 'orders'), 'orders');
             $status_code        = 'unconfirmed';
         } elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
             in_array($shipping_status, array(SS_UNSHIPPED)) &&
             (in_array($pay_status, array(PS_PAYED, PS_PAYING)) || $is_cod)) {
-            $label_order_status = __('已接单', 'orders');
+            $label_order_status = __(__('已接单', 'orders'), 'orders');
             $status_code        = 'confirmed';
         } elseif (in_array($shipping_status, array(SS_PREPARING)) && $order_status != OS_RETURNED) {
             $label_order_status = __('备货中', 'orders');
             $status_code        = 'shipping';
         } elseif (in_array($order_status, array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
             in_array($shipping_status, array(SS_SHIPPED_ING))) {
-            $label_order_status = __('发货中', 'orders');
+            $label_order_status = __(__('发货中', 'orders'), 'orders');
             $status_code        = 'shipped_ing';
         } elseif (in_array($shipping_status, array(SS_SHIPPED)) && $order_status != OS_RETURNED) {
-            $label_order_status = __('已发货', 'orders');
+            $label_order_status = __(__('已发货', 'orders'), 'orders');
             $status_code        = 'shipped';
         } elseif (in_array($order_status, array(OS_SPLITING_PART)) &&
             in_array($shipping_status, array(SS_SHIPPED_PART))) {
@@ -458,7 +458,7 @@ class OrderStatus
             CS_AWAIT_PAY    => __('待付款', 'orders'),
             CS_UNCONFIRMED  => __('待接单', 'orders'),
             CS_AWAIT_SHIP   => __('待发货', 'orders'),
-            CS_SHIPPED      => __('已发货', 'orders'),
+            CS_SHIPPED      => __(__('已发货', 'orders'), 'orders'),
             CS_FINISHED     => __('已完成', 'orders'),
             CS_CANCELED     => __('取消', 'orders'),
             CS_REFUND       => __('退货', 'orders'),
@@ -469,16 +469,16 @@ class OrderStatus
     public static function getOrderSsStatusLabel($shipping_status = '')
     {
         $ss = array(
-            SS_UNSHIPPED    => __('未发货', 'orders'),
-            SS_PREPARING    => __('配货中', 'orders'),
-            SS_SHIPPED      => __('已发货', 'orders'),
-            SS_RECEIVED     => __('收货确认', 'orders'),
-            SS_SHIPPED_PART => __('已发货(部分商品)', 'orders'),
-            SS_SHIPPED_ING  => __('发货中', 'orders'),
+            SS_UNSHIPPED    => __(__('未发货', 'orders'), 'orders'),
+            SS_PREPARING    => __(__('配货中', 'orders'), 'orders'),
+            SS_SHIPPED      => __(__('已发货', 'orders'), 'orders'),
+            SS_RECEIVED     => __(__('收货确认', 'orders'), 'orders'),
+            SS_SHIPPED_PART => __(__('已发货(部分商品)', 'orders'), 'orders'),
+            SS_SHIPPED_ING  => __(__('发货中', 'orders'), 'orders'),
         );
 
         if (!array_key_exists($ss, $shipping_status)) {
-            return __('未发货', 'orders');
+            return __(__('未发货', 'orders'), 'orders');
         }
 
         return array_get($shipping_status, $ss);
@@ -487,13 +487,13 @@ class OrderStatus
     public static function getOrderPsStatusLabel($pay_status = '')
     {
         $ps = array(
-            PS_UNPAYED => __('未付款', 'orders'),
-            PS_PAYING  => __('付款中', 'orders'),
-            PS_PAYED   => __('已付款', 'orders'),
+            PS_UNPAYED => __(__('未付款', 'orders'), 'orders'),
+            PS_PAYING  => __(__('付款中', 'orders'), 'orders'),
+            PS_PAYED   => __(__('已付款', 'orders'), 'orders'),
         );
 
         if (!array_key_exists($ps, $pay_status)) {
-            return __('未付款', 'orders');
+            return __(__('未付款', 'orders'), 'orders');
         }
 
         return array_get($pay_status, $ps);
@@ -502,16 +502,16 @@ class OrderStatus
     public static function getOrderOsStatusLabel($order_status = '')
     {
         $os = array(
-            OS_UNCONFIRMED   => __('未接单', 'orders'),
-            OS_CONFIRMED     => __('已接单', 'orders'),
-            OS_CANCELED      => __('<font color="red">取消</font>', 'orders'),
-            OS_INVALID       => __('<font color="red">无效</font>', 'orders'),
-            OS_RETURNED      => __('<font color="red">退货</font>', 'orders'),
-            OS_SPLITED       => __('已分单', 'orders'),
-            OS_SPLITING_PART => __('部分分单', 'orders'),
+            OS_UNCONFIRMED   => __(__('未接单', 'orders'), 'orders'),
+            OS_CONFIRMED     => __(__('已接单', 'orders'), 'orders'),
+            OS_CANCELED      => __(__('<font color="red">取消</font>', 'orders'), 'orders'),
+            OS_INVALID       => __(__('<font color="red">无效</font>', 'orders'), 'orders'),
+            OS_RETURNED      => __(__('<font color="red">退货</font>', 'orders'), 'orders'),
+            OS_SPLITED       => __(__('已分单', 'orders'), 'orders'),
+            OS_SPLITING_PART => __(__('部分分单', 'orders'), 'orders'),
         );
         if (!array_key_exists($os, $order_status)) {
-            return __('未发货', 'orders');
+            return __(__('未发货', 'orders'), 'orders');
         }
 
         return array_get($order_status, $os);

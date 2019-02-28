@@ -12,7 +12,7 @@ class admin_user_merchant_order_list_module extends api_admin implements api_int
     {
         $this->authadminSession();
         if ($_SESSION['staff_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
 
         //$result = $this->admin_priv('order_view');
@@ -65,7 +65,7 @@ class admin_user_merchant_order_list_module extends api_admin implements api_int
                     'money_paid'            => sprintf("%.2f", $money_paid),
                     'formated_money_paid'   => price_format($money_paid, false),
                     'formated_order_time'   => RC_Time::local_date(ecjia::config('time_format'), $result['add_time']),
-                    'label_orderpay_status' => $result['pay_status'] > 0 ? '已付款' : '待付款'
+                    'label_orderpay_status' => $result['pay_status'] > 0 ? __('已付款', 'orders') : __('待付款', 'orders')
                 );
             }
         }

@@ -53,7 +53,7 @@ class admin_orders_quickpay_module extends api_admin implements api_interface
         $this->authadminSession();
 
         if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
         /**
          * bonus 0 //红包
@@ -75,7 +75,7 @@ class admin_orders_quickpay_module extends api_admin implements api_interface
         $amount = $this->requestData('amount');
 
         if (empty($pay_id) || $pay_id <= 0) {
-            return new ecjia_error(100, '错误的参数提交');
+            return new ecjia_error(100, __('错误的参数提交', 'orders'));
         }
 
         /* 判断是否是会员 */
@@ -93,7 +93,7 @@ class admin_orders_quickpay_module extends api_admin implements api_interface
             );
         } else {//匿名用户
             $consignee = array(
-                'consignee' => '匿名用户',
+                'consignee' => __('匿名用户', 'orders'),
                 'mobile'    => '',
                 'tel'       => '',
                 'email'     => '',
@@ -159,7 +159,7 @@ class admin_orders_quickpay_module extends api_admin implements api_interface
         }
 
         if (empty($payment)) {
-            return new ecjia_error(100, '错误的参数提交');
+            return new ecjia_error(100, __('错误的参数提交', 'orders'));
         }
 
         $order['from_ad'] = !empty($_SESSION['from_ad']) ? $_SESSION['from_ad'] : '0';
@@ -181,7 +181,7 @@ class admin_orders_quickpay_module extends api_admin implements api_interface
             $arr            = array(
                 'order_id'     => $new_order_id,
                 'goods_id'     => '0',
-                'goods_name'   => '收银台快捷收款',
+                'goods_name'   => __('收银台快捷收款', 'orders'),
                 'goods_sn'     => '',
                 'product_id'   => '0',
                 'goods_number' => '1',

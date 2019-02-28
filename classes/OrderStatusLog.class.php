@@ -93,9 +93,9 @@ class OrderStatusLog
     public static function order_paid($options)
     {
         $ps = array(
-            PS_UNPAYED => __('未付款', 'orders'),
-            PS_PAYING  => __('付款中', 'orders'),
-            PS_PAYED   => __('已付款', 'orders'),
+            PS_UNPAYED => __(__('未付款', 'orders'), 'orders'),
+            PS_PAYING  => __(__('付款中', 'orders'), 'orders'),
+            PS_PAYED   => __(__('已付款', 'orders'), 'orders'),
         );
         RC_DB::table('order_status_log')->insert(array(
             'order_status' => $ps[PS_PAYED],
@@ -131,12 +131,12 @@ class OrderStatusLog
     public static function generate_delivery_orderInvoice($options)
     {
         $ss   = array(
-            SS_UNSHIPPED    => __('未发货', 'orders'),
-            SS_PREPARING    => __('配货中', 'orders'),
-            SS_SHIPPED      => __('已发货', 'orders'),
-            SS_RECEIVED     => __('收货确认', 'orders'),
-            SS_SHIPPED_PART => __('已发货(部分商品)', 'orders'),
-            SS_SHIPPED_ING  => __('发货中', 'orders'),
+            SS_UNSHIPPED    => __(__('未发货', 'orders'), 'orders'),
+            SS_PREPARING    => __(__('配货中', 'orders'), 'orders'),
+            SS_SHIPPED      => __(__('已发货', 'orders'), 'orders'),
+            SS_RECEIVED     => __(__('收货确认', 'orders'), 'orders'),
+            SS_SHIPPED_PART => __(__('已发货(部分商品)', 'orders'), 'orders'),
+            SS_SHIPPED_ING  => __(__('发货中', 'orders'), 'orders'),
         );
         $data = array(
             'order_status' => $ss[SS_PREPARING],
@@ -156,12 +156,12 @@ class OrderStatusLog
     public static function delivery_ship_finished($options)
     {
         $ss   = array(
-            SS_UNSHIPPED    => __('未发货', 'orders'),
-            SS_PREPARING    => __('配货中', 'orders'),
-            SS_SHIPPED      => __('已发货', 'orders'),
-            SS_RECEIVED     => __('收货确认', 'orders'),
-            SS_SHIPPED_PART => __('已发货(部分商品)', 'orders'),
-            SS_SHIPPED_ING  => __('发货中', 'orders'),
+            SS_UNSHIPPED    => __(__('未发货', 'orders'), 'orders'),
+            SS_PREPARING    => __(__('配货中', 'orders'), 'orders'),
+            SS_SHIPPED      => __(__('已发货', 'orders'), 'orders'),
+            SS_RECEIVED     => __(__('收货确认', 'orders'), 'orders'),
+            SS_SHIPPED_PART => __(__('已发货(部分商品)', 'orders'), 'orders'),
+            SS_SHIPPED_ING  => __(__('发货中', 'orders'), 'orders'),
         );
         $data = array(
             'order_status' => $ss[SS_SHIPPED],
@@ -326,9 +326,9 @@ class OrderStatusLog
     public static function groupbuy_order_paid($options)
     {
         $ps   = array(
-            PS_UNPAYED => __('未付款', 'orders'),
-            PS_PAYING  => __('付款中', 'orders'),
-            PS_PAYED   => __('已付款', 'orders'),
+            PS_UNPAYED => __(__('未付款', 'orders'), 'orders'),
+            PS_PAYING  => __(__('付款中', 'orders'), 'orders'),
+            PS_PAYED   => __(__('已付款', 'orders'), 'orders'),
         );
         $data = array(
             'order_status' => $ps[PS_PAYED],

@@ -60,7 +60,7 @@ class order_detail_module extends api_front implements api_interface
 
         $user_id = $_SESSION['user_id'];
         if ($user_id < 1) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
 
         RC_Loader::load_app_func('admin_order', 'orders');
@@ -78,7 +78,7 @@ class order_detail_module extends api_front implements api_interface
             return $order;
         }
         if (empty($order)) {
-            return new ecjia_error('not_exist_info', "不存在的信息！");
+            return new ecjia_error('not_exist_info', __('不存在的信息！', 'orders'));
         }
 
         /*发票抬头和发票识别码处理*/
@@ -132,7 +132,7 @@ class order_detail_module extends api_front implements api_interface
 
             $order['refund_info'] = array(
                 'refund_type'          => $refund_info['refund_type'],
-                'label_refund_type'    => $refund_info['refund_type'] == 'refund' ? '仅退款' : '退货退款',
+                'label_refund_type'    => $refund_info['refund_type'] == 'refund' ? __('仅退款', 'orders') : __('退货退款', 'orders'),
                 'refund_id'            => $refund_info['refund_id'],
                 'refund_sn'            => $refund_info['refund_sn'],
                 'refund_status'        => empty($refund_status_info['refund_status_code']) ? '' : $refund_status_info['refund_status_code'],
@@ -237,11 +237,11 @@ class order_detail_module extends api_front implements api_interface
             $order['pickup_code'] = $pickup_info['meta_value'];
             if ($order['shipping_status'] > SS_UNSHIPPED) {
                 $order['pickup_status']          = 1;
-                $order['label_pickup_status']    = '已提取';
+                $order['label_pickup_status']    = __('已提取', 'orders');
                 $order['pickup_code_expiretime'] = '';
             } else {
                 $order['pickup_status']          = 0;
-                $order['label_pickup_status']    = '未提取';
+                $order['label_pickup_status']    = __('未提取', 'orders');
                 $order['pickup_code_expiretime'] = '';
             }
         }
@@ -298,7 +298,7 @@ class order_detail_module extends api_front implements api_interface
                         'goods_attr'          => $attr,
                         'goods_number'        => $v['goods_number'],
                         'subtotal'            => price_format($v['subtotal'], false),
-                        'formated_shop_price' => $v['goods_price'] > 0 ? price_format($v['goods_price'], false) : __('免费'),
+                        'formated_shop_price' => $v['goods_price'] > 0 ? price_format($v['goods_price'], false) : __('免费', 'orders'),
                         'is_commented'        => $v['is_commented'],
                         'comment_rank'        => empty($v['comment_rank']) ? 0 : intval($v['comment_rank']),
                         'comment_content'     => empty($v['comment_content']) ? '' : $v['comment_content'],
@@ -320,19 +320,19 @@ class order_detail_module extends api_front implements api_interface
             $order['order_status_log'] = array();
             if (!empty($order_status_log)) {
                 $labe_order_status = array(
-                    'place_order'          => '订单提交成功',//下单
-                    'unpay'                => '待付款',
-                    'payed'                => '已付款',
-                    'merchant_process'     => '等待商家接单',//等待接单
-                    'shipping'             => '配货中',
-                    'shipped'              => '已发货',
-                    'express_user_pickup'  => '配送员已取货',
-                    'cancel'               => '订单已取消',
-                    'confirm_receipt'      => '已确认收货',
-                    'finished'             => '订单已完成',
-                    'pickup_success'       => '已提货',
-                    'merchant_confirmed'   => '商家已接单',
-                    'merchant_unconfirmed' => '无法接单',
+                    'place_order'          => __('订单提交成功', 'orders'), //下单
+                    'unpay'                => __('待付款', 'orders'),
+                    'payed'                => __('已付款', 'orders'),
+                    'merchant_process'     => __('等待商家接单', 'orders'), //等待接单
+                    'shipping'             => __('配货中', 'orders'),
+                    'shipped'              => __('已发货', 'orders'),
+                    'express_user_pickup'  => __('配送员已取货', 'orders'),
+                    'cancel'               => __('订单已取消', 'orders'),
+                    'confirm_receipt'      => __('已确认收货', 'orders'),
+                    'finished'             => __('订单已完成', 'orders'),
+                    'pickup_success'       => __('已提货', 'orders'),
+                    'merchant_confirmed'   => __('商家已接单', 'orders'),
+                    'merchant_unconfirmed' => __('无法接单', 'orders'),
                 );
 
                 foreach ($order_status_log as $val) {
@@ -364,25 +364,25 @@ class order_detail_module extends api_front implements api_interface
         );
 
         if (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED)) && in_array($shipping_status, array(SS_RECEIVED)) && in_array($pay_status, array(PS_PAYED, PS_PAYING))) {
-            $label_order_status = '已完成';
+            $label_order_status = __('已完成', 'orders');
             $status_code        = 'finished';
         } elseif (in_array($shipping_status, array(SS_SHIPPED))) {
-            $label_order_status = '待收货';
+            $label_order_status = __('待收货', 'orders');
             $status_code        = 'shipped';
         } elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) && in_array($pay_status, array(PS_UNPAYED)) && (in_array($shipping_status, array(SS_SHIPPED, SS_RECEIVED)) || !$is_cod)) {
-            $label_order_status = '待付款';
+            $label_order_status = __('待付款', 'orders');
             $status_code        = 'await_pay';
         } elseif (in_array($order_status, array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) && in_array($shipping_status, array(SS_UNSHIPPED, SS_PREPARING, SS_SHIPPED_ING)) && (in_array($pay_status, array(PS_PAYED, PS_PAYING)) || $is_cod)) {
-            $label_order_status = '待发货';
+            $label_order_status = __('待发货', 'orders');
             $status_code        = 'await_ship';
         } elseif (in_array($order_status, array(OS_SPLITING_PART)) && in_array($shipping_status, array(SS_SHIPPED_PART))) {
-            $label_order_status = '部分发货';
+            $label_order_status = __('部分发货', 'orders');
             $status_code        = 'shipped_part';
         } elseif (in_array($order_status, array(OS_CANCELED))) {
-            $label_order_status = '已取消';
+            $label_order_status = __('已取消', 'orders');
             $status_code        = 'canceled';
         } elseif (in_array($order_status, array(OS_RETURNED))) {
-            $label_order_status = '退款';
+            $label_order_status = __('退款', 'orders');
             $status_code        = 'refunded';
         }
 
@@ -405,16 +405,16 @@ class order_detail_module extends api_front implements api_interface
         //1进行中2已退款3已取消
         if (in_array($status, array(Ecjia\App\Refund\RefundStatus::ORDER_UNCHECK, Ecjia\App\Refund\RefundStatus::ORDER_AGREE)) && $refund_status != Ecjia\App\Refund\RefundStatus::PAY_TRANSFERED) {
             $refund_status_code = 'going';
-            $label_refund_staus = '进行中';
+            $label_refund_staus = __('进行中', 'orders');
         } elseif (in_array($status, array(Ecjia\App\Refund\RefundStatus::ORDER_AGREE)) && in_array($refund_status, array(Ecjia\App\Refund\RefundStatus::PAY_TRANSFERED))) {
             $refund_status_code = 'refunded';
-            $label_refund_staus = '已退款';
+            $label_refund_staus = __('已退款', 'orders');
         } elseif (in_array($status, array(Ecjia\App\Refund\RefundStatus::ORDER_CANCELED))) {
             $refund_status_code = 'canceled';
-            $label_refund_staus = '已取消';
+            $label_refund_staus = __('已取消', 'orders');
         } elseif ($status == Ecjia\App\Refund\RefundStatus::ORDER_REFUSED) {
             $refund_status_code = 'refused';
-            $label_refund_staus = '退款被拒';
+            $label_refund_staus = __('退款被拒', 'orders');
         }
         $result['refund_status_code']  = $refund_status_code;
         $result['label_refund_status'] = $label_refund_staus;

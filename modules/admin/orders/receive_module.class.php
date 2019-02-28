@@ -58,7 +58,7 @@ class admin_orders_receive_module extends api_admin implements api_interface
         $this->authadminSession();
 
         if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
         $result = $this->admin_priv('order_os_edit');
         if (is_ecjia_error($result)) {

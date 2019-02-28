@@ -1151,7 +1151,7 @@ function get_order_detail($order_id, $user_id = 0, $type = '')
     $order = order_info($order_id, '', $type);
     // 检查订单是否属于该用户
     if ($user_id > 0 && $user_id != $order['user_id']) {
-        return new ecjia_error('error_order_detail', '订单不属于该用户');
+        return new ecjia_error('error_order_detail', __('订单不属于该用户', 'orders'));
     }
     /* 入驻商信息*/
     if ($order['store_id'] > 0) {
@@ -1613,7 +1613,7 @@ function get_back_list()
             if ($value['status'] == 1) {
                 $row[$key]['status_name'] = '退货';
             } else {
-                $row[$key]['status_name'] = '已发货';
+                $row[$key]['status_name'] = __(__('已发货', 'orders'), 'orders');
             }
         }
     }
@@ -1677,7 +1677,7 @@ function get_delivery_list()
             } elseif ($value['status'] == 2) {
                 $row[$key]['status_name'] = '正常';
             } else {
-                $row[$key]['status_name'] = '已发货';
+                $row[$key]['status_name'] = __(__('已发货', 'orders'), 'orders');
             }
         }
     }

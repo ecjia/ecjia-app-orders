@@ -61,14 +61,15 @@ class order_comment_module extends api_front implements api_interface
 
         $user_id = $_SESSION['user_id'];
         if ($user_id < 1) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
         $order_id = $this->requestData('order_id', 0);
         if (empty($order_id)) {
-            return new ecjia_error('invalid_parameter', '参数无效');
+            return new ecjia_error('invalid_parameter', __('参数无效', 'orders'));
         }
 
-        $field          = 'oi.order_id, og.rec_id, og.goods_id, og.goods_name, og.goods_price, og.goods_attr, g.goods_thumb, g.goods_img, g.original_img, c.comment_id, c.has_image';
+//        $field = 'oi.order_id, og.rec_id, og.goods_id, og.goods_name, og.goods_price, og.goods_attr, g.goods_thumb, g.goods_img, g.original_img, c.comment_id, c.has_image';
+
         $comment_result = RC_DB::table('order_info as oi')
             ->leftJoin('order_goods as og', RC_DB::raw('oi.order_id'), '=', RC_DB::raw('og.order_id'))
             ->leftJoin('goods as g', RC_DB::raw('g.goods_id'), '=', RC_DB::raw('og.goods_id'))
@@ -77,7 +78,9 @@ class order_comment_module extends api_front implements api_interface
                 $join->on(RC_DB::raw('og.rec_id'), '=', RC_DB::raw('c.rec_id'))
                     ->where(RC_DB::raw('c.parent_id'), '=', 0);
             })
-            ->select(RC_DB::raw('oi.order_id'), RC_DB::raw('og.rec_id'), RC_DB::raw('og.goods_id'), RC_DB::raw('og.goods_name'), RC_DB::raw('og.goods_price'), RC_DB::raw('og.goods_attr'), RC_DB::raw('g.goods_thumb'), RC_DB::raw('g.goods_img'), RC_DB::raw('g.original_img'), RC_DB::raw('c.comment_id'), RC_DB::raw('c.has_image'))
+            ->select(RC_DB::raw('oi.order_id'), RC_DB::raw('og.rec_id'), RC_DB::raw('og.goods_id'), RC_DB::raw('og.goods_name'),
+                RC_DB::raw('og.goods_price'), RC_DB::raw('og.goods_attr'), RC_DB::raw('g.goods_thumb'), RC_DB::raw('g.goods_img'),
+                RC_DB::raw('g.original_img'), RC_DB::raw('c.comment_id'), RC_DB::raw('c.has_image'))
             ->groupBy(RC_DB::raw('og.rec_id'))
             ->where(RC_DB::raw('oi.user_id'), $user_id)
             ->where(RC_DB::raw('oi.order_id'), $order_id)
@@ -115,7 +118,7 @@ class order_comment_module extends api_front implements api_interface
             }
             return $comment_list;
         } else {
-            return new ecjia_error('order_error', '订单信息不存在！');
+            return new ecjia_error('order_error', __('订单信息不存在！', 'orders'));
         }
 
 

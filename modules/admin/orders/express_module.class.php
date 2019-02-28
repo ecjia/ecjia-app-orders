@@ -58,7 +58,7 @@ class admin_orders_express_module extends api_admin implements api_interface
 
         $this->authadminSession();
         if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
         $result = $this->admin_priv('order_view');
         if (is_ecjia_error($result)) {
@@ -67,13 +67,13 @@ class admin_orders_express_module extends api_admin implements api_interface
 
         $order_id = $this->requestData('order_id');
         if (empty($order_id)) {
-            return new ecjia_error('invalid_parameter', '参数无效');
+            return new ecjia_error('invalid_parameter', __('参数无效', 'orders'));
         }
 
         if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
             $ru_id_group = RC_Model::model('orders/order_info_model')->where(array('order_id' => $order_id))->group('store_id')->get_field('store_id', true);
             if (count($ru_id_group) > 1 || $ru_id_group[0] != $_SESSION['store_id']) {
-                return new ecjia_error('no_authority', '对不起，您没权限查看此订单相关信息！');
+                return new ecjia_error('no_authority', __('对不起，您没权限查看此订单相关信息！', 'orders'));
             }
         }
 
@@ -158,7 +158,7 @@ class admin_orders_express_module extends api_admin implements api_interface
                                 $data = $cloud->getReturnData();
                             }
                         } else {
-                            $data = array('content' => array('time' => 'error', 'context' => '物流跟踪未配置'));
+                            $data = array('content' => array('time' => 'error', 'context' => __('物流跟踪未配置', 'orders')));
                         }
                     }
 
@@ -184,9 +184,9 @@ class admin_orders_express_module extends api_admin implements api_interface
                         'shipping_code'         => $shipping_info['shipping_code'],
                         'shipping_number'       => $val['invoice_no'],
                         'shipping_status'       => !empty($data['shipping_status']) ? $data['shipping_status'] : '',
-                        'label_shipping_status' => $shipping_info['shipping_code'] == 'ship_no_express' ? '您当前选择的物流为【无需物流】，因此该订单暂无运单编号和物流状态' : (!empty($data['state_label']) ? $data['state_label'] : ''),
+                        'label_shipping_status' => $shipping_info['shipping_code'] == 'ship_no_express' ? __('您当前选择的物流为【无需物流】，因此该订单暂无运单编号和物流状态', 'orders') : (!empty($data['state_label']) ? $data['state_label'] : ''),
                         'sign_time_formated'    => !empty($data['sign_time_formated']) ? $data['sign_time_formated'] : '',
-                        'content'               => !empty($data['content']) ? $data['content'] : array('time' => 'error', 'context' => '暂无物流信息'),
+                        'content'               => !empty($data['content']) ? $data['content'] : array('time' => 'error', 'context' => __('暂无物流信息', 'orders')),
                         'goods_items'           => $goods_lists,
                     );
                 }

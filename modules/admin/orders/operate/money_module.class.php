@@ -58,7 +58,7 @@ class admin_orders_operate_money_module extends api_admin implements api_interfa
         $this->authadminSession();
 
         if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
 
         $result_view = $this->admin_priv('order_view');
@@ -72,7 +72,7 @@ class admin_orders_operate_money_module extends api_admin implements api_interfa
         $goods_amount = $this->requestData('goods_amount');
         $shipping_fee = $this->requestData('shipping_fee');
         if ($order_id <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
         /*验证订单是否属于此入驻商*/
         if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
@@ -84,7 +84,7 @@ class admin_orders_operate_money_module extends api_admin implements api_interfa
 
         $order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));
         if (empty($order_info)) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
 
         $order = array();

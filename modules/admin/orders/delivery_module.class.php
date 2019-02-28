@@ -57,7 +57,7 @@ class admin_orders_delivery_module extends api_admin implements api_interface
 
         $this->authadminSession();
         if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
 
         $order_id = $this->requestData('order_id', 0);
@@ -84,7 +84,7 @@ class admin_orders_delivery_module extends api_admin implements api_interface
                     'address'          => $val['address'],
                     'mobile'           => $val['mobile'],
                     'status'           => $val['status'] == 0 ? 'shipped' : 'shipping',
-                    'label_status'     => $val['status'] == 0 ? '已发货' : '发货中',
+                    'label_status'     => $val['status'] == 0 ? __(__('已发货', 'orders'), 'orders') : __(__('发货中', 'orders'), 'orders'),
                     'goods_items'      => $this->get_delivery_goods_list($val['delivery_id']),
                     'send_time'        => RC_Time::local_date(ecjia::config('date_format'), $val['update_time']),
                 );

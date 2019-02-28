@@ -57,7 +57,7 @@ class admin_orders_cancel_module extends api_admin implements api_interface
         $this->authadminSession();
 
         if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
         $device = $this->device;
 
@@ -103,7 +103,7 @@ class admin_orders_cancel_module extends api_admin implements api_interface
         order_action($order['order_sn'], OS_CANCELED, $order['shipping_status'], PS_UNPAYED, $action_note);
 
         if ($_SESSION['store_id'] > 0) {
-            RC_Api::api('merchant', 'admin_log', array('text' => '取消订单，订单号：' . $order['order_sn'] . '【来源掌柜】', 'action' => 'edit', 'object' => 'order'));
+            RC_Api::api('merchant', 'admin_log', array('text' => sprintf(__('取消订单，订单号：%s【来源掌柜】', 'orders'), $order['order_sn']), 'action' => 'edit', 'object' => 'order'));
         }
 
         /* 如果使用库存，且下订单时减库存，则增加库存 */

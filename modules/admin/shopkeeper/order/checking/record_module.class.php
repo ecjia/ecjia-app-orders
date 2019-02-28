@@ -56,10 +56,10 @@ class admin_shopkeeper_order_checking_record_module extends api_admin implements
     {
         $this->authadminSession();
         if ($_SESSION['staff_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
         if ($_SESSION['store_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
 
         $keywords = $this->requestData('keywords');
@@ -95,10 +95,10 @@ class admin_shopkeeper_order_checking_record_module extends api_admin implements
             foreach ($order_result as $row) {
                 if ($row['shipping_status'] > 0) {
                     $pickup_status       = 1;
-                    $label_pickup_status = '已验证';
+                    $label_pickup_status = __('已验证', 'orders');
                 } else {
                     $pickup_status       = 0;
-                    $label_pickup_status = '未验证';
+                    $label_pickup_status = __('未验证', 'orders');
                 }
 
                 $total_fee    = $row['goods_amount']

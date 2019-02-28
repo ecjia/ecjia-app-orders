@@ -58,7 +58,7 @@ class admin_orders_pay_module extends api_admin implements api_interface
 
         //收银台支付登录判断
         if ($_SESSION['staff_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
 
         $order_id      = $this->requestData('order_id', 0);
@@ -82,7 +82,7 @@ class admin_orders_pay_module extends api_admin implements api_interface
         }
 
         if ($_SESSION['user_id'] != $order['user_id']) {
-            return new ecjia_error('error_order_detail', '订单不属于该用户');
+            return new ecjia_error('error_order_detail', __('订单不属于该用户', 'orders'));
         }
 
         //添加微信支付需要的OPEN_ID
@@ -122,7 +122,7 @@ class admin_orders_pay_module extends api_admin implements api_interface
         }
 
         //增加支付状态
-        $order['payment']['order_pay_status'] = $order['pay_status'];//0 未付款，1付款中，2已付款
+        $order['payment']['order_pay_status'] = $order['pay_status']; //0 未付款，1付款中，2已付款
 
         $cod_fee = 0;
         if (intval($order['shipping_id']) > 0) {

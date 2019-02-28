@@ -57,7 +57,7 @@ class admin_orders_today_module extends api_admin implements api_interface
     {
         $this->authadminSession();
         if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
         $result = $this->admin_priv('order_view');
 
@@ -222,12 +222,26 @@ class admin_orders_today_module extends api_admin implements api_interface
         if (!empty($data)) {
             $order_id    = $goods_number = 0;
             $seller_name = array();
+            $ps          = array(
+                PS_UNPAYED => __('未付款', 'orders'),
+                PS_PAYING  => __('付款中', 'orders'),
+                PS_PAYED   => __('已付款', 'orders'),
+            );
+            $ss          = array(
+                SS_UNSHIPPED    => __('未发货', 'orders'),
+                SS_PREPARING    => __('配货中', 'orders'),
+                SS_SHIPPED      => __('已发货', 'orders'),
+                SS_RECEIVED     => __('收货确认', 'orders'),
+                SS_SHIPPED_PART => __('已发货(部分商品)', 'orders'),
+                SS_SHIPPED_ING  => __('发货中', 'orders'),
+            );
+
             foreach ($data as $val) {
                 if ($order_id == 0 || $val['order_id'] != $order_id) {
                     $goods_number = 0;
                     $order_status = ($val['order_status'] != '2' || $val['order_status'] != '3') ? RC_Lang::lang('os/' . $val['order_status']) : '';
-                    $order_status = $val['order_status'] == '2' ? __('已取消') : $order_status;
-                    $order_status = $val['order_status'] == '3' ? __('无效') : $order_status;
+                    $order_status = $val['order_status'] == '2' ? __('已取消', 'orders') : $order_status;
+                    $order_status = $val['order_status'] == '3' ? __('无效', 'orders') : $order_status;
 
 // 					$payment_method = RC_Loader::load_app_class('payment_method', 'payment');
                     if ($val['pay_id'] > 0) {
@@ -270,7 +284,7 @@ class admin_orders_today_module extends api_admin implements api_interface
                         'formated_bonus'          => price_format($val['bonus'], false),
                         'formated_shipping_fee'   => price_format($val['shipping_fee'], false),
                         'formated_discount'       => price_format($val['discount'], false),
-                        'status'                  => $order_status . ',' . RC_Lang::lang('ps/' . $val['pay_status']) . ',' . RC_Lang::lang('ss/' . $val['shipping_status']),
+                        'status'                  => $order_status . ',' . $ps[$val['pay_status']] . ',' . $ss[$val['shipping_status']],
                         'label_order_status'      => $label_order_status,
                         'order_status_code'       => $status_code,
                         'goods_number'            => intval($goods_number),
@@ -314,22 +328,22 @@ class admin_orders_today_module extends api_admin implements api_interface
         $label_order_status = '';
         $status_code        = '';
         if (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED)) && in_array($shipping_status, array(SS_RECEIVED)) && in_array($pay_status, array(PS_PAYED, PS_PAYING))) {
-            $label_order_status = '已完成';
+            $label_order_status = __('已完成', 'orders');
             $status_code        = 'finished';
         } elseif (in_array($shipping_status, array(SS_SHIPPED))) {
-            $label_order_status = '已发货';
+            $label_order_status = __(__('已发货', 'orders'), 'orders');
             $status_code        = 'shipped';
         } elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) && in_array($pay_status, array(PS_UNPAYED)) && (in_array($shipping_status, array(SS_SHIPPED, SS_RECEIVED)) || !$is_cod)) {
-            $label_order_status = '待付款';
+            $label_order_status = __('待付款', 'orders');
             $status_code        = 'await_pay';
         } elseif (in_array($order_status, array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) && in_array($shipping_status, array(SS_UNSHIPPED, SS_SHIPPED_PART, SS_PREPARING, SS_SHIPPED_ING, OS_SHIPPED_PART)) && (in_array($pay_status, array(PS_PAYED, PS_PAYING)) || $is_cod)) {
             if (!in_array($pay_status, array(PS_PAYED)) && $type == 'payed') {
                 //continue;
             }
-            $label_order_status = '待发货';
+            $label_order_status = __('待发货', 'orders');
             $status_code        = 'await_ship';
         } elseif (in_array($order_status, array(OS_CANCELED))) {
-            $label_order_status = '已关闭';
+            $label_order_status = __('已关闭', 'orders');
             $status_code        = 'canceled';
         }
 

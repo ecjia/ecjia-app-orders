@@ -57,7 +57,7 @@ class admin_orders_detail_module extends api_admin implements api_interface
 
         $this->authadminSession();
         if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
 
         $device = $this->device;
@@ -141,7 +141,7 @@ class admin_orders_detail_module extends api_admin implements api_interface
         $db_user   = RC_Model::model('user/users_model');
         $user_name = $db_user->where(array('user_id' => $order['user_id']))->get_field('user_name');
 
-        $order['user_name'] = empty($user_name) ? __('匿名用户') : $user_name;
+        $order['user_name'] = empty($user_name) ? __(__('匿名用户', 'orders'), 'orders') : $user_name;
 
         $order['country_id']  = $order['country'];
         $order['province_id'] = $order['province'];
@@ -164,23 +164,23 @@ class admin_orders_detail_module extends api_admin implements api_interface
         if (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED)) &&
             in_array($order['shipping_status'], array(SS_RECEIVED)) &&
             in_array($order['pay_status'], array(PS_PAYED, PS_PAYING))) {
-            $label_order_status = '已完成';
+            $label_order_status = __('已完成', 'orders');
             $status_code        = 'finished';
         } elseif (in_array($order['shipping_status'], array(SS_SHIPPED))) {
-            $label_order_status = '已发货';
+            $label_order_status = __(__('已发货', 'orders'), 'orders');
             $status_code        = 'shipped';
         } elseif (in_array($order['order_status'], array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) &&
             in_array($order['pay_status'], array(PS_UNPAYED)) &&
             (in_array($order['shipping_status'], array(SS_SHIPPED, SS_RECEIVED)) || !$payment['is_cod'])) {
-            $label_order_status = '待付款';
+            $label_order_status = __('待付款', 'orders');
             $status_code        = 'await_pay';
         } elseif (in_array($order['order_status'], array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
             in_array($order['shipping_status'], array(SS_UNSHIPPED, SS_SHIPPED_PART, SS_PREPARING, SS_SHIPPED_ING, OS_SHIPPED_PART)) &&
             (in_array($order['pay_status'], array(PS_PAYED, PS_PAYING)) || $payment['is_cod'])) {
-            $label_order_status = '待发货';
+            $label_order_status = __('待发货', 'orders');
             $status_code        = 'await_ship';
         } elseif (in_array($order['order_status'], array(OS_CANCELED))) {
-            $label_order_status = '已关闭';
+            $label_order_status = __('已关闭', 'orders');
             $status_code        = 'canceled';
         }
 
@@ -224,26 +224,26 @@ class admin_orders_detail_module extends api_admin implements api_interface
         $data            = $db_order_action->where(array('order_id' => $order['order_id']))->order(array('log_time' => 'asc', 'action_id' => 'asc'))->select();
         if (!empty($data)) {
             $os = array(
-                OS_UNCONFIRMED   => '未接单',
-                OS_CONFIRMED     => '已接单',
-                OS_CANCELED      => '<font color="red">取消</font>',
-                OS_INVALID       => '<font color="red">无效</font>',
-                OS_RETURNED      => '<font color="red">退货</font>',
-                OS_SPLITED       => '已分单',
-                OS_SPLITING_PART => '部分分单',
+                OS_UNCONFIRMED   => __('未接单', 'orders'),
+                OS_CONFIRMED     => __('已接单', 'orders'),
+                OS_CANCELED      => __('<font color="red">取消</font>', 'orders'),
+                OS_INVALID       => __('<font color="red">无效</font>', 'orders'),
+                OS_RETURNED      => __('<font color="red">退货</font>', 'orders'),
+                OS_SPLITED       => __('已分单', 'orders'),
+                OS_SPLITING_PART => __('部分分单', 'orders'),
             );
             $ps = array(
-                PS_UNPAYED => '未付款',
-                PS_PAYING  => '付款中',
-                PS_PAYED   => '已付款',
+                PS_UNPAYED => __('未付款', 'orders'),
+                PS_PAYING  => __('付款中', 'orders'),
+                PS_PAYED   => __('已付款', 'orders'),
             );
             $ss = array(
-                SS_UNSHIPPED    => '未发货',
-                SS_PREPARING    => '配货中',
-                SS_SHIPPED      => '已发货',
-                SS_RECEIVED     => '收货确认',
-                SS_SHIPPED_PART => '已发货(部分商品)',
-                SS_SHIPPED_ING  => '发货中',
+                SS_UNSHIPPED    => __('未发货', 'orders'),
+                SS_PREPARING    => __('配货中', 'orders'),
+                SS_SHIPPED      => __('已发货', 'orders'),
+                SS_RECEIVED     => __('收货确认', 'orders'),
+                SS_SHIPPED_PART => __('已发货(部分商品)', 'orders'),
+                SS_SHIPPED_ING  => __('发货中', 'orders'),
             );
             foreach ($data as $key => $row) {
                 $row['order_status']    = $os[$row['order_status']];
@@ -253,7 +253,8 @@ class admin_orders_detail_module extends api_admin implements api_interface
                 $row['action_time']     = RC_Time::local_date(ecjia::config('time_format'), $row['log_time']);
                 $act_list[]             = array(
                     'action_time'     => $row['action_time'],
-                    'log_description' => $row['action_user'] . ' 操作此订单，变更状态为：' . $row['order_status'] . '、' . $row['pay_status'] . '、' . $row['shipping_status'] . (!empty($row['action_note']) ? '，理由是' . $row['action_note'] : '。'),
+                    'log_description' => !empty($row['action_note']) ? sprintf(__('%s 操作此订单，变更状态为：%s、%s、%s，理由是 %s', 'orders'), $row['action_user'], $row['order_status'], $order['pay_status'], $order['shipping_status'], $row['action_note'])
+                        : sprintf(__('%s 操作此订单，变更状态为：%s、%s、%s', 'orders'), $row['action_user'], $row['order_status'], $order['pay_status'], $order['shipping_status']),
                     'order_status'    => $row['order_status'],
                     'pay_status'      => $row['pay_status'],
                     'shipping_status' => $row['shipping_status'],

@@ -57,7 +57,7 @@ class history_module extends api_admin implements api_interface
 
         $this->authadminSession();
         if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
 
         $device        = $this->device;
@@ -67,7 +67,7 @@ class history_module extends api_admin implements api_interface
         $codes         = RC_Loader::load_app_config('cashier_device_code', 'cashier');
 
         if (!in_array($device_code, $codes)) {
-            return new ecjia_error('caskdesk_error', '非收银台请求！');
+            return new ecjia_error('caskdesk_error', __('非收银台请求！', 'orders'));
         }
 
         $size = $this->requestData('pagination.count', 15);
@@ -137,31 +137,31 @@ class history_module extends api_admin implements api_interface
         $codes = config('app-cashier::cashier_device_code');
         if (!empty($data)) {
             $os = array(
-                OS_UNCONFIRMED   => '未接单',
-                OS_CONFIRMED     => '已接单',
-                OS_CANCELED      => '<font color="red">取消</font>',
-                OS_INVALID       => '<font color="red">无效</font>',
-                OS_RETURNED      => '<font color="red">退货</font>',
-                OS_SPLITED       => '已分单',
-                OS_SPLITING_PART => '部分分单',
+                OS_UNCONFIRMED   => __(__('未接单', 'orders'), 'orders'),
+                OS_CONFIRMED     => __(__('已接单', 'orders'), 'orders'),
+                OS_CANCELED      => __(__('<font color="red">取消</font>', 'orders'), 'orders'),
+                OS_INVALID       => __(__('<font color="red">无效</font>', 'orders'), 'orders'),
+                OS_RETURNED      => __(__('<font color="red">退货</font>', 'orders'), 'orders'),
+                OS_SPLITED       => __(__('已分单', 'orders'), 'orders'),
+                OS_SPLITING_PART => __(__('部分分单', 'orders'), 'orders'),
             );
             $ps = array(
-                PS_UNPAYED => '未付款',
-                PS_PAYING  => '付款中',
-                PS_PAYED   => '已付款',
+                PS_UNPAYED => __(__('未付款', 'orders'), 'orders'),
+                PS_PAYING  => __(__('付款中', 'orders'), 'orders'),
+                PS_PAYED   => __(__('已付款', 'orders'), 'orders'),
             );
             $ss = array(
-                SS_UNSHIPPED    => '未发货',
-                SS_PREPARING    => '配货中',
-                SS_SHIPPED      => '已发货',
-                SS_RECEIVED     => '收货确认',
-                SS_SHIPPED_PART => '已发货(部分商品)',
-                SS_SHIPPED_ING  => '发货中',
+                SS_UNSHIPPED    => __(__('未发货', 'orders'), 'orders'),
+                SS_PREPARING    => __(__('配货中', 'orders'), 'orders'),
+                SS_SHIPPED      => __(__('已发货', 'orders'), 'orders'),
+                SS_RECEIVED     => __(__('收货确认', 'orders'), 'orders'),
+                SS_SHIPPED_PART => __(__('已发货(部分商品)', 'orders'), 'orders'),
+                SS_SHIPPED_ING  => __(__('发货中', 'orders'), 'orders'),
             );
             foreach ($data as $key => $val) {
                 $order_status = ($val['order_status'] != '2' || $val['order_status'] != '3') ? $os[$val['order_status']] : '';
-                $order_status = $val['order_status'] == '2' ? __('已取消') : $order_status;
-                $order_status = $val['order_status'] == '3' ? __('无效') : $order_status;
+                $order_status = $val['order_status'] == '2' ? __('已取消', 'orders') : $order_status;
+                $order_status = $val['order_status'] == '3' ? __('无效', 'orders') : $order_status;
 
                 if ($val['pay_id'] > 0) {
                     $payment = with(new Ecjia\App\Payment\PaymentPlugin)->getPluginDataById($val['pay_id']);
@@ -223,28 +223,28 @@ class history_module extends api_admin implements api_interface
         $status_code        = '';
         if (in_array($device_code, $codes)) {
             if (in_array($order_status, array(OS_CANCELED, OS_INVALID, OS_RETURNED))) {
-                $label_order_status = '已撤销';
+                $label_order_status = __('已撤销', 'orders');
                 $status_code        = 'canceled';
             } elseif ($pay_status == PS_PAYED) {
-                $label_order_status = '已支付';
+                $label_order_status = __('已支付', 'orders');
                 $status_code        = 'payed';
             } elseif ($pay_status == PS_UNPAYED) {
-                $label_order_status = '未支付';
+                $label_order_status = __('未支付', 'orders');
                 $status_code        = 'unpay';
             }
         } else {
             if (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED)) &&
                 in_array($shipping_status, array(SS_RECEIVED)) &&
                 in_array($pay_status, array(PS_PAYED, PS_PAYING))) {
-                $label_order_status = '已完成';
+                $label_order_status = __('已完成', 'orders');
                 $status_code        = 'finished';
             } elseif (in_array($shipping_status, array(SS_SHIPPED))) {
-                $label_order_status = '已发货';
+                $label_order_status = __(__('已发货', 'orders'), 'orders');
                 $status_code        = 'shipped';
             } elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) &&
                 in_array($pay_status, array(PS_UNPAYED)) &&
                 (in_array($shipping_status, array(SS_SHIPPED, SS_RECEIVED)) || !$payment['is_cod'])) {
-                $label_order_status = '待付款';
+                $label_order_status = __('待付款', 'orders');
                 $status_code        = 'await_pay';
             } elseif (in_array($order_status, array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART)) &&
                 in_array($shipping_status, array(SS_UNSHIPPED, SS_SHIPPED_PART, SS_PREPARING, SS_SHIPPED_ING, OS_SHIPPED_PART)) &&
@@ -252,10 +252,10 @@ class history_module extends api_admin implements api_interface
                 //if (!in_array($val['pay_status'], array(PS_PAYED)) && $type == 'payed') {
                 //	continue;
                 //}
-                $label_order_status = '待发货';
+                $label_order_status = __('待发货', 'orders');
                 $status_code        = 'await_ship';
             } elseif (in_array($order_status, array(OS_CANCELED))) {
-                $label_order_status = '已关闭';
+                $label_order_status = __('已关闭', 'orders');
                 $status_code        = 'canceled';
             }
         }

@@ -75,28 +75,28 @@ class orders_admin_plugin
         ecjia_admin::$controller->assign('order_list', $order_list['orders']);
 
         $os = array(
-            OS_UNCONFIRMED   => __('未接单', 'orders'),
-            OS_CONFIRMED     => __('已接单', 'orders'),
-            OS_CANCELED      => __('<font color="red">取消</font>', 'orders'),
-            OS_INVALID       => __('<font color="red">无效</font>', 'orders'),
-            OS_RETURNED      => __('<font color="red">退货</font>', 'orders'),
-            OS_SPLITED       => __('已分单', 'orders'),
-            OS_SPLITING_PART => __('部分分单', 'orders'),
+            OS_UNCONFIRMED   => __(__('未接单', 'orders'), 'orders'),
+            OS_CONFIRMED     => __(__('已接单', 'orders'), 'orders'),
+            OS_CANCELED      => __(__('<font color="red">取消</font>', 'orders'), 'orders'),
+            OS_INVALID       => __(__('<font color="red">无效</font>', 'orders'), 'orders'),
+            OS_RETURNED      => __(__('<font color="red">退货</font>', 'orders'), 'orders'),
+            OS_SPLITED       => __(__('已分单', 'orders'), 'orders'),
+            OS_SPLITING_PART => __(__('部分分单', 'orders'), 'orders'),
         );
 
         $ps = array(
-            PS_UNPAYED => __('未付款', 'orders'),
-            PS_PAYING  => __('付款中', 'orders'),
-            PS_PAYED   => __('已付款', 'orders'),
+            PS_UNPAYED => __(__('未付款', 'orders'), 'orders'),
+            PS_PAYING  => __(__('付款中', 'orders'), 'orders'),
+            PS_PAYED   => __(__('已付款', 'orders'), 'orders'),
         );
 
         $ss = array(
-            SS_UNSHIPPED    => __('未发货', 'orders'),
-            SS_PREPARING    => __('配货中', 'orders'),
-            SS_SHIPPED      => __('已发货', 'orders'),
-            SS_RECEIVED     => __('收货确认', 'orders'),
-            SS_SHIPPED_PART => __('已发货(部分商品)', 'orders'),
-            SS_SHIPPED_ING  => __('发货中', 'orders'),
+            SS_UNSHIPPED    => __(__('未发货', 'orders'), 'orders'),
+            SS_PREPARING    => __(__('配货中', 'orders'), 'orders'),
+            SS_SHIPPED      => __(__('已发货', 'orders'), 'orders'),
+            SS_RECEIVED     => __(__('收货确认', 'orders'), 'orders'),
+            SS_SHIPPED_PART => __(__('已发货(部分商品)', 'orders'), 'orders'),
+            SS_SHIPPED_ING  => __(__('发货中', 'orders'), 'orders'),
         );
 
         ecjia_admin::$controller->assign('lang_os', $os);

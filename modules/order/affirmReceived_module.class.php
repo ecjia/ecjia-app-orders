@@ -60,11 +60,11 @@ class order_affirmReceived_module extends api_front implements api_interface
 
         $user_id = $_SESSION['user_id'];
         if ($user_id < 1) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
         $order_id = $this->requestData('order_id', 0);
         if ($order_id < 1) {
-            return new ecjia_error('invalid_parameter', '参数无效');
+            return new ecjia_error('invalid_parameter', __('参数无效', 'orders'));
         }
 
         $result = $this->affirm_received(intval($order_id), $user_id);
@@ -98,12 +98,12 @@ class order_affirmReceived_module extends api_front implements api_interface
 
         // 如果用户ID大于 0 。检查订单是否属于该用户
         if ($user_id > 0 && $order['user_id'] != $user_id) {
-            return new ecjia_error('no_priv', '该订单不存在');
+            return new ecjia_error('no_priv', __('该订单不存在', 'orders'));
         }    /* 检查订单 */
         elseif ($order['shipping_status'] == SS_RECEIVED) {
-            return new ecjia_error('order_already_received', '此订单已经确认过了，感谢您在本站购物，欢迎再次光临。');
+            return new ecjia_error('order_already_received', __('此订单已经确认过了，感谢您在本站购物，欢迎再次光临。', 'orders'));
         } elseif ($order['shipping_status'] != SS_SHIPPED) {
-            return new ecjia_error('order_invalid', '您提交的订单不正确。');
+            return new ecjia_error('order_invalid', __('您提交的订单不正确。', 'orders'));
         }     /* 修改订单发货状态为“确认收货” */
         else {
             $data['shipping_status'] = SS_RECEIVED;
@@ -123,25 +123,25 @@ class order_affirmReceived_module extends api_front implements api_interface
             if ($query) {
                 $db_order_status_log = RC_Model::model('orders/order_status_log_model');
                 $order_status_data   = array(
-                    'order_status' => '已确认收货',
+                    'order_status' => __('已确认收货', 'orders'),
                     'order_id'     => $order_id,
-                    'message'      => '宝贝已签收，购物愉快！',
+                    'message'      => __('宝贝已签收，购物愉快！', 'orders'),
                     'add_time'     => RC_Time::gmtime()
                 );
                 $db_order_status_log->insert($order_status_data);
 
 
                 $order_status_data = array(
-                    'order_status' => '订单已完成',
+                    'order_status' => __('订单已完成', 'orders'),
                     'order_id'     => $order_id,
-                    'message'      => '感谢您在' . ecjia::config('shop_name') . '购物，欢迎您再次光临！',
+                    'message'      => sprintf(__('感谢您在%s购物，欢迎您再次光临！', 'orders'), ecjia::config('shop_name')),
                     'add_time'     => RC_Time::gmtime()
                 );
                 $db_order_status_log->insert($order_status_data);
 
                 /* 记录日志 */
                 RC_Loader::load_app_func('admin_order', 'orders');
-                order_action($order['order_sn'], $order['order_status'], SS_RECEIVED, $order['pay_status'], '', '买家');
+                order_action($order['order_sn'], $order['order_status'], SS_RECEIVED, $order['pay_status'], '', __('买家', 'orders'));
 
                 /* 判断是否是配送员送货*/
                 //$express_info = RC_DB::table('express_order')->where('order_sn', $order['order_sn'])->first();
@@ -197,13 +197,13 @@ class order_affirmReceived_module extends api_front implements api_interface
                             $express_to_address   = ecjia_region::getRegionName($express_order_info['district']) . ecjia_region::getRegionName($express_order_info['street']) . $express_order_info['address'];
 
                             $express_data     = array(
-                                'title' => '配送成功',
-                                'body'  => '买家已成功确认收货！配送单号为：' . $express_order_info['express_sn'],
+                                'title' => __('配送成功', 'orders'),
+                                'body'  => sprintf(__('买家已成功确认收货！配送单号为：%s', 'orders'), $express_order_info['express_sn']),
                                 'data'  => array(
                                     'express_id'            => $express_order_info['express_id'],
                                     'express_sn'            => $express_order_info['express_sn'],
                                     'express_type'          => $express_order_info['from'],
-                                    'label_express_type'    => $express_order_info['from'] == 'assign' ? '系统派单' : '抢单',
+                                    'label_express_type'    => $express_order_info['from'] == 'assign' ? __('系统派单', 'orders') : __('抢单', 'orders'),
                                     'order_sn'              => $express_order_info['order_sn'],
                                     'payment_name'          => $express_order_info['pay_name'],
                                     'express_from_address'  => '【' . $express_order_info['merchants_name'] . '】' . $express_from_address,
@@ -245,7 +245,7 @@ class order_affirmReceived_module extends api_front implements api_interface
                                 'staff_user_id' => $express_order_info['staff_id'],
                                 'user_money'    => $express_order_info['commision'],
                                 'frozen_money'  => '0.00',
-                                'change_desc'   => '配送订单' . $express_order_info['order_sn'] . '所得的配送费用',
+                                'change_desc'   => sprintf(__('配送订单%s所得的配送费用', 'orders'), $express_order_info['order_sn']),
                                 'change_type'   => '99'
                             );
 
@@ -260,7 +260,7 @@ class order_affirmReceived_module extends api_front implements api_interface
                                         'express_code' => $shipping_info['shipping_code'],
                                         'track_number' => $express_order_info['invoice_no'],
                                         'time'         => RC_Time::local_date(ecjia::config('time_format'), RC_Time::gmtime()),
-                                        'context'      => '买家已成功确认收货！',
+                                        'context'      => __('买家已成功确认收货！', 'orders'),
                                     );
                                     RC_DB::table('express_track_record')->insert($data);
                                 }

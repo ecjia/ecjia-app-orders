@@ -372,11 +372,11 @@ class mh_delivery extends ecjia_merchant
 
         /* 发货 */
         /* 处理虚拟卡 商品（虚货） */
-        if (is_array($virtual_goods) && count($virtual_goods) > 0) {
-            foreach ($virtual_goods as $virtual_value) {
-                virtual_card_shipping($virtual_value, $order['order_sn'], $msg, 'split');
-            }
-        }
+        // if (is_array($virtual_goods) && count($virtual_goods) > 0) {
+        //     foreach ($virtual_goods as $virtual_value) {
+        //         virtual_card_shipping($virtual_value, $order['order_sn'], $msg, 'split');
+        //     }
+        // }
 
         /* 如果使用库存，且发货时减库存，则修改库存 */
         if (ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) {
@@ -412,7 +412,7 @@ class mh_delivery extends ecjia_merchant
         /*操作成功*/
         if ($result) {
             $data = array(
-                'order_status' => '已发货',
+                'order_status' => __('已发货', 'orders'),
                 'message'      => sprintf('订单号为 %s 的商品已发货，请您耐心等待', $order['order_sn']),
                 'order_id'     => $order_id,
                 'add_time'     => RC_Time::gmtime(),

@@ -58,7 +58,7 @@ class admin_orders_update_module extends api_admin implements api_interface
         $this->authadminSession();
 
         if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
 
         $order_id = $this->requestData('order_id', 0);
@@ -70,7 +70,7 @@ class admin_orders_update_module extends api_admin implements api_interface
         $payment_info = with(new Ecjia\App\Payment\PaymentPlugin)->getPluginDataById($pay_id);
 
         if (empty($payment_info)) {
-            return new ecjia_error(8, '处理失败');
+            return new ecjia_error(8, __('处理失败', 'orders'));
         } else {
             RC_Loader::load_app_func('admin_order', 'orders');
             $order_info = get_order_detail($order_id);
@@ -94,7 +94,7 @@ class admin_orders_update_module extends api_admin implements api_interface
             if ($result) {
                 return array();
             } else {
-                return new ecjia_error(8, '处理失败');
+                return new ecjia_error(8, __('处理失败', 'orders'));
             }
         }
     }

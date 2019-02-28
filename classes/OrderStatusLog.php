@@ -96,7 +96,7 @@ class OrderStatusLog
      */
     public function orderPaid()
     {
-        $order_status = __('已付款', 'orders');
+        $order_status = __(__('已付款', 'orders'), 'orders');
         $message      = __('已通知商家处理，请耐心等待', 'orders');
         return $this->execute($order_status, $message);
     }
@@ -119,7 +119,7 @@ class OrderStatusLog
      */
     public function generateDeliveryOrderInvoice($order_sn)
     {
-        $order_status = __('配货中', 'orders');
+        $order_status = __(__('配货中', 'orders'), 'orders');
         $message      = sprintf(__("订单号为 %s 的商品正在备货中，请您耐心等待", 'orders'), $order_sn);
         return $this->execute($order_status, $message);
     }
@@ -131,7 +131,7 @@ class OrderStatusLog
      */
     public function deliveryShipFinished($order_sn)
     {
-        $order_status = __('已发货', 'orders');
+        $order_status = __(__('已发货', 'orders'), 'orders');
         $message      = sprintf(__("订单号为 %s 的商品已发货，请您耐心等待", 'orders'), $order_sn);
         return $this->execute($order_status, $message);
     }

@@ -328,7 +328,7 @@ function get_merchant_back_list()
             if ($value['status'] == 1) {
                 $row[$key]['status_name'] = '退货';
             } else {
-                $row[$key]['status_name'] = '已发货';
+                $row[$key]['status_name'] = __(__('已发货', 'orders'), 'orders');
             }
         }
     }
@@ -426,7 +426,7 @@ function get_merchant_delivery_list()
             } elseif ($value['status'] == 2) {
                 $row[$key]['status_name'] = '正常';
             } else {
-                $row[$key]['status_name'] = '已发货';
+                $row[$key]['status_name'] = __(__('已发货', 'orders'), 'orders');
             }
         }
     }

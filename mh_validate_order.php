@@ -119,14 +119,14 @@ class mh_validate_order extends ecjia_merchant
         $db_term_meta->where('object_type', 'ecjia.order')->where('object_group', 'order')->where('meta_key', 'receipt_verification')->where('meta_value', $pickup_code);
         $order_count = $db_term_meta->count();
         if ($order_count > 1) {
-            return $this->showmessage('验证码重复，请与管理员联系！', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+            return $this->showmessage(__('验证码重复，请与管理员联系！', 'orders'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
         }
 
         $pickup_code_info = $db_term_meta->first();
 
 
         if (empty($pickup_code_info['object_id']) || empty($pickup_code_info['meta_value'])) {
-            return $this->showmessage('验证码错误！', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+            return $this->showmessage(__('验证码错误！', 'orders'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
         }
 
         /* 查询订单信息 */
@@ -301,12 +301,12 @@ class mh_validate_order extends ecjia_merchant
 
         /* 发货 */
         /* 处理虚拟卡 商品（虚货） */
-        if (is_array($virtual_goods) && count($virtual_goods) > 0) {
-            RC_Loader::load_app_func('common', 'goods');
-            foreach ($virtual_goods as $virtual_value) {
-                virtual_card_shipping($virtual_value, $order['order_sn'], $msg, 'split');
-            }
-        }
+        // if (is_array($virtual_goods) && count($virtual_goods) > 0) {
+        //     RC_Loader::load_app_func('common', 'goods');
+        //     foreach ($virtual_goods as $virtual_value) {
+        //         virtual_card_shipping($virtual_value, $order['order_sn'], $msg, 'split');
+        //     }
+        // }
 
         /* 如果使用库存，且发货时减库存，则修改库存 */
         if (ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) {
@@ -343,7 +343,7 @@ class mh_validate_order extends ecjia_merchant
         /*操作成功*/
         if ($result) {
             $data = array(
-                'order_status' => '已发货',
+                'order_status' => __('已发货', 'orders'),
                 'message'      => sprintf('订单号为 %s 的商品已发货，请您耐心等待', $order['order_sn']),
                 'order_id'     => $order_id,
                 'add_time'     => RC_Time::gmtime(),
@@ -596,7 +596,7 @@ class mh_validate_order extends ecjia_merchant
         if ($order['order_status'] == OS_SPLITED) {
             /* 操作失败 */
             //$links[] = array('text' => '订单信息', 'href' => RC_Uri::url('orders/merchant/info', 'order_id=' . $order_id));
-            return $this->showmessage(sprintf('您的订单%s，%s正在%s，%s', $order['order_sn'], '已分单', '发货中', ecjia::config('shop_name')), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+            return $this->showmessage(sprintf('您的订单%s，%s正在%s，%s', $order['order_sn'], __('已分单', 'orders'), __('发货中', 'orders'), ecjia::config('shop_name')), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
         }
 
         /* 取得订单商品 */
@@ -826,7 +826,7 @@ class mh_validate_order extends ecjia_merchant
 
         if ($delivery_id) {
             $data = array(
-                'order_status' => '配货中',
+                'order_status' => __('配货中', 'orders'),
                 'order_id'     => $order['order_id'],
                 'message'      => sprintf('订单号为 %s 的商品正在备货中，请您耐心等待', $order['order_sn']),
                 'add_time'     => RC_Time::gmtime()

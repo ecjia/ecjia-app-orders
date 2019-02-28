@@ -58,7 +58,7 @@ class admin_orders_operate_delivery_module extends api_admin implements api_inte
         $this->authadminSession();
 
         if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
 
         $result_view = $this->admin_priv('order_view');
@@ -361,7 +361,8 @@ class admin_orders_operate_delivery_module extends api_admin implements api_inte
                                 'extension_code' => $value['extension_code'], // 礼包
                                 'is_real'        => $pg_value['is_real']
                             );
-                            $query             = RC_Model::model('orders/delivery_goods_model')->insert($delivery_pg_goods);
+
+                            $query = RC_Model::model('orders/delivery_goods_model')->insert($delivery_pg_goods);
                         }
                     }
                 }
@@ -448,7 +449,7 @@ class admin_orders_operate_delivery_module extends api_admin implements api_inte
                 if (($value['sums'] > $value['storage'] || $value['storage'] <= 0) &&
                     ((ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) ||
                         (ecjia::config('use_storage') == '0' && $value['is_real'] == 0))) {
-                    return new ecjia_error('act_good_vacancy', '[' . $value['goods_name'] . ']' . '商品已缺货');
+                    return new ecjia_error('act_good_vacancy', sprintf(__('[ %s ]' . '商品已缺货', 'orders'), $value['goods_name']));
                 }
 
                 /* 虚拟商品列表 virtual_card */

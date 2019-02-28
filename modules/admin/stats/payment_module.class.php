@@ -57,7 +57,7 @@ class admin_stats_payment_module extends api_admin implements api_interface
     {
         $this->authadminSession();
         if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
 
         $device = $this->device;
@@ -99,7 +99,7 @@ class admin_stats_payment_module extends api_admin implements api_interface
         /* 获取请求当前数据的device信息*/
         $codes = RC_Loader::load_app_config('cashier_device_code', 'cashier');
         if (!is_array($device) || !isset($device['code']) || !in_array($device['code'], $codes)) {
-            return new ecjia_error('caskdesk_error', '非收银台请求！');
+            return new ecjia_error('caskdesk_error', __('非收银台请求！', 'orders'));
         }
 
         /* 获取收银台的固有支付方式*/

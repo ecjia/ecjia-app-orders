@@ -57,13 +57,13 @@ class admin_shopkeeper_order_checking_detail_module extends api_admin implements
 
         $this->authadminSession();
         if ($_SESSION['staff_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
 
         $pickup_code = $this->requestData('pickup_code');
 
         if (empty($pickup_code)) {
-            return new ecjia_error('invalid_parameter', '参数无效');
+            return new ecjia_error('invalid_parameter', __('参数无效', 'orders'));
         }
         $order = array();
 
@@ -73,26 +73,26 @@ class admin_shopkeeper_order_checking_detail_module extends api_admin implements
             $db_term_meta->where('object_type', 'ecjia.order')->where('object_group', 'order')->where('meta_key', 'receipt_verification')->where('meta_value', $pickup_code);
             $order_count = $db_term_meta->count();
             if ($order_count > 1) {
-                return new ecjia_error('pickup_code_repeat', '验证码重复，请与管理员联系！');
+                return new ecjia_error('pickup_code_repeat', __('验证码重复，请与管理员联系！', 'orders'));
             }
 
             $pickup_code_info = $db_term_meta->first();
 
             if (empty($pickup_code_info['object_id']) || empty($pickup_code_info['meta_value'])) {
-                return new ecjia_error('pickup_code_error', '验证码错误！');
+                return new ecjia_error('pickup_code_error', __('验证码错误！', 'orders'));
             }
 
             /* 查询订单信息 */
             $order_info = RC_Api::api('orders', 'order_info', array('order_id' => $pickup_code_info['object_id'], 'order_sn' => ''));
 
             if (empty($order_info)) {
-                return new ecjia_error('order_not_exist', '该验证码对应的订单信息不存在！');
+                return new ecjia_error('order_not_exist', __('该验证码对应的订单信息不存在！', 'orders'));
             }
             if (is_ecjia_error($order_info)) {
                 return $order_info;
             }
             if ($order_info['store_id'] != $_SESSION['store_id']) {
-                return new ecjia_error('order_info_error', '该验证码对应的订单不属于当前商家！');
+                return new ecjia_error('order_info_error', __('该验证码对应的订单不属于当前商家！', 'orders'));
             }
 
             /* 判断发货情况*/
@@ -101,7 +101,7 @@ class admin_shopkeeper_order_checking_detail_module extends api_admin implements
             //}
 
             if ($order_info['order_status'] == OS_CANCELED || $order_info['order_status'] == OS_INVALID) {
-                return new ecjia_error('vinvalid_order', '验证码对应的订单已取消或是无效订单！');
+                return new ecjia_error('vinvalid_order', __('验证码对应的订单已取消或是无效订单！', 'orders'));
             }
 
             $user_info = RC_DB::table('users')->where('user_id', $order_info['user_id'])->select('user_name', 'mobile_phone')->first();
@@ -166,7 +166,7 @@ class admin_shopkeeper_order_checking_detail_module extends api_admin implements
                 'formated_add_time'       => RC_Time::local_date(ecjia::config('time_format'), $order_info['add_time']),
                 'pickup_code'             => $pickup_code_info['meta_value'],
                 'pickup_status'           => $pickup_status,
-                'label_pickup_status'     => $pickup_status == 1 ? '已提取' : '未提取',
+                'label_pickup_status'     => $pickup_status == 1 ? __('已提取', 'orders') : __('未提取', 'orders'),
                 'goods_list'              => $goods_list,
             );
         }

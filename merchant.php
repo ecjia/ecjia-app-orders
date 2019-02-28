@@ -2790,7 +2790,7 @@ class merchant extends ecjia_merchant
                     'invalid'        => '无效',
                     'return'         => '退货',
                     'unpay'          => '设为未付款',
-                    'unship'         => '未发货',
+                    'unship'         => __('未发货', 'orders'),
                     'confirm_pay'    => '确认付款',
                     'cancel_ship'    => '取消发货',
                     'receive'        => '已收货',
@@ -3216,7 +3216,7 @@ class merchant extends ecjia_merchant
 
             if ($delivery_id) {
                 $data = array(
-                    'order_status' => '发货中',
+                    'order_status' => __('发货中', 'orders'),
                     'order_id'     => $order_id,
                     'message'      => sprintf('订单号为 %s 的商品正在备货中，请您耐心等待', $order['order_sn']),
                     'add_time'     => RC_Time::gmtime(),
@@ -4593,19 +4593,19 @@ class merchant extends ecjia_merchant
 
         if (!empty($data)) {
             $os = array(
-                OS_UNCONFIRMED   => '未接单',
-                OS_CONFIRMED     => '已接单',
-                OS_CANCELED      => '<font color="red">取消</font>',
-                OS_INVALID       => '<font color="red">无效</font>',
-                OS_RETURNED      => '<font color="red">退货</font>',
-                OS_SPLITED       => '已分单',
-                OS_SPLITING_PART => '部分分单',
+                OS_UNCONFIRMED   => __('未接单', 'orders'),
+                OS_CONFIRMED     => __('已接单', 'orders'),
+                OS_CANCELED      => __('<font color="red">取消</font>', 'orders'),
+                OS_INVALID       => __('<font color="red">无效</font>', 'orders'),
+                OS_RETURNED      => __('<font color="red">退货</font>', 'orders'),
+                OS_SPLITED       => __('已分单', 'orders'),
+                OS_SPLITING_PART => __('部分分单', 'orders'),
             );
 
             $ps = array(
-                PS_UNPAYED => '未付款',
-                PS_PAYING  => '付款中',
-                PS_PAYED   => '已付款',
+                PS_UNPAYED => __('未付款', 'orders'),
+                PS_PAYING  => __('付款中', 'orders'),
+                PS_PAYED   => __('已付款', 'orders'),
             );
 
             $ss_admin = array(
@@ -4613,12 +4613,12 @@ class merchant extends ecjia_merchant
             );
 
             $ss = array(
-                SS_UNSHIPPED    => '未发货',
-                SS_PREPARING    => '配货中',
-                SS_SHIPPED      => '已发货',
-                SS_RECEIVED     => '收货确认',
-                SS_SHIPPED_PART => '已发货(部分商品)',
-                SS_SHIPPED_ING  => '发货中',
+                SS_UNSHIPPED    => __('未发货', 'orders'),
+                SS_PREPARING    => __('配货中', 'orders'),
+                SS_SHIPPED      => __('已发货', 'orders'),
+                SS_RECEIVED     => __('收货确认', 'orders'),
+                SS_SHIPPED_PART => __('已发货(部分商品)', 'orders'),
+                SS_SHIPPED_ING  => __('发货中', 'orders'),
             );
 
             foreach ($data as $key => $row) {
@@ -4728,11 +4728,11 @@ class merchant extends ecjia_merchant
 
         /* 发货 */
         /* 处理虚拟卡 商品（虚货） */
-        if (is_array($virtual_goods) && count($virtual_goods) > 0) {
-            foreach ($virtual_goods as $virtual_value) {
-                virtual_card_shipping($virtual_value, $order['order_sn'], $msg, 'split');
-            }
-        }
+        // if (is_array($virtual_goods) && count($virtual_goods) > 0) {
+        //     foreach ($virtual_goods as $virtual_value) {
+        //         virtual_card_shipping($virtual_value, $order['order_sn'], $msg, 'split');
+        //     }
+        // }
 
         /* 如果使用库存，且发货时减库存，则修改库存 */
         if (ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) {
@@ -4766,7 +4766,7 @@ class merchant extends ecjia_merchant
         /*操作成功*/
         if ($result) {
             $data = array(
-                'order_status' => '已发货',
+                'order_status' => __('已发货', 'orders'),
                 'message'      => sprintf('订单号为 %s 的商品已发货，请您耐心等待', $order['order_sn']),
                 'order_id'     => $order_id,
                 'add_time'     => RC_Time::gmtime(),

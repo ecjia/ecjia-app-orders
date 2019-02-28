@@ -57,7 +57,7 @@ class order_express_module extends api_front implements api_interface
 
         $user_id = $_SESSION['user_id'];
         if ($user_id < 1) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
 
         define('INIT_NO_USERS', true);
@@ -72,7 +72,7 @@ class order_express_module extends api_front implements api_interface
 
         $order_info = order_info($order_id);
         if (!$order_info || empty($order_info['shipping_name']) || empty($order_info['invoice_no'])) {
-            return new ecjia_error(10009, '订单无发货信息');
+            return new ecjia_error(10009, __('订单无发货信息', 'orders'));
         }
 
         $delivery_result = RC_Model::model('orders/delivery_order_model')->where(array('order_id' => $order_id))->select();
@@ -156,7 +156,7 @@ class order_express_module extends api_front implements api_interface
                                 $data = $cloud->getReturnData();
                             }
                         } else {
-                            $data = array('content' => array('time' => 'error', 'context' => '物流跟踪未配置'));
+                            $data = array('content' => array('time' => 'error', 'context' => __('物流跟踪未配置', 'orders')));
                         }
                     }
 
@@ -182,9 +182,9 @@ class order_express_module extends api_front implements api_interface
                         'shipping_code'         => $shipping_info['shipping_code'],
                         'shipping_number'       => $val['invoice_no'],
                         'shipping_status'       => !empty($data['state']) ? $data['state'] : '',
-                        'label_shipping_status' => $shipping_info['shipping_code'] == 'ship_no_express' ? '您当前选择的物流为【无需物流】，因此该订单暂无运单编号和物流状态' : (!empty($data['state_label']) ? $data['state_label'] : ''),
+                        'label_shipping_status' => $shipping_info['shipping_code'] == 'ship_no_express' ? __('您当前选择的物流为【无需物流】，因此该订单暂无运单编号和物流状态', 'orders') : (!empty($data['state_label']) ? $data['state_label'] : ''),
                         'sign_time_formated'    => !empty($data['sign_time_formated']) ? $data['sign_time_formated'] : '',
-                        'content'               => !empty($data['content']) ? $data['content'] : array('time' => 'error', 'context' => '暂无物流信息'),
+                        'content'               => !empty($data['content']) ? $data['content'] : array('time' => 'error', 'context' => __('暂无物流信息', 'orders')),
                         'goods_items'           => $goods_lists,
                     );
                 }

@@ -2485,7 +2485,7 @@ class admin extends ecjia_admin
                     'invalid'        => '无效',
                     'return'         => '退货',
                     'unpay'          => '设为未付款',
-                    'unship'         => '未发货',
+                    'unship'         => __('未发货', 'orders'),
                     'confirm_pay'    => '确认付款',
                     'cancel_ship'    => '取消发货',
                     'receive'        => '已收货',
@@ -2680,7 +2680,7 @@ class admin extends ecjia_admin
             if ($order['order_status'] == OS_SPLITED) {
                 /* 操作失败 */
                 $links[] = array('text' => '订单信息', 'href' => RC_Uri::url('orders/admin/info', 'order_id=' . $order_id));
-                return $this->showmessage(sprintf('您的订单%s，%s正在%s，%s', $order['order_sn'], '已分单', '发货中', ecjia::config('shop_name')), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
+                return $this->showmessage(sprintf('您的订单%s，%s正在%s，%s', $order['order_sn'], __('已分单', 'orders'), __('发货中', 'orders'), ecjia::config('shop_name')), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('links' => $links));
             }
 
             /* 取得订单商品 */
@@ -2897,7 +2897,7 @@ class admin extends ecjia_admin
 
             if ($delivery_id) {
                 $data = array(
-                    'order_status' => '配货中',
+                    'order_status' => __('配货中', 'orders'),
                     'order_id'     => $order_id,
                     'message'      => sprintf('订单号为 %s 的商品正在备货中，请您耐心等待', $order['order_sn']),
                     'add_time'     => RC_Time::gmtime(),
@@ -3073,7 +3073,7 @@ class admin extends ecjia_admin
             $update = update_order($order_id, $arr);
             if ($update) {
                 $data = array(
-                    'order_status' => '收货确认',
+                    'order_status' => __('收货确认', 'orders'),
                     'order_id'     => $order_id,
                     'message'      => '商品已送达，请签收，感谢您下次光顾！',
                     'add_time'     => RC_Time::gmtime(),

@@ -57,7 +57,7 @@ class admin_orders_check_module extends api_admin implements api_interface
     {
         $this->authadminSession();
         if ($_SESSION['admin_id'] <= 0 && $_SESSION['staff_id'] <= 0) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
         $device = $this->device;
         $codes  = config('app-cashier::cashier_device_code');
@@ -85,30 +85,30 @@ class admin_orders_check_module extends api_admin implements api_interface
         );
         $order_count  = $db_term_meta->where($meta_where)->count();
         if ($order_count > 1) {
-            return new ecjia_error('repeat_error', '验证码重复，请与管理员联系！');
+            return new ecjia_error('repeat_error', __('验证码重复，请与管理员联系！', 'orders'));
         }
 
         $order_id = $db_term_meta->where($meta_where)->get_field('object_id');
         if (empty($order_id)) {
-            return new ecjia_error('verification_code_error', '验证码错误！');
+            return new ecjia_error('verification_code_error', __('验证码错误！', 'orders'));
         }
 
         if ($id == 0) {
             return array('order_id' => $order_id);
         }
         if ($id != $order_id) {
-            return new ecjia_error('verification_code_error', '验证码错误！');
+            return new ecjia_error('verification_code_error', __('验证码错误！', 'orders'));
         }
         /* 查询订单信息 */
         $order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => ''));
         if ($_SESSION['store_id'] != $order_info['store_id']) {
-            return new ecjia_error('order_error', __('验证码所对应的订单不属于当前店铺！'));
+            return new ecjia_error('order_error', __('验证码所对应的订单不属于当前店铺！', 'orders'));
         }
         /* 判断发货情况*/
         if ($order_info['shipping_status'] > SS_UNSHIPPED) {
-            return new ecjia_error('order_shipped', __('该订单已发货！无法进行此操作'));
+            return new ecjia_error('order_shipped', __('该订单已发货！无法进行此操作', 'orders'));
         } else {
-            $action_note = '验单';
+            $action_note = __('验单', 'orders');
             /* 进行确认*/
             RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'confirm', 'note' => array('action_note' => $action_note)));
             /* 进行付款*/
@@ -151,7 +151,7 @@ class admin_orders_check_module extends api_admin implements api_interface
             /* 查询订单信息 */
             $order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => ''));
             if ($_SESSION['store_id'] > 0) {
-                RC_Api::api('merchant', 'admin_log', array('text' => '验单，订单号：' . $order['order_sn'] . '【来源掌柜】', 'action' => 'edit', 'object' => 'order'));
+                RC_Api::api('merchant', 'admin_log', array('text' => sprintf(__('验单，订单号：%s【来源掌柜】', 'orders'), $order['order_sn']), 'action' => 'edit', 'object' => 'order'));
             }
         }
 
@@ -182,11 +182,11 @@ class admin_orders_check_module extends api_admin implements api_interface
         if (!empty($delivery_id)) {
             $delivery_order = delivery_order_info($delivery_id);
         } else {
-            return new ecjia_error('delivery_id_error', __('无法找到对应发货单！'));
+            return new ecjia_error('delivery_id_error', __('无法找到对应发货单！', 'orders'));
             // 		$this->showmessage( __('无法找到对应发货单！') , ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR);
         }
         if (empty($delivery_order)) {
-            return new ecjia_error('delivery_error', __('无法找到对应发货单！'));
+            return new ecjia_error('delivery_error', __('无法找到对应发货单！', 'orders'));
         }
         // 	/* 查询订单信息 */
         // 	$order = order_info($order_id);
@@ -270,12 +270,12 @@ class admin_orders_check_module extends api_admin implements api_interface
 
         /* 发货 */
         /* 处理虚拟卡 商品（虚货） */
-        if (is_array($virtual_goods) && count($virtual_goods) > 0) {
-            RC_Loader::load_app_func('common', 'goods');
-            foreach ($virtual_goods as $virtual_value) {
-                virtual_card_shipping($virtual_value, $order['order_sn'], $msg, 'split');
-            }
-        }
+//        if (is_array($virtual_goods) && count($virtual_goods) > 0) {
+//            RC_Loader::load_app_func('common', 'goods');
+//            foreach ($virtual_goods as $virtual_value) {
+//                virtual_card_shipping($virtual_value, $order['order_sn'], $msg, 'split');
+//            }
+//        }
 
         /* 如果使用库存，且发货时减库存，则修改库存 */
         if (ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) {
@@ -323,7 +323,7 @@ class admin_orders_check_module extends api_admin implements api_interface
 
         /* 发货单发货记录log */
         order_action($order['order_sn'], OS_CONFIRMED, $shipping_status, $order['pay_status'], $action_note, null, 1);
-        ecjia_admin::admin_log('发货，订单号是' . $order['order_sn'], 'setup', 'order');
+        ecjia_admin::admin_log(sprintf(__('发货，订单号是 %s', 'orders'), $order['order_sn']), 'setup', 'order');
 
         /* 如果当前订单已经全部发货 */
         if ($order_finish) {
@@ -335,13 +335,13 @@ class admin_orders_check_module extends api_admin implements api_interface
                 $integral      = integral_to_give($order);
                 $integral_name = ecjia::config('integral_name');
                 if (empty($integral_name)) {
-                    $integral_name = '积分';
+                    $integral_name = __('积分', 'orders');
                 }
                 $options = array(
                     'user_id'     => $order['user_id'],
                     'rank_points' => intval($integral['rank_points']),
                     'pay_points'  => intval($integral['custom_points']),
-                    'change_desc' => '订单' . $order['order_sn'] . '赠送的' . $integral_name,
+                    'change_desc' => sprintf(__('订单%s赠送的%s', 'orders'), $order['order_sn'], $integral_name),
                 );
                 RC_Api::api('user', 'account_change_log', $options);
                 /* 发放红包 */

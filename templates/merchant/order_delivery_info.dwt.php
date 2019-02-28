@@ -159,7 +159,7 @@
 								<td>{$package.product_sn}</td>
 								<td>{$package.goods_attr_str}</td>
 								<!-- {if $suppliers_list neq 0} -->
-								<td><div>{$suppliers_name[$package.suppliers_id]|default:本店}</div></td>
+								<td><div>{$suppliers_name[$package.suppliers_id]}</div></td>
 								<!-- {/if} -->
 								<td><div>{$package.storage}</div></td>
 								<td><div>{$package.order_send_number}</div></td>
@@ -178,7 +178,7 @@
 								<td>{$goods.product_sn}</td>
 								<td>{$goods.goods_attr|nl2br}</td>
 								<!-- {if $suppliers_list neq 0} -->
-								<td><div>{$suppliers_name[$goods.suppliers_id]|default:本店}</div></td>
+								<td><div>{$suppliers_name[$goods.suppliers_id]}</div></td>
 								<!-- {/if} -->
 								<td><div>{$goods.storage}</div></td>
 								<td><div>{$goods.goods_number}</div></td>
@@ -189,7 +189,7 @@
 							<!-- {/foreach} -->
 						</tbody>
 					</table>
-				</div>
+				</div>11
 			</div>
 			
 			<div id="accordion2" class="panel panel-default">

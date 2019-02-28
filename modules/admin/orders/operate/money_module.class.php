@@ -78,7 +78,7 @@ class admin_orders_operate_money_module extends api_admin implements api_interfa
         if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
             $ru_id_group = RC_Model::model('orders/order_info_model')->where(array('order_id' => $order_id))->group('store_id')->get_field('store_id', true);
             if (count($ru_id_group) > 1 || $ru_id_group[0] != $_SESSION['store_id']) {
-                return new ecjia_error('no_authority', '对不起，您没权限对此订单进行操作！');
+                return new ecjia_error('no_authority', __('对不起，您没权限对此订单进行操作！', 'orders'));
             }
         }
 
@@ -111,21 +111,21 @@ class admin_orders_operate_money_module extends api_admin implements api_interfa
 
         /* 暂不支持产生退款费用*/
         if ($order['order_amount'] < 0) {
-            return new ecjia_error('amount_error', '订单金额过小，将产生退款费用！');
+            return new ecjia_error('amount_error', __('订单金额过小，将产生退款费用！', 'orders'));
         }
 
         update_order($order_id, $order);
         /* 更新 pay_log */
         update_pay_log($order_id);
 
-        $sn        = '编辑费用信息，';
+        $sn        = __('编辑费用信息，', 'orders');
         $new_order = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));
         if ($order_info['total_fee'] != $new_order['total_fee']) {
-            $sn .= sprintf(RC_Lang::lang('order_amount_change'), $order_info['total_fee'], $new_order['total_fee']) . '，';
+            $sn .= sprintf(__('订单总金额由 %s 变为 %s', 'orders'), $order_info['total_fee'], $new_order['total_fee']) . '，';
         }
-        $sn .= '订单号是 ' . $order_info['order_sn'];
+        $sn .= sprintf(__('订单号是 %s', 'orders'), $order_info['order_sn']);
         if ($_SESSION['store_id'] > 0) {
-            RC_Api::api('merchant', 'admin_log', array('text' => $sn . '【来源掌柜】', 'action' => 'edit', 'object' => 'order'));
+            RC_Api::api('merchant', 'admin_log', array('text' => sprintf(__('%s【来源掌柜】', 'orders'), $sn), 'action' => 'edit', 'object' => 'order'));
         }
 
         return array();

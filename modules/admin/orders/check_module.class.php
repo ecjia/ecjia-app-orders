@@ -74,7 +74,7 @@ class admin_orders_check_module extends api_admin implements api_interface
 
         $id = $this->requestData('order_id', 0);
         if (empty($verification_code)) {
-            return new ecjia_error('invalid_parameter', '参数错误');
+            return new ecjia_error('invalid_parameter', __('参数错误', 'orders'));
         }
         $db_term_meta = RC_Loader::load_model('term_meta_model');
         $meta_where   = array(
@@ -212,10 +212,10 @@ class admin_orders_check_module extends api_admin implements api_interface
                 if (($value['sums'] > $value['storage'] || $value['storage'] <= 0) &&
                     ((ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) ||
                         (ecjia::config('use_storage') == '0' && $value['is_real'] == 0))) {
-                    return new ecjia_error('act_good_vacancy', sprintf(RC_Lang::lang('act_good_vacancy'), $value['goods_name']));
+                    return new ecjia_error('act_good_vacancy', sprintf(__('商品已缺货', 'orders'), $value['goods_name']));
                     // 				/* 操作失败 */
                     // 				$links[] = array('text' => RC_Lang::lang('order_info'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info', 'delivery_id=' . $delivery_id));
-                    // 				$this->showmessage(sprintf(RC_Lang::lang('act_good_vacancy'), $value['goods_name']), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR, array('links' => $links));
+                    // 				$this->showmessage(sprintf(__('商品已缺货', 'orders'), $value['goods_name']), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR, array('links' => $links));
                 }
 
                 /* 虚拟商品列表 virtual_card */
@@ -250,10 +250,10 @@ class admin_orders_check_module extends api_admin implements api_interface
                 if (($value['sums'] > $value['goods_number'] || $value['goods_number'] <= 0) &&
                     ((ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) ||
                         (ecjia::config('use_storage') == '0' && $value['is_real'] == 0))) {
-                    return new ecjia_error('act_good_vacancy', sprintf(RC_Lang::lang('act_good_vacancy'), $value['goods_name']));
+                    return new ecjia_error('act_good_vacancy', sprintf(__('商品已缺货', 'orders'), $value['goods_name']));
                     // 				/* 操作失败 */
                     // 				$links[] = array('text' => RC_Lang::lang('order_info'), 'href' => RC_Uri::url('orders/order_delilvery/delivery_info', 'delivery_id=' . $delivery_id));
-                    // 				$this->showmessage(sprintf(RC_Lang::lang('act_good_vacancy'), $value['goods_name']), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR, array('links' => $links));
+                    // 				$this->showmessage(sprintf(__('商品已缺货', 'orders'), $value['goods_name']), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR, array('links' => $links));
                     // 				break;
                 }
 
@@ -306,10 +306,10 @@ class admin_orders_check_module extends api_admin implements api_interface
         $result                  = $db_delivery_order->where(array('delivery_id' => $delivery_id))->update($_delivery);
 
         if (!$result) {
-            return new ecjia_error('act_false', RC_Lang::lang('act_false'));
+            return new ecjia_error('act_false', __('操作失败', 'orders'));
             // 		/* 操作失败 */
             // 		$links[] = array('text' => RC_Lang::lang('delivery_sn') . RC_Lang::lang('detail'), 'href' => RC_Uri::url('orders/admin_order_delivery/delivery_info','delivery_id=' . $delivery_id));
-            // 		$this->showmessage(RC_Lang::lang('act_false'), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR, array('links' => $links));
+            // 		$this->showmessage(__('操作失败', 'orders'), ecjia_admin::MSGTYPE_JSON | ecjia_admin::MSGSTAT_ERROR, array('links' => $links));
         }
 
         /* 标记订单为已确认 “已发货” */

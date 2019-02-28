@@ -71,19 +71,19 @@ class admin_orders_operate_cancel_module extends api_admin implements api_interf
         $cancel_note = $this->requestData('cancel_note', '');
 
         if (empty($order_id) || empty($cancel_note)) {
-            return new ecjia_error(101, '参数错误');
+            return new ecjia_error(101, __('参数错误', 'orders'));
         }
         /*验证订单是否属于此入驻商*/
         if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
             $ru_id_group = RC_Model::model('orders/order_info_model')->where(array('order_id' => $order_id))->get_field('store_id', true);
             if (count($ru_id_group) > 1 || $ru_id_group[0] != $_SESSION['store_id']) {
-                return new ecjia_error('no_authority', '对不起，您没权限对此订单进行操作！');
+                return new ecjia_error('no_authority', __('对不起，您没权限对此订单进行操作！', 'orders'));
             }
         }
 
         $order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));
         if (empty($order_info)) {
-            return new ecjia_error('order_no_exists', '订单信息不存在');
+            return new ecjia_error('order_no_exists', __('订单信息不存在', 'orders'));
         }
 
         RC_Loader::load_app_func('admin_order', 'orders');

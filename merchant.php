@@ -2762,7 +2762,7 @@ class merchant extends ecjia_merchant
             $sn_str      = '有订单无法被移除';
             $success_str = '删除成功的订单：';
         } else {
-            return $this->showmessage('参数错误', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('pjaxurl' => $url));
+            return $this->showmessage(__('参数错误', 'orders'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR, array('pjaxurl' => $url));
         }
 
         /* 取得备注信息 */

@@ -71,7 +71,7 @@ class admin_orders_refundConfirm_module extends api_admin implements api_interfa
 
         $order_id = $this->requestData('order_id');
         if (empty($order_id)) {
-            return new ecjia_error(101, '参数错误');
+            return new ecjia_error(101, __('参数错误', 'orders'));
         }
 
         /* 查询订单信息 */

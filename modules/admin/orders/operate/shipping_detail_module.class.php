@@ -68,14 +68,14 @@ class admin_orders_operate_shipping_detail_module extends api_admin implements a
         }
         $order_id = $this->requestData('order_id', 0);
         if ($order_id <= 0) {
-            return new ecjia_error(101, '参数错误');
+            return new ecjia_error(101, __('参数错误', 'orders'));
         }
 
         /*验证订单是否属于此入驻商*/
         if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
             $ru_id_group = RC_Model::model('orders/order_info_model')->where(array('order_id' => $order_id))->group('store_id')->get_field('store_id', true);
             if (count($ru_id_group) > 1 || $ru_id_group[0] != $_SESSION['store_id']) {
-                return new ecjia_error('no_authority', '对不起，您没权限对此订单进行操作！');
+                return new ecjia_error('no_authority', __('对不起，您没权限对此订单进行操作！', 'orders'));
             }
         }
 
@@ -96,7 +96,7 @@ class admin_orders_operate_shipping_detail_module extends api_admin implements a
         $field              = 'oi.order_id, oi.expect_shipping_time, order_sn, consignee, country, province, city, district, street, address, mobile, pay_id, shipping_id, shipping_name, oi.add_time, pay_time, og.rec_id, og.goods_id, og.product_id, og.goods_name, og.goods_price, og.goods_number, og.goods_attr, goods_thumb, goods_img, original_img';
         $order_list         = $order_dbview->join(array('order_goods', 'goods'))->field($field)->where(array('oi.order_id' => $order_id))->select();
         if (empty($order_list)) {
-            return new ecjia_error('orders_empty', '订单信息不存在！');
+            return new ecjia_error('orders_empty', __('订单信息不存在！', 'orders'));
         }
 
         /* 获取发货单信息*/

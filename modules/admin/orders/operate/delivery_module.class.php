@@ -77,20 +77,20 @@ class admin_orders_operate_delivery_module extends api_admin implements api_inte
 
         $action_note = $this->requestData('action_note', '');
         if (empty($order_id)) {
-            return new ecjia_error('invalid_parameter', '参数错误');
+            return new ecjia_error('invalid_parameter', __('参数错误', 'orders'));
         }
         /*验证订单是否属于此入驻商*/
         if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
             $ru_id_group = RC_Model::model('orders/order_info_model')->where(array('order_id' => $order_id))->group('store_id')->get_field('store_id', true);
             if (count($ru_id_group) > 1 || $ru_id_group[0] != $_SESSION['store_id']) {
-                return new ecjia_error('no_authority', '对不起，您没权限对此订单进行操作！');
+                return new ecjia_error('no_authority', __('对不起，您没权限对此订单进行操作！', 'orders'));
             }
         }
 
         $order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));
 
         if (empty($order_info)) {
-            return new ecjia_error('invalid_parameter', '参数错误');
+            return new ecjia_error('invalid_parameter', __('参数错误', 'orders'));
         }
 
         /*配送方式为o2o速递或众包配送时，自动生成运单号*/
@@ -107,7 +107,7 @@ class admin_orders_operate_delivery_module extends api_admin implements api_inte
 
         /* 订单是否已全部分单检查 */
         if ($order_info['order_status'] == OS_SPLITED) {
-            return new ecjia_error('already_splited', '订单已全部发货！');
+            return new ecjia_error('already_splited', __('订单已全部发货！', 'orders'));
         }
 
         RC_Loader::load_app_func('global', 'orders');
@@ -174,13 +174,13 @@ class admin_orders_operate_delivery_module extends api_admin implements api_inte
                 if (!isset($value['package_goods_list']) || !is_array($value['package_goods_list'])) {
                     $sended = order_delivery_num($order_id, $value['goods_id'], $value['product_id']);
                     if (($value['goods_number'] - $sended - $send_number[$value['rec_id']]) < 0) {
-                        return new ecjia_error('act_ship_num', '此单发货数量不能超出订单商品数量！');
+                        return new ecjia_error('act_ship_num', __('此单发货数量不能超出订单商品数量！', 'orders'));
                     }
                 } else {
                     /* 超值礼包 */
                     foreach ($goods_list[$key]['package_goods_list'] as $pg_key => $pg_value) {
                         if (($pg_value['order_send_number'] - $pg_value['sended'] - $send_number[$value['rec_id']][$pg_value['g_p']]) < 0) {
-                            return new ecjia_error('act_ship_num', '此单发货数量不能超出订单商品数量！');
+                            return new ecjia_error('act_ship_num', __('此单发货数量不能超出订单商品数量！', 'orders'));
                         }
                     }
                 }
@@ -189,7 +189,7 @@ class admin_orders_operate_delivery_module extends api_admin implements api_inte
 
         /* 对上一步处理结果进行判断 兼容 上一步判断为假情况的处理 */
         if (empty($send_number) || empty($goods_list)) {
-            return new ecjia_error('shipping_empty', '没有可发货的商品！');
+            return new ecjia_error('shipping_empty', __('没有可发货的商品！', 'orders'));
         }
 
         /* 检查此单发货商品库存缺货情况 */
@@ -203,7 +203,7 @@ class admin_orders_operate_delivery_module extends api_admin implements api_inte
                     if ($pg_value['goods_number'] < $goods_no_package[$pg_value['g_p']] &&
                         ((ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) ||
                             (ecjia::config('use_storage') == '0' && $pg_value['is_real'] == 0))) {
-                        return new ecjia_error('act_good_vacancy', '商品已缺货！');
+                        return new ecjia_error('act_good_vacancy', __('商品已缺货！', 'orders'));
                     }
 
                     /* 商品（超值礼包） 虚拟商品列表 package_virtual_goods*/
@@ -220,7 +220,7 @@ class admin_orders_operate_delivery_module extends api_admin implements api_inte
                 $num = RC_Model::model('goods/virtual_card_model')->where(array('goods_id' => $value['goods_id'], 'is_saled' => 0))->count();
 
                 if (($num < $goods_no_package[$value['goods_id']]) && !(ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_PLACE)) {
-                    return new ecjia_error('virtual_card_oos', '虚拟卡已缺货！');
+                    return new ecjia_error('virtual_card_oos', __('虚拟卡已缺货！', 'orders'));
                 }
 
                 /* 虚拟商品列表 virtual_card*/
@@ -241,7 +241,7 @@ class admin_orders_operate_delivery_module extends api_admin implements api_inte
                 }
 
                 if (($num < $goods_no_package[$_key]) && ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) {
-                    return new ecjia_error('act_good_vacancy', '商品已缺货！');
+                    return new ecjia_error('act_good_vacancy', __('商品已缺货！', 'orders'));
                 }
             }
         }
@@ -316,7 +316,7 @@ class admin_orders_operate_delivery_module extends api_admin implements api_inte
         $delivery_id = RC_Model::model('orders/delivery_order_model')->insert($_delivery);
         /* 记录日志 */
         if ($_SESSION['store_id'] > 0) {
-            RC_Api::api('merchant', 'admin_log', array('text' => '订单号是 ' . $order_info['order_sn'] . '【来源掌柜】', 'action' => 'produce', 'object' => 'delivery_order'));
+            RC_Api::api('merchant', 'admin_log', array('text' => sprintf(__('订单号是 %s【来源掌柜】', 'orders'), $order_info['order_sn']), 'action' => 'produce', 'object' => 'delivery_order'));
         }
         if ($delivery_id) {
             $delivery_goods = array();
@@ -367,7 +367,7 @@ class admin_orders_operate_delivery_module extends api_admin implements api_inte
                 }
             }
         } else {
-            return new ecjia_error('shipping_error', '发货失败！');
+            return new ecjia_error('shipping_error', __('发货失败！', 'orders'));
         }
         unset($filter_fileds, $delivery, $_delivery, $order_finish);
 
@@ -484,7 +484,7 @@ class admin_orders_operate_delivery_module extends api_admin implements api_inte
                     ((ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) ||
                         (ecjia::config('use_storage') == '0' && $value['is_real'] == 0))) {
 
-                    return new ecjia_error('act_good_vacancy', '[' . $value['goods_name'] . ']' . '商品已缺货');
+                    return new ecjia_error('act_good_vacancy', sprintf(__('[ %s ]' . '商品已缺货', 'orders'), $value['goods_name']));
 
                 }
 
@@ -501,11 +501,11 @@ class admin_orders_operate_delivery_module extends api_admin implements api_inte
 
         /* 发货 */
         /* 处理虚拟卡 商品（虚货） */
-        if (is_array($virtual_goods) && count($virtual_goods) > 0) {
-            foreach ($virtual_goods as $virtual_value) {
-                virtual_card_shipping($virtual_value, $order['order_sn'], $msg, 'split');
-            }
-        }
+//        if (is_array($virtual_goods) && count($virtual_goods) > 0) {
+//            foreach ($virtual_goods as $virtual_value) {
+//                virtual_card_shipping($virtual_value, $order['order_sn'], $msg, 'split');
+//            }
+//        }
 
         /* 如果使用库存，且发货时减库存，则修改库存 */
         if (ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) {
@@ -541,7 +541,7 @@ class admin_orders_operate_delivery_module extends api_admin implements api_inte
         $result = RC_Model::model('orders/delivery_order_model')->where(array('delivery_id' => $delivery_id))->update($_delivery);
 
         if (!$result) {
-            return new ecjia_error('act_false', '发货失败！');
+            return new ecjia_error('act_false', __('发货失败！', 'orders'));
         }
 
         /* 标记订单为已确认 “已发货” */
@@ -570,7 +570,7 @@ class admin_orders_operate_delivery_module extends api_admin implements api_inte
                     'express_code' => $shipping_info['shipping_code'],
                     'track_number' => $arr['invoice_no'],
                     'time'         => RC_Time::local_date(ecjia::config('time_format'), RC_Time::gmtime()),
-                    'context'      => '您的订单已配备好，等待配送员取货',
+                    'context'      => __('您的订单已配备好，等待配送员取货', 'orders'),
                 );
                 RC_DB::table('express_track_record')->insert($data);
             }
@@ -578,7 +578,7 @@ class admin_orders_operate_delivery_module extends api_admin implements api_inte
 
         // 记录管理员操作
         if ($_SESSION['store_id'] > 0) {
-            RC_Api::api('merchant', 'admin_log', array('text' => '发货，订单号是' . $order['order_sn'] . '【来源掌柜】', 'action' => 'setup', 'object' => 'order'));
+            RC_Api::api('merchant', 'admin_log', array('text' => sprintf(__('发货，订单号是 %s【来源掌柜】', 'orders'), $order['order_sn']), 'action' => 'setup', 'object' => 'order'));
         }
 
         /* 如果当前订单已经全部发货 */
@@ -591,13 +591,13 @@ class admin_orders_operate_delivery_module extends api_admin implements api_inte
                 $integral      = integral_to_give($order);
                 $integral_name = ecjia::config('integral_name');
                 if (empty($integral_name)) {
-                    $integral_name = '积分';
+                    $integral_name = __('积分', 'orders');
                 }
                 $options = array(
                     'user_id'     => $order['user_id'],
                     'rank_points' => intval($integral['rank_points']),
                     'pay_points'  => intval($integral['custom_points']),
-                    'change_desc' => $order['order_sn'] . '赠送的' . $integral_name,
+                    'change_desc' => sprintf(__('%s 赠送的' . $integral_name, 'orders'), $order['order_sn']),
                     'from_type'   => 'order_give_integral',
                     'from_value'  => $order['order_sn']
                 );

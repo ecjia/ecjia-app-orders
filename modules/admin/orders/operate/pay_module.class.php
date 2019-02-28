@@ -72,19 +72,19 @@ class admin_orders_operate_pay_module extends api_admin implements api_interface
         $action_note = $this->requestData('action_note', '');
 
         if (empty($order_id) || empty($action_note)) {
-            return new ecjia_error(101, '参数错误');
+            return new ecjia_error(101, __('参数错误', 'orders'));
         }
         /*验证订单是否属于此入驻商*/
         if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
             $ru_id_group = RC_Model::model('orders/order_info_model')->where(array('order_id' => $order_id))->group('store_id')->get_field('store_id', true);
             if (count($ru_id_group) > 1 || $ru_id_group[0] != $_SESSION['store_id']) {
-                return new ecjia_error('no_authority', '对不起，您没权限对此订单进行操作！');
+                return new ecjia_error('no_authority', __('对不起，您没权限对此订单进行操作！', 'orders'));
             }
         }
 
         $order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));
         if (empty($order_info)) {
-            return new ecjia_error('not_exitst', '订单信息不存在');
+            return new ecjia_error('not_exitst', __('订单信息不存在', 'orders'));
         }
 
         RC_Loader::load_app_func('admin_order', 'orders');
@@ -107,7 +107,7 @@ class admin_orders_operate_pay_module extends api_admin implements api_interface
 
         /* 记录日志 */
         if ($_SESSION['store_id'] > 0) {
-            RC_Api::api('merchant', 'admin_log', array('text' => '已付款，订单号是 ' . $order_info['order_sn'] . '【来源掌柜】', 'action' => 'edit', 'object' => 'order_status'));
+            RC_Api::api('merchant', 'admin_log', array('text' => sprintf(__('已付款，订单号是 %s【来源掌柜】', 'orders'), $order_info['order_sn']), 'action' => 'edit', 'object' => 'order_status'));
         }
         /* 记录log */
         order_action($order_info['order_sn'], OS_CONFIRMED, $order_info['shipping_status'], PS_PAYED, $action_note);

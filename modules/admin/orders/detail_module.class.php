@@ -74,7 +74,7 @@ class admin_orders_detail_module extends api_admin implements api_interface
 
 
         if (empty($order_id) && empty($order_sn)) {
-            return new ecjia_error(101, '参数错误');
+            return new ecjia_error(101, __('参数错误', 'orders'));
         }
         RC_Loader::load_app_func('admin_order', 'orders');
 

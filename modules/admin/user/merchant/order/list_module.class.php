@@ -30,7 +30,7 @@ class admin_user_merchant_order_list_module extends api_admin implements api_int
         }
 
         if (empty($user_id) || empty($store_id)) {
-            return new ecjia_error('invalid_parameter', '参数错误');
+            return new ecjia_error('invalid_parameter', __('参数错误', 'orders'));
         }
 
 

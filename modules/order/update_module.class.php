@@ -81,25 +81,25 @@ class order_update_module extends api_front implements api_interface
         $payfee_change           = $payment_info['pay_fee'] - $order_info['pay_fee'];
         $order_amount            = ($order_info['order_amount'] + $payfee_change) > 0 ? $order_info['order_amount'] + $payfee_change : 0;
 
-        $data     = array(
+        $data  = array(
             'pay_id'       => $payment_info['pay_id'],
             'pay_name'     => $payment_info['pay_name'],
             'pay_fee'      => $payment_info['pay_fee'],
             'order_amount' => $order_amount,
         );
-        $where    = array(
+        $where = array(
             'order_id'        => $order_id,
             'user_id'         => $user_id,
             'pay_status'      => 0,
             'shipping_status' => 0,
         );
-       
-        $db_order = RC_DB::table('order_info');
-        $result = $db_order->where('order_id', $order_id)->where('user_id', $user_id)->where('pay_status', 0)->where('shipping_status', 0)->update($data);
+
+        $db_order     = RC_DB::table('order_info');
+        $result       = $db_order->where('order_id', $order_id)->where('user_id', $user_id)->where('pay_status', 0)->where('shipping_status', 0)->update($data);
         $order_result = [
-        	'order_id' 		=> $order_id,
-        	'pay_fee'  		=> $payment_info['pay_fee'],
-        	'order_amount'	=> $order_amount
+            'order_id'     => $order_id,
+            'pay_fee'      => $payment_info['pay_fee'],
+            'order_amount' => $order_amount
         ];
         return $order_result;
     }

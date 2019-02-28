@@ -75,7 +75,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
         $action_note = $this->requestData('action_note');
 
         if (empty($order_id)) {
-            return new ecjia_error('invalid_parameter', '参数错误');
+            return new ecjia_error('invalid_parameter', __('参数错误', 'orders'));
         }
 
         /* 查询订单信息 */
@@ -326,7 +326,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
                     ((ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) ||
                         (ecjia::config('use_storage') == '0' && $value['is_real'] == 0))) {
                     RC_Logger::getLogger('error')->info('缺货处理a');
-                    return new ecjia_error('act_good_vacancy', sprintf(RC_Lang::lang('act_good_vacancy'), $value['goods_name']));
+                    return new ecjia_error('act_good_vacancy', sprintf(__('商品已缺货', 'orders'), $value['goods_name']));
                 }
 
                 /* 虚拟商品列表 virtual_card */
@@ -361,7 +361,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
                     ((ecjia::config('use_storage') == '1' && ecjia::config('stock_dec_time') == SDT_SHIP) ||
                         (ecjia::config('use_storage') == '0' && $value['is_real'] == 0))) {
                     RC_Logger::getLogger('error')->info('缺货处理b');
-                    return new ecjia_error('act_good_vacancy', sprintf(RC_Lang::lang('act_good_vacancy'), $value['goods_name']));
+                    return new ecjia_error('act_good_vacancy', sprintf(__('商品已缺货', 'orders'), $value['goods_name']));
                 }
 
                 /* 虚拟商品列表 virtual_card*/
@@ -413,7 +413,7 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
         $result                  = $db_delivery_order->where(array('delivery_id' => $delivery_id))->update($_delivery);
 
         if (!$result) {
-            return new ecjia_error('act_false', RC_Lang::lang('act_false'));
+            return new ecjia_error('act_false', __('操作失败', 'orders'));
         }
 
         /* 标记订单为已确认 “已发货” */

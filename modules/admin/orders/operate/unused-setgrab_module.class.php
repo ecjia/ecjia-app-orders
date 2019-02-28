@@ -65,7 +65,7 @@ class admin_orders_operate_setgrab_module extends api_admin implements api_inter
         $store_id = $this->requestData('store_id');
 
         if ($order_id <= 0 || empty($store_id)) {
-            return new ecjia_error(100, 'Invalid session');
+            return new ecjia_error(100, __('Invalid session', 'orders'));
         }
 
 

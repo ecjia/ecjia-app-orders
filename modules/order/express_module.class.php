@@ -67,7 +67,7 @@ class order_express_module extends api_front implements api_interface
         $order_id = $this->requestData('order_id', 0);
 
         if (empty($order_id)) {
-            return new ecjia_error(101, '参数错误');
+            return new ecjia_error(101, __('参数错误', 'orders'));
         }
 
         $order_info = order_info($order_id);

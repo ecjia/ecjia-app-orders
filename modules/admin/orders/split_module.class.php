@@ -72,7 +72,7 @@ class admin_orders_split_module extends api_admin implements api_interface
         $order_id    = $this->requestData('order_id', 0);
         $action_note = $this->requestData('note');
         if (empty($order_id)) {
-            return new ecjia_error(101, '参数错误');
+            return new ecjia_error(101, __('参数错误', 'orders'));
         }
 
         $result = RC_Api::api('orders', 'order_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'split', 'note' => array('action_note' => $action_note)));

@@ -77,20 +77,20 @@ class admin_orders_operate_shipping_module extends api_admin implements api_inte
         $expect_shipping_time = $this->requestData('expect_shipping_time', '');
 
         if (empty($order_id)) {
-            return new ecjia_error(101, '参数错误');
+            return new ecjia_error(101, __('参数错误', 'orders'));
         }
 
         /*验证订单是否属于此入驻商*/
         if (isset($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
             $ru_id_group = RC_Model::model('orders/order_info_model')->where(array('order_id' => $order_id))->group('store_id')->get_field('store_id', true);
             if (count($ru_id_group) > 1 || $ru_id_group[0] != $_SESSION['store_id']) {
-                return new ecjia_error('no_authority', '对不起，您没权限对此订单进行操作！');
+                return new ecjia_error('no_authority', __('对不起，您没权限对此订单进行操作！', 'orders'));
             }
         }
 
         $order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));
         if (empty($order_info)) {
-            return new ecjia_error(101, '参数错误');
+            return new ecjia_error(101, __('参数错误', 'orders'));
         }
         //无需物流方式
 // 		if ($shipping_id == 0) {
@@ -118,7 +118,7 @@ class admin_orders_operate_shipping_module extends api_admin implements api_inte
         if (!empty($shipping_id) > 0) {
             $shipping = ecjia_shipping::pluginData($shipping_id);
             if (empty($shipping)) {
-                return new ecjia_error('shipping_fail', '配送方式获取失败');
+                return new ecjia_error('shipping_fail', __('配送方式获取失败', 'orders'));
             }
             if (($shipping['shipping_code'] == 'ship_o2o_express' || $shipping['shipping_code'] == 'ship_ecjia_express') && !empty($expect_shipping_time)) {
                 $best_time = $expect_shipping_time;
@@ -130,7 +130,7 @@ class admin_orders_operate_shipping_module extends api_admin implements api_inte
 
         $order = array(
             'shipping_id'          => $shipping_id,
-            'shipping_name'        => $shipping_id > 0 ? addslashes($shipping['shipping_name']) : '无需物流',
+            'shipping_name'        => $shipping_id > 0 ? addslashes($shipping['shipping_name']) : __('无需物流', 'orders'),
             'expect_shipping_time' => $best_time
 // 			'shipping_fee'	=> $shipping_fee//修改配送方式，额外产生的费用不做修改
         );
@@ -149,15 +149,15 @@ class admin_orders_operate_shipping_module extends api_admin implements api_inte
         update_pay_log($order_id);
 
         /* todo 记录日志 */
-        $sn = '编辑配送方式，';
+        $sn = __('编辑配送方式，', 'orders');
 // 		$new_order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id));
 // 		if ($order_info['total_fee'] != $new_order_info['total_fee']) {
 // 			$sn .= sprintf('订单总金额由 %s 变为 %s', $order_info['total_fee'], $new_order_info['total_fee']).'，';
 // 		}
-        $sn .= '订单号是 ' . $order_info['order_sn'];
+        $sn .= sprintf(__('订单号是 %s', 'orders'), $order_info['order_sn']);
         // 记录管理员操作
         if ($_SESSION['store_id'] > 0) {
-            RC_Api::api('merchant', 'admin_log', array('text' => $sn . '【来源掌柜】', 'action' => 'edit', 'object' => 'order'));
+            RC_Api::api('merchant', 'admin_log', array('text' => sprintf(__('%s【来源掌柜】'), $sn), 'action' => 'edit', 'object' => 'order'));
         }
 
         return array();

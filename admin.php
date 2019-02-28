@@ -3200,7 +3200,7 @@ class admin extends ecjia_admin
             /* 记录log */
             order_action($order['order_sn'], $order['order_status'], $order['shipping_status'], $order['pay_status'], '[' . '售后' . '] ' . $action_note);
         } else {
-            return $this->showmessage('参数错误', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+            return $this->showmessage(__('参数错误', 'orders'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
         }
 
         /* 操作成功 */

@@ -88,11 +88,11 @@ class mh_sale_general extends ecjia_merchant
         /*权限判断 */
         $this->admin_priv('sale_general_stats');
 
-        ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here('报表统计', RC_Uri::url('stats/mh_keywords_stats/init')));
-        ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('销售概况')));
+        ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('报表统计', 'orders'), RC_Uri::url('stats/mh_keywords_stats/init')));
+        ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('销售概况', 'orders')));
 
-        $this->assign('ur_here', '销售概况');
-        $this->assign('action_link', array('text' => '销售概况报表下载', 'href' => RC_Uri::url('orders/mh_sale_general/download')));
+        $this->assign('ur_here', __('销售概况', 'orders'));
+        $this->assign('action_link', array('text' => __('销售概况报表下载', 'orders'), 'href' => RC_Uri::url('orders/mh_sale_general/download')));
 
         $this->assign('page', 'init');
         $this->assign('form_action', RC_Uri::url('orders/mh_sale_general/init'));
@@ -115,10 +115,10 @@ class mh_sale_general extends ecjia_merchant
         /*权限判断 */
         $this->admin_priv('sale_general_stats');
 
-        ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('销售概况')));
+        ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('销售概况', 'orders')));
 
-        $this->assign('ur_here', '销售概况');
-        $this->assign('action_link', array('text' => '销售概况报表下载', 'href' => RC_Uri::url('orders/mh_sale_general/download')));
+        $this->assign('ur_here', __('销售概况', 'orders'));
+        $this->assign('action_link', array('text' => __('销售概况报表下载', 'orders'), 'href' => RC_Uri::url('orders/mh_sale_general/download')));
 
         $this->assign('page', 'sales_trends');
         $this->assign('form_action', RC_Uri::url('orders/mh_sale_general/sales_trends'));
@@ -271,18 +271,18 @@ class mh_sale_general extends ecjia_merchant
             ->get();
 
         /* 文件名 */
-        $filename = '销售概况报表';
+        $filename = __('销售概况报表', 'orders');
 
         header("Content-type: application/vnd.ms-excel; charset=utf-8");
         header("Content-Disposition: attachment; filename=$filename.xls");
 
         /* 文件标题 */
-        echo mb_convert_encoding($filename . '销售统计', 'UTF-8', 'UTF-8') . "\t\n";
+        echo mb_convert_encoding(sprintf(__('%s销售统计', 'orders'), $filename), 'UTF-8', 'UTF-8') . "\t\n";
 
         /* 订单数量, 销售出商品数量, 销售金额 */
-        echo mb_convert_encoding('时间段', 'UTF-8', 'UTF-8') . "\t";
-        echo mb_convert_encoding('订单数(单位：个)', 'UTF-8', 'UTF-8') . "\t";
-        echo mb_convert_encoding('营业额(单位：元)', 'UTF-8', 'UTF-8') . "\t\n";
+        echo mb_convert_encoding(__('时间段', 'orders'), 'UTF-8', 'UTF-8') . "\t";
+        echo mb_convert_encoding(__('订单数(单位：个)', 'orders'), 'UTF-8', 'UTF-8') . "\t";
+        echo mb_convert_encoding(__('营业额(单位：元)', 'orders'), 'UTF-8', 'UTF-8') . "\t\n";
         foreach ($data_list AS $data) {
             echo mb_convert_encoding($data['period'], 'UTF-8', 'UTF-8') . "\t";
             echo mb_convert_encoding($data['order_count'], 'UTF-8', 'UTF-8') . "\t";

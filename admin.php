@@ -86,9 +86,9 @@ class admin extends ecjia_admin
 
         RC_Script::enqueue_script('orders', RC_App::apps_url('statics/js/orders.js', __FILE__));
         RC_Script::enqueue_script('order_delivery', RC_App::apps_url('statics/js/order_delivery.js', __FILE__));
-        RC_Script::localize_script('orders', 'js_lang', RC_Lang::get('orders::order.js_lang'));
-        RC_Style::enqueue_style('orders', RC_App::apps_url('statics/css/admin_orders.css', __FILE__), array());
+        RC_Script::localize_script('orders', 'js_lang', config('app-orders::jslang.admin_page'));
 
+        RC_Style::enqueue_style('orders', RC_App::apps_url('statics/css/admin_orders.css', __FILE__), array());
         RC_Style::enqueue_style('aristo', RC_Uri::admin_url('statics/lib/jquery-ui/css/Aristo/Aristo.css'), array(), false, false);
     }
 

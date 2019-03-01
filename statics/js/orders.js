@@ -130,7 +130,7 @@
 					if (start_time >= end_time) {
 						ecjia.admin.showmessage({
 							'state': 'error',
-							'message': '下单开始时间不能大于或等于结束时间'
+							'message': js_lang.time_error
 						});
 						return false;
 					}
@@ -320,7 +320,7 @@
 				},
 				messages: {
 					refund_note: {
-						required: '请填写退款说明！'
+						required: js_lang.refund_note_required
 					},
 				},
 				submitHandler: function () {

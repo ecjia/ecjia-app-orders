@@ -7,7 +7,7 @@
 			var dataset = [];
 			var ticks = [];
 			if (data == 'null') {
-				var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>" + js_lang.no_stats_data + "<\/div>";
+				var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>" + jslang.no_stats_data + "<\/div>";
 				$("#order_general").append(nodata);
 			} else {
 				$.each(JSON.parse(data), function (key, value) {
@@ -20,7 +20,7 @@
 					color: ['#6DCEEE'],
 					xAxis: {
 						type: 'category',
-						data: [js_lang.await_pay_order, js_lang.await_ship_order, js_lang.shipped_order, js_lang.returned_order, js_lang.canceled_order, js_lang.succeed_order]
+						data: [jslang.await_pay_order, jslang.await_ship_order, jslang.shipped_order, jslang.returned_order, jslang.canceled_order, jslang.succeed_order]
 					},
 					yAxis: {
 						type: 'value'
@@ -52,9 +52,9 @@
 				};
 
 				orderGeneralChart.setOption(option);
-				
-				window.addEventListener("resize", function() { 
-					orderGeneralChart.resize();  
+
+				window.addEventListener("resize", function() {
+					orderGeneralChart.resize();
 				});
 			}
 			app.chart.order_type();
@@ -66,14 +66,14 @@
 			var ticks = [];
 			var tpl = [];
 			if (data == 'null') {
-				var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>" + js_lang.no_stats_data + "<\/div>";
+				var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>" + jslang.no_stats_data + "<\/div>";
 				$("#ship_status").append(nodata);
 			} else {
 				$.each(JSON.parse(data), function (key, value) {
 					tpl.push(parseInt(value.order_num));
 					dataset.push(value.ship_name);
 				});
-				
+
 				var shipStatusChart = echarts.init(document.getElementById('ship_status'));
 
 				option = {
@@ -93,7 +93,7 @@
 						extraCssText: 'box-shadow: 0 0 3px rgba(255, 255, 255, 0.4);',
 						formatter: function (params) {
 							if (params.seriesName != "") {
-								return '订单数量' + ' ：  ' + params.value;
+								return sprintf(jslang.order_number_s, params.value);
 							}
 						},
 					},
@@ -112,9 +112,9 @@
 				};
 
 				shipStatusChart.setOption(option);
-				
-				window.addEventListener("resize", function() { 
-					shipStatusChart.resize();  
+
+				window.addEventListener("resize", function() {
+					shipStatusChart.resize();
 				});
 			}
 			app.chart.order_type();
@@ -126,14 +126,14 @@
 			var ticks = [];
 			var tpl = [];
 			if (data == 'null') {
-				var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>" + js_lang.no_stats_data + "<\/div>";
+				var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>" + jslang.no_stats_data + "<\/div>";
 				$("#pay_status").append(nodata);
 			} else {
 				$.each(JSON.parse(data), function (key, value) {
 					tpl.push(parseInt(value.order_num));
 					dataset.push(value.pay_name);
 				});
-				
+
 				var payStatusChart = echarts.init(document.getElementById('pay_status'));
 
 				option = {
@@ -153,7 +153,7 @@
 						extraCssText: 'box-shadow: 0 0 3px rgba(255, 255, 255, 0.4);',
 						formatter: function (params) {
 							if (params.seriesName != "") {
-								return '订单数量' + ' ：  ' + params.value;
+                                return sprintf(jslang.order_number_s, params.value);
 							}
 						},
 					},
@@ -172,9 +172,9 @@
 				};
 
 				payStatusChart.setOption(option);
-				
-				window.addEventListener("resize", function() { 
-					payStatusChart.resize();  
+
+				window.addEventListener("resize", function() {
+					payStatusChart.resize();
 				});
 			}
 			app.chart.order_type();
@@ -186,13 +186,13 @@
 			var ticks = [];
 			var tpl = [];
 			if (order_stats_json == 'null') {
-				var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>" + js_lang.no_stats_data + "<\/div>";
+				var nodata = "<div style='width:100%;height:100%;line-height:500px;text-align:center;overflow: hidden;'>" + jslang.no_stats_data + "<\/div>";
 				$("#order_type_chart").append(nodata);
 			} else {
 				dataset = JSON.parse(order_stats_json);
-				
+
 				var orderTypeChart = echarts.init(document.getElementById('order_type_chart'));
-				
+
 				option = {
 					backgroundColor: '#fff',
 					color: ['#91BE79', '#F0567D', '#4EB2C9', '#DF9D5E', '#3993ba'],
@@ -203,7 +203,7 @@
 					legend: {
 						selectedMode: false,
 						bottom: 25,
-						data: ['配送', '团购', '到店', '自提', '收银台']
+						data: [jslang.default, jslang.groupbuy, jslang.storebuy, jslang.storepickup, jslang.cashdesk]
 					},
 					series: [{
 						tooltip: {
@@ -246,9 +246,9 @@
 				};
 
 				orderTypeChart.setOption(option);
-				
-				window.addEventListener("resize", function() { 
-					orderTypeChart.resize();  
+
+				window.addEventListener("resize", function() {
+					orderTypeChart.resize();
 				});
 			}
 		}

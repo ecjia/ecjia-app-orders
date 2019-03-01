@@ -77,8 +77,10 @@ class admin_order_stats extends ecjia_admin
         RC_Script::enqueue_script('order_stats_chart', RC_App::apps_url('statics/js/order_stats_chart.js', __FILE__));
         RC_Style::enqueue_style('orders-css', RC_App::apps_url('statics/css/admin_orders.css', __FILE__));
 
-        RC_Script::localize_script('order_stats', 'js_lang', RC_Lang::get('orders::statistic.js_lang'));
-        RC_Script::localize_script('order_stats_chart', 'js_lang', RC_Lang::get('orders::statistic.js_lang'));
+        RC_Script::enqueue_script('js-sprintf');
+
+        RC_Script::localize_script('order_stats', 'js_lang', config('app-orders::jslang.admin_order_stats_page'));
+        RC_Script::localize_script('order_stats_chart', 'jslang', config('app-orders::jslang.admin_order_stats_chart_page'));
     }
 
     /**

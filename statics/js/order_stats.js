@@ -17,7 +17,7 @@
 				if (year == 0 || year == undefined) {
 					ecjia.admin.showmessage({
 						'state': 'error',
-						'message': '请选择年份'
+						'message': js_lang.year_required
 					});
 					return false;
 				}
@@ -76,7 +76,7 @@
 						formatter: function (params) {
 							if (params.seriesName != "") {
 								if (stats == 'valid_order') {
-									return params.name + ' ：  ' + params.value + '单';
+									return sprintf(js_lang.sheet, params.name, params.value);
 								} else {
 									return params.name + ' ：  ' + '￥' + params.value;
 								}

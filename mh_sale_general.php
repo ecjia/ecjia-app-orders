@@ -75,6 +75,9 @@ class mh_sale_general extends ecjia_merchant
         RC_Script::enqueue_script('sale_general', RC_App::apps_url('statics/js/merchant_sale_general.js', __FILE__), array('ecjia-merchant'), false, 1);
         RC_Script::enqueue_script('sale_general_chart', RC_App::apps_url('statics/js/merchant_sale_general_chart.js', __FILE__), array('ecjia-merchant'), false, 1);
 
+        RC_Script::localize_script('sale_general', 'js_lang', config('app-orders::jslang.merchant_sale_general_page'));
+        RC_Script::localize_script('sale_general_chart', 'jslang', config('app-orders::jslang.merchant_sale_general_chart_page'));
+
         RC_Style::enqueue_style('stats-css', RC_App::apps_url('statics/css/merchant_stats.css', __FILE__));
 
         ecjia_merchant_screen::get_current_screen()->set_parentage('stats', 'stats/mh_sale_general.php');
@@ -174,9 +177,8 @@ class mh_sale_general extends ecjia_merchant
         }
 
         $format = ($query_type == 'year') ? '%Y' : '%Y-%m';
-        $where  = "oi.store_id = " . $_SESSION['store_id'] . " AND (order_status = '" . OS_CONFIRMED . "' OR order_status >= '" . OS_SPLITED . "' ) AND ( pay_status = '" . PS_PAYED . "' OR pay_status = '" . PS_PAYING . "') AND (shipping_status = '" . SS_SHIPPED . "' OR shipping_status = '" . SS_RECEIVED . "' )";
-        /*  AND (shipping_time >= ' ". $start_time ."' AND shipping_time <= '" .$end_time. "'  ) */
-        $where .= " AND oi.is_delete = 0";
+        $where  = "oi.store_id = " . $_SESSION['store_id'] . " AND (order_status = '" . OS_CONFIRMED . "' OR order_status >= '" . OS_SPLITED . "' ) AND ( pay_status = '" . PS_PAYED . "' OR pay_status = '" . PS_PAYING . "') AND (shipping_status = '" . SS_SHIPPED . "' OR shipping_status = '" . SS_RECEIVED . "' ) AND (shipping_time >= ' " . $start_time . "' AND shipping_time <= '" . $end_time . "'  )";
+        $where  .= " AND oi.is_delete = 0";
 
         // $templateCount = $this->db_orderinfo_view
         // 	->field("DATE_FORMAT(FROM_UNIXTIME(shipping_time), '". $format ."') AS period, COUNT(DISTINCT order_sn) AS order_count, SUM(goods_amount + shipping_fee + insure_fee + pay_fee + pack_fee + card_fee - discount) AS order_amount")

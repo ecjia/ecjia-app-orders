@@ -78,8 +78,10 @@ class mh_order_stats extends ecjia_merchant
         RC_Style::enqueue_style('orders-css', RC_App::apps_url('statics/css/merchant_orders.css', __FILE__));
         RC_Style::enqueue_style('stats-css', RC_App::apps_url('statics/css/merchant_stats.css', __FILE__));
 
-        RC_Script::localize_script('order_stats', 'js_lang', RC_Lang::get('orders::statistic.js_lang'));
-        RC_Script::localize_script('order_stats_chart', 'js_lang', RC_Lang::get('orders::statistic.js_lang'));
+        RC_Script::enqueue_script('js-sprintf');
+
+        RC_Script::localize_script('order_stats', 'js_lang', config('app-orders::jslang.admin_order_stats_page'));
+        RC_Script::localize_script('order_stats_chart', 'jslang', config('app-orders::jslang.admin_order_stats_chart_page'));
 
         ecjia_merchant_screen::get_current_screen()->set_parentage('stats', 'orders/mh_order_stats.php');
     }

@@ -75,6 +75,7 @@ class mh_sale_list extends ecjia_merchant
 
         /*自定义js*/
         RC_Script::enqueue_script('sale_list', RC_App::apps_url('statics/js/merchant_sale_list.js', __FILE__), array('ecjia-merchant'), false, 1);
+        RC_Script::localize_script('sale_list', 'js_lang', config('app-orders::jslang.merchant_sale_list_page'));
 
         ecjia_merchant_screen::get_current_screen()->set_parentage('stats', 'stats/mh_sale_list.php');
     }

@@ -69,8 +69,9 @@ class admin_sale_general extends ecjia_admin
         RC_Style::enqueue_style('orders-css', RC_App::apps_url('statics/css/admin_orders.css', __FILE__));
         RC_Script::enqueue_script('sale_general', RC_App::apps_url('statics/js/sale_general.js', __FILE__));
         RC_Script::enqueue_script('sale_general_chart', RC_App::apps_url('statics/js/sale_general_chart.js', __FILE__));
-        RC_Script::localize_script('sale_general', 'js_lang', RC_Lang::get('orders::statistic.js_lang'));
-        RC_Script::localize_script('sale_general_chart', 'js_lang', RC_Lang::get('orders::statistic.js_lang'));
+
+        RC_Script::localize_script('sale_general', 'js_lang', config('app-orders::jslang.admin_sale_general_page'));
+        RC_Script::localize_script('sale_general_chart', 'jslang', config('app-orders::jslang.admin_sale_general_chart_page'));
     }
 
     /**

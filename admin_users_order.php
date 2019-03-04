@@ -71,7 +71,7 @@ class admin_users_order extends ecjia_admin
         RC_Style::enqueue_style('datepicker', RC_Uri::admin_url('statics/lib/datepicker/datepicker.css'));
 
         RC_Script::enqueue_script('user_order', RC_App::apps_url('statics/js/user_order.js', __FILE__));
-        RC_Script::localize_script('user_order', 'js_lang', RC_Lang::get('orders::statistic.js_lang'));
+        RC_Script::localize_script('user_order', 'js_lang', config('app-orders::jslang.admin_user_order_page'));
     }
 
     /**

@@ -77,6 +77,10 @@ class mh_validate_order extends ecjia_merchant
         //自定义js
         RC_Script::enqueue_script('merchant_validate_order', RC_App::apps_url('statics/js/merchant_validate_order.js', __FILE__));
         RC_Script::enqueue_script('order_list', RC_App::apps_url('statics/js/merchant_orders.js', __FILE__));
+
+        RC_Script::localize_script('merchant_validate_order', 'jslang', config('app-orders::jslang.merchant_validate_order_page'));
+        RC_Script::localize_script('order_list', 'js_lang', config('app-orders::jslang.merchant_page'));
+
         RC_Style::enqueue_style('orders', RC_App::apps_url('statics/css/merchant_validate_order.css', __FILE__), array());
 
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('订单管理', 'orders'), RC_Uri::url('orders/merchant/init')));

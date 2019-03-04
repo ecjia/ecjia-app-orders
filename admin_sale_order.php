@@ -71,7 +71,7 @@ class admin_sale_order extends ecjia_admin
         RC_Style::enqueue_style('datepicker', RC_Uri::admin_url('statics/lib/datepicker/datepicker.css'));
 
         RC_Script::enqueue_script('sale_order', RC_App::apps_url('statics/js/sale_order.js', __FILE__));
-        RC_Script::localize_script('sale_order', 'js_lang', RC_Lang::get('orders::statistic.js_lang'));
+        RC_Script::localize_script('sale_order', 'js_lang', config('app-orders::jslang.admin_sale_order_page'));
     }
 
     public function init()

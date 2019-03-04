@@ -117,7 +117,8 @@ class merchant extends ecjia_merchant
         RC_Style::enqueue_style('merchant_orders', RC_App::apps_url('statics/css/merchant_orders.css', __FILE__), array(), false, false);
         RC_Script::enqueue_script('order_delivery', RC_App::apps_url('statics/js/merchant_order_delivery.js', __FILE__));
 
-        RC_Script::enqueue_script('order_delivery', RC_App::apps_url('statics/js/merchant_order_delivery.js', __FILE__));
+        RC_Script::enqueue_script('js-sprintf');
+        RC_Script::localize_script('order_list', 'js_lang', config('app-orders::jslang.merchant_page'));
 
         ecjia_merchant_screen::get_current_screen()->set_parentage('order', 'order/merchant.php');
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('订单管理', 'orders'), RC_Uri::url('orders/merchant/init')));

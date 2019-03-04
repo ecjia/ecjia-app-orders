@@ -95,7 +95,7 @@ class admin_order_back extends ecjia_admin
 
         ecjia_screen::get_current_screen()->set_help_sidebar(
             '<p><strong>' . __('更多信息', 'orders') . '</strong></p>' .
-            '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:退货单列表" target="_blank">' . __('关于退货单列表帮助文档', 'orders') . '</a>') . '</p>'
+            '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:退货单列表" target="_blank">关于退货单列表帮助文档</a>', 'orders') . '</p>'
         );
 
         /* 查询 */

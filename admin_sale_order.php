@@ -88,7 +88,7 @@ class admin_sale_order extends ecjia_admin
 
         ecjia_screen::get_current_screen()->set_help_sidebar(
             '<p><strong>' . __('更多信息：', 'orders') . '</strong></p>' .
-            '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:销售排行" target="_blank">' . __('关于销售排行帮助文档', 'orders') . '</a>') . '</p>'
+            '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:销售排行" target="_blank">关于销售排行帮助文档</a>', 'orders') . '</p>'
         );
 
         /* 赋值到模板 */

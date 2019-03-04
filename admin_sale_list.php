@@ -91,7 +91,7 @@ class admin_sale_list extends ecjia_admin
 
         ecjia_screen::get_current_screen()->set_help_sidebar(
             '<p><strong>' . __('更多信息：', 'orders') . '</strong></p>' .
-            '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:销售明细" target="_blank">' . __('关于销售明细帮助文档', 'orders') . '</a>') . '</p>'
+            '<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:销售明细" target="_blank">关于销售明细帮助文档</a>', 'orders') . '</p>'
         );
         $this->assign('ur_here', __('销售明细', 'orders'));
         $this->assign('action_link', array('text' => __('下载销售明细报表', 'orders'), 'href' => RC_Uri::url('orders/admin_sale_list/download')));

@@ -40,12 +40,11 @@ class StoreOrdersClear extends StoreCleanAbstract
      */
     public function handlePrintData()
     {
+        $text = __('将店铺内所有订单（包含配送、自提、到店、收银台订单、团购、买单订单）、售后、发货单、结算全部删除', 'orders');
+
         return <<<HTML
-
-<span class="controls-info w800">将店铺内所有订单（包含配送、自提、到店、收银台订单、团购、买单订单）、售后、发货单、结算全部删除 删除数据</span>
-
+<span class="controls-info w800">{$text}</span>
 HTML;
-
     }
 
     /**

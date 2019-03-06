@@ -302,7 +302,7 @@ ecjia.merchant.order.info();
 			<div class="btn-group form-group">
         		<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">{t domain="orders"}打印{/t} <span class="caret"></span></button>
         		<ul class="dropdown-menu pull-right">
-        			<li><a class="nopjax" href='{url path="orders/merchant/info" args="order_id={$order.order_id}&print=1"}' target="__blank">{t domain="orders"}订单打印{/t}</a></li>
+        			<li><a class="nopjax" href='{url path="orders/merchant/info" args="order_id={$order.order_id}&print=1"}' target="_blank">{t domain="orders"}订单打印{/t}</a></li>
         			{if $has_payed eq 1}
         			<li><a class="toggle_view" href='{url path="orders/mh_print/init" args="order_id={$order.order_id}"}'>{t domain="orders"}小票打印{/t}</a></li>
             		{/if}
@@ -425,7 +425,7 @@ ecjia.merchant.order.info();
                             </tr>
                             <tr>
                                 <td><div align="right"><strong>{t domain="orders"}活动商品：{/t}</strong></div></td>
-                                <td>{$groupbuy_info.goods_name} <a target="__blank" href="{RC_Uri::url('groupbuy/merchant/edit')}&id={$groupbuy_info.act_id}">{t domain="orders"}[ 活动详情 ]{/t}</a></td>
+                                <td>{$groupbuy_info.goods_name} <a target="_blank" href="{RC_Uri::url('groupbuy/merchant/edit')}&id={$groupbuy_info.act_id}">{t domain="orders"}[ 活动详情 ]{/t}</a></td>
                                 <td><div align="right"><strong>{t domain="orders"}保证金：{/t}</strong></div></td>
                                 <td class="ecjiafc-FF0000">{$groupbuy_deposit_status}</td>
                             </tr>
@@ -449,7 +449,7 @@ ecjia.merchant.order.info();
 						<tbody class="first-td-no-leftbd">
 							<tr>
 								<td><div align="right"><strong>{t domain="orders"}发货单流水号：{/t}</strong></div></td>
-								<td colspan="3"><a href="{RC_Uri::url('orders/mh_delivery/delivery_info')}&delivery_id={$delivery_info.delivery_id}" target="__blank">{$delivery_info.delivery_sn}</a></td>
+								<td colspan="3"><a href="{RC_Uri::url('orders/mh_delivery/delivery_info')}&delivery_id={$delivery_info.delivery_id}" target="_blank">{$delivery_info.delivery_sn}</a></td>
 							</tr>
 						</tbody>
 					</table>

@@ -57,7 +57,7 @@ ecjia.merchant.order.info();
 			<div class="btn-group form-group">
         		<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">{t domain="orders"}打印{/t} <span class="caret"></span></button>
         		<ul class="dropdown-menu pull-right">
-        			<li><a class="nopjax" href='{url path="orders/merchant/info" args="order_id={$order.order_id}&print=1"}' target="__blank">{t domain="orders"}订单打印{/t}</a></li>
+        			<li><a class="nopjax" href='{url path="orders/merchant/info" args="order_id={$order.order_id}&print=1"}' target="_blank">{t domain="orders"}订单打印{/t}</a></li>
         			{if $has_payed eq 1}
         			<li><a class="toggle_view" href='{url path="orders/mh_print/init" args="order_id={$order.order_id}"}'>{t domain="orders"}小票打印{/t}</a></li>
             		{/if}

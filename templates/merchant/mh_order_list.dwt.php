@@ -17,7 +17,7 @@
 	</div>
 	<div class="pull-right">
 		{if $order_model eq 'default'}
-		<a href="{RC_Uri::url('orders/merchant/today_order')}" class="btn btn-primary nopjax" target="__blank">{t domain="orders"}当天订单{/t}</a>
+		<a href="{RC_Uri::url('orders/merchant/today_order')}" class="btn btn-primary nopjax" target="_blank">{t domain="orders"}当天订单{/t}</a>
 		{/if}
 		{if $order_model eq 'storepickup'}
 		<a href="{RC_Uri::url('orders/mh_validate_order/init')}" class="btn btn-primary nopjax">

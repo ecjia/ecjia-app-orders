@@ -1318,6 +1318,7 @@ function EM_order_goods($order_id)
 
 /**
  * 生成查询订单的sql
+ * @deprecated 1.29.0
  * @param   string $type 类型
  * @param   string $alias order表的别名（包括.例如 o.）
  * @return  string

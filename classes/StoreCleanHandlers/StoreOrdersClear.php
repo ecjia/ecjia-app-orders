@@ -72,6 +72,20 @@ HTML;
             return true;
         }
 
+        $order_list = RC_DB::table('order_info')->where('store_id', $this->store_id)->lists('order_id');
+
+        RC_DB::table('refund_order')->where('store_id', $this->store_id)->delete();
+
+        RC_DB::table('delivery_order')->whereIn('order_id', $order_list)->delete();
+
+        RC_DB::table('order_action')->whereIn('order_id', $order_list)->delete();
+
+        RC_DB::table('order_goods')->whereIn('order_id', $order_list)->delete();
+
+        RC_DB::table('order_status_log')->whereIn('order_id', $order_list)->delete();
+
+        RC_DB::table('pay_log')->whereIn('order_id', $order_list)->delete();
+
         $result = RC_DB::table('order_info')->where('store_id', $this->store_id)->delete();
 
         if ($result) {

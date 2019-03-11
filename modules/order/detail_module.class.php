@@ -403,10 +403,10 @@ class order_detail_module extends api_front implements api_interface
         $status        = $refund_info['status'];
         $refund_status = $refund_info['refund_status'];
         //1进行中2已退款3已取消
-        if (in_array($status, array(\Ecjia\App\Refund\Enums\RefundOrderEnum::ORDER_UNCHECK, \Ecjia\App\Refund\Enums\RefundOrderEnum::ORDER_AGREE)) && $refund_status != Ecjia\App\Refund\RefundStatus::PAY_TRANSFERED) {
+        if (in_array($status, array(\Ecjia\App\Refund\Enums\RefundOrderEnum::ORDER_UNCHECK, \Ecjia\App\Refund\Enums\RefundOrderEnum::ORDER_AGREE)) && $refund_status != \Ecjia\App\Refund\Enums\RefundPayEnum::PAY_TRANSFERED) {
             $refund_status_code = 'going';
             $label_refund_staus = __('进行中', 'orders');
-        } elseif (in_array($status, array(\Ecjia\App\Refund\Enums\RefundOrderEnum::ORDER_AGREE)) && in_array($refund_status, array(Ecjia\App\Refund\RefundStatus::PAY_TRANSFERED))) {
+        } elseif (in_array($status, array(\Ecjia\App\Refund\Enums\RefundOrderEnum::ORDER_AGREE)) && in_array($refund_status, array(\Ecjia\App\Refund\Enums\RefundPayEnum::PAY_TRANSFERED))) {
             $refund_status_code = 'refunded';
             $label_refund_staus = __('已退款', 'orders');
         } elseif (in_array($status, array(\Ecjia\App\Refund\Enums\RefundOrderEnum::ORDER_CANCELED))) {

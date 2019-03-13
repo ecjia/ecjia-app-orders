@@ -68,8 +68,8 @@ class admin_cashier_orders_summary_records_module extends api_admin implements a
             return new ecjia_error('caskdesk_error', __('非收银台请求！', 'orders'));
         }
 
-        $size = $this->requestData('pagination.count', 15);
-        $page = $this->requestData('pagination.page', 1);
+        $size = $this->requestData('pagination.count', '15');
+        $page = $this->requestData('pagination.page', '1');
 
         $start_date = $this->requestData('start_date');
         $end_date   = $this->requestData('end_date');

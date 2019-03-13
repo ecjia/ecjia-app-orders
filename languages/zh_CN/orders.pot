@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ecjia App orders 1.28.0\n"
 "Report-Msgid-Bugs-To: https://make.ecjia.com/polyglots/\n"
-"POT-Creation-Date: 2019-03-06 09:04:40+00:00\n"
+"POT-Creation-Date: 2019-03-13 05:24:27+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -157,9 +157,10 @@ msgstr ""
 
 #: admin.php:337 admin.php:1834 admin.php:1950 admin.php:2072 admin.php:2172
 #: admin.php:2179 admin.php:2487 admin_order_delivery.php:213
-#: configs/jslang.php:56 configs/jslang.php:139 functions/global.func.php:442
-#: merchant.php:487 merchant.php:2069 merchant.php:2191 merchant.php:2340
-#: merchant.php:2443 merchant.php:2794 merchant.php:4618
+#: classes/Enums/ShippingStatusEnum.php:28 configs/jslang.php:56
+#: configs/jslang.php:139 functions/global.func.php:442 merchant.php:487
+#: merchant.php:2069 merchant.php:2191 merchant.php:2340 merchant.php:2443
+#: merchant.php:2794 merchant.php:4618
 #: modules/admin/orders/detail_module.class.php:241
 #: modules/admin/orders/list_module.class.php:286
 #: modules/admin/orders/today_module.class.php:231
@@ -455,8 +456,9 @@ msgstr ""
 msgid "配货"
 msgstr ""
 
-#: admin.php:1955 admin.php:2077 admin.php:2490 merchant.php:2196
-#: merchant.php:2346 merchant.php:2797
+#: admin.php:1955 admin.php:2077 admin.php:2490
+#: classes/Enums/ShippingStatusEnum.php:30 merchant.php:2196 merchant.php:2346
+#: merchant.php:2797
 msgid "已收货"
 msgstr ""
 
@@ -466,7 +468,8 @@ msgstr ""
 msgid "取消"
 msgstr ""
 
-#: admin.php:1971 admin.php:2093 admin.php:2484 configs/jslang.php:58
+#: admin.php:1971 admin.php:2093 admin.php:2484
+#: classes/Enums/OrderStatusEnum.php:31 configs/jslang.php:58
 #: configs/jslang.php:141 merchant.php:2212 merchant.php:2362 merchant.php:2791
 #: modules/admin/orders/list_module.class.php:296
 #: modules/admin/orders/payment/history_module.class.php:164
@@ -480,7 +483,8 @@ msgid "售后"
 msgstr ""
 
 #: admin.php:1986 admin.php:2108 admin.php:2485 admin_order_delivery.php:112
-#: classes/OrderStatus.php:464 configs/jslang.php:60 configs/jslang.php:143
+#: classes/Enums/OrderStatusEnum.php:32 classes/OrderStatus.php:464
+#: configs/jslang.php:60 configs/jslang.php:143
 #: functions/admin_order.func.php:1615 functions/admin_order.func.php:1677
 #: functions/merchant_order.func.php:329 functions/merchant_order.func.php:425
 #: merchant.php:2231 merchant.php:2382 merchant.php:2792
@@ -491,7 +495,8 @@ msgstr ""
 msgid "请选择办事处！"
 msgstr ""
 
-#: admin.php:2170 admin_order_delivery.php:203 configs/jslang.php:54
+#: admin.php:2170 admin_order_delivery.php:203
+#: classes/Enums/PayStatusEnum.php:24 configs/jslang.php:54
 #: configs/jslang.php:137 functions/global.func.php:456 merchant.php:2444
 #: merchant.php:4608 modules/admin/orders/detail_module.class.php:236
 #: modules/admin/orders/list_module.class.php:281
@@ -618,7 +623,8 @@ msgstr ""
 msgid "您的订单%s，%s正在%s，%s"
 msgstr ""
 
-#: admin.php:2682 admin_order_delivery.php:198 functions/global.func.php:432
+#: admin.php:2682 admin_order_delivery.php:198
+#: classes/Enums/OrderStatusEnum.php:33 functions/global.func.php:432
 #: merchant.php:2995 merchant.php:4253 merchant.php:4603
 #: mh_validate_order.php:603 modules/admin/orders/detail_module.class.php:232
 #: modules/admin/orders/list_module.class.php:277
@@ -942,8 +948,9 @@ msgid ""
 msgstr ""
 
 #: admin_order_delivery.php:112 admin_order_delivery.php:215
-#: admin_order_delivery.php:410 functions/global.func.php:444 merchant.php:4620
-#: merchant.php:4771 mh_delivery.php:415 mh_validate_order.php:350
+#: admin_order_delivery.php:410 classes/Enums/ShippingStatusEnum.php:29
+#: functions/global.func.php:444 merchant.php:4620 merchant.php:4771
+#: mh_delivery.php:415 mh_validate_order.php:350
 #: modules/admin/orders/detail_module.class.php:243
 #: modules/admin/orders/list_module.class.php:288
 #: modules/admin/orders/today_module.class.php:233
@@ -1017,20 +1024,23 @@ msgstr ""
 msgid "<font color=\"red\">退货</font>"
 msgstr ""
 
-#: admin_order_delivery.php:199 functions/global.func.php:433 merchant.php:4604
+#: admin_order_delivery.php:199 classes/Enums/OrderStatusEnum.php:34
+#: functions/global.func.php:433 merchant.php:4604
 #: modules/admin/orders/detail_module.class.php:233
 #: modules/admin/orders/list_module.class.php:278
 msgid "部分分单"
 msgstr ""
 
-#: admin_order_delivery.php:204 functions/global.func.php:457 merchant.php:4609
+#: admin_order_delivery.php:204 classes/Enums/PayStatusEnum.php:25
+#: functions/global.func.php:457 merchant.php:4609
 #: modules/admin/orders/detail_module.class.php:237
 #: modules/admin/orders/list_module.class.php:282
 #: modules/admin/orders/today_module.class.php:227
 msgid "付款中"
 msgstr ""
 
-#: admin_order_delivery.php:205 functions/global.func.php:458 merchant.php:4610
+#: admin_order_delivery.php:205 classes/Enums/PayStatusEnum.php:26
+#: functions/global.func.php:458 merchant.php:4610
 #: modules/admin/orders/detail_module.class.php:238
 #: modules/admin/orders/list_module.class.php:283
 #: modules/admin/orders/today_module.class.php:228
@@ -1043,8 +1053,9 @@ msgstr ""
 msgid "发货中（前台状态：未发货）"
 msgstr ""
 
-#: admin_order_delivery.php:217 functions/global.func.php:446 merchant.php:4622
-#: modules/admin/orders/detail_module.class.php:245
+#: admin_order_delivery.php:217 classes/Enums/ShippingStatusEnum.php:32
+#: classes/Enums/ShippingStatusEnum.php:34 functions/global.func.php:446
+#: merchant.php:4622 modules/admin/orders/detail_module.class.php:245
 #: modules/admin/orders/list_module.class.php:290
 #: modules/admin/orders/today_module.class.php:235
 msgid "已发货(部分商品)"
@@ -1629,8 +1640,8 @@ msgstr ""
 #: apis/orders_order_info_api.class.php:153
 #: apis/orders_order_list_api.class.php:222
 #: apis/orders_separate_order_info_api.class.php:134
-#: classes/OrderStatus.php:119 classes/OrderStatus.php:379
-#: modules/admin/orders/list_module.class.php:295
+#: classes/Enums/OrderStatusEnum.php:30 classes/OrderStatus.php:119
+#: classes/OrderStatus.php:379 modules/admin/orders/list_module.class.php:295
 #: modules/admin/orders/payment/history_module.class.php:163
 #: modules/admin/orders/today_module.class.php:243
 #: modules/order/detail_module.class.php:382
@@ -1748,6 +1759,23 @@ msgstr ""
 msgid "扫码购"
 msgstr ""
 
+#: classes/Enums/OrderStatusEnum.php:28
+msgid "未确认"
+msgstr ""
+
+#: classes/Enums/OrderStatusEnum.php:29
+msgid "已确认"
+msgstr ""
+
+#: classes/Enums/ShippingStatusEnum.php:31 classes/OrderStatus.php:104
+#: classes/OrderStatus.php:365
+msgid "备货中"
+msgstr ""
+
+#: classes/Enums/ShippingStatusEnum.php:33 classes/OrderStatus.php:440
+msgid "发货中(处理分单)"
+msgstr ""
+
 #: classes/Helper.php:60
 msgid "生成"
 msgstr ""
@@ -1795,10 +1823,6 @@ msgstr ""
 msgid "系统自动拒单自动退款至余额"
 msgstr ""
 
-#: classes/OrderStatus.php:104 classes/OrderStatus.php:365
-msgid "备货中"
-msgstr ""
-
 #: classes/OrderStatus.php:116 classes/OrderStatus.php:376
 msgid "已发货（部分商品）"
 msgstr ""
@@ -1843,10 +1867,6 @@ msgstr ""
 
 #: classes/OrderStatus.php:436
 msgid "商家已发货（部分商品）"
-msgstr ""
-
-#: classes/OrderStatus.php:440
-msgid "发货中(处理分单)"
 msgstr ""
 
 #: classes/OrderStatus.php:459
@@ -1987,11 +2007,11 @@ msgid ""
 "发货单、结算全部删除"
 msgstr ""
 
-#: classes/StoreCleanHandlers/StoreOrdersClear.php:95
+#: classes/StoreCleanHandlers/StoreOrdersClear.php:109
 msgid "店铺名是%s"
 msgstr ""
 
-#: classes/StoreCleanHandlers/StoreOrdersClear.php:95
+#: classes/StoreCleanHandlers/StoreOrdersClear.php:109
 msgid "店铺ID是%s"
 msgstr ""
 

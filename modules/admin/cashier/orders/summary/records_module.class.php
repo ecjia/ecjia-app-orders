@@ -120,7 +120,7 @@ class admin_cashier_orders_summary_records_module extends api_admin implements a
         $order_list = [];
         $data = $dbview->take($size)->skip($page_row->start_id - 1)->select(RC_DB::raw($field))->orderBy(RC_DB::raw('cr.create_at'), 'desc')->groupBy(RC_DB::raw('oi.order_id'))->get();
 
-        $data       = $this->formated_admin_order_list($data, $device_code);
+        $data       = $this->formated_admin_order_list($data);
         $order_list = $data;
 
         $pager = array(

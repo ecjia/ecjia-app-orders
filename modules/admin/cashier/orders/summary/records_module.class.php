@@ -90,7 +90,8 @@ class admin_cashier_orders_summary_records_module extends api_admin implements a
 
         $order_list = [];
 
-        $dbview->where(RC_DB::raw('oi.pay_status'), PS_PAYED);
+        $dbview->where(RC_DB::raw('oi.pay_status'), PS_PAYED)
+        	->where(RC_DB::raw('oi.order_status'), '!=', OS_RETURNED); //不包含已申请退款订单;
 
         $device_type = Ecjia\App\Cashier\CashierDevice::get_device_type($device['code']);
         //收银台和收银POS区分设备，收银通不区分设备；

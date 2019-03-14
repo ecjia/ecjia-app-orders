@@ -118,7 +118,7 @@ class admin_cashier_orders_summary_records_module extends api_admin implements a
         $field        = 'oi.order_id, oi.surplus, oi.money_paid, oi.order_amount, oi.store_id, oi.integral, oi.integral_money, oi.bonus, oi.order_sn, oi.consignee, oi.mobile, oi.tel, oi.order_status, oi.pay_status, oi.shipping_status, oi.pay_id, oi.pay_name, ' . $total_fee . ', oi.integral_money, oi.bonus, oi.shipping_fee, oi.discount, oi.add_time';
 
         $order_list = [];
-        $data = $dbview->take($size)->skip($page_row->start_id - 1)->select(RC_DB::raw($field))->orderBy(RC_DB::raw('cr.create_at'), 'desc')->groupBy(RC_DB::raw('oi.order_id'))->get();
+        $data = $dbview->take($size)->skip($page_row->start_id - 1)->select(RC_DB::raw($field))->orderBy(RC_DB::raw('oi.add_time'), 'desc')->groupBy(RC_DB::raw('oi.order_id'))->get();
 
         $data       = $this->formated_admin_order_list($data);
         $order_list = $data;

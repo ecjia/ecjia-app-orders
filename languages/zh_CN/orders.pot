@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ecjia App orders 1.28.0\n"
 "Report-Msgid-Bugs-To: https://make.ecjia.com/polyglots/\n"
-"POT-Creation-Date: 2019-03-13 05:24:27+00:00\n"
+"POT-Creation-Date: 2019-03-15 01:49:07+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2538,6 +2538,7 @@ msgstr ""
 msgid "您的商品已被提货，感谢您下次光顾！"
 msgstr ""
 
+#: modules/admin/cashier/orders/summary/records_module.class.php:60
 #: modules/admin/orders/cancel_module.class.php:60
 #: modules/admin/orders/check_module.class.php:60
 #: modules/admin/orders/consignee/list_module.class.php:61
@@ -2587,6 +2588,16 @@ msgstr ""
 #: modules/order/list_module.class.php:59 modules/order/pay_module.class.php:62
 #: modules/order/update_module.class.php:60
 msgid "Invalid session"
+msgstr ""
+
+#: modules/admin/cashier/orders/summary/records_module.class.php:68
+#: modules/admin/orders/payment/history_module.class.php:70
+#: modules/admin/stats/payment_module.class.php:102
+msgid "非收银台请求！"
+msgstr ""
+
+#: modules/admin/cashier/orders/summary/records_module.class.php:80
+msgid "参数无效！"
 msgstr ""
 
 #: modules/admin/orders/cancel_module.class.php:106
@@ -2752,11 +2763,6 @@ msgstr ""
 #: modules/admin/orders/payConfirm_module.class.php:432
 #: modules/admin/shopkeeper/order/checking/confirm_module.class.php:638
 msgid "发货，订单号是%s【来源掌柜】"
-msgstr ""
-
-#: modules/admin/orders/payment/history_module.class.php:70
-#: modules/admin/stats/payment_module.class.php:102
-msgid "非收银台请求！"
 msgstr ""
 
 #: modules/admin/orders/quickpay_module.class.php:78

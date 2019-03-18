@@ -108,7 +108,12 @@ class admin_orders_detail_module extends api_admin implements api_interface
         }
 
         if (in_array($device['code'], $codes)) {
-            $order['cashier_name'] = RC_DB::table('cashier_record as cr')->leftJoin('staff_user as su', RC_DB::raw('cr.staff_id'), '=', RC_DB::raw('su.user_id'))->where(RC_DB::raw('cr.order_id'), $order['order_id'])->pluck(RC_DB::raw('su.name'));
+            $order['cashier_name'] = RC_DB::table('cashier_record as cr')
+            							->leftJoin('staff_user as su', RC_DB::raw('cr.staff_id'), '=', RC_DB::raw('su.user_id'))
+            							->where(RC_DB::raw('cr.order_id'), $order['order_id'])
+            							->where(RC_DB::raw('cr.order_type'), 'buy')
+            							->whereIn('cr.action', array('check_order', 'billing'))
+            							->pluck(RC_DB::raw('su.name'));
         }
 
         $order['label_order_source'] = '';

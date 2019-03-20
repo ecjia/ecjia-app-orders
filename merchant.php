@@ -763,11 +763,12 @@ class merchant extends ecjia_merchant
                     //todo 暂时注释
                     //include_once(ROOT_PATH . 'includes/modules/shipping/' . $shipping_code . '.php');
                 }
-                //todo 语言包升级待确认
-                if (RC_Lang::lang('shipping_print')) {
-                    echo $this->fetch_string(RC_Lang::lang(shipping_print));
+                $plugin_handle   = ecjia_shipping::channel($shipping_code);
+                $shipping_print  = $plugin_handle->loadPrintOption('shipping_print');
+                if ($shipping_print) {
+                	echo $this->fetch($shipping_print);
                 } else {
-                    echo __('很抱歉，目前您还没有设置打印快递单模板，不能进行打印。', 'orders');
+                	echo __('很抱歉，目前您还没有设置打印快递单模板，不能进行打印。', 'orders');
                 }
             }
         } else {

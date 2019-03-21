@@ -866,6 +866,129 @@ class merchant extends ecjia_merchant
             }
         }
     }
+   
+    //快递单模板打印
+    public function shipping_print() {
+    	$order_id = intval($_GET['order_id']);
+    	$order = RC_Api::api('orders', 'merchant_order_info', array('order_id' => $order_id));
+    	 
+    	/* 打印快递单 */
+    	$this->assign('print_time', RC_Time::local_date(ecjia::config('time_format')));
+    	//发货地址所在地
+    	$region_array   = array();
+    	$region_id      = ecjia::config('shop_country', ecjia::CONFIG_CHECK) ? ecjia::config('shop_country') . ',' : '';
+    	$region_id      .= ecjia::config('shop_province', ecjia::CONFIG_CHECK) ? ecjia::config('shop_province') . ',' : '';
+    	$region_id      .= ecjia::config('shop_city', ecjia::CONFIG_CHECK) ? ecjia::config('shop_city') . ',' : '';
+    	$region_id      = substr($region_id, 0, -1);
+    	$region_id_list = explode(',', $region_id);
+    	 
+    	$region = ecjia_region::getRegions($region_id_list);
+    	if (!empty($region)) {
+    		foreach ($region as $region_data) {
+    			$region_array[$region_data['region_id']] = $region_data['region_name'];
+    		}
+    	}
+    	 
+    	$this->assign('shop_name', ecjia::config('shop_name'));
+    	$this->assign('order_id', $order_id);
+    	$this->assign('province', $region_array[ecjia::config('shop_province')]);
+    	$this->assign('city', $region_array[ecjia::config('shop_city')]);
+    	$this->assign('shop_address', ecjia::config('shop_address'));
+    	$this->assign('service_phone', ecjia::config('service_phone'));
+    	$this->assign('order', $order);
+    	 
+    	$shipping = ecjia_shipping::getPluginDataById($order['shipping_id']);
+    	 
+    	//打印单模式
+    	if ($shipping['print_model'] == 2) {
+    		/* 可视化 快递单*/
+    		/* 判断模板图片位置 */
+    		if (!empty($shipping['print_bg']) && trim($shipping['print_bg']) != '') {
+    			$uploads_dir_info = RC_Upload::upload_dir();
+    			if (mb_strstr($shipping['print_bg'], 'data/receipt')) {
+    				$shipping['print_bg'] = $uploads_dir_info[baseurl] . '/' . $shipping['print_bg'];
+    			} else {
+    				$shipping['print_bg'] = $shipping['print_bg'];
+    			}
+    		} else {
+    			/* 使用插件默认快递单图片 */
+    			$plugin_handle        = ecjia_shipping::channel($shipping['shipping_code']);
+    			$shipping['print_bg'] = $plugin_handle->printBcakgroundImage();
+    		}
+    		/* 取快递单背景宽高 */
+    		if (!empty($shipping['print_bg'])) {
+    			$_size = @getimagesize($shipping['print_bg']);
+    			if ($_size != false) {
+    				$shipping['print_bg_size'] = array('width' => $_size[0], 'height' => $_size[1]);
+    			}
+    		}
+    		 
+    		if (empty($shipping['print_bg_size'])) {
+    			$shipping['print_bg_size'] = array('width' => '1024', 'height' => '600');
+    		}
+    		 
+    		/* 标签信息 */
+    		$lable_box                        = array();
+    		$lable_box['t_shop_country']      = $region_array[ecjia::config('shop_country')]; //网店-国家
+    		$lable_box['t_shop_city']         = $region_array[ecjia::config('shop_city')]; //网店-城市
+    		$lable_box['t_shop_province']     = $region_array[ecjia::config('shop_province')]; //网店-省份
+    		$lable_box['t_shop_name']         = ecjia::config('shop_name'); //网店-名称
+    		$lable_box['t_shop_district']     = ''; //网店-区/县
+    		$lable_box['t_shop_tel']          = ecjia::config('service_phone'); //网店-联系电话
+    		$lable_box['t_shop_address']      = ecjia::config('shop_address'); //网店-地址
+    		$lable_box['t_customer_country']  = $region_array[$order['country']]; //收件人-国家
+    		$lable_box['t_customer_province'] = $region_array[$order['province']]; //收件人-省份
+    		$lable_box['t_customer_city']     = $region_array[$order['city']]; //收件人-城市
+    		$lable_box['t_customer_district'] = $region_array[$order['district']]; //收件人-区/县
+    		$lable_box['t_customer_tel']      = $order['tel']; //收件人-电话
+    		$lable_box['t_customer_mobel']    = $order['mobile']; //收件人-手机
+    		$lable_box['t_customer_post']     = $order['zipcode']; //收件人-邮编
+    		$lable_box['t_customer_address']  = $order['address']; //收件人-详细地址
+    		$lable_box['t_customer_name']     = $order['consignee']; //收件人-姓名
+    		$gmtime_utc_temp                  = RC_Time::gmtime(); //获取 UTC 时间戳
+    		$lable_box['t_year']              = date('Y', $gmtime_utc_temp); //年-当日日期
+    		$lable_box['t_months']            = date('m', $gmtime_utc_temp); //月-当日日期
+    		$lable_box['t_day']               = date('d', $gmtime_utc_temp); //日-当日日期
+    		$lable_box['t_order_no']          = $order['order_sn']; //订单号-订单
+    		$lable_box['t_order_postscript']  = $order['postscript']; //备注-订单
+    		$lable_box['t_order_best_time']   = $order['best_time']; //送货时间-订单
+    		$lable_box['t_pigeon']            = '√'; //√-对号
+    		$lable_box['t_custom_content']    = ''; //自定义内容
+    		 
+    		//标签替换
+    		$temp_config_lable = explode('||,||', $shipping['config_lable']);
+    		if (!is_array($temp_config_lable)) {
+    			$temp_config_lable[] = $shipping['config_lable'];
+    		}
+    		foreach ($temp_config_lable as $temp_key => $temp_lable) {
+    			$temp_info = explode(',', $temp_lable);
+    			if (is_array($temp_info)) {
+    				$temp_info[1] = $lable_box[$temp_info[0]];
+    			}
+    			$temp_config_lable[$temp_key] = implode(',', $temp_info);
+    		}
+    		$shipping['config_lable'] = implode('||,||', $temp_config_lable);
+    		$this->assign('shipping', $shipping);
+    		 
+    		$this->display('print.dwt');
+    		 
+    	} elseif (!empty($shipping['shipping_print'])) {
+    		//自定义模板设置
+    		echo $this->fetch_string(stripslashes($shipping['shipping_print']));
+    	} else {
+    		//未进行自定义设置,打印为系统默认模板
+    		$shipping_code = RC_DB::table('shipping')->where('shipping_id', $order['shipping_id'])->pluck('shipping_code');
+    		$plugin_handle   = ecjia_shipping::channel($shipping_code);
+    		$shipping_print_template  = $plugin_handle->loadPrintOption('shipping_print');
+    		 
+    		if ($shipping_print_template) {//存在模板文件
+    			return $this->display($shipping_print_template);
+    		} else {
+    			echo __('很抱歉，目前您还没有设置打印快递单模板，不能进行打印。', 'orders');
+    		}
+    	}
+    	 
+    }
 
     /**
      * 根据订单号与订单id查询

@@ -681,6 +681,7 @@ class merchant extends ecjia_merchant
             $this->assign('order', $order);
 
             $shipping = ecjia_shipping::getPluginDataById($order['shipping_id']);
+            
             //打印单模式
             if ($shipping['print_model'] == 2) {
                 /* 可视化 快递单*/
@@ -751,22 +752,20 @@ class merchant extends ecjia_merchant
                 }
                 $shipping['config_lable'] = implode('||,||', $temp_config_lable);
                 $this->assign('shipping', $shipping);
-
+                
                 $this->display('print.dwt');
+                
             } elseif (!empty($shipping['shipping_print'])) {
-                /* 代码 */
-                echo $this->fetch_string($shipping['shipping_print']);
+            	//自定义模板设置
+                echo $this->fetch_string(stripslashes($shipping['shipping_print']));
             } else {
-                //$shipping_code = $this->db_shipping->where(array('shipping_id' => $order['shipping_id']))->get_field('shipping_code');
+            	//未进行自定义设置,打印为系统默认模板
                 $shipping_code = RC_DB::table('shipping')->where('shipping_id', $order['shipping_id'])->pluck('shipping_code');
-                if ($shipping_code) {
-                    //todo 暂时注释
-                    //include_once(ROOT_PATH . 'includes/modules/shipping/' . $shipping_code . '.php');
-                }
                 $plugin_handle   = ecjia_shipping::channel($shipping_code);
-                $shipping_print  = $plugin_handle->loadPrintOption('shipping_print');
-                if ($shipping_print) {
-                	echo $this->fetch($shipping_print);
+                $shipping_print_template  = $plugin_handle->loadPrintOption('shipping_print');
+                
+                if ($shipping_print_template) {//存在模板文件
+                	return $this->display($shipping_print_template);
                 } else {
                 	echo __('很抱歉，目前您还没有设置打印快递单模板，不能进行打印。', 'orders');
                 }

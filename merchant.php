@@ -896,12 +896,14 @@ class merchant extends ecjia_merchant
     	$this->assign('shop_address', ecjia::config('shop_address'));
     	$this->assign('service_phone', ecjia::config('service_phone'));
     	$this->assign('order', $order);
-    	 
+    	
+    	$store_info = RC_DB::table('store_franchisee')->where('store_id', $order['store_id'])->first();
+    	$gmtime_utc_temp = RC_Time::gmtime(); 
+    	
     	$shipping = ecjia_shipping::getPluginDataById($order['shipping_id']);
     	 
-    	//打印单模式
+    	//打印单模式-可视化 快递单
     	if ($shipping['print_model'] == 2) {
-    		/* 可视化 快递单*/
     		/* 判断模板图片位置 */
     		if (!empty($shipping['print_bg']) && trim($shipping['print_bg']) != '') {
     			$uploads_dir_info = RC_Upload::upload_dir();
@@ -926,76 +928,94 @@ class merchant extends ecjia_merchant
     		if (empty($shipping['print_bg_size'])) {
     			$shipping['print_bg_size'] = array('width' => '1024', 'height' => '600');
     		}
-    		 
+    		     		
+    		//获取店铺信息
             $templatebox = new \Ecjia\App\Shipping\ShippingTemplateBox();
-            $templatebox->setTemplateData('shop_country', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('shop_city', $region_array[ecjia::config('shop_country')]);//网店-城市
-            $templatebox->setTemplateData('shop_province', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('shop_name', ecjia::config('shop_name'));//网店-国家
-            $templatebox->setTemplateData('shop_district', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('shop_tel', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('shop_address', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('customer_country', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('customer_province', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('customer_city', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('customer_district', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('customer_tel', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('customer_mobel', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('customer_post', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('customer_address', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('customer_name', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('year', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('months', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('day', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('order_no', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('order_postscript', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('order_best_time', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('pigeon', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('custom_content', $region_array[ecjia::config('shop_country')]);//网店-国家
+            $templatebox->setTemplateData('shop_name', $store_info['merchants_name']);//网店-名称
+            $templatebox->setTemplateData('shop_tel', $store_info['contact_mobile']);//网店-联系电话
+            $templatebox->setTemplateData('shop_country', ecjia_region::getRegionName(ecjia::config('shop_country')));//网店-国家
+            $templatebox->setTemplateData('shop_province', ecjia_region::getRegionName($store_info['province']));//网店-省份
+            $templatebox->setTemplateData('shop_city', ecjia_region::getRegionName($store_info['city']));//网店-城市
+            $templatebox->setTemplateData('shop_district', ecjia_region::getRegionName($store_info['district']));//网店-区/县
+            $templatebox->setTemplateData('shop_street', ecjia_region::getRegionName($store_info['street']));//网店-地址
+            $templatebox->setTemplateData('shop_address', $store_info['address']);//网店-地址
+            
+            //收件人信息
+            $templatebox->setTemplateData('customer_name', $order['consignee']);//收件人-姓名
+            $templatebox->setTemplateData('customer_tel', $order['tel']);//收件人-电话
+            $templatebox->setTemplateData('customer_mobel', $order['mobile']);//收件人-手机
+            $templatebox->setTemplateData('customer_post', $order['zipcode']);//收件人-邮编
+            $templatebox->setTemplateData('customer_country',ecjia_region::getRegionName($order['country']));//收件人-国家
+            $templatebox->setTemplateData('customer_province', ecjia_region::getRegionName($order['province']));//收件人-省份
+            $templatebox->setTemplateData('customer_city', ecjia_region::getRegionName($order['city']));//收件人-城市
+            $templatebox->setTemplateData('customer_district', ecjia_region::getRegionName($order['district']));//收件人-区/县
+            $templatebox->setTemplateData('customer_street', ecjia_region::getRegionName($order['street']));//收件人-街道
+            $templatebox->setTemplateData('customer_address', $order['address']);//收件人-详细地址
+
+            //订单信息
+            $templatebox->setTemplateData('order_no', $order['order_sn']);//订单号
+            $templatebox->setTemplateData('order_postscript', $order['postscript']);//订单-备注
+            $templatebox->setTemplateData('order_best_time', $order['best_time']);//订单-最佳送货时间
+            $templatebox->setTemplateData('year', date('Y', $gmtime_utc_temp));//年-当日日期
+            $templatebox->setTemplateData('months', date('m', $gmtime_utc_temp));//月-当日日期
+            $templatebox->setTemplateData('day', date('d', $gmtime_utc_temp));//日-当日日期
+
+            $templatebox->setTemplateData('pigeon', '√');//√-对号
+            $templatebox->setTemplateData('custom_content', '');//自定义内容
 
     		//标签替换
             $shipping['config_lable'] = $templatebox->transformPrintData($shipping['config_lable']);
-
     		$this->assign('shipping', $shipping);
     		 
     		$this->display('print.dwt');
     		 
     	} else {
-
             $templatebox = new \Ecjia\App\Shipping\ShippingTemplate();
-            $templatebox->setTemplateData('shop_country', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('shop_city', $region_array[ecjia::config('shop_country')]);//网店-城市
-            $templatebox->setTemplateData('shop_province', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('shop_name', ecjia::config('shop_name'));//网店-国家
-            $templatebox->setTemplateData('shop_district', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('shop_tel', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('shop_address', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('customer_country', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('customer_province', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('customer_city', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('customer_district', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('customer_tel', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('customer_mobel', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('customer_post', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('customer_address', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('customer_name', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('year', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('months', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('day', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('order_no', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('order_postscript', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('order_best_time', $region_array[ecjia::config('shop_country')]);//网店-国家
-            $templatebox->setTemplateData('custom_content', $region_array[ecjia::config('shop_country')]);//网店-国家
+            
+    		//获取店铺信息
+            $templatebox = new \Ecjia\App\Shipping\ShippingTemplateBox();
+            $templatebox->setTemplateData('shop_name', $store_info['merchants_name']);//网店-名称
+            $templatebox->setTemplateData('shop_tel', $store_info['contact_mobile']);//网店-联系电话
+            $templatebox->setTemplateData('shop_country', ecjia_region::getRegionName(ecjia::config('shop_country')));//网店-国家
+            $templatebox->setTemplateData('shop_province', ecjia_region::getRegionName($store_info['province']));//网店-省份
+            $templatebox->setTemplateData('shop_city', ecjia_region::getRegionName($store_info['city']));//网店-城市
+            $templatebox->setTemplateData('shop_district', ecjia_region::getRegionName($store_info['district']));//网店-区/县
+            $templatebox->setTemplateData('shop_street', ecjia_region::getRegionName($store_info['street']));//网店-地址
+            $templatebox->setTemplateData('shop_address', $store_info['address']);//网店-地址
+            
+            //收件人信息
+            $templatebox->setTemplateData('customer_name', $order['consignee']);//收件人-姓名
+            $templatebox->setTemplateData('customer_tel', $order['tel']);//收件人-电话
+            $templatebox->setTemplateData('customer_mobel', $order['mobile']);//收件人-手机
+            $templatebox->setTemplateData('customer_post', $order['zipcode']);//收件人-邮编
+            $templatebox->setTemplateData('customer_country',ecjia_region::getRegionName($order['country']));//收件人-国家
+            $templatebox->setTemplateData('customer_province', ecjia_region::getRegionName($order['province']));//收件人-省份
+            $templatebox->setTemplateData('customer_city', ecjia_region::getRegionName($order['city']));//收件人-城市
+            $templatebox->setTemplateData('customer_district', ecjia_region::getRegionName($order['district']));//收件人-区/县
+            $templatebox->setTemplateData('customer_street', ecjia_region::getRegionName($order['street']));//收件人-街道
+            $templatebox->setTemplateData('customer_address', $order['address']);//收件人-详细地址
 
+            //订单信息
+            $templatebox->setTemplateData('order_no', $order['order_sn']);//订单号
+            $templatebox->setTemplateData('order_postscript', $order['postscript']);//订单-备注
+            $templatebox->setTemplateData('order_best_time', $order['best_time']);//订单-最佳送货时间
+           
+            $templatebox->setTemplateData('year', date('Y', $gmtime_utc_temp));//年-当日日期
+            $templatebox->setTemplateData('months', date('m', $gmtime_utc_temp));//月-当日日期
+            $templatebox->setTemplateData('day', date('d', $gmtime_utc_temp));//日-当日日期
+            
+            //自定义内容
+            $templatebox->setTemplateData('custom_content', '');
+            
+            //获取已经成功设置过的数据
             $templatebox->getTemplateDataWithCallback(function($item, $key) {
                 $this->assign($key, $item);
             });
 
-            if (!empty($shipping['shipping_print'])) {
-                //自定义模板设置
+            if (!empty($shipping['shipping_print'])) { //自定义模板设置
                 echo $this->fetch_string(stripslashes($shipping['shipping_print']));
-            } else {
-                //未进行自定义设置,打印为系统默认模板
+            } else { 
+            	//未进行自定义设置,打印为系统默认模板
                 $shipping_code = RC_DB::table('shipping')->where('shipping_id', $order['shipping_id'])->pluck('shipping_code');
                 $plugin_handle   = ecjia_shipping::channel($shipping_code);
                 $shipping_print_template  = $plugin_handle->loadPrintOption('shipping_print');
@@ -1005,8 +1025,8 @@ class merchant extends ecjia_merchant
                 } else {
                     return $this->showmessage(__('很抱歉，目前您还没有设置打印快递单模板，不能进行打印。', 'orders'), ecjia::MSGSTAT_ERROR | ecjia::MSGTYPE_HTML);
                 }
+                
             }
-
         }
 
     }

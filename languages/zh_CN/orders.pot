@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ecjia App orders 1.28.0\n"
 "Report-Msgid-Bugs-To: https://make.ecjia.com/polyglots/\n"
-"POT-Creation-Date: 2019-03-20 07:33:52+00:00\n"
+"POT-Creation-Date: 2019-03-22 03:53:33+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <ecjia@ecjia.com>\n"
 
-#: admin.php:105 admin.php:260 admin.php:692 admin.php:735
+#: admin.php:105 admin.php:260 admin.php:693 admin.php:736
 #: admin_guest_stats.php:82 admin_order_back.php:92 admin_order_delivery.php:90
 #: admin_order_delivery.php:140 admin_order_stats.php:96
 #: admin_order_stats.php:130 admin_order_stats.php:190
@@ -26,7 +26,7 @@ msgstr ""
 msgid "欢迎访问ECJia智能后台订单列表页面，系统中所有的订单都会显示在此列表中。"
 msgstr ""
 
-#: admin.php:110 admin.php:265 admin.php:697 admin.php:740
+#: admin.php:110 admin.php:265 admin.php:698 admin.php:741
 #: admin_order_back.php:97 admin_order_delivery.php:95
 #: admin_order_delivery.php:145 mh_reminder.php:89
 msgid "更多信息"
@@ -44,18 +44,18 @@ msgstr ""
 msgid "配送订单"
 msgstr ""
 
-#: admin.php:131 admin.php:718 merchant.php:172 merchant.php:261
-#: merchant.php:899 merchant.php:921
+#: admin.php:131 admin.php:719 merchant.php:172 merchant.php:261
+#: merchant.php:1063 merchant.php:1085
 msgid "订单查询"
 msgstr ""
 
-#: admin.php:170 admin.php:623 admin_order_stats.php:545 configs/jslang.php:99
+#: admin.php:170 admin.php:624 admin_order_stats.php:545 configs/jslang.php:99
 #: configs/jslang.php:185 merchant.php:220 merchant.php:792
 #: mh_order_stats.php:491
 msgid "到店"
 msgstr ""
 
-#: admin.php:171 admin.php:624 admin_order_stats.php:546
+#: admin.php:171 admin.php:625 admin_order_stats.php:546
 #: classes/CustomizeOrderList.php:63 classes/CustomizeOrderList.php:177
 #: classes/CustomizeOrderList.php:266 configs/jslang.php:100
 #: configs/jslang.php:186 merchant.php:221 merchant.php:793
@@ -63,26 +63,26 @@ msgstr ""
 msgid "自提"
 msgstr ""
 
-#: admin.php:172 admin.php:625 admin_order_stats.php:547
+#: admin.php:172 admin.php:626 admin_order_stats.php:547
 #: classes/CustomizeOrderList.php:174 classes/CustomizeOrderList.php:263
 #: configs/jslang.php:101 configs/jslang.php:187 merchant.php:222
 #: merchant.php:794 mh_order_stats.php:493
 msgid "收银台"
 msgstr ""
 
-#: admin.php:173 admin.php:626 merchant.php:223 merchant.php:795
+#: admin.php:173 admin.php:627 merchant.php:223 merchant.php:795
 msgid "邀请码"
 msgstr ""
 
-#: admin.php:174 admin.php:627 merchant.php:224 merchant.php:796
+#: admin.php:174 admin.php:628 merchant.php:224 merchant.php:796
 msgid "手机端"
 msgstr ""
 
-#: admin.php:175 admin.php:628 merchant.php:225 merchant.php:797
+#: admin.php:175 admin.php:629 merchant.php:225 merchant.php:797
 msgid "H5"
 msgstr ""
 
-#: admin.php:176 admin.php:629 merchant.php:226 merchant.php:798
+#: admin.php:176 admin.php:630 merchant.php:226 merchant.php:798
 msgid "小程序"
 msgstr ""
 
@@ -90,18 +90,18 @@ msgstr ""
 msgid "Andriod端"
 msgstr ""
 
-#: admin.php:178 admin.php:631 merchant.php:228 merchant.php:800
+#: admin.php:178 admin.php:632 merchant.php:228 merchant.php:800
 msgid "iPhone端"
 msgstr ""
 
-#: admin.php:205 admin.php:1810 admin.php:3366 admin.php:3376 admin.php:3398
-#: admin.php:3408 merchant.php:3708
+#: admin.php:205 admin.php:1811 admin.php:3367 admin.php:3377 admin.php:3399
+#: admin.php:3409 merchant.php:3872
 #: modules/order/affirmReceived_module.class.php:101
 msgid "该订单不存在"
 msgstr ""
 
-#: admin.php:205 merchant.php:1017 merchant.php:1021 merchant.php:5109
-#: merchant.php:5113
+#: admin.php:205 merchant.php:1181 merchant.php:1185 merchant.php:5273
+#: merchant.php:5277
 msgid "返回订单列表"
 msgstr ""
 
@@ -125,22 +125,22 @@ msgstr ""
 msgid "配送订单信息"
 msgstr ""
 
-#: admin.php:248 admin.php:719 admin.php:757 admin.php:2121 merchant.php:280
-#: merchant.php:775 merchant.php:777 merchant.php:922 merchant.php:966
-#: merchant.php:2396 mh_validate_order.php:105
+#: admin.php:248 admin.php:720 admin.php:758 admin.php:2122 merchant.php:280
+#: merchant.php:775 merchant.php:777 merchant.php:1086 merchant.php:1130
+#: merchant.php:2560 mh_validate_order.php:105
 msgid "订单列表"
 msgstr ""
 
-#: admin.php:257 admin.php:2681 admin.php:2745 admin.php:2753 admin.php:2764
-#: admin.php:2780 admin.php:2799 admin.php:2822 admin.php:2959
+#: admin.php:257 admin.php:2682 admin.php:2746 admin.php:2754 admin.php:2765
+#: admin.php:2781 admin.php:2800 admin.php:2823 admin.php:2960
 #: admin_order_delivery.php:330
 #: apis/orders_order_delivery_ship_api.class.php:112
 #: apis/orders_order_delivery_ship_api.class.php:139 merchant.php:406
-#: merchant.php:1011 merchant.php:2994 merchant.php:3059 merchant.php:3068
-#: merchant.php:3079 merchant.php:3095 merchant.php:3114 merchant.php:3137
-#: merchant.php:3277 merchant.php:4252 merchant.php:4313 merchant.php:4322
-#: merchant.php:4333 merchant.php:4356 merchant.php:4496 merchant.php:4690
-#: merchant.php:4716 merchant.php:5103 mh_delivery.php:332 mh_delivery.php:358
+#: merchant.php:1175 merchant.php:3158 merchant.php:3223 merchant.php:3232
+#: merchant.php:3243 merchant.php:3259 merchant.php:3278 merchant.php:3301
+#: merchant.php:3441 merchant.php:4416 merchant.php:4477 merchant.php:4486
+#: merchant.php:4497 merchant.php:4520 merchant.php:4660 merchant.php:4854
+#: merchant.php:4880 merchant.php:5267 mh_delivery.php:332 mh_delivery.php:358
 #: mh_validate_order.php:705
 msgid "订单信息"
 msgstr ""
@@ -155,12 +155,12 @@ msgid ""
 "E7.9C.8B.E8.AF.A6.E6.83.85\" target=\"_blank\">关于订单详情帮助文档</a>"
 msgstr ""
 
-#: admin.php:337 admin.php:1834 admin.php:1950 admin.php:2072 admin.php:2172
-#: admin.php:2179 admin.php:2487 admin_order_delivery.php:213
+#: admin.php:337 admin.php:1835 admin.php:1951 admin.php:2073 admin.php:2173
+#: admin.php:2180 admin.php:2488 admin_order_delivery.php:213
 #: classes/Enums/ShippingStatusEnum.php:28 configs/jslang.php:56
 #: configs/jslang.php:139 functions/global.func.php:442 merchant.php:487
-#: merchant.php:2069 merchant.php:2191 merchant.php:2340 merchant.php:2443
-#: merchant.php:2794 merchant.php:4618
+#: merchant.php:2233 merchant.php:2355 merchant.php:2504 merchant.php:2607
+#: merchant.php:2958 merchant.php:4782
 #: modules/admin/orders/detail_module.class.php:246
 #: modules/admin/orders/list_module.class.php:286
 #: modules/admin/orders/today_module.class.php:231
@@ -189,57 +189,57 @@ msgstr ""
 msgid "已提货"
 msgstr ""
 
-#: admin.php:604 merchant.php:770
+#: admin.php:605 merchant.php:770 merchant.php:1026
 msgid "很抱歉，目前您还没有设置打印快递单模板，不能进行打印。"
 msgstr ""
 
-#: admin.php:630 merchant.php:799
+#: admin.php:631 merchant.php:799
 msgid "安卓端"
 msgstr ""
 
-#: admin.php:675
+#: admin.php:676
 msgid "订单不存在请重新搜索"
 msgstr ""
 
-#: admin.php:693
+#: admin.php:694
 msgid ""
 "欢迎访问ECJia智能后台订单查询页面，在此页面输入订单有关信息可以对该订单进行查"
 "询操作。"
 msgstr ""
 
-#: admin.php:698
+#: admin.php:699
 msgid ""
 "<a href=\"https://ecjia.com/wiki/帮助:ECJia智能后台:订单查询\" target="
 "\"_blank\">关于订单查询帮助文档</a>"
 msgstr ""
 
-#: admin.php:732 admin.php:756 merchant.php:935 merchant.php:965
+#: admin.php:733 admin.php:757 merchant.php:1099 merchant.php:1129
 msgid "合并订单"
 msgstr ""
 
-#: admin.php:736
+#: admin.php:737
 msgid "欢迎访问ECJia智能后台合并订单页面，在此页面可以对订单进行合并。"
 msgstr ""
 
-#: admin.php:741
+#: admin.php:742
 msgid ""
 "<a href=\"https://ecjia.com/wiki/帮助:ECJia智能后台:合并订单\" target="
 "\"_blank\">关于合并订单帮助文档</a>"
 msgstr ""
 
-#: admin.php:778 admin.php:1740 admin.php:2122 admin.php:2253 admin.php:2565
-#: admin.php:3004 admin.php:3207 admin_order_delivery.php:520
-#: admin_order_delivery.php:650 merchant.php:994 merchant.php:1987
-#: merchant.php:2397 merchant.php:3324 merchant.php:3529 merchant.php:4018
-#: merchant.php:4156 merchant.php:5073 mh_delivery.php:713 mh_delivery.php:841
+#: admin.php:779 admin.php:1741 admin.php:2123 admin.php:2254 admin.php:2566
+#: admin.php:3005 admin.php:3208 admin_order_delivery.php:520
+#: admin_order_delivery.php:650 merchant.php:1158 merchant.php:2151
+#: merchant.php:2561 merchant.php:3488 merchant.php:3693 merchant.php:4182
+#: merchant.php:4320 merchant.php:5237 mh_delivery.php:713 mh_delivery.php:841
 msgid "操作成功"
 msgstr ""
 
-#: admin.php:780 admin.php:2960 admin_order_delivery.php:419
+#: admin.php:781 admin.php:2961 admin_order_delivery.php:419
 #: admin_order_delivery.php:564
 #: apis/orders_order_delivery_ship_api.class.php:199
-#: classes/order_ship.class.php:175 merchant.php:996 merchant.php:3278
-#: merchant.php:4497 merchant.php:4779 mh_delivery.php:423 mh_delivery.php:755
+#: classes/order_ship.class.php:175 merchant.php:1160 merchant.php:3442
+#: merchant.php:4661 merchant.php:4943 mh_delivery.php:423 mh_delivery.php:755
 #: mh_validate_order.php:358 mh_validate_order.php:892
 #: modules/admin/orders/check_module.class.php:310
 #: modules/admin/orders/payConfirm_module.class.php:415
@@ -248,147 +248,147 @@ msgstr ""
 msgid "操作失败"
 msgstr ""
 
-#: admin.php:792 merchant.php:1012 merchant.php:5104
+#: admin.php:793 merchant.php:1176 merchant.php:5268
 msgid "编辑订单"
 msgstr ""
 
-#: admin.php:816
+#: admin.php:817
 msgid "订单已发货！无法修改订单了（配送方式和发货单号除外）"
 msgstr ""
 
-#: admin.php:831 merchant.php:1058
+#: admin.php:832 merchant.php:1222
 msgid "编辑订单商品信息"
 msgstr ""
 
-#: admin.php:850 merchant.php:1078
+#: admin.php:851 merchant.php:1242
 msgid "编辑订单收货人信息"
 msgstr ""
 
-#: admin.php:894 merchant.php:1123 merchant.php:5128
+#: admin.php:895 merchant.php:1287 merchant.php:5292
 msgid "编辑订单配送方式"
 msgstr ""
 
-#: admin.php:919 merchant.php:1147
+#: admin.php:920 merchant.php:1311
 msgid "编辑订单支付方式"
 msgstr ""
 
-#: admin.php:947 merchant.php:1175
+#: admin.php:948 merchant.php:1339
 msgid "编辑订单其他信息"
 msgstr ""
 
-#: admin.php:953 merchant.php:1181
+#: admin.php:954 merchant.php:1345
 msgid "编辑订单费用信息"
 msgstr ""
 
-#: admin.php:976 merchant.php:1204
+#: admin.php:977 merchant.php:1368
 msgid "编辑订单发货单号"
 msgstr ""
 
-#: admin.php:1038 merchant.php:1267
+#: admin.php:1039 merchant.php:1431
 msgid "管理员添加"
 msgstr ""
 
-#: admin.php:1045
+#: admin.php:1046
 msgid "订单生成失败，请重新尝试"
 msgstr ""
 
-#: admin.php:1084 admin.php:1182 admin.php:1188 merchant.php:1310
-#: merchant.php:1407 merchant.php:1413
+#: admin.php:1085 admin.php:1183 admin.php:1189 merchant.php:1474
+#: merchant.php:1571 merchant.php:1577
 msgid "库存不足，请重新选择！"
 msgstr ""
 
-#: admin.php:1097
+#: admin.php:1098
 msgid "编辑商品，"
 msgstr ""
 
-#: admin.php:1100 admin.php:1263 admin.php:1397 admin.php:1435 admin.php:1605
-#: merchant.php:1326 merchant.php:1486 merchant.php:1604 merchant.php:1690
-#: merchant.php:1854 merchant.php:5236 merchant.php:5323
+#: admin.php:1101 admin.php:1264 admin.php:1398 admin.php:1436 admin.php:1606
+#: merchant.php:1490 merchant.php:1650 merchant.php:1768 merchant.php:1854
+#: merchant.php:2018 merchant.php:5400 merchant.php:5487
 #: modules/admin/orders/operate/money_module.class.php:124
 msgid "订单总金额由 %s 变为 %s"
 msgstr ""
 
-#: admin.php:1102
+#: admin.php:1103
 msgid "订单号是%s"
 msgstr ""
 
-#: admin.php:1134
+#: admin.php:1135
 msgid "您还没有选择商品，请搜索后加入订单哦！"
 msgstr ""
 
-#: admin.php:1198 merchant.php:1424
+#: admin.php:1199 merchant.php:1588
 msgid "该商品或货品已存在该订单中，请编辑商品数量"
 msgstr ""
 
-#: admin.php:1260
+#: admin.php:1261
 msgid "添加商品，"
 msgstr ""
 
-#: admin.php:1265 admin.php:3292 merchant.php:3612
+#: admin.php:1266 admin.php:3293 merchant.php:3776
 #: modules/admin/orders/operate/consignee_module.class.php:123
 #: modules/admin/orders/operate/money_module.class.php:126
 #: modules/admin/orders/operate/shipping_module.class.php:157
 msgid "订单号是 %s"
 msgstr ""
 
-#: admin.php:1269
+#: admin.php:1270
 msgid "商品成功加入订单"
 msgstr ""
 
-#: admin.php:1321
+#: admin.php:1322
 msgid "编辑收货人，订单号是 %s"
 msgstr ""
 
-#: admin.php:1358 merchant.php:1563
+#: admin.php:1359 merchant.php:1727
 msgid "选择配送方式"
 msgstr ""
 
-#: admin.php:1359 merchant.php:1564
+#: admin.php:1360 merchant.php:1728
 msgid ""
 "由于您修改了收货人所在地区，导致原来的配送方式不再可用，请重新选择配送方式"
 msgstr ""
 
-#: admin.php:1394 modules/admin/orders/operate/shipping_module.class.php:152
+#: admin.php:1395 modules/admin/orders/operate/shipping_module.class.php:152
 msgid "编辑配送方式，"
 msgstr ""
 
-#: admin.php:1399
+#: admin.php:1400
 msgid "编辑配送方式，%s"
 msgstr ""
 
-#: admin.php:1431
+#: admin.php:1432
 msgid "编辑支付方式，"
 msgstr ""
 
-#: admin.php:1560 admin.php:1566 merchant.php:1808 merchant.php:1814
+#: admin.php:1561 admin.php:1567 merchant.php:1972 merchant.php:1978
 msgid "用户积分不足"
 msgstr ""
 
-#: admin.php:1575 merchant.php:1823
+#: admin.php:1576 merchant.php:1987
 msgid "用户余额不足"
 msgstr ""
 
-#: admin.php:1602 modules/admin/orders/operate/money_module.class.php:121
+#: admin.php:1603 modules/admin/orders/operate/money_module.class.php:121
 msgid "编辑费用信息，"
 msgstr ""
 
-#: admin.php:1617 merchant.php:1865
+#: admin.php:1618 merchant.php:2029
 msgid "编辑订单 %s ，改变使用预付款支付的金额"
 msgstr ""
 
-#: admin.php:1627 merchant.php:1875
+#: admin.php:1628 merchant.php:2039
 msgid "编辑订单 %s ，改变使用积分支付的数量"
 msgstr ""
 
-#: admin.php:1681
+#: admin.php:1682
 msgid "该订单不存在商品"
 msgstr ""
 
-#: admin.php:1750
+#: admin.php:1751
 msgid "取消添加新订单"
 msgstr ""
 
-#: admin.php:1789 apis/orders_buy_order_paid_api.class.php:67
+#: admin.php:1790 apis/orders_buy_order_paid_api.class.php:67
 #: apis/orders_merchant_order_info_api.class.php:66
 #: apis/orders_order_delivery_ship_api.class.php:65
 #: apis/orders_order_info_api.class.php:64
@@ -402,7 +402,7 @@ msgstr ""
 #: apis/orders_separate_order_paid_api.class.php:69
 #: apis/orders_separate_user_account_paid_api.class.php:69
 #: apis/orders_user_account_paid_api.class.php:69
-#: functions/admin_order.func.php:1149 merchant.php:2026
+#: functions/admin_order.func.php:1149 merchant.php:2190
 #: modules/admin/orders/delivery_module.class.php:66
 #: modules/admin/orders/express_module.class.php:70
 #: modules/admin/orders/pay_module.class.php:69
@@ -418,222 +418,222 @@ msgstr ""
 msgid "参数无效"
 msgstr ""
 
-#: admin.php:1799 admin.php:1900 merchant.php:2035 merchant.php:2136
+#: admin.php:1800 admin.php:1901 merchant.php:2199 merchant.php:2300
 msgid "订单操作：生成发货单"
 msgstr ""
 
-#: admin.php:1863 admin.php:1878 classes/order_ship.class.php:107
-#: classes/order_ship.class.php:132 merchant.php:2098 merchant.php:2113
-#: merchant.php:4199 modules/admin/orders/check_module.class.php:216
+#: admin.php:1864 admin.php:1879 classes/order_ship.class.php:107
+#: classes/order_ship.class.php:132 merchant.php:2262 merchant.php:2277
+#: merchant.php:4363 modules/admin/orders/check_module.class.php:216
 #: modules/admin/orders/check_module.class.php:254
 #: modules/admin/orders/payConfirm_module.class.php:328
 #: modules/admin/orders/payConfirm_module.class.php:363
 msgid "商品已缺货"
 msgstr ""
 
-#: admin.php:1867 admin.php:1881 merchant.php:2102 merchant.php:2116
-#: merchant.php:4201
+#: admin.php:1868 admin.php:1882 merchant.php:2266 merchant.php:2280
+#: merchant.php:4365
 msgid "货已发完"
 msgstr ""
 
-#: admin.php:1925 admin.php:2031 admin.php:2479 configs/jslang.php:52
-#: configs/jslang.php:135 merchant.php:2166 merchant.php:2303 merchant.php:2786
+#: admin.php:1926 admin.php:2032 admin.php:2480 configs/jslang.php:52
+#: configs/jslang.php:135 merchant.php:2330 merchant.php:2467 merchant.php:2950
 msgid "确认"
 msgstr ""
 
-#: admin.php:1930 admin.php:2038 admin.php:2480 configs/jslang.php:53
-#: configs/jslang.php:136 merchant.php:2171 merchant.php:2310 merchant.php:2787
+#: admin.php:1931 admin.php:2039 admin.php:2481 configs/jslang.php:53
+#: configs/jslang.php:136 merchant.php:2335 merchant.php:2474 merchant.php:2951
 msgid "付款"
 msgstr ""
 
-#: admin.php:1940 admin.php:2052 admin.php:2486 merchant.php:2181
-#: merchant.php:2323 merchant.php:2793
+#: admin.php:1941 admin.php:2053 admin.php:2487 merchant.php:2345
+#: merchant.php:2487 merchant.php:2957
 msgid "设为未付款"
 msgstr ""
 
-#: admin.php:1945 admin.php:2060 admin.php:2481 configs/jslang.php:55
-#: configs/jslang.php:138 merchant.php:2186 merchant.php:2328 merchant.php:2788
+#: admin.php:1946 admin.php:2061 admin.php:2482 configs/jslang.php:55
+#: configs/jslang.php:138 merchant.php:2350 merchant.php:2492 merchant.php:2952
 msgid "配货"
 msgstr ""
 
-#: admin.php:1955 admin.php:2077 admin.php:2490
-#: classes/Enums/ShippingStatusEnum.php:30 merchant.php:2196 merchant.php:2346
-#: merchant.php:2797
+#: admin.php:1956 admin.php:2078 admin.php:2491
+#: classes/Enums/ShippingStatusEnum.php:30 merchant.php:2360 merchant.php:2510
+#: merchant.php:2961
 msgid "已收货"
 msgstr ""
 
-#: admin.php:1960 admin.php:2082 admin.php:2483 classes/OrderStatus.php:463
-#: configs/jslang.php:62 configs/jslang.php:145 merchant.php:2201
-#: merchant.php:2351 merchant.php:2790
+#: admin.php:1961 admin.php:2083 admin.php:2484 classes/OrderStatus.php:463
+#: configs/jslang.php:62 configs/jslang.php:145 merchant.php:2365
+#: merchant.php:2515 merchant.php:2954
 msgid "取消"
 msgstr ""
 
-#: admin.php:1971 admin.php:2093 admin.php:2484
+#: admin.php:1972 admin.php:2094 admin.php:2485
 #: classes/Enums/OrderStatusEnum.php:31 configs/jslang.php:58
-#: configs/jslang.php:141 merchant.php:2212 merchant.php:2362 merchant.php:2791
+#: configs/jslang.php:141 merchant.php:2376 merchant.php:2526 merchant.php:2955
 #: modules/admin/orders/list_module.class.php:296
 #: modules/admin/orders/payment/history_module.class.php:164
 #: modules/admin/orders/today_module.class.php:244
 msgid "无效"
 msgstr ""
 
-#: admin.php:1976 admin.php:2098 admin.php:2492 configs/jslang.php:59
-#: configs/jslang.php:142 merchant.php:2217 merchant.php:2367 merchant.php:2799
+#: admin.php:1977 admin.php:2099 admin.php:2493 configs/jslang.php:59
+#: configs/jslang.php:142 merchant.php:2381 merchant.php:2531 merchant.php:2963
 msgid "售后"
 msgstr ""
 
-#: admin.php:1986 admin.php:2108 admin.php:2485 admin_order_delivery.php:112
+#: admin.php:1987 admin.php:2109 admin.php:2486 admin_order_delivery.php:112
 #: classes/Enums/OrderStatusEnum.php:32 classes/OrderStatus.php:464
 #: configs/jslang.php:60 configs/jslang.php:143
 #: functions/admin_order.func.php:1615 functions/admin_order.func.php:1677
 #: functions/merchant_order.func.php:329 functions/merchant_order.func.php:425
-#: merchant.php:2231 merchant.php:2382 merchant.php:2792
+#: merchant.php:2395 merchant.php:2546 merchant.php:2956
 msgid "退货"
 msgstr ""
 
-#: admin.php:2116 merchant.php:2389
+#: admin.php:2117 merchant.php:2553
 msgid "请选择办事处！"
 msgstr ""
 
-#: admin.php:2170 admin_order_delivery.php:203
+#: admin.php:2171 admin_order_delivery.php:203
 #: classes/Enums/PayStatusEnum.php:24 configs/jslang.php:54
-#: configs/jslang.php:137 functions/global.func.php:456 merchant.php:2444
-#: merchant.php:4608 modules/admin/orders/detail_module.class.php:241
+#: configs/jslang.php:137 functions/global.func.php:456 merchant.php:2608
+#: merchant.php:4772 modules/admin/orders/detail_module.class.php:241
 #: modules/admin/orders/list_module.class.php:281
 #: modules/admin/orders/today_module.class.php:226
 msgid "未付款"
 msgstr ""
 
-#: admin.php:2231 admin.php:2240 admin.php:2571 admin.php:3009 admin.php:3060
-#: admin.php:3166 admin_order_delivery.php:297 admin_order_delivery.php:542
-#: merchant.php:2512 merchant.php:2521 merchant.php:3329 merchant.php:3381
-#: merchant.php:3487 mh_delivery.php:291 mh_delivery.php:734
+#: admin.php:2232 admin.php:2241 admin.php:2572 admin.php:3010 admin.php:3061
+#: admin.php:3167 admin_order_delivery.php:297 admin_order_delivery.php:542
+#: merchant.php:2676 merchant.php:2685 merchant.php:3493 merchant.php:3545
+#: merchant.php:3651 mh_delivery.php:291 mh_delivery.php:734
 msgid "请填写备注信息！"
 msgstr ""
 
-#: admin.php:2323 merchant.php:2624
+#: admin.php:2324 merchant.php:2788
 msgid "有订单无法设置为确认状态"
 msgstr ""
 
-#: admin.php:2324 merchant.php:2625
+#: admin.php:2325 merchant.php:2789
 msgid "确认成功的订单："
 msgstr ""
 
-#: admin.php:2373 merchant.php:2677
+#: admin.php:2374 merchant.php:2841
 msgid "有订单无法设置为无效"
 msgstr ""
 
-#: admin.php:2374 merchant.php:2678
+#: admin.php:2375 merchant.php:2842
 msgid "无效成功的订单："
 msgstr ""
 
-#: admin.php:2390 merchant.php:2694
+#: admin.php:2391 merchant.php:2858
 msgid "查看详情"
 msgstr ""
 
-#: admin.php:2391 admin.php:2430 merchant.php:2695 merchant.php:2736
+#: admin.php:2392 admin.php:2431 merchant.php:2859 merchant.php:2900
 msgid "有订单无法取消"
 msgstr ""
 
-#: admin.php:2418 admin.php:2562 admin.php:3158 admin.php:3193
+#: admin.php:2419 admin.php:2563 admin.php:3159 admin.php:3194
 #: admin_order_delivery.php:494
 #: apis/orders_order_delivery_ship_api.class.php:255 mh_validate_order.php:418
 msgid "发送邮件失败"
 msgstr ""
 
-#: admin.php:2431 merchant.php:2737
+#: admin.php:2432 merchant.php:2901
 msgid "取消成功的订单："
 msgstr ""
 
-#: admin.php:2457 merchant.php:2763
+#: admin.php:2458 merchant.php:2927
 msgid "有订单无法被移除"
 msgstr ""
 
-#: admin.php:2458 merchant.php:2764
+#: admin.php:2459 merchant.php:2928
 msgid "删除成功的订单："
 msgstr ""
 
-#: admin.php:2475
+#: admin.php:2476
 msgid "订单号："
 msgstr ""
 
-#: admin.php:2482 merchant.php:2789
+#: admin.php:2483 merchant.php:2953
 msgid "发货"
 msgstr ""
 
-#: admin.php:2488 merchant.php:2795
+#: admin.php:2489 merchant.php:2959
 msgid "确认付款"
 msgstr ""
 
-#: admin.php:2489 merchant.php:2796
+#: admin.php:2490 merchant.php:2960
 msgid "取消发货"
 msgstr ""
 
-#: admin.php:2491 merchant.php:2798
+#: admin.php:2492 merchant.php:2962
 msgid "指派给"
 msgstr ""
 
-#: admin.php:2493 merchant.php:2221 merchant.php:2372 merchant.php:2800
+#: admin.php:2494 merchant.php:2385 merchant.php:2536 merchant.php:2964
 msgid "退货确认"
 msgstr ""
 
-#: admin.php:2494 merchant.php:2801
+#: admin.php:2495 merchant.php:2965
 msgid "删除"
 msgstr ""
 
-#: admin.php:2495 merchant.php:2802
+#: admin.php:2496 merchant.php:2966
 msgid "您可进行的操作"
 msgstr ""
 
-#: admin.php:2496 merchant.php:2803
+#: admin.php:2497 merchant.php:2967
 msgid "生成发货单"
 msgstr ""
 
-#: admin.php:2497 merchant.php:2804
+#: admin.php:2498 merchant.php:2968
 msgid "去发货"
 msgstr ""
 
-#: admin.php:2504 merchant.php:2811
+#: admin.php:2505 merchant.php:2975
 msgid "您可进行的操作："
 msgstr ""
 
-#: admin.php:2530 admin.php:3277 apis/orders_order_operate_api.class.php:76
-#: merchant.php:2840 merchant.php:3600 merchant.php:3784 merchant.php:3973
+#: admin.php:2531 admin.php:3278 apis/orders_order_operate_api.class.php:76
+#: merchant.php:3004 merchant.php:3764 merchant.php:3948 merchant.php:4137
 msgid "无法对订单执行该操作"
 msgstr ""
 
-#: admin.php:2540
+#: admin.php:2541
 msgid "已接单，订单号是 %s"
 msgstr ""
 
-#: admin.php:2603 admin.php:3093 merchant.php:3416
+#: admin.php:2604 admin.php:3094 merchant.php:3580
 msgid "请填写操作备注！"
 msgstr ""
 
-#: admin.php:2630
+#: admin.php:2631
 msgid "设为未付款，订单号是 %s"
 msgstr ""
 
-#: admin.php:2643
+#: admin.php:2644
 msgid "配货中，订单号是 %s"
 msgstr ""
 
-#: admin.php:2682 merchant.php:2997 merchant.php:4255 mh_validate_order.php:603
+#: admin.php:2683 merchant.php:3161 merchant.php:4419 mh_validate_order.php:603
 #: modules/admin/shopkeeper/order/checking/confirm_module.class.php:171
 msgid "您的订单%s，%s正在%s，%s"
 msgstr ""
 
-#: admin.php:2682 admin_order_delivery.php:198
+#: admin.php:2683 admin_order_delivery.php:198
 #: classes/Enums/OrderStatusEnum.php:33 functions/global.func.php:432
-#: merchant.php:2995 merchant.php:4253 merchant.php:4603
+#: merchant.php:3159 merchant.php:4417 merchant.php:4767
 #: mh_validate_order.php:603 modules/admin/orders/detail_module.class.php:237
 #: modules/admin/orders/list_module.class.php:277
 #: modules/admin/shopkeeper/order/checking/confirm_module.class.php:171
 msgid "已分单"
 msgstr ""
 
-#: admin.php:2682 admin_order_delivery.php:218 functions/global.func.php:447
-#: merchant.php:2996 merchant.php:3220 merchant.php:4254 merchant.php:4623
+#: admin.php:2683 admin_order_delivery.php:218 functions/global.func.php:447
+#: merchant.php:3160 merchant.php:3384 merchant.php:4418 merchant.php:4787
 #: mh_validate_order.php:603 modules/admin/orders/detail_module.class.php:251
 #: modules/admin/orders/list_module.class.php:291
 #: modules/admin/orders/today_module.class.php:236
@@ -641,24 +641,24 @@ msgstr ""
 msgid "发货中"
 msgstr ""
 
-#: admin.php:2746 admin.php:2754 merchant.php:3060 merchant.php:3069
-#: merchant.php:4314 merchant.php:4323 mh_validate_order.php:670
+#: admin.php:2747 admin.php:2755 merchant.php:3224 merchant.php:3233
+#: merchant.php:4478 merchant.php:4487 mh_validate_order.php:670
 #: mh_validate_order.php:679
 #: modules/admin/shopkeeper/order/checking/confirm_module.class.php:238
 #: modules/admin/shopkeeper/order/checking/confirm_module.class.php:244
 msgid "此单发货数量不能超出订单商品数量"
 msgstr ""
 
-#: admin.php:2765 merchant.php:3080 merchant.php:4334 mh_validate_order.php:690
+#: admin.php:2766 merchant.php:3244 merchant.php:4498 mh_validate_order.php:690
 #: modules/admin/shopkeeper/order/checking/confirm_module.class.php:254
 msgid "发货数量或商品不能为空"
 msgstr ""
 
-#: admin.php:2781 admin.php:2823 admin_order_delivery.php:331
+#: admin.php:2782 admin.php:2824 admin_order_delivery.php:331
 #: admin_order_delivery.php:357
 #: apis/orders_order_delivery_ship_api.class.php:113
-#: apis/orders_order_delivery_ship_api.class.php:140 merchant.php:3096
-#: merchant.php:3138 merchant.php:4357 merchant.php:4691 merchant.php:4717
+#: apis/orders_order_delivery_ship_api.class.php:140 merchant.php:3260
+#: merchant.php:3302 merchant.php:4521 merchant.php:4855 merchant.php:4881
 #: mh_delivery.php:333 mh_delivery.php:359 mh_validate_order.php:255
 #: mh_validate_order.php:292 mh_validate_order.php:706
 #: mh_validate_order.php:750
@@ -669,12 +669,12 @@ msgstr ""
 msgid "商品 %s 已缺货"
 msgstr ""
 
-#: admin.php:2800 merchant.php:3115 mh_validate_order.php:726
+#: admin.php:2801 merchant.php:3279 mh_validate_order.php:726
 msgid "虚拟卡已缺货"
 msgstr ""
 
-#: admin.php:2899 admin_order_delivery.php:214 functions/global.func.php:443
-#: merchant.php:4437 merchant.php:4619 mh_validate_order.php:833
+#: admin.php:2900 admin_order_delivery.php:214 functions/global.func.php:443
+#: merchant.php:4601 merchant.php:4783 mh_validate_order.php:833
 #: modules/admin/orders/detail_module.class.php:247
 #: modules/admin/orders/list_module.class.php:287
 #: modules/admin/orders/today_module.class.php:232
@@ -683,45 +683,45 @@ msgstr ""
 msgid "配货中"
 msgstr ""
 
-#: admin.php:2901 classes/OrderStatusLog.class.php:144
-#: classes/OrderStatusLog.php:123 merchant.php:3222 merchant.php:4441
+#: admin.php:2902 classes/OrderStatusLog.class.php:144
+#: classes/OrderStatusLog.php:123 merchant.php:3386 merchant.php:4605
 #: mh_validate_order.php:835
 #: modules/admin/shopkeeper/order/checking/confirm_module.class.php:362
 msgid "订单号为 %s 的商品正在备货中，请您耐心等待"
 msgstr ""
 
-#: admin.php:3033 admin_order_delivery.php:640 merchant.php:3355
+#: admin.php:3034 admin_order_delivery.php:640 merchant.php:3519
 #: mh_delivery.php:825
 msgid "由于退货或未发货操作，退回订单 %s 赠送的积分"
 msgstr ""
 
-#: admin.php:3075 admin_order_delivery.php:216 configs/jslang.php:57
-#: configs/jslang.php:140 functions/global.func.php:445 merchant.php:3396
-#: merchant.php:4621 modules/admin/orders/detail_module.class.php:249
+#: admin.php:3076 admin_order_delivery.php:216 configs/jslang.php:57
+#: configs/jslang.php:140 functions/global.func.php:445 merchant.php:3560
+#: merchant.php:4785 modules/admin/orders/detail_module.class.php:249
 #: modules/admin/orders/list_module.class.php:289
 #: modules/admin/orders/today_module.class.php:234
 msgid "收货确认"
 msgstr ""
 
-#: admin.php:3077 merchant.php:3398
+#: admin.php:3078 merchant.php:3562
 msgid "商品已送达，请签收，感谢您下次光顾！"
 msgstr ""
 
-#: admin.php:3129 apis/orders_order_auto_refuse_api.class.php:85
+#: admin.php:3130 apis/orders_order_auto_refuse_api.class.php:85
 #: classes/OrderStatus.php:416 classes/OrderStatusLog.class.php:209
-#: classes/OrderStatusLog.php:160 merchant.php:3452 merchant.php:4011
+#: classes/OrderStatusLog.php:160 merchant.php:3616 merchant.php:4175
 #: modules/order/cancel_module.class.php:178
 #: modules/order/detail_module.class.php:330
 msgid "订单已取消"
 msgstr ""
 
-#: admin.php:3131 classes/OrderStatusLog.class.php:211
-#: classes/OrderStatusLog.php:161 merchant.php:3454
+#: admin.php:3132 classes/OrderStatusLog.class.php:211
+#: classes/OrderStatusLog.php:161 merchant.php:3618
 #: modules/order/cancel_module.class.php:180
 msgid "您的订单已取消成功！"
 msgstr ""
 
-#: admin.php:3202 merchant.php:2766
+#: admin.php:3203 merchant.php:2930
 #: modules/admin/orders/cancel_module.class.php:75
 #: modules/admin/orders/check_module.class.php:77
 #: modules/admin/orders/consignee/list_module.class.php:74
@@ -752,57 +752,57 @@ msgstr ""
 msgid "参数错误"
 msgstr ""
 
-#: admin.php:3206 merchant.php:3528
+#: admin.php:3207 merchant.php:3692
 msgid "返回订单详情！"
 msgstr ""
 
-#: admin.php:3293 merchant.php:3614
+#: admin.php:3294 merchant.php:3778
 msgid "订单删除成功"
 msgstr ""
 
-#: admin.php:3316
+#: admin.php:3317
 msgid "%s [会员邮箱：%s]"
 msgstr ""
 
-#: admin.php:3381 admin.php:3413
+#: admin.php:3382 admin.php:3414
 msgid "更新失败"
 msgstr ""
 
-#: admin.php:3430 merchant.php:3740
+#: admin.php:3431 merchant.php:3904
 msgid "非特殊等级"
 msgstr ""
 
-#: admin.php:3438 merchant.php:3748
+#: admin.php:3439 merchant.php:3912
 msgid "暂无手机号"
 msgstr ""
 
-#: admin.php:3439 merchant.php:3749
+#: admin.php:3440 merchant.php:3913
 #: modules/admin/shopkeeper/order/checking/record_module.class.php:101
 msgid "未验证"
 msgstr ""
 
-#: admin.php:3439 merchant.php:3749
+#: admin.php:3440 merchant.php:3913
 #: modules/admin/shopkeeper/order/checking/record_module.class.php:98
 msgid "已验证"
 msgstr ""
 
-#: admin.php:3445 merchant.php:3755
+#: admin.php:3446 merchant.php:3919
 msgid "未找到相关会员信息"
 msgstr ""
 
-#: admin.php:3549 merchant.php:5421 merchant.php:5442
+#: admin.php:3550 merchant.php:5585 merchant.php:5606
 msgid "（需退款：%s）"
 msgstr ""
 
-#: admin.php:3554 merchant.php:5426
+#: admin.php:3555 merchant.php:5590
 msgid "（等待团购活动结束）"
 msgstr ""
 
-#: admin.php:3570
+#: admin.php:3571
 msgid "（需退款：%s)"
 msgstr ""
 
-#: admin.php:3576 merchant.php:5448
+#: admin.php:3577 merchant.php:5612
 msgid "（需支付尾款：%s）"
 msgstr ""
 
@@ -930,7 +930,7 @@ msgstr ""
 #: admin_order_delivery.php:103 admin_order_delivery.php:256
 #: admin_order_delivery.php:519 admin_order_delivery.php:649
 #: apis/orders_admin_menu_api.class.php:69
-#: apis/orders_merchant_menu_api.class.php:72 merchant.php:5070
+#: apis/orders_merchant_menu_api.class.php:72 merchant.php:5234
 #: mh_delivery.php:93 mh_delivery.php:105 mh_delivery.php:110
 #: mh_delivery.php:250 mh_delivery.php:710
 msgid "发货单列表"
@@ -949,7 +949,7 @@ msgstr ""
 
 #: admin_order_delivery.php:112 admin_order_delivery.php:215
 #: admin_order_delivery.php:410 classes/Enums/ShippingStatusEnum.php:29
-#: functions/global.func.php:444 merchant.php:4620 merchant.php:4771
+#: functions/global.func.php:444 merchant.php:4784 merchant.php:4935
 #: mh_delivery.php:415 mh_validate_order.php:350
 #: modules/admin/orders/detail_module.class.php:248
 #: modules/admin/orders/list_module.class.php:288
@@ -994,45 +994,45 @@ msgid ""
 "BB.86.E4.BF.A1.E6.81.AF\" target=\"_blank\">关于发货单详情帮助文档</a>"
 msgstr ""
 
-#: admin_order_delivery.php:193 functions/global.func.php:427 merchant.php:4598
+#: admin_order_delivery.php:193 functions/global.func.php:427 merchant.php:4762
 #: modules/admin/orders/detail_module.class.php:232
 #: modules/admin/orders/list_module.class.php:272
 msgid "未接单"
 msgstr ""
 
-#: admin_order_delivery.php:194 functions/global.func.php:428 merchant.php:4599
+#: admin_order_delivery.php:194 functions/global.func.php:428 merchant.php:4763
 #: modules/admin/orders/detail_module.class.php:233
 #: modules/admin/orders/list_module.class.php:273
 msgid "已接单"
 msgstr ""
 
-#: admin_order_delivery.php:195 functions/global.func.php:429 merchant.php:4600
+#: admin_order_delivery.php:195 functions/global.func.php:429 merchant.php:4764
 #: modules/admin/orders/detail_module.class.php:234
 #: modules/admin/orders/list_module.class.php:274
 msgid "<font color=\"red\">取消</font>"
 msgstr ""
 
-#: admin_order_delivery.php:196 functions/global.func.php:430 merchant.php:4601
+#: admin_order_delivery.php:196 functions/global.func.php:430 merchant.php:4765
 #: modules/admin/orders/detail_module.class.php:235
 #: modules/admin/orders/list_module.class.php:275
 msgid "<font color=\"red\">无效</font>"
 msgstr ""
 
-#: admin_order_delivery.php:197 functions/global.func.php:431 merchant.php:4602
+#: admin_order_delivery.php:197 functions/global.func.php:431 merchant.php:4766
 #: modules/admin/orders/detail_module.class.php:236
 #: modules/admin/orders/list_module.class.php:276
 msgid "<font color=\"red\">退货</font>"
 msgstr ""
 
 #: admin_order_delivery.php:199 classes/Enums/OrderStatusEnum.php:34
-#: functions/global.func.php:433 merchant.php:4604
+#: functions/global.func.php:433 merchant.php:4768
 #: modules/admin/orders/detail_module.class.php:238
 #: modules/admin/orders/list_module.class.php:278
 msgid "部分分单"
 msgstr ""
 
 #: admin_order_delivery.php:204 classes/Enums/PayStatusEnum.php:25
-#: functions/global.func.php:457 merchant.php:4609
+#: functions/global.func.php:457 merchant.php:4773
 #: modules/admin/orders/detail_module.class.php:242
 #: modules/admin/orders/list_module.class.php:282
 #: modules/admin/orders/today_module.class.php:227
@@ -1040,7 +1040,7 @@ msgid "付款中"
 msgstr ""
 
 #: admin_order_delivery.php:205 classes/Enums/PayStatusEnum.php:26
-#: functions/global.func.php:458 merchant.php:4610
+#: functions/global.func.php:458 merchant.php:4774
 #: modules/admin/orders/detail_module.class.php:243
 #: modules/admin/orders/list_module.class.php:283
 #: modules/admin/orders/today_module.class.php:228
@@ -1049,47 +1049,47 @@ msgstr ""
 msgid "已付款"
 msgstr ""
 
-#: admin_order_delivery.php:209 merchant.php:4614
+#: admin_order_delivery.php:209 merchant.php:4778
 msgid "发货中（前台状态：未发货）"
 msgstr ""
 
 #: admin_order_delivery.php:217 classes/Enums/ShippingStatusEnum.php:32
 #: classes/Enums/ShippingStatusEnum.php:34 functions/global.func.php:446
-#: merchant.php:4622 modules/admin/orders/detail_module.class.php:250
+#: merchant.php:4786 modules/admin/orders/detail_module.class.php:250
 #: modules/admin/orders/list_module.class.php:290
 #: modules/admin/orders/today_module.class.php:235
 msgid "已发货(部分商品)"
 msgstr ""
 
-#: admin_order_delivery.php:287 merchant.php:4665 mh_delivery.php:281
+#: admin_order_delivery.php:287 merchant.php:4829 mh_delivery.php:281
 msgid "此订单包含的商品已被删除，请核对后再发货！"
 msgstr ""
 
-#: admin_order_delivery.php:290 merchant.php:4668
+#: admin_order_delivery.php:290 merchant.php:4832
 msgid "此订单包含的商品【%s】已被移除到了回收站，请核对后再发货！"
 msgstr ""
 
 #: admin_order_delivery.php:411 classes/OrderStatusLog.class.php:168
-#: classes/OrderStatusLog.php:135 merchant.php:4772 mh_delivery.php:416
+#: classes/OrderStatusLog.php:135 merchant.php:4936 mh_delivery.php:416
 #: mh_validate_order.php:351
 #: modules/admin/shopkeeper/order/checking/confirm_module.class.php:618
 msgid "订单号为 %s 的商品已发货，请您耐心等待"
 msgstr ""
 
 #: admin_order_delivery.php:418 admin_order_delivery.php:563
-#: apis/orders_order_delivery_ship_api.class.php:198 merchant.php:4778
-#: merchant.php:5071 mh_delivery.php:422 mh_delivery.php:711
+#: apis/orders_order_delivery_ship_api.class.php:198 merchant.php:4942
+#: merchant.php:5235 mh_delivery.php:422 mh_delivery.php:711
 #: mh_delivery.php:754 mh_delivery.php:840
 msgid "发货单查看"
 msgstr ""
 
-#: admin_order_delivery.php:439 merchant.php:4961 mh_delivery.php:601
+#: admin_order_delivery.php:439 merchant.php:5125 mh_delivery.php:601
 #: modules/admin/orders/operate/delivery_module.class.php:574
 msgid "您的订单已配备好，等待配送员取货"
 msgstr ""
 
 #: admin_order_delivery.php:459
-#: apis/orders_order_delivery_ship_api.class.php:225 merchant.php:4976
+#: apis/orders_order_delivery_ship_api.class.php:225 merchant.php:5140
 #: mh_delivery.php:616 mh_validate_order.php:385
 #: modules/admin/orders/check_module.class.php:339
 #: modules/admin/orders/operate/delivery_module.class.php:595
@@ -1532,7 +1532,7 @@ msgstr ""
 #: apis/orders_buy_order_paid_api.class.php:235
 #: apis/orders_order_paid_api.class.php:207
 #: apis/orders_separate_order_paid_api.class.php:278
-#: apis/orders_user_account_paid_api.class.php:276 merchant.php:5051
+#: apis/orders_user_account_paid_api.class.php:276 merchant.php:5215
 msgid "您有一笔新订单，订单号为：%s"
 msgstr ""
 
@@ -1579,7 +1579,7 @@ msgstr ""
 msgid "调用api文件order_auto_refuse参数错误"
 msgstr ""
 
-#: apis/orders_order_auto_refuse_api.class.php:87 merchant.php:4013
+#: apis/orders_order_auto_refuse_api.class.php:87 merchant.php:4177
 msgid "订单已取消！"
 msgstr ""
 
@@ -1651,7 +1651,7 @@ msgstr ""
 
 #: apis/orders_order_info_api.class.php:156
 #: apis/orders_separate_order_info_api.class.php:137 configs/jslang.php:61
-#: configs/jslang.php:144 merchant.php:2023
+#: configs/jslang.php:144 merchant.php:2187
 #: modules/order/detail_module.class.php:385
 msgid "退款"
 msgstr ""
@@ -1805,13 +1805,13 @@ msgid "系统自动退款"
 msgstr ""
 
 #: classes/OrderAutoRefuse.php:205 classes/OrderAutoRefuse.php:209
-#: merchant.php:4078 merchant.php:4082
+#: merchant.php:4242 merchant.php:4246
 #: modules/order/detail_module.class.php:335
 msgid "无法接单"
 msgstr ""
 
 #: classes/OrderAutoRefuse.php:205 classes/OrderAutoRefuse.php:209
-#: merchant.php:4078 merchant.php:4082
+#: merchant.php:4242 merchant.php:4246
 msgid "等待商家退款！"
 msgstr ""
 
@@ -1856,7 +1856,7 @@ msgid "买家已付款"
 msgstr ""
 
 #: classes/OrderStatus.php:419 classes/OrderStatus.php:428
-#: classes/OrderStatusLog.class.php:352 merchant.php:2854
+#: classes/OrderStatusLog.class.php:352 merchant.php:3018
 #: modules/order/detail_module.class.php:334
 msgid "商家已接单"
 msgstr ""
@@ -1977,7 +1977,7 @@ msgstr ""
 msgid "保证金支付成功，等活动成功结束后尽快支付商品部分余款！"
 msgstr ""
 
-#: classes/OrderStatusLog.class.php:354 merchant.php:2854
+#: classes/OrderStatusLog.class.php:354 merchant.php:3018
 msgid "已被商家接单，订单正在备货中"
 msgstr ""
 
@@ -2266,9 +2266,9 @@ msgid ""
 "况。该应用是商城系统必不可少的应用。"
 msgstr ""
 
-#: merchant.php:369 merchant.php:881 merchant.php:1018 merchant.php:2046
-#: merchant.php:2151 merchant.php:2289 merchant.php:2292 merchant.php:4169
-#: merchant.php:5110 mh_back.php:187 mh_delivery.php:144
+#: merchant.php:369 merchant.php:1045 merchant.php:1182 merchant.php:2210
+#: merchant.php:2315 merchant.php:2453 merchant.php:2456 merchant.php:4333
+#: merchant.php:5274 mh_back.php:187 mh_delivery.php:144
 msgid "无法找到对应的订单！"
 msgstr ""
 
@@ -2276,145 +2276,145 @@ msgstr ""
 msgid "商品站外JS投放(来自站点：%s)"
 msgstr ""
 
-#: merchant.php:887
+#: merchant.php:1051
 msgid "订单不存在请重新搜索！"
 msgstr ""
 
-#: merchant.php:1022 merchant.php:5114
+#: merchant.php:1186 merchant.php:5278
 msgid "该订单已失效无法操作！"
 msgstr ""
 
-#: merchant.php:1043
+#: merchant.php:1207
 msgid "订单已发货！无法修改订单了（配送方式和发货单号除外）！"
 msgstr ""
 
-#: merchant.php:1272
+#: merchant.php:1436
 msgid "订单生成失败！请重新尝试！"
 msgstr ""
 
-#: merchant.php:1328
+#: merchant.php:1492
 msgid "编辑商品，订单号是%s"
 msgstr ""
 
-#: merchant.php:1359
+#: merchant.php:1523
 msgid "您还没有选择商品,请搜索后加入订单哦！"
 msgstr ""
 
-#: merchant.php:1491
+#: merchant.php:1655
 msgid "商品成功加入订单！"
 msgstr ""
 
-#: merchant.php:1540
+#: merchant.php:1704
 msgid "编辑收货人信息，订单编号是%s"
 msgstr ""
 
-#: merchant.php:1606
+#: merchant.php:1770
 msgid "编辑支付方式与配送方式，订单是%s"
 msgstr ""
 
-#: merchant.php:1692
+#: merchant.php:1856
 msgid "编辑支付方式与配送方式，订单号是%s"
 msgstr ""
 
-#: merchant.php:1748
+#: merchant.php:1912
 msgid "其他信息，订单号是%s"
 msgstr ""
 
-#: merchant.php:1856
+#: merchant.php:2020
 msgid "费用信息，订单编是%s"
 msgstr ""
 
-#: merchant.php:2583
+#: merchant.php:2747
 msgid "设为确认, 订单号是%s"
 msgstr ""
 
-#: merchant.php:2648
+#: merchant.php:2812
 msgid "设为无效, 订单号是%s"
 msgstr ""
 
-#: merchant.php:2704
+#: merchant.php:2868
 msgid "设为取消, 订单号是%s"
 msgstr ""
 
-#: merchant.php:2849
+#: merchant.php:3013
 msgid "设为确认，订单号是%s"
 msgstr ""
 
-#: merchant.php:2946
+#: merchant.php:3110
 msgid "设为未付款，订单号是%s"
 msgstr ""
 
-#: merchant.php:3340
+#: merchant.php:3504
 msgid "取消发货，订单号是%s"
 msgstr ""
 
-#: merchant.php:3459
+#: merchant.php:3623
 msgid "设为取消，订单号是%s"
 msgstr ""
 
-#: merchant.php:3494
+#: merchant.php:3658
 msgid "设为无效，订单号是%s"
 msgstr ""
 
-#: merchant.php:3520
+#: merchant.php:3684
 msgid "添加售后，订单号是%s"
 msgstr ""
 
-#: merchant.php:3633
+#: merchant.php:3797
 msgid "%s [ 邮箱地址：%s ]"
 msgstr ""
 
-#: merchant.php:3691 merchant.php:3722
+#: merchant.php:3855 merchant.php:3886
 msgid "更新失败！"
 msgstr ""
 
-#: merchant.php:3949
+#: merchant.php:4113
 msgid "申请操作成功"
 msgstr ""
 
-#: merchant.php:3963
+#: merchant.php:4127
 msgid "该订单商品已售完"
 msgstr ""
 
-#: merchant.php:3964
+#: merchant.php:4128
 msgid "由于天气原因，本店铺暂不接单"
 msgstr ""
 
-#: merchant.php:3965
+#: merchant.php:4129
 msgid "商家忙碌，暂时无法接单"
 msgstr ""
 
-#: merchant.php:4237
+#: merchant.php:4401
 msgid "一键发货"
 msgstr ""
 
-#: merchant.php:4792 mh_validate_order.php:371
+#: merchant.php:4956 mh_validate_order.php:371
 msgid "发货，订单号是%s"
 msgstr ""
 
-#: merchant.php:4921 merchant.php:4927 mh_delivery.php:561 mh_delivery.php:567
+#: merchant.php:5085 merchant.php:5091 mh_delivery.php:561 mh_delivery.php:567
 #: modules/order/affirmReceived_module.class.php:206
 msgid "系统派单"
 msgstr ""
 
-#: merchant.php:4922 mh_delivery.php:562
+#: merchant.php:5086 mh_delivery.php:562
 msgid "有单啦！系统已分配配送单到您账户，赶快行动起来吧！"
 msgstr ""
 
-#: merchant.php:4927 mh_delivery.php:567
+#: merchant.php:5091 mh_delivery.php:567
 #: modules/order/affirmReceived_module.class.php:206
 msgid "抢单"
 msgstr ""
 
-#: merchant.php:5050
+#: merchant.php:5214
 msgid "客户下单"
 msgstr ""
 
-#: merchant.php:5238
+#: merchant.php:5402
 msgid "编辑配送方式，订单是%s"
 msgstr ""
 
-#: merchant.php:5325
+#: merchant.php:5489
 msgid "编辑配送方式，订单号是%s"
 msgstr ""
 

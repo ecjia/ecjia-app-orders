@@ -102,13 +102,170 @@ class OrderSetting extends ComponentAbstract
             ['code' => 'send_service_email', 'value' => '1', 'options' => ['type' => 'select', 'store_range' => '1,0']],
             ['code' => 'show_goods_in_cart', 'value' => '3', 'options' => ['type' => 'select', 'store_range' => '1,2,3']],
             ['code' => 'show_attr_in_cart', 'value' => '1', 'options' => ['type' => 'select', 'store_range' => '1,0']],
+            ['code' => 'orders_auto_cancel_time', 'value' => '', 'options' => ['type' => 'text']],
         ];
 
         return $data;
     }
 
 
+    public function getConfigs()
+    {
+        $config = [
+            [
+                'cfg_code' => 'send_confirm_email',
+                'cfg_name' => __('确认订单时', 'goods'),
+                'cfg_desc' => '',
+                'cfg_range' => array(
+                    '0' => __('不发送邮件', 'goods'),
+                    '1' => __('发送邮件', 'goods'),
+                ),
+            ],
 
+            [
+                'cfg_code' => 'send_ship_email',
+                'cfg_name' => __('发货时', 'goods'),
+                'cfg_desc' => '',
+                'cfg_range' => array(
+                    '0' => __('不发送邮件', 'goods'),
+                    '1' => __('发送邮件', 'goods'),
+                ),
+            ],
 
+            [
+                'cfg_code' => 'send_cancel_email',
+                'cfg_name' => __('取消订单时', 'goods'),
+                'cfg_desc' => '',
+                'cfg_range' => array(
+                    '0' => __('不发送邮件', 'goods'),
+                    '1' => __('发送邮件', 'goods'),
+                ),
+            ],
+
+            [
+                'cfg_code' => 'send_invalid_email',
+                'cfg_name' => __('把订单设为无效时', 'goods'),
+                'cfg_desc' => '',
+                'cfg_range' => array(
+                    '0' => __('不发送邮件', 'goods'),
+                    '1' => __('发送邮件', 'goods'),
+                ),
+            ],
+
+            [
+                'cfg_code' => 'order_pay_note',
+                'cfg_name' => __('设置订单为“已付款”时', 'goods'),
+                'cfg_desc' => '',
+                'cfg_range' => array(
+                    '0' => __('无需填写备注', 'goods'),
+                    '1' => __('必须填写备注', 'goods'),
+                ),
+            ],
+
+            [
+                'cfg_code' => 'order_unpay_note',
+                'cfg_name' => __('设置订单为“未付款”时', 'goods'),
+                'cfg_desc' => '',
+                'cfg_range' => array(
+                    '0' => __('无需填写备注', 'goods'),
+                    '1' => __('必须填写备注', 'goods'),
+                ),
+            ],
+
+            [
+                'cfg_code' => 'order_ship_note',
+                'cfg_name' => __('设置订单为“已发货”时', 'goods'),
+                'cfg_desc' => '',
+                'cfg_range' => array(
+                    '0' => __('无需填写备注', 'goods'),
+                    '1' => __('必须填写备注', 'goods'),
+                ),
+            ],
+
+            [
+                'cfg_code' => 'order_receive_note',
+                'cfg_name' => __('设置订单为“收货确认”时', 'goods'),
+                'cfg_desc' => '',
+                'cfg_range' => array(
+                    '0' => __('无需填写备注', 'goods'),
+                    '1' => __('必须填写备注', 'goods'),
+                ),
+            ],
+
+            [
+                'cfg_code' => 'order_unship_note',
+                'cfg_name' => __('设置订单为“未发货”时', 'goods'),
+                'cfg_desc' => '',
+                'cfg_range' => array(
+                    '0' => __('无需填写备注', 'goods'),
+                    '1' => __('必须填写备注', 'goods'),
+                ),
+            ],
+
+            [
+                'cfg_code' => 'order_return_note',
+                'cfg_name' => __('退货时', 'goods'),
+                'cfg_desc' => '',
+                'cfg_range' => array(
+                    '0' => __('无需填写备注', 'goods'),
+                    '1' => __('必须填写备注', 'goods'),
+                ),
+            ],
+
+            [
+                'cfg_code' => 'order_invalid_note',
+                'cfg_name' => __('把订单设为无效时', 'goods'),
+                'cfg_desc' => '',
+                'cfg_range' => array(
+                    '0' => __('无需填写备注', 'goods'),
+                    '1' => __('必须填写备注', 'goods'),
+                ),
+            ],
+
+            [
+                'cfg_code' => 'order_cancel_note',
+                'cfg_name' => __('取消订单时', 'goods'),
+                'cfg_desc' => '',
+                'cfg_range' => array(
+                    '0' => __('无需填写备注', 'goods'),
+                    '1' => __('必须填写备注', 'goods'),
+                ),
+            ],
+
+            [
+                'cfg_code' => 'send_service_email',
+                'cfg_name' => __('下订单时是否给客服发邮件', 'goods'),
+                'cfg_desc' => __('网店信息中的客服邮件地址不为空时，该选项有效。', 'goods'),
+                'cfg_range' => array(
+                    '0' => __('否', 'goods'),
+                    '1' => __('是', 'goods'),
+                ),
+            ],
+
+            [
+                'cfg_code' => 'show_goods_in_cart',
+                'cfg_name' => __('购物车里显示商品方式', 'goods'),
+                'cfg_desc' => '',
+                'cfg_range' => array(
+                    '1' => __('只显示文字', 'goods'),
+                    '2' => __('只显示图片', 'goods'),
+                    '3' => __('显示文字与图片', 'goods'),
+                ),
+            ],
+
+            [
+                'cfg_code' => 'show_attr_in_cart',
+                'cfg_name' => __('购物车里是否显示商品属性', 'goods'),
+                'cfg_desc' => '',
+                'cfg_range' => array(
+                    '0' => __('否', 'goods'),
+                    '1' => __('是', 'goods'),
+                ),
+            ],
+
+        ];
+
+        return $config;
+    }
 
 }

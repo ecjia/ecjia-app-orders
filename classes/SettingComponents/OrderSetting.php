@@ -262,6 +262,13 @@ class OrderSetting extends ComponentAbstract
                     '1' => __('是', 'goods'),
                 ),
             ],
+            
+            [
+	            'cfg_code' => 'orders_auto_cancel_time',
+	            'cfg_name' => __('未付款订单取消', 'goods'),
+	            'cfg_desc' => __('会员未付款的订单，在设置时间（单位：分钟）后若还没有支付，系统将会自动取消未付款的订单，默认0代表不设置，不设置则未支付订单将不会自动取消。', 'goods'),
+	            'cfg_range' => '',
+            ],
 
         ];
 

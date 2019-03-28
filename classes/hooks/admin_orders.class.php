@@ -332,9 +332,9 @@ class orders_admin_hooks
 
     public static function append_admin_setting_group($menus)
     {
-        $menus[] = ecjia_admin::make_admin_menu('nav-header', __('订单', 'orders'), '', 45)->add_purview(array('order_manage'));
-        $menus[] = ecjia_admin::make_admin_menu('orders', __('订单处理', 'orders'), RC_Uri::url('setting/shop_config/init', array('code' => 'orders')), 46)->add_purview('shop_config')->add_icon('fontello-icon-gift');
-        $menus[] = ecjia_admin::make_admin_menu('orders_setting', __('订单设置', 'orders'), RC_Uri::url('orders/admin_config/init'), 47)->add_purview('order_manage');
+        $menus[] = ecjia_admin::make_admin_menu('nav-header', __('订单', 'orders'), '', 45)->add_purview(array('order_setting'));
+        $menus[] = ecjia_admin::make_admin_menu('orders', __('订单处理', 'orders'), RC_Uri::url('setting/shop_config/init', array('code' => 'orders')), 46)->add_purview('order_setting')->add_icon('fontello-icon-gift');
+
         return $menus;
     }
 

@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Ecjia App orders 1.28.0\n"
 "Report-Msgid-Bugs-To: https://make.ecjia.com/polyglots/\n"
-"POT-Creation-Date: 2019-03-22 03:53:33+00:00\n"
+"POT-Creation-Date: 2019-03-29 01:41:59+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -806,15 +806,6 @@ msgstr ""
 msgid "（需支付尾款：%s）"
 msgstr ""
 
-#: admin_config.php:72 admin_config.php:74
-#: classes/hooks/admin_orders.class.php:336
-msgid "订单设置"
-msgstr ""
-
-#: admin_config.php:91
-msgid "保存成功"
-msgstr ""
-
 #: admin_guest_stats.php:79 admin_guest_stats.php:91
 #: apis/orders_admin_purview_api.class.php:74
 #: classes/hooks/admin_orders.class.php:300
@@ -1506,6 +1497,10 @@ msgstr ""
 msgid "广告转化率"
 msgstr ""
 
+#: apis/orders_admin_purview_api.class.php:84
+msgid "订单设置"
+msgstr ""
+
 #: apis/orders_buy_order_paid_api.class.php:76
 #: apis/orders_separate_order_paid_api.class.php:85
 msgid "订单已经支付了"
@@ -1856,7 +1851,7 @@ msgid "买家已付款"
 msgstr ""
 
 #: classes/OrderStatus.php:419 classes/OrderStatus.php:428
-#: classes/OrderStatusLog.class.php:352 merchant.php:3018
+#: classes/OrderStatusLog.class.php:359 merchant.php:3018
 #: modules/order/detail_module.class.php:334
 msgid "商家已接单"
 msgstr ""
@@ -1932,7 +1927,7 @@ msgstr ""
 msgid "申请审核已通过"
 msgstr ""
 
-#: classes/OrderStatusLog.class.php:243 classes/OrderStatusLog.class.php:265
+#: classes/OrderStatusLog.class.php:243 classes/OrderStatusLog.class.php:269
 #: classes/OrderStatusLog.php:175 classes/OrderStatusLog.php:193
 msgid "申请审核未通过"
 msgstr ""
@@ -1941,43 +1936,43 @@ msgstr ""
 msgid "订单退款申请已处理"
 msgstr ""
 
-#: classes/OrderStatusLog.class.php:263 classes/OrderStatusLog.php:191
+#: classes/OrderStatusLog.class.php:267 classes/OrderStatusLog.php:191
 msgid "申请审核已通过，请选择返回方式"
 msgstr ""
 
-#: classes/OrderStatusLog.class.php:268 classes/OrderStatusLog.php:189
+#: classes/OrderStatusLog.class.php:272 classes/OrderStatusLog.php:189
 msgid "订单退货退款申请已处理"
 msgstr ""
 
-#: classes/OrderStatusLog.class.php:285 classes/OrderStatusLog.php:207
+#: classes/OrderStatusLog.class.php:289 classes/OrderStatusLog.php:207
 msgid "商家已确认收货，等价商家退款"
 msgstr ""
 
-#: classes/OrderStatusLog.class.php:287
+#: classes/OrderStatusLog.class.php:291
 msgid "商家未收到货"
 msgstr ""
 
-#: classes/OrderStatusLog.class.php:290 classes/OrderStatusLog.php:205
+#: classes/OrderStatusLog.class.php:294 classes/OrderStatusLog.php:205
 msgid "确认收货处理"
 msgstr ""
 
-#: classes/OrderStatusLog.class.php:307
+#: classes/OrderStatusLog.class.php:314
 msgid "您的退款 %s 元，已退回至您的 %s 账户，请查收"
 msgstr ""
 
-#: classes/OrderStatusLog.class.php:309 classes/OrderStatusLog.php:222
+#: classes/OrderStatusLog.class.php:316 classes/OrderStatusLog.php:222
 msgid "您的退款 %s 元，已退回至您的余额，请查收"
 msgstr ""
 
-#: classes/OrderStatusLog.class.php:312 classes/OrderStatusLog.php:221
+#: classes/OrderStatusLog.class.php:319 classes/OrderStatusLog.php:221
 msgid "退款到账"
 msgstr ""
 
-#: classes/OrderStatusLog.class.php:336
+#: classes/OrderStatusLog.class.php:343
 msgid "保证金支付成功，等活动成功结束后尽快支付商品部分余款！"
 msgstr ""
 
-#: classes/OrderStatusLog.class.php:354 merchant.php:3018
+#: classes/OrderStatusLog.class.php:361 merchant.php:3018
 msgid "已被商家接单，订单正在备货中"
 msgstr ""
 
@@ -2001,6 +1996,132 @@ msgid ""
 "验证码，以便收货验证"
 msgstr ""
 
+#: classes/SettingComponents/OrderSetting.php:117
+msgid "确认订单时"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:120
+#: classes/SettingComponents/OrderSetting.php:130
+#: classes/SettingComponents/OrderSetting.php:140
+#: classes/SettingComponents/OrderSetting.php:150
+msgid "不发送邮件"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:121
+#: classes/SettingComponents/OrderSetting.php:131
+#: classes/SettingComponents/OrderSetting.php:141
+#: classes/SettingComponents/OrderSetting.php:151
+msgid "发送邮件"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:127
+msgid "发货时"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:137
+#: classes/SettingComponents/OrderSetting.php:227
+msgid "取消订单时"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:147
+#: classes/SettingComponents/OrderSetting.php:217
+msgid "把订单设为无效时"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:157
+msgid "设置订单为“已付款”时"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:160
+#: classes/SettingComponents/OrderSetting.php:170
+#: classes/SettingComponents/OrderSetting.php:180
+#: classes/SettingComponents/OrderSetting.php:190
+#: classes/SettingComponents/OrderSetting.php:200
+#: classes/SettingComponents/OrderSetting.php:210
+#: classes/SettingComponents/OrderSetting.php:220
+#: classes/SettingComponents/OrderSetting.php:230
+msgid "无需填写备注"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:161
+#: classes/SettingComponents/OrderSetting.php:171
+#: classes/SettingComponents/OrderSetting.php:181
+#: classes/SettingComponents/OrderSetting.php:191
+#: classes/SettingComponents/OrderSetting.php:201
+#: classes/SettingComponents/OrderSetting.php:211
+#: classes/SettingComponents/OrderSetting.php:221
+#: classes/SettingComponents/OrderSetting.php:231
+msgid "必须填写备注"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:167
+msgid "设置订单为“未付款”时"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:177
+msgid "设置订单为“已发货”时"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:187
+msgid "设置订单为“收货确认”时"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:197
+msgid "设置订单为“未发货”时"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:207
+msgid "退货时"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:237
+msgid "下订单时是否给客服发邮件"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:238
+msgid "网店信息中的客服邮件地址不为空时，该选项有效。"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:240
+#: classes/SettingComponents/OrderSetting.php:261
+msgid "否"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:241
+#: classes/SettingComponents/OrderSetting.php:262
+msgid "是"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:247
+msgid "购物车里显示商品方式"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:250
+msgid "只显示文字"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:251
+msgid "只显示图片"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:252
+msgid "显示文字与图片"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:258
+msgid "购物车里是否显示商品属性"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:268
+msgid "未付款订单取消"
+msgstr ""
+
+#: classes/SettingComponents/OrderSetting.php:269
+msgid ""
+"会员未付款的订单，在设置时间（单位：分钟）后若还没有支付，系统将会自动取消未"
+"付款的订单，默认0代表不设置，不设置则未支付订单将不会自动取消。"
+msgstr ""
+
 #: classes/StoreCleanHandlers/StoreOrdersClear.php:34
 msgid "店铺订单"
 msgstr ""
@@ -2021,6 +2142,10 @@ msgstr ""
 
 #: classes/hooks/admin_orders.class.php:64
 msgid "最新订单"
+msgstr ""
+
+#: classes/hooks/admin_orders.class.php:336
+msgid "订单处理"
 msgstr ""
 
 #: classes/hooks/api_orders.class.php:62
@@ -3539,24 +3664,6 @@ msgstr ""
 msgid "是否保价："
 msgstr ""
 
-#: content/apps/orders/templates/admin/delivery_info.dwt.php:63
-#: content/apps/orders/templates/admin/back_info.dwt.php:74
-#: content/apps/orders/templates/admin/order_delivery_info.dwt.php:64
-#: content/apps/orders/templates/merchant/delivery_info.dwt.php:105
-#: content/apps/orders/templates/merchant/back_info.dwt.php:89
-#: content/apps/orders/templates/merchant/order_delivery_info.dwt.php:65
-msgid "是"
-msgstr ""
-
-#: content/apps/orders/templates/admin/delivery_info.dwt.php:63
-#: content/apps/orders/templates/admin/back_info.dwt.php:76
-#: content/apps/orders/templates/admin/order_delivery_info.dwt.php:64
-#: content/apps/orders/templates/merchant/delivery_info.dwt.php:105
-#: content/apps/orders/templates/merchant/back_info.dwt.php:89
-#: content/apps/orders/templates/merchant/order_delivery_info.dwt.php:65
-msgid "否"
-msgstr ""
-
 #: content/apps/orders/templates/admin/delivery_info.dwt.php:68
 #: content/apps/orders/templates/admin/back_info.dwt.php:83
 #: content/apps/orders/templates/admin/order_print.dwt.php:20
@@ -3913,12 +4020,6 @@ msgstr ""
 
 #: content/apps/orders/templates/admin/orders_setting.dwt.php:21
 msgid "未付款订单取消："
-msgstr ""
-
-#: content/apps/orders/templates/admin/orders_setting.dwt.php:24
-msgid ""
-"会员未付款的订单，在设置时间（单位：分钟）后若还没有支付，系统将会自动取消未"
-"付款的订单，默认0代表不设置，不设置则未支付订单将不会自动取消。"
 msgstr ""
 
 #: content/apps/orders/templates/admin/order_stats.dwt.php:22

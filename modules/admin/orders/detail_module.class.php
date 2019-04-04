@@ -199,8 +199,10 @@ class admin_orders_detail_module extends api_admin implements api_interface
 
         $ordergoods_viewdb = RC_Model::model('orders/order_goods_goods_viewmodel');
         $goods_list        = $ordergoods_viewdb->where(array('order_id' => $order['order_id']))->select();
+        $goods_number = 0;
         if (!empty($goods_list)) {
             foreach ($goods_list as $k => $v) {
+            	$goods_number += $v['goods_number'];
                 $goods_list[$k] = array(
                     'id'                  => $v['goods_id'],
                     'name'                => $v['goods_name'],
@@ -219,7 +221,7 @@ class admin_orders_detail_module extends api_admin implements api_interface
                 );
             }
         }
-        $order['goods_number'] = count($goods_list);
+        $order['goods_number'] = $goods_number;
         $order['goods_items']  = $goods_list;
 
 

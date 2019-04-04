@@ -105,7 +105,7 @@ class OrderSetting extends ComponentAbstract
             [
                 'cfg_code' => 'send_confirm_email',
                 'cfg_name' => __('确认订单时', 'orders'),
-                'cfg_desc' => '',
+                'cfg_desc' => __('控制商家对应操作之后对客户发送邮件', 'orders'),
                 'cfg_range' => array(
                     '0' => __('不发送邮件', 'orders'),
                     '1' => __('发送邮件', 'orders'),
@@ -115,7 +115,7 @@ class OrderSetting extends ComponentAbstract
             [
                 'cfg_code' => 'send_ship_email',
                 'cfg_name' => __('发货时', 'orders'),
-                'cfg_desc' => '',
+                'cfg_desc' => __('控制商家对应操作之后对客户发送邮件', 'orders'),
                 'cfg_range' => array(
                     '0' => __('不发送邮件', 'orders'),
                     '1' => __('发送邮件', 'orders'),
@@ -125,7 +125,7 @@ class OrderSetting extends ComponentAbstract
             [
                 'cfg_code' => 'send_cancel_email',
                 'cfg_name' => __('取消订单时', 'orders'),
-                'cfg_desc' => '',
+                'cfg_desc' => __('控制商家对应操作之后对客户发送邮件', 'orders'),
                 'cfg_range' => array(
                     '0' => __('不发送邮件', 'orders'),
                     '1' => __('发送邮件', 'orders'),
@@ -135,7 +135,7 @@ class OrderSetting extends ComponentAbstract
             [
                 'cfg_code' => 'send_invalid_email',
                 'cfg_name' => __('把订单设为无效时', 'orders'),
-                'cfg_desc' => '',
+                'cfg_desc' => __('控制商家对应操作之后对客户发送邮件', 'orders'),
                 'cfg_range' => array(
                     '0' => __('不发送邮件', 'orders'),
                     '1' => __('发送邮件', 'orders'),
@@ -165,7 +165,7 @@ class OrderSetting extends ComponentAbstract
             [
                 'cfg_code' => 'order_ship_note',
                 'cfg_name' => __('设置订单为“已发货”时', 'orders'),
-                'cfg_desc' => '',
+                'cfg_desc' => __('控制商家后台管理的时候，进行这些操作是否必须要填写备注', 'orders'),
                 'cfg_range' => array(
                     '0' => __('无需填写备注', 'orders'),
                     '1' => __('必须填写备注', 'orders'),
@@ -195,7 +195,7 @@ class OrderSetting extends ComponentAbstract
             [
                 'cfg_code' => 'order_return_note',
                 'cfg_name' => __('退货时', 'orders'),
-                'cfg_desc' => '',
+                'cfg_desc' => __('控制商家后台管理的时候，进行这些操作是否必须要填写备注', 'orders'),
                 'cfg_range' => array(
                     '0' => __('无需填写备注', 'orders'),
                     '1' => __('必须填写备注', 'orders'),
@@ -215,7 +215,7 @@ class OrderSetting extends ComponentAbstract
             [
                 'cfg_code' => 'order_cancel_note',
                 'cfg_name' => __('取消订单时', 'orders'),
-                'cfg_desc' => '',
+                'cfg_desc' => __('控制商家后台管理的时候，进行这些操作是否必须要填写备注', 'orders'),
                 'cfg_range' => array(
                     '0' => __('无需填写备注', 'orders'),
                     '1' => __('必须填写备注', 'orders'),
@@ -263,7 +263,7 @@ class OrderSetting extends ComponentAbstract
             [
                 'cfg_code' => 'enable_order_check',
                 'cfg_name' => __('是否开启新订单提醒', 'orders'),
-                'cfg_desc' => '',
+                'cfg_desc' => __('开启后，后台将弹出新订单提醒', 'orders'),
                 'cfg_range' => array(
                     '0' => __('否', 'orders'),
                     '1' => __('是', 'orders'),

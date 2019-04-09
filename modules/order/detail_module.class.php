@@ -324,7 +324,7 @@ class order_detail_module extends api_front implements api_interface
                     'unpay'                => __('待付款', 'orders'),
                     'payed'                => __('已付款', 'orders'),
                     'merchant_process'     => __('等待商家接单', 'orders'), //等待接单
-                    'shipping'             => __('配货中', 'orders'),
+                    'shipping'             => __('发货中', 'orders'),
                     'shipped'              => __('已发货', 'orders'),
                     'express_user_pickup'  => __('配送员已取货', 'orders'),
                     'cancel'               => __('订单已取消', 'orders'),

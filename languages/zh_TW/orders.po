@@ -5,14 +5,14 @@ msgstr ""
 "Project-Id-Version: Ecjia App orders 1.28.0\n"
 "Report-Msgid-Bugs-To: https://make.ecjia.com/polyglots/\n"
 "POT-Creation-Date: 2019-04-03 18:49+0800\n"
-"PO-Revision-Date: 2019-04-03 18:55+0800\n"
+"PO-Revision-Date: 2019-04-09 09:51+0800\n"
 "Last-Translator: \n"
 "Language-Team: LANGUAGE <ecjia@ecjia.com>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 2.2\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: admin.php:105 admin.php:260 admin.php:693 admin.php:736
@@ -1604,7 +1604,7 @@ msgstr "催單提醒"
 #: apis/orders_merchant_purview_api.class.php:76 mh_validate_order.php:87
 #: mh_validate_order.php:100 mh_validate_order.php:103
 msgid "验单查询"
-msgstr "催單提醒"
+msgstr "驗單查詢"
 
 #: apis/orders_merchant_menu_api.class.php:76
 msgid "评论列表"
@@ -3575,7 +3575,7 @@ msgstr "使用積分："
 #: content/apps/orders/templates/merchant/order_storebuy_info.dwt.php:199
 #: content/apps/orders/templates/merchant/order_storepickup_info.dwt.php:285
 msgid "使用红包："
-msgstr "使用積分："
+msgstr "使用紅包："
 
 #: content/apps/orders/templates/admin/other_order_info.dwt.php:414
 msgid "买单实付金额："
@@ -5831,7 +5831,7 @@ msgstr "購買用戶信息"
 
 #: content/apps/orders/templates/merchant/order_info.dwt.php:32
 msgid "订单操作：退款/退货"
-msgstr "購買用戶信息"
+msgstr "訂單操作：退款/退貨"
 
 #: content/apps/orders/templates/merchant/order_info.dwt.php:53
 msgid "返还方式："

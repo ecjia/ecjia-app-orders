@@ -333,6 +333,9 @@ class order_detail_module extends api_front implements api_interface
                     'pickup_success'       => __('已提货', 'orders'),
                     'merchant_confirmed'   => __('商家已接单', 'orders'),
                     'merchant_unconfirmed' => __('无法接单', 'orders'),
+                	'refund_apply' 	   	   => __('申请退款', 'orders'),
+                	'refund_agree' 		   => __('订单退款申请已处理', 'orders'),
+                	'refund_success' 	   => __('退款到账', 'orders'),
                 );
 
                 foreach ($order_status_log as $val) {

@@ -130,6 +130,10 @@ class OrderStatus
         return array($label_order_status, $status_code);
     }
 
+    /**
+     * @param $type
+     * @return null|callback
+     */
     public static function getQueryOrder($type)
     {
         $method = array_get(self::$orderTypes, $type);

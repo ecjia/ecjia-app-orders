@@ -12,7 +12,7 @@ namespace Ecjia\App\Orders\OrdersSearch\Filters;
 use Ecjia\System\Frameworks\SuperSearch\FilterInterface;
 use Royalcms\Component\Database\Eloquent\Builder;
 
-class OrderStatus implements FilterInterface
+class CompositeStatus implements FilterInterface
 {
 
     /**

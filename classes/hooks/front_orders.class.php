@@ -69,8 +69,41 @@ class orders_front_plugin
             Process_storebuyOrder_autoShip::storebuy_order_ship($order_info);
         }
     }
+    
+    /**
+     * 促销限购剩余数量减少，购买数量增加
+     * @param array $order
+     * @return boolean
+     */
+    public static function api_promotion_buy_num_update($order)
+    {
+    	if (empty($order['order_sn'])) {
+    		return false;
+    	}
+    	$order_sn   = $order['order_sn'];
+    	$order_info = RC_DB::table('order_info')->where('order_sn', $order_sn)->first();
+    
+    	if (empty($order_info)) {
+    		return false;
+    	}
+    
+    	//促销商品购买成功，减少促销剩余限购数；增加用户购买数
+    	if ($order_info['user_id'] > 0) {
+    		$order_goods = RC_DB::table('order_goods')->where('order_id', $order_info['order_id'])->get();
+    		if ($order_goods) {
+    			foreach ($order_goods as $val) {
+    				$promotion = new \Ecjia\App\Goods\GoodsActivity\GoodsPromotion($val['goods_id'], $val['product_id'], $order_info['user_id']);
+    				$is_promote = $promotion->isPromote();
+    				if ($is_promote) {
+    					$promotion->updatePromotionBuyNum($val);
+    				}
+    			}
+    		}
+    	}
+    }
 }
 
+RC_Hook::add_filter('order_payed_do_something', array('orders_api_plugin', 'api_promotion_buy_num_update'));
 RC_Hook::add_action('order_payed_do_something', array('orders_front_plugin', 'front_storebuy_order_payed_autoship'));
 
 // end

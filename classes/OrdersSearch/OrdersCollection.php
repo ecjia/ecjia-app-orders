@@ -105,7 +105,7 @@ class OrdersCollection
 
          ];
 
-         $collection = (new GoodsCollection($input))->getData();
+         $collection = (new OrdersCollection($input))->getData();
 
 //         dd($collection);
          return $collection;

@@ -105,7 +105,7 @@ class orders_front_plugin
     }
 }
 
-RC_Hook::add_filter('order_payed_do_something', array('orders_front_plugin', 'api_promotion_buy_num_update'));
+RC_Hook::add_filter('order_payed_do_something', array('orders_front_plugin', 'front_promotion_buy_num_update'));
 RC_Hook::add_action('order_payed_do_something', array('orders_front_plugin', 'front_storebuy_order_payed_autoship'));
 
 // end

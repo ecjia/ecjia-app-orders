@@ -101,11 +101,12 @@ class OrdersModel extends Model
     }
 
     /**
-     * 获取订单的评价。
+     * 一对多
+     * 获取订单关联的评价集合。
      */
-    public function comment()
+    public function comment_collection()
     {
-        return $this->belongsTo('Ecjia\App\Orders\Models\CommentModel', 'order_id', 'order_id');
+        return $this->hasMany('Ecjia\App\Orders\Models\CommentModel', 'order_id', 'order_id');
     }
 
 }

@@ -74,9 +74,10 @@ class OrderGoodsModel extends Model
 
 
     /**
-     * 获取拥有此商品的订单。
+     * 一对一
+     * 获取订单商品关联的订单模型信息。
      */
-    public function orders()
+    public function orders_model()
     {
         return $this->belongsTo('Ecjia\App\Orders\Models\OrdersModel', 'order_id', 'order_id');
     }

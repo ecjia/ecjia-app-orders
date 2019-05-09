@@ -86,7 +86,7 @@ class OrdersModel extends Model
      * 一对一
      * 获取订单的所属的商家模型信息。
      */
-    public function store_model()
+    public function store_franchisee_model()
     {
         return $this->belongsTo('Ecjia\App\Orders\Models\StoreFranchiseeModel', 'store_id', 'store_id');
     }

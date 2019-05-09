@@ -20,9 +20,9 @@ class CustomizeOrderList
             list($label_order_status, $status_code) = OrderStatus::getOrderStatusLabel($item->order_status, $item->shipping_status, $item->pay_status, $item->payment->is_cod);
 
             $data = [
-                'seller_id'   => $item->store_model->store_id,
-                'seller_name' => $item->store_model->merchants_name,
-                'manage_mode' => $item->store_model->manage_mode,
+                'seller_id'   => $item->store_franchisee_model->store_id,
+                'seller_name' => $item->store_franchisee_model->merchants_name,
+                'manage_mode' => $item->store_franchisee_model->manage_mode,
 
                 'order_id'                => $item->order_id,
                 'order_sn'                => $item->order_sn,
@@ -136,9 +136,9 @@ class CustomizeOrderList
             }
 
             $data = [
-                'seller_id'   => $item->store_model->store_id,
-                'seller_name' => $item->store_model->merchants_name,
-                'manage_mode' => $item->store_model->manage_mode,
+                'seller_id'   => $item->store_franchisee_model->store_id,
+                'seller_name' => $item->store_franchisee_model->merchants_name,
+                'manage_mode' => $item->store_franchisee_model->manage_mode,
 
                 'order_id'                => $item->order_id,
                 'order_sn'                => $item->order_sn,
@@ -225,9 +225,9 @@ class CustomizeOrderList
             }
 
             $data = [
-                'seller_id'   => $item->store_model->store_id,
-                'seller_name' => $item->store_model->merchants_name,
-                'manage_mode' => $item->store_model->manage_mode,
+                'seller_id'   => $item->store_franchisee_model->store_id,
+                'seller_name' => $item->store_franchisee_model->merchants_name,
+                'manage_mode' => $item->store_franchisee_model->manage_mode,
 
                 'order_id'                => $item->order_id,
                 'order_sn'                => $item->order_sn,
@@ -299,7 +299,7 @@ class CustomizeOrderList
             list($label_order_status, $status_code) = OrderStatus::getAdminOrderStatusLabel($item->order_status, $item->shipping_status, $item->pay_status, $item->payment->is_cod);
             $data = [
                 'order_sn'              => $item->order_sn,
-                'seller_name'           => $item->store_model->merchants_name,
+                'seller_name'           => $item->store_franchisee_model->merchants_name,
                 'order_time'            => ecjia_time_format($item->add_time),
                 'consignee'             => $item->consignee,
                 'formated_total_fee'    => ecjia_price_format($total_fee, false),

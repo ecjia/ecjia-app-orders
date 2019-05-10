@@ -28,7 +28,7 @@ class ExtensionCode implements FilterInterface
      */
     public static function apply(Builder $builder, $value)
     {
-        return $builder->where('extension_code', $value);
+        return $builder->where('order_info.extension_code', $value);
     }
 
 }

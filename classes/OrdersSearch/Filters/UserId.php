@@ -28,7 +28,7 @@ class UserId implements FilterInterface
      */
     public static function apply(Builder $builder, $value)
     {
-        return $builder->where('user_id', $value);
+        return $builder->where('order_info.user_id', $value);
     }
 
 }

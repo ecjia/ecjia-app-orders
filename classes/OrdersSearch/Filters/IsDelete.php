@@ -28,7 +28,7 @@ class IsDelete implements FilterInterface
      */
     public static function apply(Builder $builder, $value)
     {
-    	return $builder->where('is_delete', $value);//$value=0
+    	return $builder->where('order_info.is_delete', $value);//$value=0
     }
 
 }

@@ -12,7 +12,7 @@ namespace Ecjia\App\Orders\OrdersSearch\Filters;
 use Ecjia\System\Frameworks\SuperSearch\FilterInterface;
 use Royalcms\Component\Database\Eloquent\Builder;
 
-class Name implements FilterInterface
+class CurrentPage implements FilterInterface
 {
 
     /**
@@ -24,7 +24,9 @@ class Name implements FilterInterface
      */
     public static function apply(Builder $builder, $value)
     {
-        return $builder->where('name', $value);
+        list($start, $size) = $value;
+
+        return $builder->take($size)->skip($start);
     }
 
 }

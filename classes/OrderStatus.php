@@ -292,23 +292,30 @@ class OrderStatus
     public static function queryOrderAllowComment()
     {
         return function ($query) {
-            $query->leftJoin('order_goods', function ($join) {
-                $join->on('order_info.order_id', '=', 'order_goods.order_id');
-            })->leftJoin('comment', function ($join) {
-                $join->on('order_goods.rec_id', '=', 'comment.rec_id')
-                    ->on('comment.id_value', '=', 'order_goods.goods_id')
-                    ->on('comment.order_id', '=', 'order_goods.order_id')
-                    ->where('comment.comment_type', '=', 0)
-                    ->where('comment.parent_id', '=', 0);
+//             $query->leftJoin('order_goods', function ($join) {
+//                 $join->on('order_info.order_id', '=', 'order_goods.order_id');
+//             })->leftJoin('comment', function ($join) {
+//                 $join->on('order_goods.rec_id', '=', 'comment.rec_id')
+//                     ->on('comment.id_value', '=', 'order_goods.goods_id')
+//                     ->on('comment.order_id', '=', 'order_goods.order_id')
+//                     ->where('comment.comment_type', '=', 0)
+//                     ->where('comment.parent_id', '=', 0);
+//             });
+            
+            $query->whereDoesntHave('order_goods_collection.comment_model', function($query) {
+            	/**
+            	 * @var \Royalcms\Component\Database\Query\Builder $query
+            	 */
+            	//$query->where('comment_type', 0)->where('parent_id', 0)->whereNull('comment.comment_id');
             });
 
             $query->whereIn('order_info.order_status', [OS_CONFIRMED, OS_SPLITED])
                 ->whereIn('order_info.pay_status', [PS_PAYED, PS_PAYING])
                 ->where('order_info.shipping_status', SS_RECEIVED);
 
-            $fields = array('comment.comment_id', 'comment.has_image');
-            $query->addSelect($fields);
-            $query->whereNull('comment.comment_id');
+//             $fields = array('comment.comment_id', 'comment.has_image');
+//             $query->addSelect($fields);
+//             $query->whereNull('comment.comment_id');
         };
     }
 

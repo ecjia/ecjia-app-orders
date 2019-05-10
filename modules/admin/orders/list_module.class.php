@@ -373,7 +373,7 @@ class admin_orders_list_module extends api_admin implements api_interface
                 $label_order_status = __('已完成', 'orders');
                 $status_code        = 'finished';
             } elseif (in_array($shipping_status, array(SS_SHIPPED))) {
-                $label_order_status = __(__('已发货', 'orders'), 'orders');
+                $label_order_status = __('已发货', 'orders');
                 $status_code        = 'shipped';
             } elseif (in_array($order_status, array(OS_CONFIRMED, OS_SPLITED, OS_UNCONFIRMED)) &&
                 in_array($pay_status, array(PS_UNPAYED)) &&

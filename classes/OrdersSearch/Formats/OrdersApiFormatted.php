@@ -31,7 +31,7 @@ class OrdersApiFormatted
     	//计算订单总价格
     	$total_fee    = $this->model->goods_amount + $this->model->shipping_fee + $this->model->insure_fee + $this->model->pay_fee + $this->model->pack_fee + $this->model->card_fee + $this->model->tax - $this->model->integral_money - $this->model->bonus - $this->model->discount;
     	
-    	list($label_order_status, $status_code) = OrderStatus::getOrderStatusLabel($this->model->order_status, $item->shipping_status, $item->pay_status, $item->payment->is_cod);
+    	list($label_order_status, $status_code) = OrderStatus::getOrderStatusLabel($this->model->order_status, $this->model->shipping_status, $this->model->pay_status, $this->model->payment_model->is_cod);
 
     	list($order_mode, $label_order_mode) = $this->getOrderModeLabel();
     	

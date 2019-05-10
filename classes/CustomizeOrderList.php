@@ -17,7 +17,7 @@ class CustomizeOrderList
             //计算订单总价格
             $total_fee    = $item->goods_amount + $item->shipping_fee + $item->insure_fee + $item->pay_fee + $item->pack_fee + $item->card_fee + $item->tax - $item->integral_money - $item->bonus - $item->discount;
             $goods_number = 0;
-            list($label_order_status, $status_code) = OrderStatus::getOrderStatusLabel($item->order_status, $item->shipping_status, $item->pay_status, $item->payment->is_cod);
+            list($label_order_status, $status_code) = OrderStatus::getOrderStatusLabel($item->order_status, $item->shipping_status, $item->pay_status, $item->payment_model->is_cod);
 
             $data = [
                 'seller_id'   => $item->store_franchisee_model->store_id,
@@ -121,7 +121,7 @@ class CustomizeOrderList
             //计算订单总价格
             $total_fee = $item->goods_amount + $item->shipping_fee + $item->insure_fee + $item->pay_fee + $item->pack_fee + $item->card_fee + $item->tax - $item->integral_money - $item->bonus - $item->discount;
 
-            list($label_order_status, $status_code) = OrderStatus::getAdminOrderStatusLabel($item->order_status, $item->shipping_status, $item->pay_status, $item->payment->is_cod);
+            list($label_order_status, $status_code) = OrderStatus::getAdminOrderStatusLabel($item->order_status, $item->shipping_status, $item->pay_status, $item->payment_model->is_cod);
 
             $goods_number = 0;
             $goods_number = $item->order_goods_collection->map(function ($item) use (&$goods_number) {
@@ -210,7 +210,7 @@ class CustomizeOrderList
             //计算订单总价格
             $total_fee = $item->goods_amount + $item->shipping_fee + $item->insure_fee + $item->pay_fee + $item->pack_fee + $item->card_fee + $item->tax - $item->integral_money - $item->bonus - $item->discount;
 
-            list($label_order_status, $status_code) = OrderStatus::getAdminOrderStatusLabel($item->order_status, $item->shipping_status, $item->pay_status, $item->payment->is_cod);
+            list($label_order_status, $status_code) = OrderStatus::getAdminOrderStatusLabel($item->order_status, $item->shipping_status, $item->pay_status, $item->payment_model->is_cod);
 
             $goods_number = 0;
             $goods_number = $item->order_goods_collection->map(function ($item) use (&$goods_number) {
@@ -296,7 +296,7 @@ class CustomizeOrderList
             //计算订单总价格
             $total_fee = $item->goods_amount + $item->shipping_fee + $item->insure_fee + $item->pay_fee + $item->pack_fee + $item->card_fee + $item->tax - $item->integral_money - $item->bonus - $item->discount;
 
-            list($label_order_status, $status_code) = OrderStatus::getAdminOrderStatusLabel($item->order_status, $item->shipping_status, $item->pay_status, $item->payment->is_cod);
+            list($label_order_status, $status_code) = OrderStatus::getAdminOrderStatusLabel($item->order_status, $item->shipping_status, $item->pay_status, $item->payment_model->is_cod);
             $data = [
                 'order_sn'              => $item->order_sn,
                 'seller_name'           => $item->store_franchisee_model->merchants_name,
@@ -319,7 +319,7 @@ class CustomizeOrderList
             //计算订单总价格
             $total_fee = $item->goods_amount + $item->shipping_fee + $item->insure_fee + $item->pay_fee + $item->pack_fee + $item->card_fee + $item->tax - $item->integral_money - $item->bonus - $item->discount;
 
-            list($label_order_status, $status_code) = OrderStatus::getAdminOrderStatusLabel($item->order_status, $item->shipping_status, $item->pay_status, $item->payment->is_cod);
+            list($label_order_status, $status_code) = OrderStatus::getAdminOrderStatusLabel($item->order_status, $item->shipping_status, $item->pay_status, $item->payment_model->is_cod);
             $data = [
                 'order_sn'              => $item->order_sn,
                 'order_time'            => ecjia_time_format($item->add_time),

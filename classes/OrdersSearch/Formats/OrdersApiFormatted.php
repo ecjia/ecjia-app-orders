@@ -80,10 +80,10 @@ class OrdersApiFormatted
     	
     	//团购订单情况处理；增加返回几个字段
     	if ($this->model->extension_code == 'group_buy' && $this->model->extension_id > 0) {
-    		$order_list = $this->groupBuyOrderHandle($order_arr);
+    		$order_arr = $this->groupBuyOrderHandle($order_arr);
     	}
     	
-    	return $order_list;
+    	return $order_arr;
     }
     
     /**

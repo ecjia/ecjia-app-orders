@@ -6,7 +6,7 @@
  * Time: 18:20
  */
 
-namespace Ecjia\App\Goodslib\GoodsSearch;
+namespace Ecjia\App\Orders\OrdersSearch;
 
 use Ecjia\App\Orders\Models\OrdersModel;
 use Ecjia\System\Frameworks\SuperSearch\SuperSearch;

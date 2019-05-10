@@ -109,6 +109,14 @@ class OrdersModel extends Model
         return $this->hasMany('Ecjia\App\Orders\Models\CommentModel', 'order_id', 'order_id');
     }
 
+    /**
+     * 一对一
+     * 获取订单参与的（团购）活动模型信息。
+     */
+    public function goods_activity_model()
+    {
+    	return $this->belongsTo('Ecjia\App\Goods\Models\GoodsActivityModel', 'extension_id', 'act_id');
+    }
 }
 
 // end

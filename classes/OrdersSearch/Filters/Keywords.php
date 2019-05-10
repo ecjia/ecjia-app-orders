@@ -31,6 +31,8 @@ class Keywords implements FilterInterface
     	if (!empty($value)) {
     		return $builder
     		->where('order_info.order_sn', 'like', '%' . ecjia_mysql_like_quote($value) . '%')
+    		->orWhere('order_info.consignee', 'like', '%' . ecjia_mysql_like_quote($value) . '%')
+    		->orWhere('order_info.mobile', 'like', '%' . ecjia_mysql_like_quote($value) . '%')
     		->orWhereHas('order_goods_collection', function($query) use ($value) {
                     /**
                      * @var \Royalcms\Component\Database\Query\Builder $query

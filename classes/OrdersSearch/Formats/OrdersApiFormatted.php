@@ -136,8 +136,10 @@ class OrdersApiFormatted
     			}
     		
     			$data = [
+    				'id'                  => $item->goods_id,
+    				'name'				  => $item->goods_name,
 	    			'goods_id'            => $item->goods_id,
-	    			'name'                => $item->goods_name,
+	    			'goods_name'		  => $item->goods_name,
 	    			'goods_attr_id'       => $item->goods_attr_id,
 	    			'goods_attr'          => $attr,
 	    			'goods_number'        => $item->goods_number,

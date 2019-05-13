@@ -54,7 +54,10 @@ class OrderStatus
 
     /* 已发货（部分商品） */
     const SHIPPED_PART = 'shipped_part';
-
+    
+    /*已关闭订单（无效和取消的）*/
+    const CLOSED = 'closed';
+    
     /**
      * 订单状态映射
      *
@@ -77,6 +80,7 @@ class OrderStatus
         self::PREPARING         => 'queryOrderPreparing',
         self::SHIPPED_ING       => 'queryOrderShippedIng',
         self::SHIPPED_PART      => 'queryOrderShippedPart',
+        self::CLOSED      		=> 'queryOrderClosed',
     ];
 
     public static function getOrderStatusLabel($order_status, $shipping_status, $pay_status, $is_cod)
@@ -354,8 +358,16 @@ class OrderStatus
             $query->whereIn('order_info.order_status', array(OS_UNCONFIRMED, OS_CONFIRMED, OS_SPLITED, OS_SPLITING_PART))
                 ->where('order_info.shipping_status', SS_SHIPPED_PART);
         };
+    }  
+    
+    /* 已关闭（已取消或无效的） */
+    public static function queryOrderClosed()
+    {
+    	return function ($query) {
+    		$query->whereIn('order_info.order_status', array(OS_INVALID, OS_CANCELED));
+    	};
     }
-
+    
     public static function getAdminOrderStatusLabel($order_status, $shipping_status, $pay_status, $is_cod)
     {
         if (in_array($order_status, array(OS_SPLITED, OS_UNCONFIRMED)) &&

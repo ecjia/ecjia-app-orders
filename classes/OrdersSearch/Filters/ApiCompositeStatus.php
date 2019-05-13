@@ -12,6 +12,11 @@ namespace Ecjia\App\Orders\OrdersSearch\Filters;
 use Ecjia\System\Frameworks\SuperSearch\FilterInterface;
 use Royalcms\Component\Database\Eloquent\Builder;
 
+/**
+ * 用户端（接口）综合状态条件
+ * @author Administrator
+ *
+ */
 class ApiCompositeStatus implements FilterInterface
 {
 

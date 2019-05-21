@@ -94,9 +94,16 @@ class orders_api_plugin
     			$promotion = new \Ecjia\App\Goods\GoodsActivity\GoodsPromotion($val['goods_id'], $val['product_id'], $order_info['user_id']);
     			$is_promote = $promotion->isPromote();
     			$promotionInfo = $promotion->getGoodsPromotionInfo();
+    			$goodsActivityRecordsInfo = $promotion->goodsActivityRecordsInfo();//用户购买记录
+    			if ($val['product_id'] > 0) {
+    				$promotionInfo = $promotion->getProductPromotion();
+    			}
     			if ($is_promote) {
-    				//商品在促销且订单下单时间在促销时间内
-    				if ($promotionInfo->promote_start_date < $order_info['add_time'] && $order_info['add_time'] < $promotionInfo->promote_end_date) {
+    				//商品在促销且订单下单时间在促销时间内且用户购买限购数有效（既未超过限购数）；
+    				if (
+    					($promotionInfo->promote_start_date < $order_info['add_time'] && $order_info['add_time'] < $promotionInfo->promote_end_date)
+    				 	&& ($promotionInfo->promote_user_limited > 0 && $goodsActivityRecordsInfo->buy_num < $promotionInfo->promote_user_limited)
+    				) {
     					$promotion->updatePromotionBuyNum($val);
     				}
     			}

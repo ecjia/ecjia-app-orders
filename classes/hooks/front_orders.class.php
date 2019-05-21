@@ -75,7 +75,7 @@ class orders_front_plugin
      * @param array $order
      * @return boolean
      */
-    public static function api_promotion_buy_num_update($order)
+    public static function front_promotion_buy_num_update($order)
     {
     	if (empty($order['order_sn'])) {
     		return false;
@@ -94,9 +94,17 @@ class orders_front_plugin
     			$promotion = new \Ecjia\App\Goods\GoodsActivity\GoodsPromotion($val['goods_id'], $val['product_id'], $order_info['user_id']);
     			$is_promote = $promotion->isPromote();
     			$promotionInfo = $promotion->getGoodsPromotionInfo();
+    			$goodsActivityRecordsInfo = $promotion->goodsActivityRecordsInfo();//用户购买记录
+    			if ($val['product_id'] > 0) {
+    				$promotionInfo = $promotion->getProductPromotion();
+    			}
     			if ($is_promote) {
     				//商品在促销且订单下单时间在促销时间内
-    				if ($promotionInfo->promote_start_date < $order_info['add_time'] && $order_info['add_time'] < $promotionInfo->promote_end_date) {
+    				if (
+    					($promotionInfo->promote_start_date < $order_info['add_time'] && $order_info['add_time'] < $promotionInfo->promote_end_date)
+    					&& ($promotionInfo->promote_user_limited > 0 && $goodsActivityRecordsInfo->buy_num < $promotionInfo->promote_user_limited)
+    				) {
+    					//且用户购买限购数有效；未超过限购数
     					$promotion->updatePromotionBuyNum($val);
     				}
     			}

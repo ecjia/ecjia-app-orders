@@ -86,7 +86,7 @@ class orders_api_plugin
     	if (empty($order_info)) {
     		return false;
     	}
-    
+    	
     	//促销商品购买成功，减少促销剩余限购数；增加用户购买数
     	$order_goods = RC_DB::table('order_goods')->where('order_id', $order_info['order_id'])->get();
     	if ($order_goods) {
@@ -94,17 +94,9 @@ class orders_api_plugin
     			$promotion = new \Ecjia\App\Goods\GoodsActivity\GoodsPromotion($val['goods_id'], $val['product_id'], $order_info['user_id']);
     			$is_promote = $promotion->isPromote();
     			$goodsPromotionInfo = $promotion->getGoodsPromotionInfo();
-    			$goodsActivityRecordsInfo = $promotion->goodsActivityRecordsInfo();//用户购买记录
-    			$promotionInfo = $goodsPromotionInfo;
-    			if ($val['product_id'] > 0) {
-    				$promotionInfo = $promotion->getProductPromotion();
-    			}
     			if ($is_promote) {
     				//商品在促销且订单下单时间在促销时间内且用户购买限购数有效（既未超过限购数）；
-    				if (
-    					($goodsPromotionInfo->promote_start_date < $order_info['add_time'] && $order_info['add_time'] < $goodsPromotionInfo->promote_end_date)
-    				 	&& ($promotionInfo->promote_user_limited > 0 && $goodsActivityRecordsInfo->buy_num < $promotionInfo->promote_user_limited)
-    				) {
+    				if ($goodsPromotionInfo->promote_start_date < $order_info['add_time'] && $order_info['add_time'] < $goodsPromotionInfo->promote_end_date) {
     					$promotion->updatePromotionBuyNum($val);
     				}
     			}
@@ -113,7 +105,7 @@ class orders_api_plugin
     }
 }
 
-RC_Hook::add_filter('order_payed_do_something', array('orders_api_plugin', 'api_promotion_buy_num_update'));
+// RC_Hook::add_filter('order_payed_do_something', array('orders_api_plugin', 'api_promotion_buy_num_update'));
 RC_Hook::add_action('order_payed_do_something', array('orders_api_plugin', 'api_storebuy_order_payed_autoship'));
 
 

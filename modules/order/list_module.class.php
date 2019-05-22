@@ -100,6 +100,11 @@ class order_list_module extends api_front implements api_interface
         if (!empty($type)) {
         	$filters['api_composite_status'] = $type;
         }
+        //排序
+        $order_sort = ['order_info.add_time' => 'desc'];
+        if ($order_sort) {
+        	$filters['sort_by'] = $order_sort;
+        }
         //分页信息
         $filters['size'] = $size;
         $filters['page'] = $page;

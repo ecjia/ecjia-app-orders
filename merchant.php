@@ -765,7 +765,7 @@ class merchant extends ecjia_merchant
                 $shipping_print_template  = $plugin_handle->loadPrintOption('shipping_print');
                 
                 if ($shipping_print_template) {//存在模板文件
-                	return return $this->display($shipping_print_template);
+                    return $this->display($shipping_print_template);
                 } else {
                 	echo __('很抱歉，目前您还没有设置打印快递单模板，不能进行打印。', 'orders');
                 }
@@ -1021,7 +1021,7 @@ class merchant extends ecjia_merchant
                 $shipping_print_template  = $plugin_handle->loadPrintOption('shipping_print');
 
                 if ($shipping_print_template) {//存在模板文件
-                    return return $this->display($shipping_print_template);
+                    return $this->display($shipping_print_template);
                 } else {
                     return $this->showmessage(__('很抱歉，目前您还没有设置打印快递单模板，不能进行打印。', 'orders'), ecjia::MSGSTAT_ERROR | ecjia::MSGTYPE_HTML);
                 }

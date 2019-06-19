@@ -700,8 +700,12 @@ function order_refund($order, $refund_type, $refund_note, $refund_amount = 0)
  * @param   int $flow_type 购物流程类型
  * @return  bool
  */
-function exist_real_goods($order_id = 0, $flow_type = CART_GENERAL_GOODS)
+function exist_real_goods($order_id = 0, $flow_type = null)
 {
+    if (is_null($flow_type)) {
+        $flow_type = \Ecjia\App\Cart\Enums\CartEnum::CART_GENERAL_GOODS;
+    }
+
     if ($order_id <= 0) {
         $db_cart = RC_DB::table('cart')->where('is_real', 1)->where('rec_type', $flow_type);
         if ($_SESSION['user_id']) {

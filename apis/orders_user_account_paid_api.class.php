@@ -203,7 +203,7 @@ class orders_user_account_paid_api extends Component_Event_Api
         }
 
         //支付后扩展处理
-        RC_Hook::do_action('order_payed_do_something', $order_info);
+//         RC_Hook::do_action('order_payed_do_something', $order_info);
 
         if (!empty($order_info['store_id'])) {
             /*门店自提，时发送提货验证码；*/

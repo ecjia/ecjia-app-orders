@@ -130,7 +130,7 @@ class mh_sale_list extends ecjia_merchant
         header("Content-type: application/vnd.ms-excel; charset=utf-8");
         header("Content-Disposition: attachment; filename=$file_name.xls");
 
-        echo mb_convert_encoding(sprintf(__('%s销售明细报表', 'orders'), $file_name), 'UTF-8', 'UTF-8') . "\t\n";
+        echo mb_convert_encoding(sprintf(__('%s销售明细报表', 'orders'), $file_name), 'GBK', 'UTF-8') . "\t\n";
         $data = __('商品名称', 'orders') . "\t" . __('订单号', 'orders') . "\t" . __('数量', 'orders') . "\t" . __('售价', 'orders') . "\t" . __('售出日期', 'orders') . "\n";
 
         foreach ($goods_sales_list as $row) {

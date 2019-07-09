@@ -142,7 +142,7 @@ class mh_sale_order extends ecjia_merchant
             $order_by = $k + 1;
             $data     .= "$order_by\t$v[goods_name]\t$v[goods_sn]\t$v[goods_num]\t$v[turnover]\t$v[wvera_price]\n";
         }
-        echo mb_convert_encoding($data . "\t", 'UTF-8', 'auto');
+        echo mb_convert_encoding($data . "\t", 'GBK', 'UTF-8');
         exit;
     }
 

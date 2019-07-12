@@ -124,28 +124,6 @@ ecjia.merchant.order.info();
 					</table>
 				</div>
 			</div>
-			
-			
-			<div id="accordion2" class="panel panel-default">
-				<div class="panel-heading">
-                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-                        <h4 class="panel-title">
-                            <strong>{t domain="orders"}堂食信息{/t}</strong>
-                        </h4>
-                    </a>
-                </div>
-				<div class="accordion-body in collapse" id="collapseTwo">
-					<table class="table table-oddtd m_b0">
-						<tbody class="first-td-no-leftbd">
-							<tr>
-								<td><div align="right"><strong>{t domain="orders"}桌号：{/t}</strong></div></td>
-								<td colspan="3">{$order.postscript}</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-			
 
 			<div class="accordion-group panel panel-default">
 				<div class="panel-heading accordion-group-heading-relative">

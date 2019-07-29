@@ -109,6 +109,15 @@ class OrderGoodsModel extends Model
     	return $this->belongsTo('Ecjia\App\Goods\Models\ProductsModel', 'product_id', 'product_id');
     }
 
+    /**
+     * 一对一
+     * 获取订单商品店铺分佣信息。
+     */
+    public function affiliate_goods_brokerage_model()
+    {
+        return $this->belongsTo('Ecjia\App\Affiliate\Models\AffiliateGoodsBrokerageModel', 'goods_id', 'goods_id');
+    }
+
 }
 
 // end

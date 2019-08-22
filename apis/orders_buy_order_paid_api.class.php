@@ -175,9 +175,6 @@ class orders_buy_order_paid_api extends Component_Event_Api
             }
         }
 
-        //vip商品购买后处理
-        Ecjia\App\Affiliate\Distribution::buy_vip_goods($order);
-
         if (!empty($order['store_id'])) {
 
             /*门店自提，时发送提货验证码；*/

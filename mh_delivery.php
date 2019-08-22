@@ -787,7 +787,7 @@ class mh_delivery extends ecjia_merchant
             // 检查此单发货商品数量
             $virtual_goods         = array();
             $delivery_stock_result = RC_DB::table('delivery_goods')
-            	->select(RC_DB::raw('goods_id, product_id, is_real, SUM(send_number) as "sums"'))
+                ->select('goods_id', 'product_id', 'is_real', 'SUM(send_number) as sums')
                 ->where('delivery_id', $delivery_id)
                 ->groupBy('goods_id')
                 ->get();
@@ -805,7 +805,7 @@ class mh_delivery extends ecjia_merchant
                         ->increment('product_number', $value['sums']);
                 }
                 RC_DB::table('goods')
-                    ->where('goods_id', $value['goods_id'])
+                    ->where('goods', $value['goods_id'])
                     ->increment('goods_number', $value['sums']);
             }
         }

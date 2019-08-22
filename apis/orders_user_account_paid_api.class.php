@@ -169,7 +169,6 @@ class orders_user_account_paid_api extends Component_Event_Api
             RC_Api::api('user', 'account_change_log', $options);
         }
 
-        //邀请奖励
         RC_Api::api('affiliate', 'invite_reward', array('user_id' => $order_info['user_id'], 'invite_type' => 'orderpay'));
 
         //订单状态log记录区分
@@ -202,9 +201,6 @@ class orders_user_account_paid_api extends Component_Event_Api
                 OrderStatusLog::orderpaid_autoconfirm(array('order_id' => $order_info['order_id']));
             }
         }
-
-        //vip商品购买后处理
-        Ecjia\App\Affiliate\Distribution::buy_vip_goods($order_info);
 
         //支付后扩展处理
         RC_Hook::do_action('order_payed_do_something', $order_info);

@@ -399,11 +399,14 @@ class merchant extends ecjia_merchant
         if ($order_model == 'default') {
             $url = RC_Uri::url('orders/merchant/init');
         }
+
         $extension_code_label = Ecjia\App\Orders\OrderExtensionCode::getExtensionCodeLabel($order_model);
         $nav_here             = in_array($order_model, array('default', 'storebuy', 'storepickup', 'group_buy', 'cashdesk')) ? $extension_code_label : __('配送订单', 'orders');
 
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here($nav_here, $url));
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('订单信息', 'orders')));
+
+        $this->assign('extension_code', $order['extension_code']);
 
         /*发票抬头和发票识别码处理*/
         if (!empty($order['inv_payee'])) {
@@ -1038,11 +1041,32 @@ class merchant extends ecjia_merchant
     {
         $this->admin_priv('order_view', ecjia::MSGTYPE_JSON);
         $keywords   = is_numeric($_POST['keywords']) ? $_POST['keywords'] : 0;
-        $ordercount = "order_id = " . $keywords . " OR order_sn = " . $keywords . "";
-        $query      = RC_DB::table('order_info')->whereRaw($ordercount)->first();
+        $extension_code = remove_xss($_POST['extension_code']);
+
+        $db = RC_DB::table('order_info')
+            ->whereRaw("order_id = " . $keywords . " OR order_sn = " . $keywords . "");
+
+        if(! empty($extension_code))
+        {
+            $db = $db->where('extension_code', $extension_code);
+        }
+
+        $query = $db->first();
+
+        if ($extension_code == 'storebuy') {
+            $extension_name = __('到店订单信息', 'orders');
+        } elseif ($extension_code == 'cashdesk') {
+            $extension_name = __('收银台订单信息', 'orders');
+        } elseif ($extension_code == 'storepickup') {
+            $extension_name = __('自提订单信息', 'orders');
+        } elseif ($extension_code == 'group_buy') {
+            $extension_name = __('团购订单信息', 'orders');
+        } else {
+            $extension_name = __('配送订单信息', 'orders');
+        }
 
         if ($query['store_id'] != $_SESSION['store_id']) {
-            return $this->showmessage(__('无法找到对应的订单！', 'orders'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+            return $this->showmessage(__('无法找到对应的' . $extension_name . '！', 'orders'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
         }
         if (!empty($query)) {
             $url = RC_Uri::url('orders/merchant/info', array('order_id' => $query['order_id']));

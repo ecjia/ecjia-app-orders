@@ -57,7 +57,6 @@ class orders_admin_purview_api extends Component_Event_Api
     {
         $purviews = array(
             array('action_name' => __('编辑发货状态', 'orders'), 'action_code' => 'order_ss_edit', 'relevance' => ''),
-            array('action_name' => __('编辑付款状态', 'orders'), 'action_code' => 'order_ps_edit', 'relevance' => ''),
             array('action_name' => __('编辑订单状态', 'orders'), 'action_code' => 'order_os_edit', 'relevance' => ''),
             array('action_name' => __('添加编辑订单', 'orders'), 'action_code' => 'order_edit', 'relevance' => ''),
             array('action_name' => __('订单管理', 'orders'), 'action_code' => 'order_manage', 'relevance' => ''),

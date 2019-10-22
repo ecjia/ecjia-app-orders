@@ -2439,8 +2439,8 @@ class merchant extends ecjia_merchant
         $action_note = isset($_POST['action_note']) ? trim($_POST['action_note']) : '';
         $operation   = isset($_POST['operation']) ? $_POST['operation'] : ''; // 订单操作
 
-        if (!empty($_GET['order_id'])) {
-            $order_id = $_GET['order_id'];
+        if (!empty(intval($_POST['order_id']))) {
+            $order_id = intval($_POST['order_id']);
 
             $db_order_info = RC_DB::table('order_info');
             if (is_array($order_id) || strpos($order_id, ',')) {

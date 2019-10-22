@@ -2321,12 +2321,12 @@ class merchant extends ecjia_merchant
         }
 
         /* 取得订单id（可能是多个，多个sn）和操作备注（可能没有） */
-        if (isset($_GET['order_id'])) {
+        if (isset($_REQUEST['order_id'])) {
             /* 判断是一个还是多个 */
-            if (is_array($_GET['order_id'])) {
-                $order_id = implode(',', $_GET['order_id']);
+            if (is_array($_REQUEST['order_id'])) {
+                $order_id = implode(',', $_REQUEST['order_id']);
             } else {
-                $order_id = $_GET['order_id'];
+                $order_id = $_REQUEST['order_id'];
             }
         }
         /* 确认 */

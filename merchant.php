@@ -110,12 +110,12 @@ class merchant extends ecjia_merchant
         RC_Script::enqueue_script('bootstrap-datepicker', RC_Uri::admin_url('statics/lib/datepicker/bootstrap-datepicker.min.js'));
         RC_Style::enqueue_style('datepicker', RC_Uri::admin_url('statics/lib/datepicker/datepicker.css'));
 
-        RC_Script::enqueue_script('order_list', RC_App::apps_url('statics/js/merchant_orders.js', __FILE__));
+        RC_Script::enqueue_script('order_list', RC_App::apps_url('statics/js/merchant_orders.js', __FILE__), array(), false, 1);
         RC_Style::enqueue_style('aristo', RC_Uri::admin_url('statics/lib/jquery-ui/css/Aristo/Aristo.css'), array(), false, false);
 
         RC_Script::enqueue_script('jq_quicksearch', RC_Uri::admin_url('statics/lib/multi-select/js/jquery.quicksearch.js'), array('jquery'), false, true);
         RC_Style::enqueue_style('merchant_orders', RC_App::apps_url('statics/css/merchant_orders.css', __FILE__), array(), false, false);
-        RC_Script::enqueue_script('order_delivery', RC_App::apps_url('statics/js/merchant_order_delivery.js', __FILE__));
+        RC_Script::enqueue_script('order_delivery', RC_App::apps_url('statics/js/merchant_order_delivery.js', __FILE__), array(), false, 1);
 
         RC_Script::enqueue_script('js-sprintf');
         RC_Script::localize_script('order_list', 'js_lang', config('app-orders::jslang.merchant_page'));

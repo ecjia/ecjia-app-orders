@@ -2426,12 +2426,12 @@ class merchant extends ecjia_merchant
         $this->admin_priv('order_os_edit', ecjia::MSGTYPE_JSON);
         $order_id = '';
         /* 取得订单id（可能是多个，多个sn）和操作备注（可能没有） */
-        if (isset($_POST['order_id'])) {
+        if (isset($_REQUEST['order_id'])) {
             /* 判断是一个还是多个 */
-            if (is_array($_POST['order_id'])) {
-                $order_id = implode(',', $_POST['order_id']);
+            if (is_array($_REQUEST['order_id'])) {
+                $order_id = implode(',', $_REQUEST['order_id']);
             } else {
-                $order_id = $_POST['order_id'];
+                $order_id = $_REQUEST['order_id'];
             }
         }
 
@@ -2439,8 +2439,8 @@ class merchant extends ecjia_merchant
         $action_note = isset($_POST['action_note']) ? trim($_POST['action_note']) : '';
         $operation   = isset($_POST['operation']) ? $_POST['operation'] : ''; // 订单操作
 
-        if (!empty(intval($_POST['order_id']))) {
-            $order_id = intval($_POST['order_id']);
+        if (!empty($_REQUEST['order_id'])) {
+            $order_id = $_REQUEST['order_id'];
 
             $db_order_info = RC_DB::table('order_info');
             if (is_array($order_id) || strpos($order_id, ',')) {

@@ -450,20 +450,9 @@ class merchant extends ecjia_merchant
             }
         }
 
-        $getlast_db_order_info = $getlast_db->db_order_info->where(RC_DB::raw('o.order_id'), '<', $order_id)->where(RC_DB::raw('o.is_delete'), '=', '0')->where(RC_DB::raw('o.store_id'), $_SESSION['store_id']);
-        $getnext_db_order_info = $getnext_db->db_order_info->where(RC_DB::raw('o.order_id'), '>', $order_id)->where(RC_DB::raw('o.is_delete'), '=', '0')->where(RC_DB::raw('o.store_id'), $_SESSION['store_id']);
-
-        if($order_model != 'default')
-        {
-            $getlast_db_order_info = $getlast_db_order_info->where(RC_DB::raw('o.extension_code'), $order_model);
-            $getnext_db_order_info = $getnext_db_order_info->where(RC_DB::raw('o.extension_code'), $order_model);
-        } else {
-            $getlast_db_order_info = $getlast_db_order_info->where(RC_DB::raw('o.extension_code'), '');
-            $getnext_db_order_info = $getnext_db_order_info->where(RC_DB::raw('o.extension_code'), '');
-        }
-
-        $getlast = $getlast_db_order_info->max('order_id');
-        $getnext = $getnext_db_order_info->min('order_id');
+        $getlast = $getlast_db->db_order_info->where(RC_DB::raw('o.order_id'), '<', $order_id)->where(RC_DB::raw('o.is_delete'), '=', '0')->where(RC_DB::raw('o.store_id'), $_SESSION['store_id'])->where(RC_DB::raw('o.extension_code'), $order['extension_code'])->max('order_id');
+        $getnext = $getnext_db->db_order_info->where(RC_DB::raw('o.order_id'), '>', $order_id)->where(RC_DB::raw('o.is_delete'), '=', '0')->where(RC_DB::raw('o.store_id'), $_SESSION['store_id'])->where(RC_DB::raw('o.extension_code'), $order['extension_code'])->min('order_id');
+        
         $this->assign('prev_id', $getlast);
         $this->assign('next_id', $getnext);
 
@@ -1058,11 +1047,32 @@ class merchant extends ecjia_merchant
     {
         $this->admin_priv('order_view', ecjia::MSGTYPE_JSON);
         $keywords   = is_numeric($_POST['keywords']) ? $_POST['keywords'] : 0;
-        $ordercount = "order_id = " . $keywords . " OR order_sn = " . $keywords . "";
-        $query      = RC_DB::table('order_info')->whereRaw($ordercount)->first();
+        $extension_code = remove_xss($_POST['extension_code']);
+
+        $db = RC_DB::table('order_info')
+            ->whereRaw("order_id = " . $keywords . " OR order_sn = " . $keywords . "");
+
+        if(! empty($extension_code))
+        {
+            $db = $db->where('extension_code', $extension_code);
+        }
+
+        $query = $db->first();
+
+        if ($extension_code == 'storebuy') {
+            $extension_name = __('到店订单信息', 'orders');
+        } elseif ($extension_code == 'cashdesk') {
+            $extension_name = __('收银台订单信息', 'orders');
+        } elseif ($extension_code == 'storepickup') {
+            $extension_name = __('自提订单信息', 'orders');
+        } elseif ($extension_code == 'group_buy') {
+            $extension_name = __('团购订单信息', 'orders');
+        } else {
+            $extension_name = __('配送订单信息', 'orders');
+        }
 
         if ($query['store_id'] != $_SESSION['store_id']) {
-            return $this->showmessage(__('无法找到对应的订单！', 'orders'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+            return $this->showmessage(__('无法找到对应的' . $extension_name . '！', 'orders'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
         }
         if (!empty($query)) {
             $url = RC_Uri::url('orders/merchant/info', array('order_id' => $query['order_id']));

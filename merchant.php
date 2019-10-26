@@ -455,8 +455,11 @@ class merchant extends ecjia_merchant
 
         if($order_model != 'default')
         {
-            $getlast_db_order_info = $getlast_db_order_info->where('extension_code', $order_model);
-            $getnext_db_order_info = $getnext_db_order_info->where('extension_code', $order_model);
+            $getlast_db_order_info = $getlast_db_order_info->where(RC_DB::raw('o.extension_code'), $order_model);
+            $getnext_db_order_info = $getnext_db_order_info->where(RC_DB::raw('o.extension_code'), $order_model);
+        } else {
+            $getlast_db_order_info = $getlast_db_order_info->where(RC_DB::raw('o.extension_code'), '');
+            $getnext_db_order_info = $getnext_db_order_info->where(RC_DB::raw('o.extension_code'), '');
         }
 
         $getlast = $getlast_db_order_info->max('order_id');

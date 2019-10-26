@@ -449,9 +449,18 @@ class merchant extends ecjia_merchant
                 }
             }
         }
-        $getlast = $getlast_db->db_order_info->where(RC_DB::raw('o.order_id'), '<', $order_id)->where(RC_DB::raw('o.is_delete'), '=', '0')->where(RC_DB::raw('o.store_id'), $_SESSION['store_id'])->max('order_id');
-        $getnext = $getnext_db->db_order_info->where(RC_DB::raw('o.order_id'), '>', $order_id)->where(RC_DB::raw('o.is_delete'), '=', '0')->where(RC_DB::raw('o.store_id'), $_SESSION['store_id'])->min('order_id');
 
+        $getlast_db_order_info = $getlast_db->db_order_info->where(RC_DB::raw('o.order_id'), '<', $order_id)->where(RC_DB::raw('o.is_delete'), '=', '0')->where(RC_DB::raw('o.store_id'), $_SESSION['store_id']);
+        $getnext_db_order_info = $getnext_db->db_order_info->where(RC_DB::raw('o.order_id'), '>', $order_id)->where(RC_DB::raw('o.is_delete'), '=', '0')->where(RC_DB::raw('o.store_id'), $_SESSION['store_id']);
+
+        if($order_model != 'default')
+        {
+            $getlast_db_order_info = $getlast_db_order_info->where('extension_code', $order_model);
+            $getnext_db_order_info = $getnext_db_order_info->where('extension_code', $order_model);
+        }
+
+        $getlast = $getlast_db_order_info->max('order_id');
+        $getnext = $getnext_db_order_info->min('order_id');
         $this->assign('prev_id', $getlast);
         $this->assign('next_id', $getnext);
 

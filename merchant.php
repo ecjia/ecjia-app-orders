@@ -1052,12 +1052,7 @@ class merchant extends ecjia_merchant
         $extension_code = remove_xss($_POST['extension_code']);
 
         $db = RC_DB::table('order_info')
-            ->whereRaw("order_id = " . $keywords . " OR order_sn = " . $keywords . "");
-
-        if(! empty($extension_code))
-        {
-            $db = $db->where('extension_code', $extension_code);
-        }
+            ->whereRaw("order_id = " . $keywords . " OR order_sn = " . $keywords . "")->where('extension_code', $extension_code);
 
         $query = $db->first();
 
@@ -1077,7 +1072,7 @@ class merchant extends ecjia_merchant
             return $this->showmessage(__('无法找到对应的' . $extension_name . '！', 'orders'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
         }
         if (!empty($query)) {
-            $url = RC_Uri::url('orders/merchant/info', array('order_id' => $query['order_id'], 'extension_code' => $extension_code));
+            $url = RC_Uri::url('orders/merchant/info', array('order_id' => $query['order_id']));
             return $this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('url' => $url));
         } else {
             return $this->showmessage(__('订单不存在请重新搜索！', 'orders'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);

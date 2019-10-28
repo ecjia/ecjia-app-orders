@@ -402,6 +402,8 @@ class merchant extends ecjia_merchant
         $extension_code_label = \Ecjia\App\Orders\OrderExtensionCode::getExtensionCodeLabel($order_model);
         $nav_here             = in_array($order_model, array('default', 'storebuy', 'storepickup', 'group_buy', 'cashdesk')) ? $extension_code_label : __('配送订单', 'orders');
 
+        $this->assign('extension_code', $order['extension_code']);
+
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here($nav_here, $url));
         ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('订单信息', 'orders')));
 
@@ -1075,7 +1077,7 @@ class merchant extends ecjia_merchant
             return $this->showmessage(__('无法找到对应的' . $extension_name . '！', 'orders'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
         }
         if (!empty($query)) {
-            $url = RC_Uri::url('orders/merchant/info', array('order_id' => $query['order_id']));
+            $url = RC_Uri::url('orders/merchant/info', array('order_id' => $query['order_id'], 'extension_code' => $extension_code));
             return $this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('url' => $url));
         } else {
             return $this->showmessage(__('订单不存在请重新搜索！', 'orders'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);

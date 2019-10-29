@@ -114,8 +114,8 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
             //会员店铺消费过，记录为店铺会员
             if (!empty($order['user_id'])) {
                 if (!empty($order['store_id'])) {
-                    RC_Loader::load_app_class('add_storeuser', 'user', false);
-                    add_storeuser::add_store_user(array('user_id' => $order['user_id'], 'store_id' => $order['store_id']));
+//                    RC_Loader::load_app_class('add_storeuser', 'user', false);
+//                    add_storeuser::add_store_user(array('user_id' => $order['user_id'], 'store_id' => $order['store_id']));
                 }
             }
 
@@ -235,12 +235,12 @@ class admin_orders_payConfirm_module extends api_admin implements api_interface
             order_action($order['order_sn'], OS_SPLITED, SS_RECEIVED, PS_PAYED, __('收银台确认收货', 'orders'));
 
             //会员店铺消费过，记录为店铺会员
-            if (!empty($order['user_id'])) {
-                if (!empty($order['store_id'])) {
-                    RC_Loader::load_app_class('add_storeuser', 'user', false);
-                    add_storeuser::add_store_user(array('user_id' => $order['user_id'], 'store_id' => $order['store_id']));
-                }
-            }
+//            if (!empty($order['user_id'])) {
+//                if (!empty($order['store_id'])) {
+//                    RC_Loader::load_app_class('add_storeuser', 'user', false);
+//                    add_storeuser::add_store_user(array('user_id' => $order['user_id'], 'store_id' => $order['store_id']));
+//                }
+//            }
 
             $order_info = RC_Api::api('orders', 'order_info', array('order_id' => $order_id, 'order_sn' => ''));
             //支付后扩展处理

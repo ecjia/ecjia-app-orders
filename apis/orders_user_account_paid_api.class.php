@@ -225,12 +225,12 @@ class orders_user_account_paid_api extends Component_Event_Api
             }
 
             //会员店铺消费过，记录为店铺会员
-//            if (!empty($order_info['user_id'])) {
-//                RC_Loader::load_app_class('add_storeuser', 'user', false);
-//                add_storeuser::add_store_user(array('user_id' => $order_info['user_id'], 'store_id' => $order_info['store_id']));
-//                //更新商家会员消费
-//                RC_Api::api('customer', 'store_user_buy', array('store_id' => $order_info['store_id'], 'user_id' => $order_info['user_id']));
-//            }
+            if (!empty($order_info['user_id'])) {
+                RC_Loader::load_app_class('add_storeuser', 'user', false);
+                add_storeuser::add_store_user(array('user_id' => $order_info['user_id'], 'store_id' => $order_info['store_id']));
+                //更新商家会员消费
+                RC_Api::api('customer', 'store_user_buy', array('store_id' => $order_info['store_id'], 'user_id' => $order_info['user_id']));
+            }
 
             /* 客户付款短信提醒 */
             $staff_user = RC_DB::table('staff_user')->where('store_id', $order_info['store_id'])->where('parent_id', 0)->first();

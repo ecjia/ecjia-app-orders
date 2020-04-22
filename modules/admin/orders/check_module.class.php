@@ -108,6 +108,8 @@ class admin_orders_check_module extends api_admin implements api_interface
         if ($order_info['shipping_status'] > SS_UNSHIPPED) {
             return new ecjia_error('order_shipped', __('该订单已发货！无法进行此操作', 'orders'));
         } else {
+        	RC_Loader::load_app_class('OrderStatusLog', 'orders', false);
+        	
             $action_note = __('验单', 'orders');
             /* 进行确认*/
             RC_Api::api('orders', 'order_cashier_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'confirm', 'note' => array('action_note' => $action_note)));
@@ -118,14 +120,26 @@ class admin_orders_check_module extends api_admin implements api_interface
             /* 分单（生成发货单）*/
             $result = RC_Api::api('orders', 'order_cashier_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'split', 'note' => array('action_note' => $action_note)));
 
-            if (is_ecjia_error($result)) {
-                return $result;
+        	if (is_ecjia_error($result)) {
+                //return $result;
+                RC_Logger::getLogger('error')->info(sprintf(__('订单分单【订单id|%s】：' . $result->get_error_message(), 'orders'), $order_info['order_id']));
+            } else {
+                 /*订单状态日志记录*/
+                OrderStatusLog::generate_delivery_orderInvoice(array('order_id' => $order_info['order_id'], 'order_sn' => $order_info['order_sn']));
             }
+            
             /* 发货*/
             $db_delivery_order = RC_Loader::load_app_model('delivery_order_model', 'orders');
             $delivery_id       = $db_delivery_order->where(array('order_sn' => array('like' => '%' . $order_info['order_sn'] . '%')))->order(array('delivery_id' => 'desc'))->get_field('delivery_id');
 
             $result = $this->delivery_ship($order_id, $delivery_id, $invoice_no, $action_note);
+            if (is_ecjia_error($result)) {
+            	RC_Logger::getLogger('error')->info(sprintf(__('订单发货【订单id|%s】：' . $result->get_error_message(), 'orders'), $order_info['order_id']));
+            } else {
+            	/*订单状态日志记录*/
+            	OrderStatusLog::delivery_ship_finished(array('order_id' => $order_info['order_id'], 'order_sn' => $order_info['order_sn']));
+            }
+            
             /* 货到付款再次进行付款*/
             RC_Api::api('orders', 'order_cashier_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'pay', 'note' => array('action_note' => $action_note)));
             /* 确认收货*/

@@ -143,8 +143,14 @@ class admin_orders_check_module extends api_admin implements api_interface
             /* 货到付款再次进行付款*/
             RC_Api::api('orders', 'order_cashier_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'pay', 'note' => array('action_note' => $action_note)));
             /* 确认收货*/
-            RC_Api::api('orders', 'order_cashier_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'receive', 'note' => array('action_note' => $action_note)));
-
+            $result = RC_Api::api('orders', 'order_cashier_operate', array('order_id' => $order_id, 'order_sn' => '', 'operation' => 'receive', 'note' => array('action_note' => $action_note)));
+            if (is_ecjia_error($result)) {
+            	RC_Logger::getLogger('error')->info(sprintf(__('订单自动确认收货【订单id|%s】：' . $result->get_error_message(), 'orders'), $order_info['order_id']));
+            } else {
+            	/*订单状态日志记录*/
+            	OrderStatusLog::affirm_received(array('order_id' => $order_info['order_id'], 'order_sn' => $order_info['order_sn']));
+            }
+            
             /*收银员订单操作记录*/
             $device_info    = RC_DB::table('mobile_device')->where('id', $_SESSION['device_id'])->first();
             $device_type    = Ecjia\App\Cashier\CashierDevice::get_device_type($device['code']);
